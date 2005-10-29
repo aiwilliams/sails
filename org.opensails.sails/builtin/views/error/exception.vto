@@ -1,0 +1,67 @@
+<style>
+.exception-chain .caused-by {
+	display: none;
+}
+.exception-chain .exception .message {
+	font-size: 20px;
+	float: left;
+	padding-left: 10px;
+}
+.exception-chain .exception-class {
+	float: left;
+	cursor: pointer;
+	color: blue;
+	text-decoration: underline;
+}
+.exception-chain .stack-trace {
+	clear: both;
+	padding-left: 30px;
+}
+.exception-chain .local-frame {
+	background-color: #FFFFAA;
+}
+</style>
+
+<script src="/scripts/prototype.js"></script>
+
+<script>
+	var all = [];
+	var packageRoot = '$packageRoot';
+	function init() {
+		var exceptions = document.getElementsByClassName('exception-class');
+		for (var i=0; i<exceptions.length; i++)
+			all.push(new Exception(exceptions[i]));
+	}
+	
+	var Exception = Class.create();
+	Exception.prototype = {
+		initialize: function(element) {
+			this.exceptionClass = element;
+			this.message = this.exceptionClass.nextSibling;
+			this.stackTrace = this.message.nextSibling;
+			Event.observe(this.exceptionClass, 'click', this.toggle.bind(this));
+			if (!this.highlightLocalFrames())
+				this.toggle();
+		},
+		
+		toggle: function() {
+			Element.toggle(this.stackTrace);
+		},
+		
+		highlightLocalFrames: function() {
+			var hasLocalFrames = false;
+			for (var i=0; i<this.stackTrace.childNodes.length; i++) {
+				var frame = this.stackTrace.childNodes[i];
+				if (frame.firstChild.textContent.match(packageRoot)) {
+					Element.addClassName(frame, 'local-frame');
+					hasLocalFrames = true;
+				}
+			}
+			return hasLocalFrames;
+		}
+	}
+	
+	Event.observe(window, 'load', init);
+</script>
+
+$exception.html

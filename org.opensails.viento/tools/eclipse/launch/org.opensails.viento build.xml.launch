@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launchConfiguration type="org.eclipse.ant.AntLaunchConfigurationType">
+<stringAttribute key="process_factory_id" value="org.eclipse.ant.ui.remoteAntProcessFactory"/>
+<mapAttribute key="org.eclipse.ui.externaltools.ATTR_ANT_PROPERTIES">
+<mapEntry key="eclipse.running" value="true"/>
+<mapEntry key="baseos" value="win32"/>
+<mapEntry key="javacFailOnError" value="false"/>
+<mapEntry key="javacDebugInfo" value="on"/>
+<mapEntry key="javacVerbose" value="true"/>
+<mapEntry key="basenl" value="en_US"/>
+<mapEntry key="basearch" value="x86"/>
+<mapEntry key="bootclasspath" value="C:\Developer\jdk_150_04\jre\lib\rt.jar;C:\Developer\jdk_150_04\jre\lib\jsse.jar;C:\Developer\jdk_150_04\jre\lib\jce.jar;C:\Developer\jdk_150_04\jre\lib\charsets.jar;C:\Developer\jdk_150_04\jre\lib\ext\dnsns.jar;C:\Developer\jdk_150_04\jre\lib\ext\localedata.jar;C:\Developer\jdk_150_04\jre\lib\ext\sunjce_provider.jar;C:\Developer\jdk_150_04\jre\lib\ext\sunpkcs11.jar"/>
+<mapEntry key="basews" value="win32"/>
+<mapEntry key="javacTarget" value="1.5"/>
+<mapEntry key="javacSource" value="1.5"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.opensails.viento"/>
+<booleanAttribute key="editedByExternalToolsMainTab" value="true"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/org.opensails.viento/build.xml}"/>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
+</launchConfiguration>

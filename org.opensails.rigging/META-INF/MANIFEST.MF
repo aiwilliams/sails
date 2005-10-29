@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rigging
+Bundle-SymbolicName: org.opensails.rigging
+Bundle-Version: 1.0.0
+Bundle-Localization: plugin
+Bundle-Vendor: opensails.org
+Export-Package: org.opensails.rigging
+Require-Bundle: org.junit

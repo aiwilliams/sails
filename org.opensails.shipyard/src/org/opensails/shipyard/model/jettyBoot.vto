@@ -1,0 +1,30 @@
+package $rootPackage;
+
+import org.mortbay.jetty.Server;
+
+public class JettyBoot {
+	public static void main(String[] args) {
+		new JettyBoot().startServer();
+	}
+
+	protected Server server;
+	
+	public void startServer() {
+		try {
+			server = new Server();
+			server.addListener(":$portNumber");
+			server.addWebApplication("/", "$contextRoot");
+			server.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void stopServer() {
+		try {
+			server.stop();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+}

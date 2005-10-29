@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.opensails.shipyard.views"
+            name="Sails"/>
+      <view
+            category="org.opensails.shipyard"
+            class="org.opensails.shipyard.views.ControllersView"
+            icon="icons/sample.gif"
+            id="org.opensails.shipyard.views.ControllersView"
+            name="Application Controllers"/>
+   </extension>
+   <extension
+         id="sailsnature"
+         name="Sails Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run class="org.opensails.shipyard.model.SailsNature"/>
+      </runtime>
+      <requires-nature id="org.eclipse.jdt.core.javanature"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.opensails.shipyard.wizards.new"
+            name="Sails"/>
+      <wizard
+            category="org.opensails.shipyard.wizards.new"
+            class="org.opensails.shipyard.wizards.NewSailsProjectWizard"
+            id="org.opensails.shipyard.wizard.new.project"
+            name="Sails Project"
+            project="true"/>
+      <wizard
+            category="org.opensails.shipyard.wizards.new"
+            class="org.opensails.shipyard.wizards.NewControllerWizard"
+            id="org.opensails.shipyard.wizard.new.controller"
+            name="Controller"
+            project="false"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.opensails.shipyard.sailsnature.contribution"
+            objectClass="org.opensails.shipyard.model.SailsNature">
+         <action
+               class="org.opensails.shipyard.NewControllerAction"
+               id="org.opensails.shipyard.action.newcontroller"
+               label="New Controller"/>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.opensails.shipyard.SailsClasspathContainerInitializer"
+            id="org.opensails.shipyard.classpath.container.initializer.sails"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.opensails.shipyard.openSailsResourceSelectionDialog"
+            name="Open Sails Resource Selection Dialog"/>
+      <keyBinding
+            commandId="org.opensails.shipyard.openSailsResourceSelectionDialog"
+            contextId="org.eclipse.ui.contexts.window"
+            keyConfigurationId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            keySequence="M1+M2+A"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.opensails.shipyard.actions"
+            label="Shipyard Actions">
+         <action
+               class="org.opensails.shipyard.actions.OpenSailsResourceSelectionDialog"
+               definitionId="org.opensails.shipyard.openSailsResourceSelectionDialog"
+               id="org.opensails.shipyard.openSailsResourceSelectionDialog"
+               label="Open Sails Resource Selection Dialog"
+               style="push"/>
+      </actionSet>
+   </extension>
+
+</plugin>

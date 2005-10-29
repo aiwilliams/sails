@@ -1,0 +1,6 @@
+package $packageDeclaration;
+
+import org.opensails.sails.oem.BaseConfigurator;
+
+public class $configuratorClassName extends BaseConfigurator {
+}

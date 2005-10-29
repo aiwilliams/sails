@@ -1,0 +1,74 @@
+Viento
+$tag.doctype
+<html>
+	<head>
+		<title>$reference</title>
+	</head>
+	<body>
+														#pound for comments
+		$helper()
+		$helper											# parens are optional
+		$if ($reference) {								# $if is a regular method that takes a block. note the optional space before the parens.
+			<div id="blocks">
+			$!thing										# silence
+			$!{ <span>$anotherReference</span> }		# bang-curly only shows the block if everything inside works
+			</div>
+		}
+		$tag.div.class('abc')							# method missing
+		$helper.one(1, null, 'asdf', [$thing])			# int, null, string, list
+		$helper.one($thing, {key: 'value'})				# object, map
+		$? {											# helper. should allow special characters here. use annotations to map to methods in java.
+			<span>I don't know what this does</span>
+		}
+		
+		$block(likeAMacro) {							# defines a block
+			<html>
+		}
+		
+		$block(likeAMacro)								# calls the block
+		
+		$if ($condition) {
+		}.elseif ($another) {
+		}.else {
+		}
+		
+		$list.each (item) {								# bind helpers to arbitrary types.
+		}
+		
+$!>		<span>$anotherReference</span>					# > makes a block to the end of the line
+		$reference^static text							# ^ ends a reference. consumed.
+		$!{$anotherReference}.?{none}					# quick else
+		
+		$$												# prints $
+		$escape('#')									# escape hash. unfortunate. should be $# or something.
+	</body>
+</html>
+$one.two
+$one()
+$one ()
+$one{}
+$one {}
+$one () {}
+$!one
+
+
+'#'  is a comment. only ended by the end of the line.
+
+> $ reference
+	> [^\s#]+ name
+		> . property
+		> ( arguments
+			> [^)*] content
+			> ) end
+		> { block
+			> [^}]* content
+			> } end
+	> ! silenced
+		> name, etc
+		
+		
+expressions
+> ' string literal
+> $ reference
+> { map
+> [ list

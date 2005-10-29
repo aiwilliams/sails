@@ -1,0 +1,273 @@
+options
+{
+    NODE_PACKAGE = "org.opensails.viento.parser";
+    VISITOR = true;
+    STATIC = false;
+    MULTI = true;
+}
+
+PARSER_BEGIN(Parser)
+
+package org.opensails.viento.parser;
+
+import java.util.Stack;
+
+public class Parser {
+}
+
+PARSER_END(Parser)
+
+
+TOKEN_MGR_DECLS : {
+	Stack stateStack = initializeStack();
+
+	public void pushState(int state) {
+		SwitchTo(state);
+		stateStack.push(state);
+	}
+	
+	public void popState() {
+		stateStack.pop();
+		SwitchTo((Integer)stateStack.peek());
+	}
+	
+	protected Stack initializeStack() {
+		Stack stack = new Stack();
+		stack.push(DEFAULT);
+		return stack;
+	}
+}
+
+
+<EXPRESSION, ARGS_OR_BLOCK, BLOCK, END> SKIP : { " " | "\r" | "\t" }
+
+<DEFAULT, IN_BLOCK, IN_QUICK_BLOCK> SKIP : {
+	<("\r")? ("\n")? ([" ", "\t"])* "##"> {pushState(SingleLineComment);}
+}
+
+<SingleLineComment> SKIP : {
+	<(~["\r", "\n"])*> {popState();}
+}
+
+TOKEN : {
+	<TEXT: (~["$", "#"])+>
+}
+
+<IN_BLOCK> TOKEN : {
+	<TEXT_IN_BLOCK: (~["$", "#", "]"])+ >
+}
+
+<IN_QUICK_BLOCK> TOKEN : {
+	<TEXT_IN_QUICK_BLOCK: (~["$", "#", "\n"])+ >
+}
+
+<DEFAULT, IN_BLOCK, IN_QUICK_BLOCK> TOKEN : {
+	<HASH: "#">
+}
+
+<DEFAULT, EXPRESSION, IN_BLOCK, IN_QUICK_BLOCK> TOKEN : {
+	<DOLLAR: "$" > {pushState(STATEMENT);}
+}
+
+<STATEMENT> TOKEN : {
+	<NAME: (["a"-"z", "A"-"Z", "$", "!", "?", "_", "-"])+ > {pushState(ARGS_OR_BLOCK);}
+}
+
+<STATEMENT> MORE : {
+	<([" ", "\t", "\r"])* (~["^", "a"-"z", "A"-"Z", "$", "!", "?", "_", "-"])> {input_stream.backup(1); popState();}
+}
+
+<ARGS_OR_BLOCK> SKIP : {
+	";" {popState(); popState();}
+}
+
+<ARGS_OR_BLOCK> TOKEN : {
+	<LPAREN: "("> {pushState(EXPRESSION);}
+}
+
+<ARGS_OR_BLOCK> MORE : {
+	<([" ", "\t", "\r"])* (~["(", "[", ".", ">"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r"])* "[" (~["["])> {input_stream.backup(1); popState(); popState();}
+}
+
+<ARGS_OR_BLOCK, BLOCK> TOKEN : {
+	<BEGIN_BLOCK: "[["> {pushState(IN_BLOCK);}
+|	<BEGIN_QUICK_BLOCK: ">"> {pushState(IN_QUICK_BLOCK);}
+}
+
+<BLOCK> MORE : {
+	<([" ", "\t", "\r"])* (~["[", ".", ">"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r"])* "[" (~["["])> {input_stream.backup(1); popState(); popState();}
+}
+
+<ARGS_OR_BLOCK, BLOCK, END> TOKEN : {
+	<DOT: "."> {popState();}
+}
+
+<END> MORE : {
+	<([" ", "\t", "\r"])* (~["."])> {input_stream.backup(1); popState(); popState();}
+}
+
+<EXPRESSION> TOKEN : {
+	<RPAREN: ")"> {popState(); popState(); pushState(BLOCK);}
+|	<COMMA: ",">
+|	<INTEGER: (("-")? ["0"-"9"])+>
+|	<#TRUE: "true">
+|	<#FALSE: "false">
+|	<BOOLEAN: (<TRUE>|<FALSE>)>
+|	<NULL: "null">
+|	<OPEN_SQUOTE: "'"> {pushState(STRING_LITERAL);}
+|	<LBRACKET: "[">
+|	<RBRACKET: "]">
+|	<MAP_LBRACE: "{">
+|	<MAP_RBRACE: "}">
+|	<COLON: ":">
+|	<SYMBOL: (["a"-"z", "A"-"Z", ".", "_", "-"])+>
+|	<AND: "&&">
+|	<OR: "||">
+|	<NOT: "!">
+}
+
+<STRING_LITERAL> TOKEN : {
+	<STRING: ((~["'"]) | ("\\'"))*>
+|	<CLOSE_SQUOTE: "'"> {popState();}
+}
+
+<IN_BLOCK> TOKEN : {
+	<END_BLOCK: "]]"> {popState(); popState(); pushState(END);}
+|	<TEXT_RBRACKET: "]">
+}
+
+<IN_QUICK_BLOCK> TOKEN : {
+	<END_QUICK_BLOCK: "\n"> {input_stream.backup(1); popState(); popState(); pushState(END);}
+}
+
+SimpleNode Template() : {}
+{
+	Body() <EOF>
+	{ return jjtThis; }
+}
+
+void Body() : {}
+{
+	( Statement() | Text() )*
+}
+
+void Text() : { Token token; }
+{
+	((token = <TEXT>) | (token = <TEXT_IN_BLOCK>) | (token = <TEXT_IN_QUICK_BLOCK>) | (token = <HASH>) | (token = <TEXT_RBRACKET>))
+	{ jjtThis.setContents(token.image); }
+}
+
+void Statement() : {}
+{
+	<DOLLAR>
+	Call()
+	(<DOT> Call())*
+}
+
+void Call() : {}
+{
+	Name() [Arguments()] [Block()]
+}
+
+void Name() : { Token token; }
+{
+	token = <NAME>
+	{ jjtThis.setText(token.image); }
+}
+
+void Arguments() : {}
+{
+	<LPAREN> [Expression()] (<COMMA> Expression())* <RPAREN>
+}
+
+void Expression() : {}
+{
+	LOOKAHEAD(BooleanExpression() <AND>)
+	And()
+|
+	LOOKAHEAD(BooleanExpression() <OR>)
+	Or()
+|	Not()
+|	Statement()
+|	Map()
+|	List()
+|	String()
+|	Symbol()
+|	Number()
+|	Boolean()
+|	Null()
+//|	Float()
+//|	Enum()
+}
+
+void Number() : { Token token; }
+{
+	token = <INTEGER>
+	{ jjtThis.setValue(token.image); }
+}
+
+void Boolean() : { Token token; }
+{
+	token = <BOOLEAN>
+	{ jjtThis.setValue(token.image); }
+}
+
+void BooleanExpression() : {}
+{
+	Not()
+|	Statement()
+}
+
+void And() : {}
+{
+	BooleanExpression() <AND> BooleanExpression()
+}
+
+void Or() : {}
+{
+	BooleanExpression() <OR> BooleanExpression()
+}
+
+void Not() : {}
+{
+	<NOT> Statement()
+}
+
+void Null() : {}
+{
+	<NULL>
+}
+
+void Symbol() : {Token t;}
+{
+	t = <SYMBOL>
+	{ jjtThis.setValue(t.image); }
+}
+
+void String() : { Token t = null; }
+{
+	<OPEN_SQUOTE> [t = <STRING>] <CLOSE_SQUOTE>
+	{ jjtThis.setValue(t == null ? "" : t.image); }
+}
+
+void List() : {}
+{
+	<LBRACKET> [Expression()] (<COMMA> Expression())* <RBRACKET>
+}
+
+void Map() : {}
+{
+	<MAP_LBRACE> [MapEntry()] (<COMMA> MapEntry())* <MAP_RBRACE>
+}
+
+void MapEntry() : {}
+{
+	Expression() <COLON> Expression()
+}
+
+void Block() : {}
+{
+	(<BEGIN_BLOCK>|<BEGIN_QUICK_BLOCK>) Body() (<END_BLOCK>|<END_QUICK_BLOCK>)
+}

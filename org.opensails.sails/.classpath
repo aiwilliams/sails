@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="core"/>
+	<classpathentry kind="src" path="builtin/views"/>
+	<classpathentry excluding="views/" kind="src" path="builtin"/>
+	<classpathentry kind="src" path="test/unit"/>
+	<classpathentry kind="src" path="test/fixture"/>
+	<classpathentry kind="src" path="tester"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="tools/eclipse/classes"/>
+</classpath>
