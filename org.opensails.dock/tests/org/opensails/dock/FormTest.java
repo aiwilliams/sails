@@ -18,6 +18,9 @@ public class FormTest extends TestCase {
 		form.submit("Push Me");
 		form.text("example.text").labeled("Example Text");
 		form.select("example.select").labeled("Example Select").options().labels("", "option one", "option two");
+		form.checkbox("example.checkbox").labeled("Example Checkbox").checked(false);
+		form.radio("example.radio").labeled("Example Radio").checked(false);
+		form.textarea("example.textarea").labeled("Example Textarea");
 	}
 
 	public void testFormProcessing() throws Exception {
