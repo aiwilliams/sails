@@ -1,0 +1,30 @@
+package org.opensails.dock;
+
+import org.mortbay.jetty.Server;
+
+public class JettyBoot {
+    public static void main(String[] args) {
+        new JettyBoot().startServer();
+    }
+
+    protected Server server;
+
+    public void startServer() {
+        try {
+            server = new Server();
+            server.addListener(":1111");
+            server.addWebApplication("/", "./war");
+            server.start();
+        } catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+
+    public void stopServer() {
+        try {
+            server.stop();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
