@@ -28,8 +28,16 @@ public class Form {
 		else this.source = null;
 	}
 
+	public Checkbox checkbox(String named) {
+		return new Checkbox(getSource(), named);
+	}
+
 	public String getSource() {
 		return source;
+	}
+
+	public Radio radio(String named) {
+		return new Radio(getSource(), named);
 	}
 
 	public Select select(String named) {
@@ -42,6 +50,10 @@ public class Form {
 
 	public Text text(String named) {
 		return new Text(getSource(), named);
+	}
+
+	public Textarea textarea(String named) {
+		return new Textarea(getSource(), named);
 	}
 
 	public Form validated() {

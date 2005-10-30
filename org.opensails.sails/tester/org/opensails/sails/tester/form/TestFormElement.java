@@ -12,6 +12,8 @@ import org.opensails.sails.tester.html.TestElementError;
  * @param <T>
  */
 public abstract class TestFormElement<T extends TestFormElement> extends TestElement<T> {
+	protected final String name;
+
 	/**
 	 * @param containerSource the source of the html form this form element
 	 *        belongs to
@@ -19,8 +21,13 @@ public abstract class TestFormElement<T extends TestFormElement> extends TestEle
 	 */
 	public TestFormElement(String containerSource, String name) {
 		super(containerSource, name);
+		this.name = name;
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public T labeled(String expected) {

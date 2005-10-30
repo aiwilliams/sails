@@ -3,9 +3,12 @@ package org.opensails.sails.helper.oem;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.html.Checkbox;
+import org.opensails.sails.form.html.Radio;
 import org.opensails.sails.form.html.Select;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
+import org.opensails.sails.form.html.TextArea;
 
 public class FormHelper {
 	protected final ISailsEvent event;
@@ -20,12 +23,20 @@ public class FormHelper {
 		this(event, idGenerator);
 	}
 
+	public Checkbox checkbox(String name) {
+		return new Checkbox(name);
+	}
+
 	public String end() {
 		return "</form>";
 	}
 
-	public Select select(String nameAttribute) {
-		return new Select(nameAttribute, idGenerator.idForName(nameAttribute));
+	public Radio radio(String name) {
+		return new Radio(name, name, idGenerator.idForName(name));
+	}
+
+	public Select select(String name) {
+		return new Select(name, idGenerator.idForName(name));
 	}
 
 	public String start() {
@@ -38,5 +49,9 @@ public class FormHelper {
 
 	public Text text(String name) {
 		return new Text(name);
+	}
+
+	public TextArea textarea(String name) {
+		return new TextArea(name, idGenerator.idForName(name));
 	}
 }
