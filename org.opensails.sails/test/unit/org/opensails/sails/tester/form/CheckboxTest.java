@@ -23,4 +23,15 @@ public class CheckboxTest extends TestCase {
 			throw new RuntimeException("box is not checked");
 		} catch (AssertionFailedError expected) {}
 	}
+
+	public void testMultiCheckbox() throws Exception {
+		Checkbox element = new Checkbox("<form><label for=\"it\">hehe</label><input name='my.checkbox' type=\"checkbox\" id=\"it\" value=\"das value\" checked=\"true\" /><input name='my.checkbox' type=\"checkbox\" id=\"it_1\" value=\"das other value\" /></form>", "my.checkbox");
+		try {
+			element.checked(true);
+			throw new RuntimeException("more than one for name, don't know which to check");
+		} catch (AssertionFailedError expected) {}
+
+		element.value("das value").checked(true);
+		element.value("das other value").checked(false);
+	}
 }
