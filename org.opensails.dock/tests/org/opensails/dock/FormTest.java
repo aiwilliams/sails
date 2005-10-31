@@ -19,6 +19,8 @@ public class FormTest extends TestCase {
 		form.text("example.text").labeled("Example Text");
 		form.select("example.select").labeled("Example Select").options().labels("", "option one", "option two");
 		form.checkbox("example.checkbox").labeled("Example Checkbox").checked(false);
+		form.checkbox("example.checkbox.multiple").value("one").checked(true);
+		form.checkbox("example.checkbox.multiple").value("two").checked(false);
 		form.radio("example.radio").labeled("Example Radio").checked(false);
 		form.textarea("example.textarea").labeled("Example Textarea");
 	}

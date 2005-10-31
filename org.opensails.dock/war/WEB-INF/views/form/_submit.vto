@@ -2,6 +2,8 @@ $form.start
 	$form.text('example.text').label('Example Text')
 	$form.select('example.select').label('Example Select').model($exampleSelectModel)
 	$form.checkbox('example.checkbox').label('Example Checkbox')
+	$form.checkbox('example.checkbox.multiple').value('one').label('Example Checkbox M1').checked
+	$form.checkbox('example.checkbox.multiple').value('two').label('Example Checkbox M2')
 	$form.radio('example.radio').label('Example Radio')
 	$form.textarea('example.textarea').label('Example Textarea')
 	$form.submit('Push Me')
