@@ -9,6 +9,10 @@ public class Checkbox extends CheckedElement<Checkbox> {
 		super(containerSource, name);
 	}
 
+	public Checkbox value(String expected) {
+		return this;
+	}
+
 	@Override
 	protected Pattern getPattern() {
 		return PATTERN;

@@ -56,6 +56,11 @@ public class Form {
 		return new Textarea(getSource(), named);
 	}
 
+	@Override
+	public String toString() {
+		return source;
+	}
+
 	public Form validated() {
 		if (!form.isValid()) throw new AssertionFailedError(form.getMessage());
 		return this;

@@ -14,5 +14,13 @@ public class CheckboxTest extends TestCase {
 			element.checked(false);
 			throw new RuntimeException("box is checked");
 		} catch (AssertionFailedError expected) {}
+
+		// assert for case where there is a hidden meta field for false
+		element = new Checkbox("<form><input name='my.checkbox' type=\"checkbox\" /><input name=\"form.meta.cb.my.checkbox\" type=\"hidden\" value=\"false\" /></form>", "my.checkbox");
+		element.checked(false);
+		try {
+			element.checked(true);
+			throw new RuntimeException("box is not checked");
+		} catch (AssertionFailedError expected) {}
 	}
 }

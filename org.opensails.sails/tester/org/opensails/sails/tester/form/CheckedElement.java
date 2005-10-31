@@ -14,8 +14,8 @@ public abstract class CheckedElement<T extends CheckedElement> extends TestFormE
 	@SuppressWarnings("unchecked")
 	public T checked(boolean expected) {
 		boolean isChecked = CHECKED_PATTERN.matcher(elementSource).find();
-		if (expected && !isChecked) throw new AssertionFailedError("Expected " + getName() + " to be checked but was not");
-		else if (!expected && isChecked) throw new AssertionFailedError("Expected " + getName() + " not to be checked but was");
+		if (expected && !isChecked) throw new AssertionFailedError("Expected " + getName() + " to be checked but was not. Source is:\n" + elementSource);
+		else if (!expected && isChecked) throw new AssertionFailedError("Expected " + getName() + " not to be checked but was. Source is:\n" + elementSource);
 		return (T) this;
 	}
 }
