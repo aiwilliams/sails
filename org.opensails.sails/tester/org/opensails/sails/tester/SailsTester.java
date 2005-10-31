@@ -97,6 +97,9 @@ public class SailsTester implements ISailsApplication {
 		return application.getConfiguration();
 	}
 
+	/**
+	 * @return the application container
+	 */
 	public ScopedContainer getContainer() {
 		return application.getContainer();
 	}
@@ -105,17 +108,13 @@ public class SailsTester implements ISailsApplication {
 		return application.getName();
 	}
 
-	/**
-	 * Performs an HTTP POST request
-	 * 
-	 * @return the default page of the application, typically home/index. that
-	 *         is left up to the application, not determined by this method.
-	 */
-	public Page post(FormFields formFields) {
-		String controller = "";
-		if (workingController != null) controller = Sails.controllerName(workingController);
-		return application.post(controller, formFields);
-	}
+	public <T> void inject(Class<? extends T> key, Class<? extends T> implementation) {
+        getContainer().register(key, implementation);
+    }
+
+	public <T> void inject(Class<? super T> key, T instance) {
+    	getContainer().register(key, instance);
+    }
 
 	public Page post(Class<? extends IController> controller, String action, FormFields formFields, Object... actionParameters) {
 		TestPostEvent event = application.createPostEvent(Sails.controllerName(controller), action, formFields);
@@ -134,6 +133,18 @@ public class SailsTester implements ISailsApplication {
 		return application.post(event);
 	}
 
+	/**
+	 * Performs an HTTP POST request
+	 * 
+	 * @return the default page of the application, typically home/index. that
+	 *         is left up to the application, not determined by this method.
+	 */
+	public Page post(FormFields formFields) {
+		String controller = "";
+		if (workingController != null) controller = Sails.controllerName(workingController);
+		return application.post(controller, formFields);
+	}
+
 	public void setWorkingController(Class<? extends IController> controller) {
 		this.workingController = controller;
 	}
@@ -142,11 +153,11 @@ public class SailsTester implements ISailsApplication {
 		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
 	}
 
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
+    protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
 		initialize(configuratorClass, new ShamServletConfig(new ShamServletContext(contextRootDirectory)));
 	}
 
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
+    protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
 		this.application = new TestableSailsApplication();
 		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
 		this.application.configure(new SailsTesterConfigurator(configuratorClass));

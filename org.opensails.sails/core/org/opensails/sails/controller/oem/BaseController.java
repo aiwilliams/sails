@@ -17,6 +17,12 @@ public class BaseController implements IController {
 		this.event = event;
 	}
 
+	/**
+	 * Exposes the object as key for use in the rendered template
+	 * 
+	 * @param key, available as $key in template
+	 * @param object
+	 */
 	protected void expose(String key, Object object) {
 		getBinding().put(key, object);
 	}
