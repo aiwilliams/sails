@@ -30,14 +30,6 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 	}
 
 	@Override
-	protected void configure(IConfigurableSailsApplication application, ScopedContainer container) {
-		IShamObjectPersister persister = new MemoryObjectPersister();
-		container.register(IObjectPersister.class, persister);
-		container.register(IShamObjectPersister.class, persister);
-		super.configure(application, container);
-	}
-
-	@Override
 	protected void configureName(IConfigurableSailsApplication application, CompositeConfiguration configuration) {
 		super.configureName(application, configuration);
 		application.setName("[TESTING]" + application.getName());
@@ -83,5 +75,13 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 	protected Dispatcher installDispatcher(IConfigurableSailsApplication application, ScopedContainer container) {
 		container.register(Dispatcher.class, TestingDispatcher.class);
 		return super.installDispatcher(application, container);
+	}
+
+	@Override
+	protected void installObjectPersister(IConfigurableSailsApplication application, ScopedContainer container) {
+		IShamObjectPersister persister = new MemoryObjectPersister();
+		container.register(IObjectPersister.class, persister);
+		container.register(IShamObjectPersister.class, persister);
+		super.installObjectPersister(application, container);
 	}
 }

@@ -14,6 +14,23 @@ import org.opensails.sails.html.HtmlGenerator;
 
 /**
  * An HTML INPUT of type CHECKBOX.
+ * 
+ * Checkboxes can be rendered in groups of one or more by name. If there is more
+ * than one with the same name, the are submitted as a String[]. If they are by
+ * themselves, they likely represent a boolean state, though they may not. One
+ * of the challenges in making the display of a domain model work is knowing
+ * whether, in the case of the boolean checkbox, the absence of a value on the
+ * server side means that the box was displayed and then unchecked - the model
+ * should have it's property set to false - or was never exposed at all. Of
+ * course, if you are exposing every property for an object, then there is no
+ * problem to solve.
+ * 
+ * Anywho, the {@link #getBoolean()} call will cause this to render a hidden
+ * 'meta' field that the {@link org.opensails.sails.form.HtmlForm} class uses
+ * when binding an HTTP form post to a model. If the checkbox is bound to a
+ * boolean property, unchecking will remove that field from the posted form, but
+ * the hidden will come back, indicating the the checkbox was rendered, but
+ * unchecked.
  */
 public class Checkbox extends LabelableInputElement<Checkbox> {
 	public static final String CHECKBOX = "checkbox";
@@ -29,7 +46,6 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	public Checkbox(String name) {
 		super(RENDER_LABEL_AFTER, CHECKBOX, name);
 		value = Boolean.TRUE.toString();
-		getBoolean();
 	}
 
 	/**
@@ -52,10 +68,8 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	/**
 	 * If called, the Checkbox is rendered with a Hidden. This technology allows
 	 * for non-JavaScript maintenance of the checked state of a boolean property
-	 * on an object. It is named getBoolean to allow templates to call it like
-	 * this:
-	 * 
-	 * checkbox.boolean.checked(true)
+	 * on an object. It is named with 'get' because boolean is a keyword. Has no
+	 * effect if called multiple times.
 	 */
 	public Checkbox getBoolean() {
 		if (hiddenForBoolean == null) {
@@ -72,16 +86,11 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	@Override
 	public void toString(Writer writer) throws IOException {
 		super.toString(writer);
-		if (hiddenForBoolean != null || HtmlConstants.TRUE.equals(value) || HtmlConstants.FALSE.equals(value)) {
-			getBoolean();
-			hiddenForBoolean.toString(writer);
-		}
+		if (hiddenForBoolean != null) hiddenForBoolean.toString(writer);
 	}
 
 	@Override
 	public Checkbox value(String value) {
-		// get rid of it if the values don't match
-		if (hiddenForBoolean != null && (hiddenForBoolean.value != null && !hiddenForBoolean.value.equals(value))) hiddenForBoolean = null;
 		return super.value(value);
 	}
 
