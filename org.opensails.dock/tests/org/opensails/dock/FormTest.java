@@ -33,7 +33,6 @@ public class FormTest extends TestCase {
 		formFields.setValue("user.firstName", "James");
 		Page page = tester.post(FormController.class, "basicPost", formFields, user);
 		page.getForm().validated();
-		// TODO: Persistence abstraction, I suppose?
 		assertEquals("James", user.getFirstName());
 	}
 }
