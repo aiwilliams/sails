@@ -7,7 +7,7 @@ public class ContentType {
 
 	protected String httpContentType;
 
-	protected ContentType(String httpContentType) {
+	public ContentType(String httpContentType) {
 		this.httpContentType = httpContentType;
 	}
 
