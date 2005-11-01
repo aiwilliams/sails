@@ -23,7 +23,7 @@ public abstract class AbsoluteUrl<T extends AbsoluteUrl> implements IUrl {
 		String url = renderAbsoluteUrl();
 		if (secure) {
 			String secureScheme = event.getConfiguration().getString(Sails.ConfigurationKey.Url.SECURE_SCHEME);
-			url = event.getResponse().encodeURL(url.replaceFirst("^http://", secureScheme + "://"));
+			url = url.replaceFirst("^http://", secureScheme + "://");
 		}
 		return url;
 	}

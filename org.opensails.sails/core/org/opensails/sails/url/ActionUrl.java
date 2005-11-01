@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.adapter.IAdapterResolver;
 
 public class ActionUrl extends AbsoluteUrl<ActionUrl> {
 	protected String action;
@@ -53,9 +55,11 @@ public class ActionUrl extends AbsoluteUrl<ActionUrl> {
 		this.unadaptedParameters = args;
 	}
 
-	// TODO: Implement parameter adapting
+	// TODO: Make this more robust - like what about things adapted to String[]
 	protected String adapt(Object parameter) {
-		return String.valueOf(parameter);
+		IAdapterResolver resolver = event.getContainer().instance(IAdapterResolver.class);
+		IAdapter adapter = resolver.resolve(parameter.getClass(), event.getContainer());
+		return (String) adapter.forWeb(parameter.getClass(), parameter);
 	}
 
 	protected String getParametersString() {
@@ -71,6 +75,7 @@ public class ActionUrl extends AbsoluteUrl<ActionUrl> {
 
 	@Override
 	protected String renderAbsoluteUrl() {
-		return event.resolve(UrlType.CONTROLLER, getControllerAction() + getParametersString()).toString();
+		IUrl absolute = event.resolve(UrlType.CONTROLLER, getControllerAction() + getParametersString());
+		return event.getResponse().encodeURL(absolute.toString());
 	}
 }

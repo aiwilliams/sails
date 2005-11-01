@@ -13,6 +13,10 @@ public class BaseController implements IController {
 		return event.getContainer();
 	}
 
+	public TemplateActionResult renderTemplate(String template) {
+		return set(new TemplateActionResult(event, template));
+	}
+
 	public void set(ISailsEvent event) {
 		this.event = event;
 	}
@@ -39,7 +43,8 @@ public class BaseController implements IController {
 		return getContainer().instance(ITemplateBinding.class);
 	}
 
-	protected void set(IActionResult result) {
+	protected <T extends IActionResult> T set(T result) {
 		getContainer().register(IActionResult.class, result);
+		return result;
 	}
 }
