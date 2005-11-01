@@ -72,4 +72,9 @@ public class ScopedContainer extends HierarchicalContainer {
 		children.add(child);
 		return child;
 	}
+
+    @Override
+    public String toString() {
+    	return scope + ": " + super.toString();
+    }
 }
