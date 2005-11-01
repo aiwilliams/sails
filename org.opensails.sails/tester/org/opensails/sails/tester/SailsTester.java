@@ -11,8 +11,10 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.servletapi.ShamServletConfig;
 import org.opensails.sails.servletapi.ShamServletContext;
+import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.util.ClassInstanceAccessor;
 
 public class SailsTester implements ISailsApplication {
@@ -109,22 +111,23 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	public <T> void inject(Class<? extends T> key, Class<? extends T> implementation) {
-        getContainer().register(key, implementation);
-    }
+		getContainer().register(key, implementation);
+	}
 
 	public <T> void inject(Class<? super T> key, T instance) {
-    	getContainer().register(key, instance);
-    }
+		getContainer().register(key, instance);
+	}
 
-	public Page post(Class<? extends IController> controller, String action, FormFields formFields, Object... actionParameters) {
+	public Page post(Class<? extends IController> controller, String action, FormFields formFields, IIdentifiable... actionParameters) {
 		TestPostEvent event = application.createPostEvent(Sails.controllerName(controller), action, formFields);
 		ScopedContainer container = event.getContainer();
 		if (actionParameters != null && actionParameters.length > 0) {
-			
+			IShamObjectPersister persister = container.instance(IShamObjectPersister.class);
 			IAdapterResolver resolver = container.instance(IAdapterResolver.class);
 			String[] params = new String[actionParameters.length];
 			for (int i = 0; i < actionParameters.length; i++) {
-				Object object = actionParameters[i];
+				IIdentifiable object = actionParameters[i];
+				persister.provides(object);
 				IAdapter adapter = resolver.resolve(object.getClass(), container);
 				params[i] = (String) adapter.forWeb(object.getClass(), object);
 			}
@@ -153,11 +156,11 @@ public class SailsTester implements ISailsApplication {
 		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
 	}
 
-    protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
 		initialize(configuratorClass, new ShamServletConfig(new ShamServletContext(contextRootDirectory)));
 	}
 
-    protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
 		this.application = new TestableSailsApplication();
 		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
 		this.application.configure(new SailsTesterConfigurator(configuratorClass));

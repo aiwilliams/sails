@@ -9,14 +9,13 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.opensails.sails.persist.IIdentifiable;
-import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.persist.PersistException;
 import org.opensails.sails.util.DoubleKeyedMap;
 import org.opensails.sails.util.FieldAccessor;
 import org.opensails.sails.util.IIdGenerator;
 import org.opensails.sails.util.TimeUniqueIdGenerator;
 
-public class MemoryObjectPersister implements IObjectPersister {
+public class MemoryObjectPersister implements IShamObjectPersister {
 	protected Collection<IIdentifiable> destroyedInTransaction;
 	protected PersistException exceptionOnSave;
 	protected FieldAccessor idFieldAccessor;

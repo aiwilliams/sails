@@ -136,12 +136,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	 * @param application
 	 * @param container
 	 */
-	protected void configure(IConfigurableSailsApplication application, ScopedContainer container) {
-		container.register(ISailsApplication.class, application);
-		container.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
-		container.register(ITemplateBinding.class, VientoBinding.class);
-		container.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
-	}
+	protected void configure(IConfigurableSailsApplication application, ScopedContainer container) {}
 
 	protected void configureName(IConfigurableSailsApplication application, CompositeConfiguration configuration) {
 		String className = ClassHelper.getName(getClass());
@@ -204,8 +199,14 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	protected ScopedContainer installContainer(IConfigurableSailsApplication application) {
 		ScopedContainer container = new ScopedContainer(ApplicationScope.SERVLET);
+
 		container.register(ISailsEventConfigurator.class, this);
 		container.register(IValidationEngine.class, SailsValidationEngine.class);
+		container.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
+		container.register(ITemplateBinding.class, VientoBinding.class);
+		container.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
+		
+		container.register(ISailsApplication.class, application);
 		application.setContainer(container);
 		return container;
 	}

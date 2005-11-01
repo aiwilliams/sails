@@ -16,14 +16,25 @@ import org.opensails.sails.oem.ControllerResolver;
 import org.opensails.sails.oem.DelegatingConfigurator;
 import org.opensails.sails.oem.Dispatcher;
 import org.opensails.sails.oem.ExceptionEvent;
+import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.oem.ErrorController;
 import org.opensails.sails.tester.oem.LazyActionResultProcessor;
 import org.opensails.sails.tester.oem.TestingDispatcher;
+import org.opensails.sails.tester.persist.IShamObjectPersister;
+import org.opensails.sails.tester.persist.MemoryObjectPersister;
 import org.opensails.sails.util.IClassResolver;
 
 public class SailsTesterConfigurator extends DelegatingConfigurator {
 	public SailsTesterConfigurator(Class<? extends BaseConfigurator> delegateClass) {
 		super(delegateClass);
+	}
+
+	@Override
+	protected void configure(IConfigurableSailsApplication application, ScopedContainer container) {
+		IShamObjectPersister persister = new MemoryObjectPersister();
+		container.register(IObjectPersister.class, persister);
+		container.register(IShamObjectPersister.class, persister);
+		super.configure(application, container);
 	}
 
 	@Override
@@ -55,13 +66,13 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 		final ControllerResolver controllerResolver = super.installControllerResolver(application, container);
 		ControllerResolver testResolver = new ControllerResolver(container.instance(IAdapterResolver.class)) {
 			@Override
-			public Controller resolve(String controllerIdentifier) {
-				return ExceptionEvent.CONTROLLER_NAME.equals(controllerIdentifier) ? new ErrorController() : controllerResolver.resolve(controllerIdentifier);
+			public void push(IClassResolver<IController> controllerClassResolver) {
+				controllerResolver.push(controllerClassResolver);
 			}
 
 			@Override
-			public void push(IClassResolver<IController> controllerClassResolver) {
-				controllerResolver.push(controllerClassResolver);
+			public Controller resolve(String controllerIdentifier) {
+				return ExceptionEvent.CONTROLLER_NAME.equals(controllerIdentifier) ? new ErrorController() : controllerResolver.resolve(controllerIdentifier);
 			}
 		};
 		container.register(IControllerResolver.class, testResolver);
