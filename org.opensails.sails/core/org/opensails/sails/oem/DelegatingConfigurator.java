@@ -51,11 +51,6 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	public void configure(UrlResolver urlResolverResolver) {
-		delegate.configure(urlResolverResolver);
-	}
-
-	@Override
 	protected void configure(IConfigurableSailsApplication application, CompositeConfiguration compositeConfiguration) {
 		delegate.configure(application, compositeConfiguration);
 	}

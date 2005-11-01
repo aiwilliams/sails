@@ -93,9 +93,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		ControllerResolver controllerResolver = installControllerResolver(application, container);
 		configure(controllerResolver);
 
-		UrlResolver urlResolverResolver = installUrlResolverResolver(application, container);
-		configure(urlResolverResolver);
-
+		installUrlResolverResolver(application, container);
 		installDispatcher(application, container);
 	}
 
@@ -117,8 +115,6 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	}
 
 	public void configure(ResourceResolver resourceResolver) {}
-
-	public void configure(UrlResolver urlResolverResolver) {}
 
 	protected void configure(IConfigurableSailsApplication application, CompositeConfiguration compositeConfiguration) {
 		compositeConfiguration.addConfiguration(new SystemConfiguration());
@@ -255,7 +251,6 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	protected UrlResolver installUrlResolverResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		UrlResolver resolver = container.instance(UrlResolver.class, UrlResolver.class);
-		resolver.push(new ComponentPackage<IUrlResolver>(getBuiltinUrlResolverPackage(), "UrlResolver"));
 		container.register(IUrlResolver.class, resolver);
 		return resolver;
 	}
