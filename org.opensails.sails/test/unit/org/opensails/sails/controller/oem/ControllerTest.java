@@ -33,28 +33,6 @@ public class ControllerTest extends TestCase {
 		assertSame(action, controller.getAction("nonExistantActionsToo"));
 	}
 
-	public void testProcess_ExceptionEvent() throws Exception {
-		controllerImpl = new ShamController();
-		Controller controller = ControllerFixture.defaultAdapters(ShamController.class);
-		ExceptionEvent event = SailsEventFixture.actionException(ShamController.class, "resultAction");
-		ScopedContainer container = new ScopedContainer(ApplicationScope.REQUEST) {
-			@Override
-			@SuppressWarnings("unchecked")
-			public <T> T instance(Class<T> key, Class defaultImplementation) {
-				if (ShamController.class.isAssignableFrom(key)) {
-					requestedControllerType = key;
-					return (T) controllerImpl;
-				}
-				return super.instance(key, defaultImplementation);
-			}
-		};
-		event.setContainer(container);
-		controller.process(event);
-		assertEquals("exception(" + ExceptionEvent.class + ")", controllerImpl.actionInvoked);
-		assertSame(event.getContainer(), controllerImpl.getContainer());
-		assertSame(controllerImpl, event.getContainer().instance(IControllerImpl.class));
-	}
-
 	public void testProcess() throws Exception {
 		controllerImpl = new ShamController();
 		Controller controller = ControllerFixture.defaultAdapters(ShamController.class);
@@ -77,6 +55,49 @@ public class ControllerTest extends TestCase {
 		assertSame(controllerImpl.resultReturned, result);
 		assertSame(event.getContainer(), controllerImpl.getContainer());
 		assertSame(controllerImpl, event.getContainer().instance(IControllerImpl.class));
+	}
+
+	public void testProcess_ExceptionEvent() throws Exception {
+		controllerImpl = new ShamController();
+		Controller controller = ControllerFixture.defaultAdapters(ShamController.class);
+		ExceptionEvent event = SailsEventFixture.actionException(ShamController.class, "resultAction");
+		ScopedContainer container = new ScopedContainer(ApplicationScope.REQUEST) {
+			@Override
+			@SuppressWarnings("unchecked")
+			public <T> T instance(Class<T> key, Class defaultImplementation) {
+				if (ShamController.class.isAssignableFrom(key)) {
+					requestedControllerType = key;
+					return (T) controllerImpl;
+				}
+				return super.instance(key, defaultImplementation);
+			}
+		};
+		event.setContainer(container);
+		controller.process(event);
+		assertEquals("exception(" + ExceptionEvent.class + ")", controllerImpl.actionInvoked);
+		assertSame(event.getContainer(), controllerImpl.getContainer());
+		assertSame(controllerImpl, event.getContainer().instance(IControllerImpl.class));
+	}
+
+	public void testProcess_LayoutAnnotations() throws Exception {
+		controllerImpl = new ShamControllerLayouts();
+		Controller controller = ControllerFixture.defaultAdapters(ShamControllerLayouts.class);
+		GetEvent event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "classLayout");
+		ScopedContainer container = new ScopedContainer(ApplicationScope.REQUEST) {
+			@Override
+			@SuppressWarnings("unchecked")
+			public <T> T instance(Class<T> key, Class defaultImplementation) {
+				if (ShamControllerLayouts.class.isAssignableFrom(key)) {
+					requestedControllerType = key;
+					return (T) controllerImpl;
+				}
+				return super.instance(key, defaultImplementation);
+			}
+		};
+		event.setContainer(container);
+		TemplateActionResult result = (TemplateActionResult) controller.process(event);
+		assertEquals("classLayout()", controllerImpl.actionInvoked);
+		assertEquals("classLayout", result.getLayout());
 	}
 
 	public void testProcess_NoControllerImpl() throws Exception {

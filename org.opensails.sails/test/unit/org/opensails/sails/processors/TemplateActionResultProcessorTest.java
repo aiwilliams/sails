@@ -9,11 +9,9 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.controller.oem.ShamController;
 import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.helper.IHelperResolver;
-import org.opensails.sails.oem.AdapterResolver;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.template.IExceptionHandler;
@@ -37,27 +35,13 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
 		helperResolver = new ShamHelperResolver();
 		actionGet.getContainer().register(IHelperResolver.class, helperResolver);
-		processor.process(new TemplateActionResult(actionGet));
+		TemplateActionResult actionResult = new TemplateActionResult(actionGet);
+		actionResult.layout("layout");
+		processor.process(actionResult);
 		assertTrue(shamTemplateRenderer.renderIExpectCalled);
+		CollectionAssert.containsOnlyOrdered(new String[] { "sham/action", "layout" }, shamTemplateRenderer.templatesRendered);
 		assertTrue(mixins.contains(controllerImpl));
 		assertTrue(mixins.contains(helperResolver));
-	}
-
-	public void testProcess_Layout() throws Exception {
-		ShamTemplateRenderer shamTemplateRenderer = new ShamTemplateRenderer();
-		TemplateActionResultProcessor processor = new TemplateActionResultProcessor(shamTemplateRenderer);
-		GetEvent actionGet = SailsEventFixture.actionGet(ShamLayoutController.class, "action");
-		Controller controller = new Controller(ShamLayoutController.class, new AdapterResolver());
-		ShamLayoutController controllerImpl = new ShamLayoutController();
-		controllerImpl.set(actionGet, controller);
-		actionGet.getContainer().register(IControllerImpl.class, controllerImpl);
-		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
-		helperResolver = new ShamHelperResolver();
-		actionGet.getContainer().register(IHelperResolver.class, helperResolver);
-		TemplateActionResult templateActionResult = new TemplateActionResult(actionGet);
-		templateActionResult.layout("layout");
-		processor.process(templateActionResult);
-		CollectionAssert.containsOnlyOrdered(new String[] { "shamLayout/action", "layout" }, shamTemplateRenderer.templatesRendered);
 	}
 
 	class ShamHelperResolver implements IHelperResolver {

@@ -24,7 +24,9 @@ public class Controller implements IController {
 		this.actions = new HashMap<String, Action>();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.opensails.sails.controller.oem.IControllerMeta#getAction(java.lang.String)
 	 */
 	public Action getAction(String name) {
@@ -36,7 +38,9 @@ public class Controller implements IController {
 		return action;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.opensails.sails.controller.oem.IControllerMeta#getImplementation()
 	 */
 	public Class<? extends IControllerImpl> getImplementation() {

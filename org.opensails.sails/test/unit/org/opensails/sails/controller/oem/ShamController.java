@@ -34,7 +34,7 @@ public class ShamController extends BaseController {
 	public void voidActionContainerResult() {
 		actionInvoked = "voidActionContainerResult()";
 		resultReturned = ActionResultFixture.template();
-		set(resultReturned);
+		setResult(resultReturned);
 	}
 
 	public void voidActionMap(Map map) {

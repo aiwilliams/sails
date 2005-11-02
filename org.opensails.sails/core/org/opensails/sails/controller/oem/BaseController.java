@@ -20,7 +20,7 @@ public class BaseController implements IControllerImpl {
 	}
 
 	public TemplateActionResult renderTemplate(String template) {
-		return set(new TemplateActionResult(event, template));
+		return setResult(new TemplateActionResult(event, template));
 	}
 
 	public void set(ISailsEvent event, IController controller) {
@@ -50,7 +50,7 @@ public class BaseController implements IControllerImpl {
 		return getContainer().instance(ITemplateBinding.class);
 	}
 
-	protected <T extends IActionResult> T set(T result) {
+	protected <T extends IActionResult> T setResult(T result) {
 		getContainer().register(IActionResult.class, result);
 		return result;
 	}
