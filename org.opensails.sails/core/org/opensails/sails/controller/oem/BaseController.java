@@ -26,6 +26,10 @@ public class BaseController implements IControllerImpl {
 		return setResult(new TemplateActionResult(event, template));
 	}
 
+	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
+		return setResult(new RedirectActionResult(event, controller, action));
+	}
+
 	public void set(ISailsEvent event, IController controller) {
 		this.event = event;
 		this.controller = controller;
