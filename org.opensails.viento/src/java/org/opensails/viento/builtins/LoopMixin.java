@@ -34,6 +34,30 @@ public class LoopMixin {
 		return new Loop(target).before(block);
 	}
 	
+	public Loop sans(Object[] target, Map<String, Object> filter) {
+		return new Loop(target).sans(filter);
+	}
+	
+	public Loop sans(Object[] target, Collection<Object> objects) {
+		return new Loop(target).sans(objects);
+	}
+	
+	public Loop sans(Object[] target, Object object) {
+		return new Loop(target).sans(object);
+	}
+	
+	public Loop sans(Collection target, Map<String, Object> filter) {
+		return new Loop(target).sans(filter);
+	}
+	
+	public Loop sans(Collection target, Collection<Object> objects) {
+		return new Loop(target).sans(objects);
+	}
+	
+	public Loop sans(Collection target, Object object) {
+		return new Loop(target).sans(object);
+	}
+	
 	public class Loop {
 		private Object[] target;
 		private String temp;
