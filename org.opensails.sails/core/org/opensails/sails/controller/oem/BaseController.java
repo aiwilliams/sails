@@ -3,22 +3,28 @@ package org.opensails.sails.controller.oem;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.template.ITemplateBinding;
 
-public class BaseController implements IController {
+public class BaseController implements IControllerImpl {
+	protected IController controller;
 	protected ISailsEvent event;
 
 	public ScopedContainer getContainer() {
 		return event.getContainer();
 	}
 
+	public IController getController() {
+		return controller;
+	}
+
 	public TemplateActionResult renderTemplate(String template) {
 		return set(new TemplateActionResult(event, template));
 	}
 
-	public void set(ISailsEvent event) {
+	public void set(ISailsEvent event, IController controller) {
 		this.event = event;
+		this.controller = controller;
 	}
 
 	/**

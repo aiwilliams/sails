@@ -16,7 +16,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.IControllerResolver;
 import org.opensails.sails.controllers.ErrorController;
 import org.opensails.sails.form.IFormElementIdGenerator;
@@ -61,7 +61,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	public void configure(AdapterResolver adapterResolver) {}
 
 	/**
-	 * Subclasses override this to add custom IController class resolution.
+	 * Subclasses override this to add custom IControllerImpl class resolution.
 	 * 
 	 * Called after the ControllerResolver has been installed into the
 	 * application. All {@link org.opensails.sails.util.IClassResolver}s
@@ -218,8 +218,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	 */
 	protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		ControllerResolver resolver = (ControllerResolver) container.instance(IControllerResolver.class, ControllerResolver.class);
-		resolver.push(new ComponentPackage<IController>(getBuiltinControllerPackage(), "Controller"));
-		resolver.push(new ComponentPackage<IController>(getDefaultControllerPackage(), "Controller"));
+		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinControllerPackage(), "Controller"));
+		resolver.push(new ComponentPackage<IControllerImpl>(getDefaultControllerPackage(), "Controller"));
 		return resolver;
 	}
 

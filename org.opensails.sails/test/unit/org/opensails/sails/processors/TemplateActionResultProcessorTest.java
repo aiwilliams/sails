@@ -1,38 +1,63 @@
 package org.opensails.sails.processors;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.controller.oem.ShamController;
 import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.helper.IHelperResolver;
+import org.opensails.sails.oem.AdapterResolver;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.template.IExceptionHandler;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.sails.util.CollectionAssert;
 
+/*
+ * TODO: Refactor these tests. Oh my.
+ */
 public class TemplateActionResultProcessorTest extends TestCase {
 	ShamHelperResolver helperResolver;
 	Set<Object> mixins = new HashSet<Object>();
-	boolean renderIExpectCalled;
 
 	public void testProcess() throws Exception {
-		TemplateActionResultProcessor processor = new TemplateActionResultProcessor(new ShamTemplateRenderer());
+		ShamTemplateRenderer shamTemplateRenderer = new ShamTemplateRenderer();
+		TemplateActionResultProcessor processor = new TemplateActionResultProcessor(shamTemplateRenderer);
 		GetEvent actionGet = SailsEventFixture.actionGet(ShamController.class, "action");
 		ShamController controllerImpl = new ShamController();
-		actionGet.getContainer().register(IController.class, controllerImpl);
+		actionGet.getContainer().register(IControllerImpl.class, controllerImpl);
 		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
 		helperResolver = new ShamHelperResolver();
 		actionGet.getContainer().register(IHelperResolver.class, helperResolver);
 		processor.process(new TemplateActionResult(actionGet));
-		assertTrue(renderIExpectCalled);
+		assertTrue(shamTemplateRenderer.renderIExpectCalled);
 		assertTrue(mixins.contains(controllerImpl));
 		assertTrue(mixins.contains(helperResolver));
+	}
+
+	public void testProcess_Layout() throws Exception {
+		ShamTemplateRenderer shamTemplateRenderer = new ShamTemplateRenderer();
+		TemplateActionResultProcessor processor = new TemplateActionResultProcessor(shamTemplateRenderer);
+		GetEvent actionGet = SailsEventFixture.actionGet(ShamLayoutController.class, "action");
+		Controller controller = new Controller(ShamLayoutController.class, new AdapterResolver());
+		ShamLayoutController controllerImpl = new ShamLayoutController();
+		controllerImpl.set(actionGet, controller);
+		actionGet.getContainer().register(IControllerImpl.class, controllerImpl);
+		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
+		helperResolver = new ShamHelperResolver();
+		actionGet.getContainer().register(IHelperResolver.class, helperResolver);
+		TemplateActionResult templateActionResult = new TemplateActionResult(actionGet);
+		templateActionResult.layout("layout");
+		processor.process(templateActionResult);
+		CollectionAssert.containsOnlyOrdered(new String[] { "shamLayout/action", "layout" }, shamTemplateRenderer.templatesRendered);
 	}
 
 	class ShamHelperResolver implements IHelperResolver {
@@ -54,6 +79,10 @@ public class TemplateActionResultProcessorTest extends TestCase {
 	}
 
 	class ShamTemplateRenderer implements ITemplateRenderer<ShamTemplateBinding> {
+		List<ITemplateBinding> bindingsUsed = new ArrayList<ITemplateBinding>();
+		boolean renderIExpectCalled;
+		List<String> templatesRendered = new ArrayList<String>();
+
 		public ShamTemplateBinding createBinding(ShamTemplateBinding parent) {
 			return null;
 		}
@@ -63,6 +92,8 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		}
 
 		public StringBuilder render(String templateIdentifier, ShamTemplateBinding binding, StringBuilder target) {
+			templatesRendered.add(templateIdentifier);
+			bindingsUsed.add(binding);
 			renderIExpectCalled = true;
 			return target;
 		}

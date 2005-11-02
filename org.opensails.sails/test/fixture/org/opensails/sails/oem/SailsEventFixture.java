@@ -5,7 +5,7 @@ import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.Sails;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.servletapi.ShamHttpServletResponse;
@@ -17,7 +17,7 @@ public class SailsEventFixture {
 		return event;
 	}
 
-	public static ExceptionEvent actionException(Class<? extends IController> originatingController, String originatingAction) {
+	public static ExceptionEvent actionException(Class<? extends IControllerImpl> originatingController, String originatingAction) {
 		return actionException(Sails.controllerName(originatingController), originatingAction);
 	}
 
@@ -30,7 +30,7 @@ public class SailsEventFixture {
 		return actionGet("controller", "action");
 	}
 
-	public static GetEvent actionGet(Class<? extends IController> controller, String action) {
+	public static GetEvent actionGet(Class<? extends IControllerImpl> controller, String action) {
 		return actionGet(Sails.controllerName(controller), action);
 	}
 

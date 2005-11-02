@@ -8,7 +8,7 @@ import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.persist.IIdentifiable;
@@ -19,7 +19,7 @@ import org.opensails.sails.util.ClassInstanceAccessor;
 
 public class SailsTester implements ISailsApplication {
 	protected TestableSailsApplication application;
-	protected Class<? extends IController> workingController;
+	protected Class<? extends IControllerImpl> workingController;
 
 	public SailsTester() {
 		initialize(BaseConfigurator.class);
@@ -47,7 +47,7 @@ public class SailsTester implements ISailsApplication {
 	 * @param controller the controller, which becomes the working controller
 	 * @return the default page for the given controller
 	 */
-	public Page get(Class<? extends IController> controller) {
+	public Page get(Class<? extends IControllerImpl> controller) {
 		this.workingController = controller;
 		return get();
 	}
@@ -60,7 +60,7 @@ public class SailsTester implements ISailsApplication {
 	 * @param parameters
 	 * @return the page for the given controller/action
 	 */
-	public Page get(Class<? extends IController> controller, String action, String... parameters) {
+	public Page get(Class<? extends IControllerImpl> controller, String action, String... parameters) {
 		this.workingController = controller;
 		return get(action, parameters);
 	}
@@ -80,7 +80,7 @@ public class SailsTester implements ISailsApplication {
 	 * Performs an HTTP GET request
 	 * 
 	 * This is the 'fundamental' get method. It will not alter the working
-	 * controller. The other get methods, which take an IController class, are
+	 * controller. The other get methods, which take an IControllerImpl class, are
 	 * what should be used unless there is no controller class for the action
 	 * you would like to get.
 	 * 
@@ -118,7 +118,7 @@ public class SailsTester implements ISailsApplication {
 		getContainer().register(key, instance);
 	}
 
-	public Page post(Class<? extends IController> controller, String action, FormFields formFields, IIdentifiable... actionParameters) {
+	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, IIdentifiable... actionParameters) {
 		TestPostEvent event = application.createPostEvent(Sails.controllerName(controller), action, formFields);
 		ScopedContainer container = event.getContainer();
 		if (actionParameters != null && actionParameters.length > 0) {
@@ -148,7 +148,7 @@ public class SailsTester implements ISailsApplication {
 		return application.post(controller, formFields);
 	}
 
-	public void setWorkingController(Class<? extends IController> controller) {
+	public void setWorkingController(Class<? extends IControllerImpl> controller) {
 		this.workingController = controller;
 	}
 

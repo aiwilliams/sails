@@ -1,6 +1,6 @@
 package org.opensails.sails.tester;
 
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.fixture.controllers.HomeController;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.ControllerResolver;
@@ -12,7 +12,7 @@ import org.opensails.sails.util.ComponentPackage;
 public class UnitTestConfigurator extends BaseConfigurator {
 	@Override
 	public void configure(ControllerResolver controllerResolver) {
-		controllerResolver.push(new ComponentPackage<IController>(ClassHelper.getPackage(HomeController.class), "Controller"));
+		controllerResolver.push(new ComponentPackage<IControllerImpl>(ClassHelper.getPackage(HomeController.class), "Controller"));
 	};
 
 	@Override

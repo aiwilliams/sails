@@ -13,17 +13,17 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 
-public class Action {
+public class Action implements IAction {
 	protected static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
 	protected final Method[] actionMethods;
 	protected final IAdapterResolver adapterResolver;
-	protected final Class<? extends IController> controllerImplementation;
+	protected final Class<? extends IControllerImpl> controllerImplementation;
 	protected final String name;
 
-	public Action(String name, Class<? extends IController> controllerImplementation, IAdapterResolver adapterResolver) {
+	public Action(String name, Class<? extends IControllerImpl> controllerImplementation, IAdapterResolver adapterResolver) {
 		this.name = name;
 		this.controllerImplementation = controllerImplementation;
 		this.adapterResolver = adapterResolver;
@@ -39,7 +39,7 @@ public class Action {
 	 * @param parameters, which will not be adapted
 	 * @return the result
 	 */
-	public IActionResult execute(ISailsEvent event, IController implementationInstance, Object[] parameters) {
+	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, Object[] parameters) {
 		if (implementationInstance == null) {
 			if (controllerImplementation != null) throw new NullPointerException("This action must be executed against a non null implementation of "
 					+ controllerImplementation);
@@ -63,7 +63,7 @@ public class Action {
 	 * 
 	 * @return the result
 	 */
-	public IActionResult execute(ISailsEvent event, IController implementationInstance, String[] unadaptedParameters) {
+	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, String[] unadaptedParameters) {
 		if (implementationInstance == null) {
 			if (controllerImplementation != null) throw new NullPointerException("This action must be executed against a non null implementation of "
 					+ controllerImplementation);
@@ -79,6 +79,9 @@ public class Action {
 		return executeMethod(event, implementationInstance, actionMethod, actionArguments);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.opensails.sails.controller.oem.IAction#getParameterTypes(int)
+	 */
 	public Class<?>[] getParameterTypes(int numberOfArguments) {
 		return methodHavingArgCount(numberOfArguments).getParameterTypes();
 	}
@@ -98,11 +101,11 @@ public class Action {
 		return adaptedParameters;
 	}
 
-	protected IActionResult defaultActionResult(ISailsEvent event, IController implementationInstance) {
+	protected IActionResult defaultActionResult(ISailsEvent event, IControllerImpl implementationInstance) {
 		return new TemplateActionResult(event);
 	}
 
-	protected IActionResult executeMethod(ISailsEvent event, IController implementationInstance, Method actionMethod, Object[] actionArguments) {
+	protected IActionResult executeMethod(ISailsEvent event, IControllerImpl implementationInstance, Method actionMethod, Object[] actionArguments) {
 		try {
 			Object result = actionMethod.invoke(implementationInstance, actionArguments);
 			if (result != null && result instanceof IActionResult) return (IActionResult) result;

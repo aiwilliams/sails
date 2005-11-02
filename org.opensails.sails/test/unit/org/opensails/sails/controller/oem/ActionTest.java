@@ -101,7 +101,7 @@ public class ActionTest extends TestCase {
 	}
 
 	public void testGetParameterTypes() throws Exception {
-		Action action = ActionFixture.defaultAdapters("voidActionMultiple", ShamController.class);
+		IAction action = ActionFixture.defaultAdapters("voidActionMultiple", ShamController.class);
 		assertTrue(Arrays.equals(actionMethodOneParam.getParameterTypes(), action.getParameterTypes(1)));
 		assertEquals(0, action.getParameterTypes(0).length);
 	}

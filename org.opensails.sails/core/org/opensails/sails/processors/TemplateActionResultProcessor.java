@@ -1,6 +1,8 @@
 package org.opensails.sails.processors;
 
+import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IActionResultProcessor;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.helper.IHelperResolver;
 import org.opensails.sails.template.ITemplateBinding;
@@ -16,11 +18,21 @@ public class TemplateActionResultProcessor implements IActionResultProcessor<Tem
 	@SuppressWarnings("unchecked")
 	public void process(TemplateActionResult result) {
 		ITemplateBinding binding = result.getBinding();
-		binding.mixin(result.getController());
-		IHelperResolver helperResolver = result.getContainer().instance(IHelperResolver.class);
+
+		IControllerImpl controllerImpl = result.getController();
+		binding.mixin(controllerImpl);
+
+		ScopedContainer container = result.getContainer();
+		IHelperResolver helperResolver = container.instance(IHelperResolver.class);
 		binding.mixin(helperResolver);
 
-		StringBuilder output = new StringBuilder();
-		result.write(renderer.render(result.getIdentifier(), binding, output).toString());
+		StringBuilder content = new StringBuilder();
+		renderer.render(result.getIdentifier(), binding, content);
+		if (result.hasLayout()) {
+			binding.put("contentForLayout", content);
+			content = new StringBuilder();
+			renderer.render(result.getLayout(), binding, content);
+		}
+		result.write(content.toString());
 	}
 }

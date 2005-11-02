@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.helper.IHelperMethod;
 import org.opensails.sails.helper.IHelperResolver;
 import org.opensails.sails.util.IClassResolver;
 
 public class HelperResolver implements IHelperResolver {
-	protected IController controller;
+	protected IControllerImpl controller;
 	protected final ISailsEvent event;
 	protected final List<IClassResolver> resolvers;
 

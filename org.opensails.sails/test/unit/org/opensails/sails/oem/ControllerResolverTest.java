@@ -6,7 +6,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.controller.oem.ShamController;
 import org.opensails.sails.util.ClassResolverAdapter;
@@ -26,9 +26,9 @@ public class ControllerResolverTest extends TestCase {
         });
 
         resolver = new ControllerResolver(new AdapterResolver());
-        resolver.push(new ClassResolverAdapter<IController>() {
+        resolver.push(new ClassResolverAdapter<IControllerImpl>() {
             @Override
-            public Class<? extends IController> resolve(String key) {
+            public Class<? extends IControllerImpl> resolve(String key) {
                 resolutionCount++;
                 return ShamController.class;
             }
@@ -45,9 +45,9 @@ public class ControllerResolverTest extends TestCase {
 
     public void testResolve_HandlesNull() throws Exception {
         ControllerResolver resolver = new ControllerResolver(new AdapterResolver());
-        resolver.push(new ClassResolverAdapter<IController>() {
+        resolver.push(new ClassResolverAdapter<IControllerImpl>() {
             @Override
-            public Class<? extends IController> resolve(String key) {
+            public Class<? extends IControllerImpl> resolve(String key) {
                 return null;
             }
         });

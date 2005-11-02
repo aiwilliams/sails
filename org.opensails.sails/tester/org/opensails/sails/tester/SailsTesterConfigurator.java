@@ -7,7 +7,7 @@ import org.opensails.sails.IActionResultProcessorResolver;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.controller.oem.IControllerResolver;
 import org.opensails.sails.oem.ActionResultProcessorResolver;
@@ -58,7 +58,7 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 		final ControllerResolver controllerResolver = super.installControllerResolver(application, container);
 		ControllerResolver testResolver = new ControllerResolver(container.instance(IAdapterResolver.class)) {
 			@Override
-			public void push(IClassResolver<IController> controllerClassResolver) {
+			public void push(IClassResolver<IControllerImpl> controllerClassResolver) {
 				controllerResolver.push(controllerClassResolver);
 			}
 

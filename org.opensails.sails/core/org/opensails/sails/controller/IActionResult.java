@@ -14,7 +14,7 @@ public interface IActionResult {
 	 * @return the controller implementation instance, if there was one - may be
 	 *         null
 	 */
-	IController getController();
+	IControllerImpl getController();
 
 	/**
 	 * @return the event this is the result of processing

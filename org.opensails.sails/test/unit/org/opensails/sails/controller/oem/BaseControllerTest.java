@@ -12,17 +12,17 @@ public class BaseControllerTest extends TestCase {
 		formFields.setValue("my.field", "myValue");
 
 		BaseController controller = new BaseController();
-		controller.set(SailsEventFixture.actionPost(formFields));
+		controller.set(SailsEventFixture.actionPost(formFields), null);
 		assertEquals("myValue", controller.field("my.field"));
 
-		controller.set(SailsEventFixture.actionGet());
+		controller.set(SailsEventFixture.actionGet(), null);
 		assertNull(controller.field("whatever"));
 	}
 
 	public void testRenderTemplate() throws Exception {
 		BaseController controller = new BaseController();
 		GetEvent actionGet = SailsEventFixture.actionGet();
-		controller.set(actionGet);
+		controller.set(actionGet, null);
 		TemplateActionResult result = controller.renderTemplate("justTheActionName");
 		assertEquals(String.format("%s/%s", actionGet.getControllerName(), "justTheActionName"), result.getIdentifier());
 	}

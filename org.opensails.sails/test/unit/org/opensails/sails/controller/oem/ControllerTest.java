@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.oem.ExceptionEvent;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
@@ -23,7 +23,7 @@ public class ControllerTest extends TestCase {
 	 */
 	public void testGetAction() throws Exception {
 		Controller controller = ControllerFixture.defaultAdapters(ShamController.class);
-		Action action = controller.getAction("voidActionNoParams");
+		IAction action = controller.getAction("voidActionNoParams");
 		assertNotNull(action);
 		assertSame(action, controller.getAction("voidActionNoParams"));
 
@@ -51,7 +51,7 @@ public class ControllerTest extends TestCase {
 		controller.process(event);
 		assertEquals("exception(" + ExceptionEvent.class + ")", controllerImpl.actionInvoked);
 		assertSame(event.getContainer(), controllerImpl.getContainer());
-		assertSame(controllerImpl, event.getContainer().instance(IController.class));
+		assertSame(controllerImpl, event.getContainer().instance(IControllerImpl.class));
 	}
 
 	public void testProcess() throws Exception {
@@ -75,13 +75,13 @@ public class ControllerTest extends TestCase {
 		assertEquals("resultAction()", controllerImpl.actionInvoked);
 		assertSame(controllerImpl.resultReturned, result);
 		assertSame(event.getContainer(), controllerImpl.getContainer());
-		assertSame(controllerImpl, event.getContainer().instance(IController.class));
+		assertSame(controllerImpl, event.getContainer().instance(IControllerImpl.class));
 	}
 
 	public void testProcess_NoControllerImpl() throws Exception {
 		Controller controller = ControllerFixture.defaultAdapters();
 		GetEvent event = SailsEventFixture.actionGet();
 		controller.process(event);
-		assertFalse(event.getContainer().contains(IController.class));
+		assertFalse(event.getContainer().contains(IControllerImpl.class));
 	}
 }
