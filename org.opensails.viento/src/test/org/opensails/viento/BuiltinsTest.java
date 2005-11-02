@@ -1,7 +1,6 @@
 package org.opensails.viento;
 
 import java.util.Arrays;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -63,11 +62,11 @@ public class BuiltinsTest extends TestCase {
         verifyRender("$![[asdf$notHere]].?[[not here]]", "not here");
 
         binding.setExceptionHandler(new ExceptionHandler() {
-			public Object resolutionFailed(String methodName, Object[] args, List<Throwable> failedAttempts) {
+			public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args) {
 				return "here";
 			}
 
-			public Object resolutionFailed(Object target, String methodName, Object[] args, List<Throwable> failedAttempts) {
+			public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
 				return "here";
 			}
         });

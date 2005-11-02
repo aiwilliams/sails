@@ -1,18 +1,15 @@
 package org.opensails.viento;
 
-import java.util.List;
 
 public class ResolutionFailedException extends RuntimeException {
 	private final Object[] args;
 	private final String methodName;
 	private final Object target;
-	private final List<Throwable> failedAttempts;
 
-	public ResolutionFailedException(Object target, String methodName, Object[] args, List<Throwable> failedAttempts) {
+	public ResolutionFailedException(Object target, String methodName, Object[] args) {
 		this.target = target;
 		this.methodName = methodName;
 		this.args = args;
-		this.failedAttempts = failedAttempts;
 	}
 
 	@Override
@@ -37,13 +34,7 @@ public class ResolutionFailedException extends RuntimeException {
 			buffer.append(target.getClass());
 			buffer.append(">");
 		}
-		
-		buffer.append("\nFailed attempts:");
-		for (Throwable throwable : failedAttempts) {
-			buffer.append("\n");
-			buffer.append(throwable);
-		}
-		
+
 		return buffer.toString();
 	}
 }

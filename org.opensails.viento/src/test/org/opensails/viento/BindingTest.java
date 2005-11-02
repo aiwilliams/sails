@@ -1,8 +1,6 @@
 package org.opensails.viento;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -77,11 +75,11 @@ public class BindingTest extends TestCase {
 	
 	public void testParent() throws Exception {
 		binding.setExceptionHandler(new ExceptionHandler() {
-			public Object resolutionFailed(String methodName, Object[] args, List<Throwable> failedAttempts) {
+			public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args) {
 				return "here";
 			}
 
-			public Object resolutionFailed(Object target, String methodName, Object[] args, List<Throwable> failedAttempts) {
+			public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
 				return "here";
 			}
 		});
@@ -93,44 +91,6 @@ public class BindingTest extends TestCase {
 		assertEquals("overrides", child.call("one"));
 		
 		assertEquals("here", child.call("notHere"));
-	}
-	
-	public void testFailedAttempts() throws Exception {
-		final List<Throwable> failedAttempts = new ArrayList<Throwable>();
-		binding.setExceptionHandler(new ExceptionHandler() {
-			public Object resolutionFailed(String methodName, Object[] args, List<Throwable> failedAttempts2) {
-				failedAttempts.addAll(failedAttempts2);
-				return null;
-			}
-
-			public Object resolutionFailed(Object target, String methodName, Object[] args, List<Throwable> failedAttempts2) {
-				failedAttempts.addAll(failedAttempts2);
-				return null;
-			}
-		});
-		
-		binding.call(target, "exception");
-		assertEquals(1, failedAttempts.size());
-		assertEquals("here", failedAttempts.get(0).getMessage());
-
-		failedAttempts.clear();
-		binding.mixin(ShamObject.class, target);
-		binding.call(target, "exception");
-		assertEquals(2, failedAttempts.size());
-		
-		failedAttempts.clear();
-		binding.mixin(target);
-		binding.call("exception");
-		assertEquals("Becuase you have a type mixin on the top level mixin", 2, failedAttempts.size());
-		
-		failedAttempts.clear();
-		Binding child = new Binding(binding);
-		child.call(target, "exception");
-		assertEquals(2, failedAttempts.size());
-
-		failedAttempts.clear();
-		child.call("exception");
-		assertEquals(2, failedAttempts.size());
 	}
 	
 	public void testMethodMissing() throws Exception {

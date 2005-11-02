@@ -19,7 +19,7 @@ public class PerformanceTest extends TestCase {
 		Date startTime = new Date();
 		template.render(binding);
 		Date endTime = new Date();
-		fail("Elapsed time: " + (endTime.getTime() - startTime.getTime()) + "ms");
+//		fail("Elapsed time: " + (endTime.getTime() - startTime.getTime()) + "ms");
 	}
 
 }

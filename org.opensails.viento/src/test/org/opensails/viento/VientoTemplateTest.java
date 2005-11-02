@@ -134,11 +134,11 @@ public class VientoTemplateTest extends TestCase {
 	
 	public void testFailure() throws Exception {
 		binding.setExceptionHandler(new ExceptionHandler() {
-			public Object resolutionFailed(String methodName, Object[] args, List<Throwable> failedAttempts) {
+			public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args) {
 				return "failed";
 			}
 
-			public Object resolutionFailed(Object target, String methodName, Object[] args, List<Throwable> failedAttempts) {
+			public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
 				return "failed";
 			}
 		});
