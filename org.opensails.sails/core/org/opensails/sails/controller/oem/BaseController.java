@@ -1,10 +1,13 @@
 package org.opensails.sails.controller.oem;
 
+import javax.servlet.http.HttpSession;
+
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.helper.oem.UrlforHelper;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class BaseController implements IControllerImpl {
@@ -50,8 +53,22 @@ public class BaseController implements IControllerImpl {
 		return getContainer().instance(ITemplateBinding.class);
 	}
 
+	protected Object getSessionAttribute(String key) {
+		HttpSession session = event.getSession(false);
+		if (session != null) return session.getAttribute(key);
+		return null;
+	}
+
 	protected <T extends IActionResult> T setResult(T result) {
 		getContainer().register(IActionResult.class, result);
 		return result;
+	}
+
+	protected void setSessionAttribute(String key, Object value) {
+		event.getSession(true).setAttribute(key, value);
+	}
+
+	protected UrlforHelper urlfor() {
+		return getContainer().instance(UrlforHelper.class);
 	}
 }

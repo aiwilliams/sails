@@ -80,9 +80,9 @@ public class SailsTester implements ISailsApplication {
 	 * Performs an HTTP GET request
 	 * 
 	 * This is the 'fundamental' get method. It will not alter the working
-	 * controller. The other get methods, which take an IControllerImpl class, are
-	 * what should be used unless there is no controller class for the action
-	 * you would like to get.
+	 * controller. The other get methods, which take an IControllerImpl class,
+	 * are what should be used unless there is no controller class for the
+	 * action you would like to get.
 	 * 
 	 * @param controller the controller name
 	 * @param action
@@ -108,6 +108,10 @@ public class SailsTester implements ISailsApplication {
 
 	public String getName() {
 		return application.getName();
+	}
+
+	public TestSession getSession() {
+		return new TestSession(application);
 	}
 
 	public <T> void inject(Class<? extends T> key, Class<? extends T> implementation) {

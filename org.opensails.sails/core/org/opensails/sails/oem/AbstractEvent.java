@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.opensails.rigging.ScopedContainer;
@@ -85,6 +86,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
 	public HttpServletResponse getResponse() {
 		return response;
+	}
+
+	public HttpSession getSession(boolean create) {
+		return req.getSession(create);
 	}
 
 	/**

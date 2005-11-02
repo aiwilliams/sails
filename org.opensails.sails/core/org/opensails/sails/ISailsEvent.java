@@ -2,6 +2,7 @@ package org.opensails.sails;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
 import org.opensails.rigging.ScopedContainer;
@@ -72,6 +73,8 @@ public interface ISailsEvent {
 	HttpServletRequest getRequest();
 
 	HttpServletResponse getResponse();
+
+	HttpSession getSession(boolean create);
 
 	/**
 	 * To provide for url path extension in such a way as to not limit the
