@@ -15,40 +15,44 @@ import org.opensails.sails.SailsException;
  * 
  */
 public class ClassHelper {
-    public static String getName(Class clazz) {
-        return ClassUtils.getShortClassName(clazz);
-    }
+	public static String getName(Class clazz) {
+		return ClassUtils.getShortClassName(clazz);
+	}
 
-    public static String getPackage(Class clazz) {
-        return ClassUtils.getPackageName(clazz);
-    }
+	public static String getPackage(Class clazz) {
+		return ClassUtils.getPackageName(clazz);
+	}
 
-    public static String getPackage(Object instance) {
-        return getPackage(instance.getClass());
-    }
+	public static String getPackage(Object instance) {
+		return getPackage(instance.getClass());
+	}
 
-    public static <T> T instantiate(Class<? extends T> clazz) {
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new SailsException("Could not instantiate. Does it have a default constructor?", e);
-        } catch (IllegalAccessException e) {
-            throw new SailsException("Could not instantiate. Know anything about access?", e);
-        }
-    }
+	public static String getPackageDirectory(Class<?> clazz) {
+		return getPackage(clazz).replaceAll("\\.", "/");
+	}
 
-    public static String lowerCamelName(Class clazz) {
-        String className = getName(clazz);
-        char lower = Character.toLowerCase(className.charAt(0));
-        return lower + className.substring(1);
-    }
+	public static <T> T instantiate(Class<? extends T> clazz) {
+		try {
+			return clazz.newInstance();
+		} catch (InstantiationException e) {
+			throw new SailsException("Could not instantiate. Does it have a default constructor?", e);
+		} catch (IllegalAccessException e) {
+			throw new SailsException("Could not instantiate. Know anything about access?", e);
+		}
+	}
 
-    public static String lowerCamelName(Object instance) {
-        return lowerCamelName(instance.getClass());
-    }
+	public static String lowerCamelName(Class clazz) {
+		String className = getName(clazz);
+		char lower = Character.toLowerCase(className.charAt(0));
+		return lower + className.substring(1);
+	}
 
-    public static String upperCamel(String string) {
-        char upper = Character.toUpperCase(string.charAt(0));
-        return upper + string.substring(1);
-    }
+	public static String lowerCamelName(Object instance) {
+		return lowerCamelName(instance.getClass());
+	}
+
+	public static String upperCamel(String string) {
+		char upper = Character.toUpperCase(string.charAt(0));
+		return upper + string.substring(1);
+	}
 }
