@@ -6,9 +6,13 @@ public class ObjectMethods {
 
 	public CallableMethod find(TargetedMethodKey key) {
 		Method method = findAppropriateMethod(key.targetClass, key.methodName, key.argClasses);
-		if (method == null)
-			return null;
-		return new ObjectMethod(method);
+		if (method != null)
+			return new ObjectMethod(method);
+		
+		method = findMethodMissing(key.targetClass);
+		if (method != null)
+			return new MethodMissingMethod(method, key.methodName);
+		return null;
 	}
 	
 	protected Method findAppropriateMethod(Class<?> type, String methodName, Class[] args) {
@@ -20,6 +24,14 @@ public class ObjectMethods {
 		if (type.getSuperclass() != null && theMethod == null)
 			return findAppropriateMethod(type.getSuperclass(), methodName, args);
 		return theMethod;
+	}
+	
+	protected Method findMethodMissing(Class<?> type) {
+		try {
+			return type.getDeclaredMethod("methodMissing", new Class[] { String.class, Object[].class });
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	protected boolean nameMatch(String methodName, Method method) {
@@ -48,5 +60,19 @@ public class ObjectMethods {
 				|| (type == byte.class && arg == Byte.class) || (type == short.class && arg == Short.class)
 				|| (type == int.class && arg == Integer.class) || (type == long.class && arg == Long.class)
 				|| (type == float.class && arg == Float.class) || (type == double.class && arg == Double.class));
+	}
+	
+	public class MethodMissingMethod extends ObjectMethod {
+		protected final String methodName;
+
+		public MethodMissingMethod(Method method, String methodName) {
+			super(method);
+			this.methodName = methodName;
+		}
+		
+		@Override
+		public Object call(Object target, Object[] args) {
+			return super.call(target, new Object[] { methodName, args });
+		}
 	}
 }

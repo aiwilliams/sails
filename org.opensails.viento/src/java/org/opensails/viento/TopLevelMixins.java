@@ -12,6 +12,9 @@ public class TopLevelMixins extends ObjectMethods {
 			Method method = findAppropriateMethod(mixin.getClass(), key.methodName, key.argClasses);
 			if (method != null)
 				return new TopLevelMixin(method, mixin);
+			method = findMethodMissing(mixin.getClass());
+			if (method != null)
+				return new TopLevelMethodMissing(method, key.methodName, mixin);
 		}
 		return null;
 	}
@@ -30,6 +33,21 @@ public class TopLevelMixins extends ObjectMethods {
 
 		public Object call(Object target, Object[] args) {
 			return super.call(mixin, args);
+		}
+	}
+	
+	
+	public class TopLevelMethodMissing extends MethodMissingMethod {
+		protected final Object mixin;
+
+		public TopLevelMethodMissing(Method method, String methodName, Object mixin) {
+			super(method, methodName);
+			this.mixin = mixin;
+		}
+		
+		@Override
+		public Object call(Object target, Object[] args) {
+			return super.call(mixin, new Object[] { methodName, args });
 		}
 	}
 }
