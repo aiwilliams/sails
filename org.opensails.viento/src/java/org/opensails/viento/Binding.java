@@ -1,6 +1,8 @@
 package org.opensails.viento;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.opensails.viento.builtins.EscapeMixin;
 import org.opensails.viento.builtins.IfMixin;
@@ -19,6 +21,7 @@ public class Binding {
 	protected ObjectMethods methods;
 	protected MethodMissingResolver methodMissing;
 	protected Statics statics;
+	protected List<DynamicResolver> dynamicResolvers;
 
 	public Binding() {
 		this(null);
@@ -63,6 +66,11 @@ public class Binding {
 		method = topLevelMixins.find(key);
 		if (method != null)
 			return method;
+		for (DynamicResolver dynamicResolver : dynamicResolvers) {
+			method = dynamicResolver.find(key);
+			if (method != null)
+				return method;
+		}
 		if (parent != null)
 			return parent.findMethod(key);
 		return null;
@@ -132,6 +140,10 @@ public class Binding {
 	public void put(String key, Object object) {
 		statics.put(key, object);
 	}
+	
+	public void add(DynamicResolver dynamicResolver) {
+		dynamicResolvers.add(dynamicResolver);
+	}
 
 	public void setExceptionHandler(ExceptionHandler exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
@@ -139,6 +151,7 @@ public class Binding {
 
 	protected void populateDefaults() {
 //		cache = new Cache();
+		dynamicResolvers = new ArrayList<DynamicResolver>();
 		topLevelMixins = new TopLevelMixins();
 		methods = new ObjectMethods();
 		methodMissing = new MethodMissingResolver();

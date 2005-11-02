@@ -18,16 +18,4 @@ public class Statics {
 	public void put(String key, Object object) {
 		map.put(key, object);
 	}
-
-	public class ObjectReference implements CallableMethod {
-		private final Object object;
-
-		public ObjectReference(Object object) {
-			this.object = object;
-		}
-
-		public Object call(Object target, Object[] args) {
-			return object;
-		}
-	}
 }

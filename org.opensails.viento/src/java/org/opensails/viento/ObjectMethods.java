@@ -49,23 +49,4 @@ public class ObjectMethods {
 				|| (type == int.class && arg == Integer.class) || (type == long.class && arg == Long.class)
 				|| (type == float.class && arg == Float.class) || (type == double.class && arg == Double.class));
 	}
-
-
-	public class ObjectMethod implements CallableMethod {
-		private final Method method;
-
-		public ObjectMethod(Method method) {
-			this.method = method;
-		}
-
-		public Object call(Object target, Object[] args) {
-			try {
-				Object result = method.invoke(target, args);
-				if (method.getReturnType() == Void.TYPE) return "";
-				return result;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
 }
