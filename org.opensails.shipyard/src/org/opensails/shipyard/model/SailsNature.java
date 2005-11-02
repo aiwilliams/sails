@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
-import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.shipyard.ShipyardPlugin;
 import org.opensails.shipyard.StringHelper;
 import org.osgi.service.prefs.BackingStoreException;
@@ -165,7 +165,7 @@ public class SailsNature extends TreeItem implements IProjectNature {
      *         project's classpath.
      */
     public IType getControllerType() {
-        return getType(IController.class.getName());
+        return getType(IControllerImpl.class.getName());
     }
 
     protected IType getType(String fullyQualifiedName) {
@@ -282,7 +282,7 @@ public class SailsNature extends TreeItem implements IProjectNature {
     protected String getControllerBody(String name) {
         return "package " + (getControllersPackage().getElementName()) + ";\r\n\r\nimport "
                 + (getControllerType().getFullyQualifiedName()) + ";\r\n\r\npublic class " + (StringHelper.capitalized(name))
-                + " implements IController {\r\n}";
+                + " implements IControllerImpl {\r\n}";
     }
 
     public Controller getController(String controllerName) {
