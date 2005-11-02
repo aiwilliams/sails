@@ -3,6 +3,7 @@ package org.opensails.sails.controller.oem;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.template.ITemplateBinding;
 

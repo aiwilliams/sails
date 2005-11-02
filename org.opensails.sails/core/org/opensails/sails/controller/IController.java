@@ -1,12 +1,11 @@
-package org.opensails.sails.controller.oem;
+package org.opensails.sails.controller;
 
-import org.opensails.sails.controller.IControllerImpl;
 
 /**
  * A controller descriptor, if you will.
  * 
  * You will see that there are two things,
- * {@link org.opensails.sails.controller.oem.IController} and
+ * {@link org.opensails.sails.controller.IController} and
  * {@link IControllerImpl}. The first is the controller 'meta class'. I think
  * there may be a better name for it. It is what the framework interacts with,
  * and is used throughout to do cool things. The second represents the interface

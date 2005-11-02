@@ -2,6 +2,7 @@ package org.opensails.sails.controller.oem;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.oem.AdapterResolver;

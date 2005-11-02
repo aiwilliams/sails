@@ -1,4 +1,4 @@
-package org.opensails.sails.controller.oem;
+package org.opensails.sails.controller;
 
 /**
  * An action descriptor, if you will.

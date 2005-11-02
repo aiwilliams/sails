@@ -12,6 +12,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 

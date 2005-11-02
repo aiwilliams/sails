@@ -7,6 +7,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.oem.ExceptionEvent;
 import org.opensails.sails.oem.GetEvent;

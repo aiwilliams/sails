@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
+import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.oem.ExceptionEvent;

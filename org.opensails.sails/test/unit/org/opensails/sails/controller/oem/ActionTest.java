@@ -6,6 +6,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.util.CollectionAssert;
 
