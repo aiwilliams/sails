@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.opensails.dock.controllers.FormController;
 import org.opensails.dock.model.User;
 import org.opensails.sails.form.FormFields;
+import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.SailsTester;
 import org.opensails.sails.tester.form.Form;
@@ -34,5 +35,14 @@ public class FormTest extends TestCase {
 		Page page = tester.post(FormController.class, "basicPost", formFields, user);
 		page.getForm().validated();
 		assertEquals("James", user.getFirstName());
+	}
+
+	public void testMultiButton() throws Exception {
+		SailsTester tester = new DockTester();
+
+		FormFields formFields = new FormFields();
+		formFields.add(new Submit("Button One").action("actionOne"));
+		Page page = tester.post(FormController.class, formFields);
+		page.assertContains("actionOne() invoked");
 	}
 }
