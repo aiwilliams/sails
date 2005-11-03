@@ -13,15 +13,26 @@ import org.opensails.sails.form.HtmlForm;
  * Note that there is no transform for SubmitLink, as that requires the form id.
  */
 public class Submit extends InputElement<Submit> {
-	// TODO: Need to support the action submit stuff
 	public static final String ACTION_PREFIX = HtmlForm.META_PREFIX + "action.";
 	public static final String SUBMIT = "submit";
+
+	protected String action;
 
 	/**
 	 * @param name
 	 */
 	public Submit(String name) {
 		super(Submit.SUBMIT, name);
+	}
+
+	public Submit action(String action) {
+		this.action = action;
+		return this;
+	}
+
+	@Override
+	public String getName() {
+		return action == null ? super.getName() : ACTION_PREFIX + action;
 	}
 
 	/**

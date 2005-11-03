@@ -10,32 +10,36 @@ package org.opensails.sails.form.html;
  */
 @SuppressWarnings("unchecked")
 public abstract class ValueElement<T extends ValueElement> extends FormElement<T> {
-    protected String value;
+	protected String value;
 
-    /**
-     * @param elementName
-     * @param name
-     */
-    public ValueElement(String elementName, String name) {
-        super(elementName, name);
-    }
+	/**
+	 * @param elementName
+	 * @param name
+	 */
+	public ValueElement(String elementName, String name) {
+		super(elementName, name);
+	}
 
-    /**
-     * @param elementName
-     * @param name
-     * @param id
-     */
-    public ValueElement(String elementName, String name, String id) {
-        super(elementName, name, id);
-    }
+	/**
+	 * @param elementName
+	 * @param name
+	 * @param id
+	 */
+	public ValueElement(String elementName, String name, String id) {
+		super(elementName, name, id);
+	}
 
-    public T value(boolean value) {
-        this.value = Boolean.toString(value);
-        return (T) this;
-    }
+	public String getValue() {
+		return value;
+	}
+
+	public T value(boolean value) {
+		this.value = Boolean.toString(value);
+		return (T) this;
+	}
 
 	public T value(String value) {
-        this.value = value;
-        return (T) this;
-    }
+		this.value = value;
+		return (T) this;
+	}
 }

@@ -3,12 +3,16 @@ package org.opensails.sails.oem;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.ArrayUtils;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
@@ -88,10 +92,6 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return response;
 	}
 
-	public HttpSession getSession(boolean create) {
-		return req.getSession(create);
-	}
-
 	/**
 	 * @return the OutputStream of the response
 	 * @throws IllegalStateException if this gets called AFTER
@@ -121,6 +121,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 			}
 		}
 		return responseWriter;
+	}
+
+	public HttpSession getSession(boolean create) {
+		return req.getSession(create);
 	}
 
 	public IUrl resolve(UrlType urlType, String urlFragment) {
@@ -173,6 +177,20 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected void containerSet() {
 		container.register(ISailsEvent.class, this);
 		container.register(this);
+	}
+
+	/**
+	 * @param prefix
+	 * @return all field names with prefix, minus the prefix itself
+	 */
+	@SuppressWarnings("unchecked")
+	protected String[] getFieldNamesPrefixed(String prefix) {
+		Map<String, Object> parameterMap = req.getParameterMap();
+		if (parameterMap.isEmpty()) return ArrayUtils.EMPTY_STRING_ARRAY;
+		List<String> fieldNames = new ArrayList<String>(5);
+		for (String key : parameterMap.keySet())
+			if (key.startsWith(prefix)) fieldNames.add(key.substring(prefix.length()));
+		return (String[]) fieldNames.toArray(new String[fieldNames.size()]);
 	}
 
 	protected void initialize() {

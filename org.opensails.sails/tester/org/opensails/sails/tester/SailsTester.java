@@ -122,6 +122,10 @@ public class SailsTester implements ISailsApplication {
 		getContainer().register(key, instance);
 	}
 
+	public Page post(Class<? extends IControllerImpl> controller, FormFields formFields) {
+		return application.post(Sails.controllerName(controller), formFields);
+	}
+
 	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, IIdentifiable... actionParameters) {
 		TestPostEvent event = application.createPostEvent(Sails.controllerName(controller), action, formFields);
 		ScopedContainer container = event.getContainer();

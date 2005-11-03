@@ -32,7 +32,7 @@ public abstract class FormElement<T extends FormElement> extends AbstractHtmlEle
 	
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
-		generator.nameAttribute(name);
+		generator.nameAttribute(getName());
 		super.writeAttributes(generator);
 	}
 }

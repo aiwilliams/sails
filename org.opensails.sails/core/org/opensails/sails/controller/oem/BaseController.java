@@ -22,14 +22,6 @@ public class BaseController implements IControllerImpl {
 		return controller;
 	}
 
-	public TemplateActionResult renderTemplate(String template) {
-		return setResult(new TemplateActionResult(event, template));
-	}
-
-	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
-		return setResult(new RedirectActionResult(event, controller, action));
-	}
-
 	public void set(ISailsEvent event, IController controller) {
 		this.event = event;
 		this.controller = controller;
@@ -61,6 +53,32 @@ public class BaseController implements IControllerImpl {
 		HttpSession session = event.getSession(false);
 		if (session != null) return session.getAttribute(key);
 		return null;
+	}
+
+	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
+		return setResult(new RedirectActionResult(event, controller, action));
+	}
+
+	/**
+	 * Renders content to the client. A template will not be rendered, of
+	 * course.
+	 * 
+	 * @param content
+	 * @return the StringActionResult with content
+	 */
+	protected StringActionResult renderString(String content) {
+		return setResult(new StringActionResult(event, content));
+	}
+
+	/**
+	 * Renders the named template. Uses the Controller of the currentEvent in
+	 * the templateIdentifier.
+	 * 
+	 * @param template
+	 * @return the TemplateActionResult for template
+	 */
+	protected TemplateActionResult renderTemplate(String template) {
+		return setResult(new TemplateActionResult(event, template));
 	}
 
 	protected <T extends IActionResult> T setResult(T result) {

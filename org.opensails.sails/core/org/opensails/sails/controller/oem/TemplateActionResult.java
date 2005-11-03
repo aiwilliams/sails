@@ -1,41 +1,25 @@
 package org.opensails.sails.controller.oem;
 
-import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.template.ITemplateBinding;
 
-public class TemplateActionResult implements IActionResult {
-	protected final ISailsEvent event;
+public class TemplateActionResult extends AbstractActionResult {
 	protected String identifier;
 	protected String layoutIdentifier;
 
 	public TemplateActionResult(ISailsEvent event) {
-		this.event = event;
+		super(event);
 		initialize(event, event.getActionName());
 	}
 
 	public TemplateActionResult(ISailsEvent event, String identifier) {
-		this.event = event;
+		super(event);
 		initialize(event, identifier);
 	}
 
 	public ITemplateBinding getBinding() {
 		return getContainer().instance(ITemplateBinding.class);
-	}
-
-	public ScopedContainer getContainer() {
-		return getEvent().getContainer();
-	}
-
-	public IControllerImpl getController() {
-		return getEvent().getContainer().instance(IControllerImpl.class);
-	}
-
-	public ISailsEvent getEvent() {
-		return event;
 	}
 
 	public String getIdentifier() {

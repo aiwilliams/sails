@@ -345,7 +345,9 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	public void setParameters(Map<String, Object> parameters) {
 		this.parameters = parameters;
 		for (Entry<String, Object> entry : parameters.entrySet()) {
-			if (!String[].class.equals(entry.getValue().getClass())) entry.setValue(new String[] { (String) entry.getValue() });
+			Object value = entry.getValue();
+			if (value == null) value = StringUtils.EMPTY;
+			if (!String[].class.equals(value.getClass())) entry.setValue(new String[] { (String) value });
 		}
 	}
 
