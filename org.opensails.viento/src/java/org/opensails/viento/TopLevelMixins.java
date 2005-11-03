@@ -47,7 +47,7 @@ public class TopLevelMixins extends ObjectMethods {
 		
 		@Override
 		public Object call(Object target, Object[] args) {
-			return super.call(mixin, new Object[] { methodName, args });
+			return super.call(mixin, args);
 		}
 	}
 }

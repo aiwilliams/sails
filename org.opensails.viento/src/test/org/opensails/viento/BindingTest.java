@@ -1,5 +1,6 @@
 package org.opensails.viento;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -94,10 +95,21 @@ public class BindingTest extends TestCase {
 	}
 	
 	public void testMethodMissing() throws Exception {
-		assertEquals("methodMissing", binding.call(new ShamMethodMissing(), "method"));
-		assertEquals("methodMissing", binding.call(new ShamMethodMissingNoInterface(), "method"));
+		assertEquals("methodMissing", ((Object[])binding.call(new ShamMethodMissing(), "method"))[0]);
+		assertEquals("methodMissing", ((Object[])binding.call(new ShamMethodMissingNoInterface(), "method"))[0]);
 	}
 	
+	/**
+	 * There was a bug where the method being invoked was included in the argument array
+	 * passed to method missing - it is the first argument to methodMissing.
+	 */
+	public void testMethodMissing_TopLevelMixin() throws Exception {
+		binding.mixin(new ShamMethodMissing());
+		Object[] result = (Object[]) binding.call("method");
+		assertEquals("methodMissing", result[0]);
+		assertTrue("Expected no arguments but was " + result[1], Arrays.equals(new Object[0], (Object[]) result[1]));
+	}
+
 	public void testPolymorphism() throws Exception {
 		assertEquals("object", binding.call(target, "polymorphism", new Object[] {new Object()}));
 		assertEquals("string", binding.call(target, "polymorphism", new Object[] {new String()}));
@@ -105,13 +117,13 @@ public class BindingTest extends TestCase {
 	
 	class ShamMethodMissing implements MethodMissing {
 		public Object methodMissing(String methodName, Object[] args) {
-			return "methodMissing";
+			return new Object[] {"methodMissing", args};
 		}
 	}
 	
 	class ShamMethodMissingNoInterface {
 	    public Object methodMissing(String methodName, Object[] args) {
-	        return "methodMissing";
+	    	return new Object[] {"methodMissing", args};
 	    }
 	}
 	
