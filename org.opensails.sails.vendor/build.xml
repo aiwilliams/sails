@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.opensails.sails.vendor" default="build" basedir=".">
+    <target name="build">
+        <copy todir="${lib.dir}">
+        	<fileset dir="lib" includes="*.jar"/>
+        </copy>
+    </target>
+</project>
