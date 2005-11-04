@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.opensails.sails" default="build" basedir=".">
+	<property name="temp.root" location="buildtemp"/>
+	<property name="temp.classes" location="${temp.root}/classes"/>
+
+	<target name="build" depends="clean">
+		<ant antfile="../org.opensails.rigging/build.xml" inheritall="false"/>
+		<ant antfile="../org.opensails.viento/build.xml" inheritall="false"/>
+		<ant antfile="../org.opensails.sails.vendor/build.xml" inheritall="false"/>
+		<mkdir dir="${temp.classes}"/>
+		<javac destdir="${temp.classes}" debug="on" optimize="on" classpath="${lib.dir}">
+			<src path="builtin"/>
+			<src path="core"/>
+			<classpath>
+				<fileset dir="${lib.dir}" includes="*.jar"/>
+			</classpath>
+		</javac>
+		<jar destfile="${dist.dir}/sails.jar" basedir="${temp.classes}"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${temp.root}" />
+	</target>
+</project>
