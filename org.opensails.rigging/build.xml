@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.opensails.rigging" default="build" basedir=".">
+	<property name="temp.root" location="buildtemp"/>
+	<property name="temp.classes" location="${temp.root}/classes"/>
+
+	<target name="build" depends="clean">
+		<mkdir dir="${temp.classes}"/>
+		<javac srcdir="src/java" destdir="${temp.classes}" debug="on" optimize="on"/>
+		<jar destfile="${dist.dir}/rigging.jar" basedir="${temp.classes}"/>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${temp.root}" />
+	</target>
+</project>
