@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.opensails.viento" default="parser" basedir=".">
+	<property name="parserSourcePath" value="src/java/org/opensails/viento/parser"></property>
+	<target name="parser" depends="clean">
+        <jjtree javacchome="vendor/javacc/lib" outputdirectory="${parserSourcePath}" target="${parserSourcePath}/Parser.jjt"/>
+        <javacc javacchome="vendor/javacc/lib" outputdirectory="${parserSourcePath}" target="${parserSourcePath}/Parser.jj"/>
+    </target>
+	
+	<target name="clean">
+		<delete>
+			<fileset dir="${parserSourcePath}">
+			    <include name="Parser.java"/>
+			    <include name="ParserConstants.java"/>
+			    <include name="ParserTokenManager.java"/>
+			    <include name="ParserTreeConstants.java"/>
+			    <include name="ParserVisitor.java"/>
+			    <include name="Parser.jj"/>
+			</fileset>
+		</delete>
+	</target>
+</project>
