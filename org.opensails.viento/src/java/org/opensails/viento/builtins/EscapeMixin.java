@@ -17,4 +17,8 @@ public class EscapeMixin {
 	public String escape(String string) {
 		return string;
 	}
+	
+	public String h(Object object) {
+		return object.toString().replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
 }
