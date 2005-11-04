@@ -20,7 +20,8 @@ public class TemplateActionResultProcessor implements IActionResultProcessor<Tem
 		ITemplateBinding binding = result.getBinding();
 
 		IControllerImpl controllerImpl = result.getController();
-		binding.mixin(controllerImpl);
+		if (controllerImpl != null)
+			binding.mixin(controllerImpl);
 
 		ScopedContainer container = result.getContainer();
 		IHelperResolver helperResolver = container.instance(IHelperResolver.class);
