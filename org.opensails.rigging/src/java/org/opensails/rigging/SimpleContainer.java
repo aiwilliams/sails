@@ -1,20 +1,15 @@
 package org.opensails.rigging;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public class SimpleContainer implements Startable, Stoppable, Disposable {
-    protected Map<Class, ComponentResolver> componentResolvers;
+public class SimpleContainer {
     protected MapComponentResolverResolver mapResolverResolver;
     protected List<IComponentResolverResolver> resolverResolvers;
 
     public SimpleContainer() {
         resolverResolvers = new ArrayList<IComponentResolverResolver>();
-        componentResolvers = new LinkedHashMap<Class, ComponentResolver>();
-
         mapResolverResolver = new MapComponentResolverResolver();
         push(mapResolverResolver);
     }
@@ -85,4 +80,14 @@ public class SimpleContainer implements Startable, Stoppable, Disposable {
         }
         return null;
     }
+
+    /**
+	 * Registers all anotherContainer's component resolvers with this container.
+	 * Does not currently do anything with the miscellaneous resolverResolvers.
+	 * 
+	 * @param anotherContainer
+	 */
+	public void registerAll(SimpleContainer anotherContainer) {
+		mapResolverResolver.componentResolvers.putAll(anotherContainer.mapResolverResolver.componentResolvers);
+	}
 }

@@ -126,4 +126,20 @@ public class SimpleContainerTest extends TestCase {
         container.stop();
         assertTrue(container.instance(ShamStoppable.class).stopped);
     }
+    
+    public void testRegisterAll() throws Exception {
+    	container.register(ShamStartable.class);
+    	container.register(ShamStoppable.class);
+    	container.register(ShamComponent.class);
+    	
+		SimpleContainer anotherContainer = new SimpleContainer();
+		anotherContainer.register(ShamComponent.class, ShamSubclassingComponent.class);
+		anotherContainer.register(ShamStartable.class, new ShamStartable());
+		
+		container.registerAll(anotherContainer);
+		
+		assertNotNull(container.instance(ShamStoppable.class));
+		assertTrue(container.instance(ShamComponent.class) instanceof ShamSubclassingComponent);
+		assertSame(anotherContainer.instance(ShamStartable.class), container.instance(ShamStartable.class));
+	}
 }
