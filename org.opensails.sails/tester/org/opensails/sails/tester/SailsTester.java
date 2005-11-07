@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.apache.commons.configuration.Configuration;
 import org.opensails.rigging.ScopedContainer;
+import org.opensails.rigging.SimpleContainer;
+import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.IAdapter;
@@ -21,6 +23,7 @@ import org.opensails.sails.util.ClassInstanceAccessor;
 public class SailsTester implements ISailsApplication {
 	protected TestableSailsApplication application;
 	protected Class<? extends IControllerImpl> workingController;
+	protected SimpleContainer requestContainer;
 
 	public SailsTester() {
 		initialize(BaseConfigurator.class);
@@ -93,6 +96,7 @@ public class SailsTester implements ISailsApplication {
 	public Page get(String controller, String action, String... parameters) {
 		TestGetEvent event = application.createGetEvent(controller, action);
 		event.setActionParameters(parameters);
+		event.getContainer().registerAll(getRequestContainer());
 		return application.get(event);
 	}
 
@@ -105,6 +109,10 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public ScopedContainer getContainer() {
 		return application.getContainer();
+	}
+	
+	public SimpleContainer getRequestContainer() {
+		return requestContainer;
 	}
 
 	/**
@@ -133,6 +141,20 @@ public class SailsTester implements ISailsApplication {
 	public <T> void inject(Class<? super T> key, T instance) {
 		getContainer().register(key, instance);
 	}
+	
+	/**
+	 * TODO register at the requested scope
+	 */
+	public <T> void inject(Class<? extends T> key, Class<? extends T> implementation, ApplicationScope scope) {
+		getRequestContainer().register(key, implementation);
+	}
+	
+	/**
+	 * TODO register at the requested scope
+	 */
+	public <T> void inject(Class<? super T> key, T instance, ApplicationScope scope) {
+		getRequestContainer().register(key, instance);
+	}
 
 	public Page post(Class<? extends IControllerImpl> controller, FormFields formFields) {
 		return application.post(Sails.controllerName(controller), formFields);
@@ -141,6 +163,7 @@ public class SailsTester implements ISailsApplication {
 	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, IIdentifiable... actionParameters) {
 		TestPostEvent event = application.createPostEvent(Sails.controllerName(controller), action, formFields);
 		ScopedContainer container = event.getContainer();
+		container.registerAll(getRequestContainer());
 		if (actionParameters != null && actionParameters.length > 0) {
 			IShamObjectPersister persister = container.instance(IShamObjectPersister.class);
 			IAdapterResolver resolver = container.instance(IAdapterResolver.class);
@@ -184,5 +207,6 @@ public class SailsTester implements ISailsApplication {
 		this.application = new TestableSailsApplication();
 		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
 		this.application.configure(new SailsTesterConfigurator(configuratorClass));
+		requestContainer = new SimpleContainer();
 	}
 }

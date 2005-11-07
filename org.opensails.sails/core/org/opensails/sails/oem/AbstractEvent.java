@@ -43,10 +43,14 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		initialize();
 	}
 
-	// TODO: Is this where the container is started?
-	public void beginDispatch() {}
+	public void beginDispatch() {
+		container.start();
+	}
 
-	public void endDispatch() {}
+	public void endDispatch() {
+		container.stop();
+		container.dispose();
+	}
 
 	public String getActionName() {
 		return url.getAction();
