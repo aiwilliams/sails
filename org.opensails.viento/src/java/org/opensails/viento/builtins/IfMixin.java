@@ -19,7 +19,7 @@ public class IfMixin {
 
 		@Name("elseif")
 		public If condition(Object condition, Block block) {
-			if (condition != null && condition != Boolean.FALSE && blockToRender == null)
+			if (condition != null && !condition.equals(Boolean.FALSE) && blockToRender == null)
 				blockToRender = block;
 			return this;
 		}
