@@ -31,7 +31,7 @@ public class PostEvent extends AbstractEvent {
 	public String getActionName() {
 		String actionMetaValue = findActionMeta();
 		if (actionMetaValue == null) return super.getActionName();
-		if (actionMetaValue.indexOf('/') > 0) return actionMetaValue.substring(0, actionMetaValue.indexOf('/'));
+		if (actionMetaValue.indexOf('_') > 0) return actionMetaValue.substring(0, actionMetaValue.indexOf('_'));
 		else return actionMetaValue;
 	}
 
@@ -70,8 +70,8 @@ public class PostEvent extends AbstractEvent {
 		if (actionMetaValue == null) return null;
 
 		String[] parameters = ArrayUtils.EMPTY_STRING_ARRAY;
-		int actionParameterStart = actionMetaValue.indexOf('/');
-		if (actionParameterStart > 0) parameters = actionMetaValue.substring(actionParameterStart + 1).split("/");
+		int actionParameterStart = actionMetaValue.indexOf('_');
+		if (actionParameterStart > 0) parameters = actionMetaValue.substring(actionParameterStart + 1).split("_");
 		return parameters;
 	}
 

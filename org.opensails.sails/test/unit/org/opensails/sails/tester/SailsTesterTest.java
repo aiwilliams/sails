@@ -8,18 +8,18 @@ public class SailsTesterTest extends TestCase {
 	/**
 	 * When you use a simple SailsTester, it will boot using all the defaults.
 	 */
-//	public void testConstructor() throws Exception {
-//		SailsTester tester = new SailsTester();
-//		assertNotNull(tester.getConfiguration());
-//		assertNotNull(tester.getContainer());
-//	}
+	public void testConstructor() throws Exception {
+		SailsTester tester = new SailsTester();
+		assertNotNull(tester.getConfiguration());
+		assertNotNull(tester.getContainer());
+	}
 
-//	public void testGet() throws Exception {
-//		SailsTester tester = new SailsTester();
-//		Page page = tester.get();
-//		assertTrue(page.getUrl().matches("http://"));
-//		page.assertContains("Welcome to Sails");
-//	}
+	public void testGet() throws Exception {
+		SailsTester tester = new SailsTester();
+		Page page = tester.get();
+		assertTrue(page.getUrl().matches("http://"));
+		page.assertContains("Welcome to Sails");
+	}
 
 	public void testPost() throws Exception {
 		SailsTester tester = new SailsTester(UnitTestConfigurator.class);

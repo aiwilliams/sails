@@ -14,6 +14,7 @@ import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.servletapi.ShamServletConfig;
 import org.opensails.sails.servletapi.ShamServletContext;
+import org.opensails.sails.tester.form.TestFormFields;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.util.ClassInstanceAccessor;
 
@@ -104,6 +105,17 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public ScopedContainer getContainer() {
 		return application.getContainer();
+	}
+
+	/**
+	 * You should get a new one of these for each request you expect to post.
+	 * 
+	 * @return a new instance of TestFormFields
+	 */
+	public TestFormFields getFormFields() {
+		throw new RuntimeException("This need to return one created from REQUEST container");
+		// return new
+		// TestFormFields(getContainer().instance(ContainerAdapterResolver.class));
 	}
 
 	public String getName() {

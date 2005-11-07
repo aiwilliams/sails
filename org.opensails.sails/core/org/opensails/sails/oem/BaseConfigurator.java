@@ -15,6 +15,7 @@ import org.opensails.sails.ISailsApplicationConfigurator;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.Sails;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.IControllerResolver;
@@ -111,6 +112,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		configure(event, helperResolver);
 
 		eventContainer.register(ScopedContainer.class, eventContainer);
+		eventContainer.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
 		eventContainer.register(ITemplateBinding.class, VientoBinding.class);
 	}
 

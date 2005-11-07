@@ -5,9 +5,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.opensails.sails.form.html.ValueElement;
 import org.opensails.sails.model.IPropertyAccessor.FieldType;
 
+/**
+ * Why? Provides a way for objects that are created within a dependancy
+ * injection container to declare their need for the form fields of the current
+ * post event. And, since we have it, also provides ability to remove fields -
+ * the HttpServletRequest won't allow that.
+ * 
+ * @see org.opensails.sails.form.HtmlForm
+ */
 public class FormFields {
 	public static FormFields quick(Object... objects) {
 		if (objects.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
@@ -33,17 +40,6 @@ public class FormFields {
 	 */
 	public Object actualValue(String fieldName) {
 		return backingMap.get(fieldName);
-	}
-
-	/**
-	 * A super-handy way to add fields that keeps your code from having to know
-	 * the details of how they might be rendered. This is not a way to generate
-	 * html. Typical usage will be in tests that use the SailsTester.
-	 * 
-	 * @param element
-	 */
-	public void add(ValueElement<? extends ValueElement> element) {
-		setValue(element.getName(), element.getValue());
 	}
 
 	public String[] fieldNames() {

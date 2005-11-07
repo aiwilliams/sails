@@ -17,7 +17,7 @@ public class PostEventTest extends TestCase {
 		assertEquals("pressMe", event.getActionName());
 
 		event = new PostEvent(new SailsApplication(), request, new ShamHttpServletResponse());
-		request.setParameter(Submit.ACTION_PREFIX + "pressMe/parm1/parm2", "Press Me");
+		request.setParameter(Submit.ACTION_PREFIX + "pressMe_parm1_parm2", "Press Me");
 		assertEquals("pressMe", event.getActionName());
 	}
 
@@ -32,7 +32,7 @@ public class PostEventTest extends TestCase {
 	public void testGetParameters() {
 		ShamHttpServletRequest request = new ShamHttpServletRequest();
 		request.setPathInfo("controller/actionIsIgnoredWhenFormMetaActionFound/ignoreParm1/ignoreParm2");
-		request.setParameter(Submit.ACTION_PREFIX + "pressMe/parm1/parm2", "Press Me");
+		request.setParameter(Submit.ACTION_PREFIX + "pressMe_parm1_parm2", "Press Me");
 		PostEvent event = new PostEvent(new SailsApplication(), request, new ShamHttpServletResponse());
 		assertEquals("pressMe", event.getActionName());
 		assertEquals("parm1", event.getActionParameters()[0]);
@@ -43,7 +43,7 @@ public class PostEventTest extends TestCase {
 		ShamHttpServletRequest request = new ShamHttpServletRequest();
 		request.setPathInfo("controller/actionIsIgnoredWhenFormMetaActionFound/ignoreParm1/ignoreParm2");
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe.x", "45");
-		request.setParameter(Submit.ACTION_PREFIX + "pressMe/parm1/parm2", "Press Me");
+		request.setParameter(Submit.ACTION_PREFIX + "pressMe_parm1_parm2", "Press Me");
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe.y", "23");
 		PostEvent event = new PostEvent(new SailsApplication(), request, new ShamHttpServletResponse());
 		assertEquals("pressMe", event.getActionName());

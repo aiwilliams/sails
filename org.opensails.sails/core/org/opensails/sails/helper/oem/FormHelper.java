@@ -1,6 +1,7 @@
 package org.opensails.sails.helper.oem;
 
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.html.Checkbox;
@@ -11,16 +12,25 @@ import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.TextArea;
 
 public class FormHelper {
+	protected final ContainerAdapterResolver adapterResolver;
 	protected final ISailsEvent event;
 	protected final IFormElementIdGenerator idGenerator;
 
-	public FormHelper(ISailsEvent event, IFormElementIdGenerator idGenerator) {
+	/**
+	 * @param event
+	 * @param idGenerator
+	 * @param adapterResolver used in
+	 *        {@link org.opensails.sails.form.html.FormElement}s that accept
+	 *        and adapt parameters
+	 */
+	public FormHelper(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver) {
 		this.event = event;
 		this.idGenerator = idGenerator;
+		this.adapterResolver = adapterResolver;
 	}
 
-	public FormHelper(ISailsEvent event, IFormElementIdGenerator idGenerator, HtmlForm form) {
-		this(event, idGenerator);
+	public FormHelper(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
+		this(event, idGenerator, adapterResolver);
 	}
 
 	public Checkbox checkbox(String name) {
@@ -44,7 +54,7 @@ public class FormHelper {
 	}
 
 	public Submit submit(String valueAttribute) {
-		return new Submit(valueAttribute).value(valueAttribute);
+		return new Submit(valueAttribute, adapterResolver).value(valueAttribute);
 	}
 
 	public Text text(String name) {
