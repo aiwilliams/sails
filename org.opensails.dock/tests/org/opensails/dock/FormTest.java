@@ -5,10 +5,10 @@ import junit.framework.TestCase;
 import org.opensails.dock.controllers.FormController;
 import org.opensails.dock.model.User;
 import org.opensails.sails.form.FormFields;
-import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.SailsTester;
 import org.opensails.sails.tester.form.Form;
+import org.opensails.sails.tester.form.TestFormFields;
 
 public class FormTest extends TestCase {
 	public void testBasicFormRendering() throws Exception {
@@ -40,8 +40,8 @@ public class FormTest extends TestCase {
 	public void testMultiButton() throws Exception {
 		SailsTester tester = new DockTester();
 
-		FormFields formFields = new FormFields();
-		formFields.add(new Submit("Button One").action("actionOne"));
+		TestFormFields formFields = tester.getFormFields();
+		formFields.submit("actionOne");
 		Page page = tester.post(FormController.class, formFields);
 		page.assertContains("actionOne() invoked");
 	}
