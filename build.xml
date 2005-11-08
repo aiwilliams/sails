@@ -1,5 +1,0 @@
-<project default="clean">
-	<target name="clean">
-		<echo message="hello world!"/>
-	</target>
-</project>
