@@ -1,12 +1,10 @@
-package org.opensails.sails.helper.oem;
+package org.opensails.sails.helper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.helper.IMixinMethod;
-import org.opensails.sails.helper.IMixinResolver;
 import org.opensails.sails.util.IClassResolver;
 
 public class MixinResolver implements IMixinResolver {

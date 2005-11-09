@@ -19,18 +19,16 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.IControllerResolver;
-import org.opensails.sails.controllers.ErrorController;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.UnderscoreIdGenerator;
 import org.opensails.sails.helper.IMixinResolver;
-import org.opensails.sails.helper.oem.MixinResolver;
+import org.opensails.sails.helper.MixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.viento.VientoBinding;
 import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.url.IUrlResolver;
 import org.opensails.sails.url.UrlResolver;
-import org.opensails.sails.url.oem.ImageUrlResolver;
 import org.opensails.sails.util.ClassHelper;
 import org.opensails.sails.util.ComponentPackage;
 import org.opensails.sails.validation.IValidationEngine;
@@ -148,15 +146,11 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	}
 
 	protected String getBuiltinControllerPackage() {
-		return ClassHelper.getPackage(ErrorController.class);
+		return ClassHelper.getPackage(Sails.class) + ".controllers";
 	}
 
 	protected String getBuiltinMixinsPackage() {
-		return ClassHelper.getPackage(MixinResolver.class);
-	}
-
-	protected String getBuiltinUrlResolverPackage() {
-		return ClassHelper.getPackage(ImageUrlResolver.class);
+		return ClassHelper.getPackage(Sails.class) + ".mixins";
 	}
 
 	protected String getBuitinActionResultProcessorPackage() {
@@ -203,7 +197,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		container.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
 		container.register(ITemplateBinding.class, VientoBinding.class);
 		container.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
-		
+
 		container.register(ISailsApplication.class, application);
 		application.setContainer(container);
 		return container;

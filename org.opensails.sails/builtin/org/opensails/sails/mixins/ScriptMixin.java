@@ -1,4 +1,4 @@
-package org.opensails.sails.helper.oem;
+package org.opensails.sails.mixins;
 
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.helper.IMixinMethod;

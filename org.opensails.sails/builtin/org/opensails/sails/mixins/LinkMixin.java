@@ -1,4 +1,4 @@
-package org.opensails.sails.helper.oem;
+package org.opensails.sails.mixins;
 
 import java.util.List;
 

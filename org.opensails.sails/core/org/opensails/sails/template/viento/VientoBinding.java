@@ -1,6 +1,6 @@
 package org.opensails.sails.template.viento;
 
-import org.opensails.sails.helper.oem.ThrowableMixin;
+import org.opensails.sails.mixins.ThrowableMixin;
 import org.opensails.sails.template.IExceptionHandler;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.viento.Binding;

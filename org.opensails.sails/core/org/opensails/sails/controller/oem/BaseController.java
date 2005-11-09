@@ -7,7 +7,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.helper.oem.UrlforMixin;
+import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class BaseController implements IControllerImpl {

@@ -2,6 +2,7 @@ package org.opensails.sails.helper.oem;
 
 import junit.framework.TestCase;
 
+import org.opensails.sails.mixins.RenderMixin;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.template.ITemplateBinding;

@@ -3,7 +3,7 @@
  *
  * (c) 2005 Adam Williams
  */
-package org.opensails.sails.helper.oem;
+package org.opensails.sails.mixins;
 
 import java.awt.event.ActionEvent;
 import java.util.List;
