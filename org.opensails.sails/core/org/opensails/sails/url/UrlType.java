@@ -1,5 +1,7 @@
 package org.opensails.sails.url;
 
+import org.opensails.sails.url.oem.BuiltinScriptUrlResolver;
+import org.opensails.sails.url.oem.BuiltinStyleUrlResolver;
 import org.opensails.sails.url.oem.ControllerUrlResolver;
 import org.opensails.sails.url.oem.ImageUrlResolver;
 import org.opensails.sails.url.oem.ScriptUrlResolver;
@@ -15,7 +17,9 @@ public class UrlType {
 	public static final UrlType CONTROLLER = new UrlType(ControllerUrlResolver.class);
 	public static final UrlType IMAGE = new UrlType(ImageUrlResolver.class);
 	public static final UrlType SCRIPT = new UrlType(ScriptUrlResolver.class);
+	public static final UrlType SCRIPT_BUILTIN = new UrlType(BuiltinScriptUrlResolver.class);
 	public static final UrlType STYLE = new UrlType(StyleUrlResolver.class);
+	public static final UrlType STYLE_BUILTIN = new UrlType(BuiltinStyleUrlResolver.class);
 
 	protected final Class<? extends IUrlResolver> resolverClass;
 

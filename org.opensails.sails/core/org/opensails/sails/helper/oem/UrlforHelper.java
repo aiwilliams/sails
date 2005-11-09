@@ -18,6 +18,7 @@ import org.opensails.sails.url.UrlType;
  */
 public class UrlforHelper {
 	protected final ISailsEvent event;
+	protected UrlForBuiltin urlForBuiltin;
 
 	public UrlforHelper(ISailsEvent event) {
 		this.event = event;
@@ -70,6 +71,11 @@ public class UrlforHelper {
 		return url;
 	}
 
+	public UrlForBuiltin builtin() {
+		if (urlForBuiltin == null) urlForBuiltin = new UrlForBuiltin();
+		return urlForBuiltin;
+	}
+
 	public ActionUrl controller() {
 		return controller(event.getControllerName());
 	}
@@ -104,5 +110,21 @@ public class UrlforHelper {
 	 */
 	public IUrl style(String cssFile) {
 		return event.resolve(UrlType.STYLE, cssFile);
+	}
+
+	class UrlForBuiltin {
+		/**
+		 * @return an url to a builtin script file
+		 */
+		public IUrl script(String scriptFile) {
+			return event.resolve(UrlType.SCRIPT_BUILTIN, scriptFile);
+		}
+
+		/**
+		 * @return an url to a builtin css file
+		 */
+		public IUrl style(String cssFile) {
+			return event.resolve(UrlType.STYLE_BUILTIN, cssFile);
+		}
 	}
 }
