@@ -5,8 +5,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-configuration.jar"/>
 	<classpathentry exported="true" sourcepath="src/commons-lang_src.zip" kind="lib" path="lib/commons-lang.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/javax.servlet.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.mortbay.jetty.jar"/>
+	<classpathentry exported="true" sourcepath="src/org.mortbay.jetty_src.zip" kind="lib" path="lib/javax.servlet.jar"/>
+	<classpathentry exported="true" sourcepath="src/org.mortbay.jetty_src.zip" kind="lib" path="lib/org.mortbay.jetty.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.mortbay.jmx.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasper-compiler.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jasper-runtime.jar"/>
