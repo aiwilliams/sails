@@ -7,7 +7,7 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.opensails.sails.controller.oem.PartialActionResult;
-import org.opensails.sails.helper.IHelperResolver;
+import org.opensails.sails.helper.IMixinResolver;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.template.IExceptionHandler;
@@ -15,7 +15,7 @@ import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 
 public class PartialActionResultProcessorTest extends TestCase {
-	ShamHelperResolver helperResolver;
+	ShamMixinResolver mixinResolver;
 	Set<Object> mixins = new HashSet<Object>();
 	boolean renderIExpectCalled;
 
@@ -23,24 +23,24 @@ public class PartialActionResultProcessorTest extends TestCase {
 		PartialActionResultProcessor processor = new PartialActionResultProcessor(new ShamTemplateRenderer());
 		GetEvent actionGet = SailsEventFixture.actionGet("controller", "action");
 		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
-		helperResolver = new ShamHelperResolver();
-		actionGet.getContainer().register(IHelperResolver.class, helperResolver);
+		mixinResolver = new ShamMixinResolver();
+		actionGet.getContainer().register(IMixinResolver.class, mixinResolver);
 		processor.process(new PartialActionResult(actionGet));
 		assertTrue(renderIExpectCalled);
-		assertTrue(mixins.contains(helperResolver));
+		assertTrue(mixins.contains(mixinResolver));
 	}
 
-	class ShamHelperResolver implements IHelperResolver {
+	class ShamMixinResolver implements IMixinResolver {
 		public Object methodMissing(String methodName, Object[] args) {
 			return null;
 		}
 	}
 
 	class ShamTemplateBinding implements ITemplateBinding {
-		public void mixin(Class<?> target, Object helper) {}
+		public void mixin(Class<?> target, Object behaviour) {}
 
-		public void mixin(Object helper) {
-			mixins.add(helper);
+		public void mixin(Object behavior) {
+			mixins.add(behavior);
 		}
 
 		public void put(String key, Object object) {}

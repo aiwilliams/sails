@@ -4,7 +4,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IActionResultProcessor;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.TemplateActionResult;
-import org.opensails.sails.helper.IHelperResolver;
+import org.opensails.sails.helper.IMixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 
@@ -24,8 +24,8 @@ public class TemplateActionResultProcessor implements IActionResultProcessor<Tem
 			binding.mixin(controllerImpl);
 
 		ScopedContainer container = result.getContainer();
-		IHelperResolver helperResolver = container.instance(IHelperResolver.class);
-		binding.mixin(helperResolver);
+		IMixinResolver resolver = container.instance(IMixinResolver.class);
+		binding.mixin(resolver);
 
 		StringBuilder content = new StringBuilder();
 		renderer.render(result.getIdentifier(), binding, content);

@@ -4,7 +4,7 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.helper.oem.HelperResolver;
+import org.opensails.sails.helper.oem.MixinResolver;
 import org.opensails.sails.url.UrlResolver;
 import org.opensails.sails.util.ClassHelper;
 
@@ -36,8 +36,8 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	public void configure(ISailsEvent event, HelperResolver helperResolver) {
-		delegate.configure(event, helperResolver);
+	public void configure(ISailsEvent event, MixinResolver resolver) {
+		delegate.configure(event, resolver);
 	}
 
 	@Override
@@ -76,8 +76,8 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	protected String getBuiltinHelperPackage() {
-		return delegate.getBuiltinHelperPackage();
+	protected String getBuiltinMixinsPackage() {
+		return delegate.getBuiltinMixinsPackage();
 	}
 
 	@Override
@@ -101,8 +101,8 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	protected String getDefaultHelperPackage() {
-		return delegate.getDefaultHelperPackage();
+	protected String getDefaultMixinsPackage() {
+		return delegate.getDefaultMixinsPackage();
 	}
 
 	@Override
@@ -136,8 +136,8 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	protected HelperResolver installHelperResolver(ISailsEvent event, ScopedContainer eventContainer) {
-		return delegate.installHelperResolver(event, eventContainer);
+	protected MixinResolver installMixinResolver(ISailsEvent event, ScopedContainer eventContainer) {
+		return delegate.installMixinResolver(event, eventContainer);
 	}
 
 	@Override

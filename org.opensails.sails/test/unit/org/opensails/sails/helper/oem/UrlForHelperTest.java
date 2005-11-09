@@ -14,7 +14,7 @@ import org.opensails.sails.url.UrlType;
 public class UrlForHelperTest extends TestCase {
 	public void testAction() {
 		GetEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		String expected = new ActionUrl(event, "mycontroller", "anotheraction").render();
 		assertEquals(expected, tool.action("anotheraction").render());
 		assertEncodedURL(expected, event);
@@ -22,7 +22,7 @@ public class UrlForHelperTest extends TestCase {
 
 	public void testAction_WithController() {
 		ISailsEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		String expectedUrl = new ActionUrl(event, "anothercontroller", "anotheraction").render();
 		assertEquals(expectedUrl, tool.action("anothercontroller", "anotheraction").render());
 		assertEncodedURL(expectedUrl, event);
@@ -30,7 +30,7 @@ public class UrlForHelperTest extends TestCase {
 
 	public void testAction_WithParameters() {
 		ISailsEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		ActionUrl expected = new ActionUrl(event, "mycontroller", "anotheraction");
 		expected.setParameters("paramOne", "paramTwo");
 		String expectedURL = expected.render();
@@ -40,7 +40,7 @@ public class UrlForHelperTest extends TestCase {
 
 	public void testController() throws Exception {
 		ISailsEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		ActionUrl expected = new ActionUrl(event);
 		expected.setController("mycontroller");
 		String expectedURL = expected.render();
@@ -50,7 +50,7 @@ public class UrlForHelperTest extends TestCase {
 
 	public void testController_Specified() {
 		ISailsEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		ActionUrl expected = new ActionUrl(event);
 		expected.setController("anothercontroller");
 		String expectedURL = expected.render();
@@ -60,7 +60,7 @@ public class UrlForHelperTest extends TestCase {
 
 	public void testImage() {
 		ISailsEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		String expectedURL = event.resolve(UrlType.IMAGE, "my.jpg").render();
 		assertEquals(expectedURL, tool.image("my.jpg").render());
 		assertNotEncodedURL(expectedURL, event);
@@ -68,7 +68,7 @@ public class UrlForHelperTest extends TestCase {
 
 	public void testScript() {
 		ISailsEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		String expectedURL = event.resolve(UrlType.SCRIPT, "my.js").render();
 		assertEquals(expectedURL, tool.script("my.js").render());
 		assertNotEncodedURL(expectedURL, event);
@@ -76,7 +76,7 @@ public class UrlForHelperTest extends TestCase {
 
 	public void testStyle() {
 		ISailsEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
-		UrlforHelper tool = new UrlforHelper(event);
+		UrlforMixin tool = new UrlforMixin(event);
 		String expectedURL = event.resolve(UrlType.STYLE, "my.css").render();
 		assertEquals(expectedURL, tool.style("my.css").render());
 		assertNotEncodedURL(expectedURL, event);

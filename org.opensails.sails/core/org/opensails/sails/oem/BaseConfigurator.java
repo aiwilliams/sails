@@ -22,8 +22,8 @@ import org.opensails.sails.controller.oem.IControllerResolver;
 import org.opensails.sails.controllers.ErrorController;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.UnderscoreIdGenerator;
-import org.opensails.sails.helper.IHelperResolver;
-import org.opensails.sails.helper.oem.HelperResolver;
+import org.opensails.sails.helper.IMixinResolver;
+import org.opensails.sails.helper.oem.MixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.viento.VientoBinding;
@@ -100,16 +100,16 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	/**
 	 * Called for each event, after
-	 * {@link #installHelperResolver(ISailsEvent, ScopedContainer)}
+	 * {@link #installMixinResolver(ISailsEvent, ScopedContainer)}
 	 * 
 	 * @param event
-	 * @param helperResolver
+	 * @param resolver
 	 */
-	public void configure(ISailsEvent event, HelperResolver helperResolver) {}
+	public void configure(ISailsEvent event, MixinResolver resolver) {}
 
 	public void configure(ISailsEvent event, ScopedContainer eventContainer) {
-		HelperResolver helperResolver = installHelperResolver(event, eventContainer);
-		configure(event, helperResolver);
+		MixinResolver resolver = installMixinResolver(event, eventContainer);
+		configure(event, resolver);
 
 		eventContainer.register(ScopedContainer.class, eventContainer);
 		eventContainer.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
@@ -151,8 +151,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return ClassHelper.getPackage(ErrorController.class);
 	}
 
-	protected String getBuiltinHelperPackage() {
-		return ClassHelper.getPackage(HelperResolver.class);
+	protected String getBuiltinMixinsPackage() {
+		return ClassHelper.getPackage(MixinResolver.class);
 	}
 
 	protected String getBuiltinUrlResolverPackage() {
@@ -171,8 +171,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return getApplicationRootPackage() + ".controllers";
 	}
 
-	protected String getDefaultHelperPackage() {
-		return getApplicationRootPackage() + ".helpers";
+	protected String getDefaultMixinsPackage() {
+		return getApplicationRootPackage() + ".mixins";
 	}
 
 	protected ActionResultProcessorResolver installActionResultProcessorResolver(IConfigurableSailsApplication application, ScopedContainer container) {
@@ -231,11 +231,11 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return dispatcher;
 	}
 
-	protected HelperResolver installHelperResolver(ISailsEvent event, ScopedContainer eventContainer) {
-		HelperResolver resolver = new HelperResolver(event);
-		resolver.push(new ComponentPackage(getBuiltinHelperPackage(), "Helper"));
-		resolver.push(new ComponentPackage(getDefaultHelperPackage(), "Helper"));
-		eventContainer.register(IHelperResolver.class, resolver);
+	protected MixinResolver installMixinResolver(ISailsEvent event, ScopedContainer eventContainer) {
+		MixinResolver resolver = new MixinResolver(event);
+		resolver.push(new ComponentPackage(getBuiltinMixinsPackage(), "Mixin"));
+		resolver.push(new ComponentPackage(getDefaultMixinsPackage(), "Mixin"));
+		eventContainer.register(IMixinResolver.class, resolver);
 		return resolver;
 	}
 

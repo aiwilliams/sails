@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.ShamController;
 import org.opensails.sails.controller.oem.TemplateActionResult;
-import org.opensails.sails.helper.IHelperResolver;
+import org.opensails.sails.helper.IMixinResolver;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.template.IExceptionHandler;
@@ -23,7 +23,7 @@ import org.opensails.sails.util.CollectionAssert;
  * TODO: Refactor these tests. Oh my.
  */
 public class TemplateActionResultProcessorTest extends TestCase {
-	ShamHelperResolver helperResolver;
+	ShamMixinResolver mixinResolver;
 	Set<Object> mixins = new HashSet<Object>();
 
 	public void testProcess() throws Exception {
@@ -33,28 +33,28 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		ShamController controllerImpl = new ShamController();
 		actionGet.getContainer().register(IControllerImpl.class, controllerImpl);
 		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
-		helperResolver = new ShamHelperResolver();
-		actionGet.getContainer().register(IHelperResolver.class, helperResolver);
+		mixinResolver = new ShamMixinResolver();
+		actionGet.getContainer().register(IMixinResolver.class, mixinResolver);
 		TemplateActionResult actionResult = new TemplateActionResult(actionGet);
 		actionResult.layout("layout");
 		processor.process(actionResult);
 		assertTrue(shamTemplateRenderer.renderIExpectCalled);
 		CollectionAssert.containsOnlyOrdered(new String[] { "sham/action", "layout" }, shamTemplateRenderer.templatesRendered);
 		assertTrue(mixins.contains(controllerImpl));
-		assertTrue(mixins.contains(helperResolver));
+		assertTrue(mixins.contains(mixinResolver));
 	}
 
-	class ShamHelperResolver implements IHelperResolver {
+	class ShamMixinResolver implements IMixinResolver {
 		public Object methodMissing(String methodName, Object[] args) {
 			return null;
 		}
 	}
 
 	class ShamTemplateBinding implements ITemplateBinding {
-		public void mixin(Class<?> target, Object helper) {}
+		public void mixin(Class<?> target, Object behaviour) {}
 
-		public void mixin(Object helper) {
-			mixins.add(helper);
+		public void mixin(Object behaviour) {
+			mixins.add(behaviour);
 		}
 
 		public void put(String key, Object object) {}

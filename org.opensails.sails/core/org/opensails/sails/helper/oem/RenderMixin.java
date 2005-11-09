@@ -1,16 +1,16 @@
 package org.opensails.sails.helper.oem;
 
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.helper.IHelperMethod;
+import org.opensails.sails.helper.IMixinMethod;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 
-public class RenderHelper implements IHelperMethod {
+public class RenderMixin implements IMixinMethod {
 	protected final ITemplateBinding binding;
 	protected final ISailsEvent event;
 	protected final ITemplateRenderer renderer;
 
-	public RenderHelper(ISailsEvent event, ITemplateBinding binding, ITemplateRenderer renderer) {
+	public RenderMixin(ISailsEvent event, ITemplateBinding binding, ITemplateRenderer renderer) {
 		this.event = event;
 		this.binding = binding;
 		this.renderer = renderer;

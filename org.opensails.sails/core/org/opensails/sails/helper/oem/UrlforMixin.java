@@ -14,13 +14,13 @@ import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
 
 /**
- * A helper that builds application-relative urls.
+ * Builds application-relative urls.
  */
-public class UrlforHelper {
+public class UrlforMixin {
 	protected final ISailsEvent event;
 	protected UrlForBuiltin urlForBuiltin;
 
-	public UrlforHelper(ISailsEvent event) {
+	public UrlforMixin(ISailsEvent event) {
 		this.event = event;
 	}
 

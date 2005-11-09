@@ -5,16 +5,16 @@ import java.util.List;
 
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.helper.IHelperMethod;
-import org.opensails.sails.helper.IHelperResolver;
+import org.opensails.sails.helper.IMixinMethod;
+import org.opensails.sails.helper.IMixinResolver;
 import org.opensails.sails.util.IClassResolver;
 
-public class HelperResolver implements IHelperResolver {
+public class MixinResolver implements IMixinResolver {
 	protected IControllerImpl controller;
 	protected final ISailsEvent event;
 	protected final List<IClassResolver> resolvers;
 
-	public HelperResolver(ISailsEvent event) {
+	public MixinResolver(ISailsEvent event) {
 		this.event = event;
 		this.resolvers = new ArrayList<IClassResolver>();
 	}
@@ -22,14 +22,14 @@ public class HelperResolver implements IHelperResolver {
 	@SuppressWarnings("unchecked")
 	public Object methodMissing(String methodName, Object[] args) throws NoSuchMethodException {
 		for (IClassResolver resolver : resolvers) {
-			Class helperClass = resolver.resolve(methodName);
-			if (helperClass != null) {
-				Object helperInstance = event.getContainer().instance(helperClass, helperClass);
-				if (helperInstance instanceof IHelperMethod) return ((IHelperMethod) helperInstance).invoke(args);
-				return helperInstance;
+			Class clazz = resolver.resolve(methodName);
+			if (clazz != null) {
+				Object instance = event.getContainer().instance(clazz, clazz);
+				if (instance instanceof IMixinMethod) return ((IMixinMethod) instance).invoke(args);
+				return instance;
 			}
 		}
-		throw new NoSuchMethodException("Could not resolve a helper for " + methodName);
+		throw new NoSuchMethodException("Could not resolve a mixin for " + methodName);
 	}
 
 	public void push(IClassResolver resolver) {

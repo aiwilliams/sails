@@ -7,10 +7,10 @@ import org.opensails.sails.html.ActionLink;
 import org.opensails.sails.html.ILink;
 import org.opensails.sails.url.ActionUrl;
 
-public class LinkHelper {
+public class LinkMixin {
 	protected final ISailsEvent event;
 
-	public LinkHelper(ISailsEvent event) {
+	public LinkMixin(ISailsEvent event) {
 		this.event = event;
 	}
 

@@ -11,7 +11,7 @@ import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.TextArea;
 
-public class FormHelper {
+public class FormMixin {
 	protected final ContainerAdapterResolver adapterResolver;
 	protected final ISailsEvent event;
 	protected final IFormElementIdGenerator idGenerator;
@@ -23,13 +23,13 @@ public class FormHelper {
 	 *        {@link org.opensails.sails.form.html.FormElement}s that accept
 	 *        and adapt parameters
 	 */
-	public FormHelper(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver) {
+	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver) {
 		this.event = event;
 		this.idGenerator = idGenerator;
 		this.adapterResolver = adapterResolver;
 	}
 
-	public FormHelper(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
+	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
 		this(event, idGenerator, adapterResolver);
 	}
 

@@ -8,7 +8,7 @@ import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.TemplateBindingFixture;
 
-public class RenderHelperTest extends TestCase {
+public class RenderMixinTest extends TestCase {
 	ITemplateBinding bindingGiven;
 	ITemplateBinding createdBinding;
 	String templateIdentifierGiven;
@@ -16,7 +16,7 @@ public class RenderHelperTest extends TestCase {
 	public void testPartial() throws Exception {
 		GetEvent event = SailsEventFixture.actionGet();
 		ITemplateBinding binding = TemplateBindingFixture.create();
-		RenderHelper render = new RenderHelper(event, binding, new ITemplateRenderer<ITemplateBinding>() {
+		RenderMixin render = new RenderMixin(event, binding, new ITemplateRenderer<ITemplateBinding>() {
 			public ITemplateBinding createBinding(ITemplateBinding parent) {
 				return createdBinding = TemplateBindingFixture.create();
 			}

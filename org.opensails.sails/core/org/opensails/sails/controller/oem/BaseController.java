@@ -7,7 +7,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.helper.oem.UrlforHelper;
+import org.opensails.sails.helper.oem.UrlforMixin;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class BaseController implements IControllerImpl {
@@ -90,7 +90,7 @@ public class BaseController implements IControllerImpl {
 		event.getSession(true).setAttribute(key, value);
 	}
 
-	protected UrlforHelper urlfor() {
-		return getContainer().instance(UrlforHelper.class);
+	protected UrlforMixin urlfor() {
+		return getContainer().instance(UrlforMixin.class);
 	}
 }

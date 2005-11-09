@@ -1,9 +1,9 @@
 package org.opensails.sails.template;
 
 public interface ITemplateBinding {
-    void mixin(Class<?> target, Object helper);
+    void mixin(Class<?> target, Object behavior);
 
-    void mixin(Object helper);
+    void mixin(Object behavior);
 
     void put(String key, Object object);
 

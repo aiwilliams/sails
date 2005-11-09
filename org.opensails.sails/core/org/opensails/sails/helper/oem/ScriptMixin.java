@@ -1,13 +1,13 @@
 package org.opensails.sails.helper.oem;
 
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.helper.IHelperMethod;
+import org.opensails.sails.helper.IMixinMethod;
 import org.opensails.sails.url.UrlType;
 
-public class ScriptHelper implements IHelperMethod {
+public class ScriptMixin implements IMixinMethod {
 	protected final ISailsEvent event;
 
-	public ScriptHelper(ISailsEvent event) {
+	public ScriptMixin(ISailsEvent event) {
 		this.event = event;
 	}
 

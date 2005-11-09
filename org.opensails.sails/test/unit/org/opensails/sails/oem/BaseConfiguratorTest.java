@@ -3,7 +3,7 @@ package org.opensails.sails.oem;
 import junit.framework.TestCase;
 
 import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.helper.IHelperResolver;
+import org.opensails.sails.helper.IMixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class BaseConfiguratorTest extends TestCase {
@@ -19,7 +19,7 @@ public class BaseConfiguratorTest extends TestCase {
 		configurator.configure(event, eventContainer);
 
 		assertSame("The event container is needed by various components (i.e. HtmlForm)", eventContainer, eventContainer.instance(ScopedContainer.class));
-		assertNotNull(eventContainer.instance(IHelperResolver.class));
+		assertNotNull(eventContainer.instance(IMixinResolver.class));
 		assertNotNull(eventContainer.instance(ITemplateBinding.class));
 	}
 
