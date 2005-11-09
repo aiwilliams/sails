@@ -24,7 +24,7 @@ public class ScriptHelper implements IHelperMethod {
 
 		@Override
 		public String toString() {
-			return String.format("<script src=\"%s\"></script>", event.resolve(UrlType.SCRIPT_BUILTIN, argument).render());
+			return String.format("<script src=\"%s\"></script>", event.resolve(UrlType.SCRIPT_BUILTIN, argument));
 		}
 	}
 
@@ -41,7 +41,7 @@ public class ScriptHelper implements IHelperMethod {
 
 		@Override
 		public String toString() {
-			return String.format("<script src=\"%s\"></script>", event.resolve(UrlType.SCRIPT, argument).render());
+			return String.format("<script src=\"%s\"></script>", event.resolve(UrlType.SCRIPT, argument));
 		}
 	}
 }
