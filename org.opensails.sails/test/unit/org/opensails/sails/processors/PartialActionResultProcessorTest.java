@@ -7,10 +7,10 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.opensails.sails.controller.oem.PartialActionResult;
-import org.opensails.sails.helper.IMixinResolver;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.template.IExceptionHandler;
+import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 

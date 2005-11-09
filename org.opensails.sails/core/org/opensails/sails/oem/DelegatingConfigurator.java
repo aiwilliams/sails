@@ -4,7 +4,7 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.helper.MixinResolver;
+import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.url.UrlResolver;
 import org.opensails.sails.util.ClassHelper;
 

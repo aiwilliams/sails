@@ -1,4 +1,4 @@
-package org.opensails.sails.helper;
+package org.opensails.sails.template;
 
 import java.util.ArrayList;
 import java.util.List;

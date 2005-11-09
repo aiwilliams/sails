@@ -12,7 +12,7 @@ import org.opensails.sails.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.UrlType;
 
-public class UrlForHelperTest extends TestCase {
+public class UrlForMixinTest extends TestCase {
 	public void testAction() {
 		GetEvent event = SailsEventFixture.actionGet("mycontroller", "myaction");
 		UrlforMixin tool = new UrlforMixin(event);

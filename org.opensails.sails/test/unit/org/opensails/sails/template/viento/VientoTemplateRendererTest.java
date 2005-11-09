@@ -3,9 +3,9 @@ package org.opensails.sails.template.viento;
 import junit.framework.TestCase;
 
 import org.opensails.sails.Sails;
-import org.opensails.sails.helper.MixinResolver;
 import org.opensails.sails.oem.ClasspathResourceResolver;
 import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.util.ClassHelper;
 import org.opensails.sails.util.ComponentPackage;
 

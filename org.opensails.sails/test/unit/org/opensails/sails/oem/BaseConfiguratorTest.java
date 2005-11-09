@@ -3,7 +3,7 @@ package org.opensails.sails.oem;
 import junit.framework.TestCase;
 
 import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.helper.IMixinResolver;
+import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class BaseConfiguratorTest extends TestCase {

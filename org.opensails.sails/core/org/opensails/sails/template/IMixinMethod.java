@@ -1,4 +1,4 @@
-package org.opensails.sails.helper;
+package org.opensails.sails.template;
 
 /**
  * If your mixin can be called with arguments, as in something like

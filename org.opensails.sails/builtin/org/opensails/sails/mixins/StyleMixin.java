@@ -1,7 +1,7 @@
 package org.opensails.sails.mixins;
 
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.helper.IMixinMethod;
+import org.opensails.sails.template.IMixinMethod;
 import org.opensails.sails.url.UrlType;
 
 public class StyleMixin implements IMixinMethod {

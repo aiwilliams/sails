@@ -2,7 +2,7 @@ package org.opensails.sails.processors;
 
 import org.opensails.sails.IActionResultProcessor;
 import org.opensails.sails.controller.oem.PartialActionResult;
-import org.opensails.sails.helper.IMixinResolver;
+import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 

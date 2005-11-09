@@ -4,7 +4,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IActionResultProcessor;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.TemplateActionResult;
-import org.opensails.sails.helper.IMixinResolver;
+import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 
