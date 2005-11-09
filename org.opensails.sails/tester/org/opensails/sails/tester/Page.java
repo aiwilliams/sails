@@ -12,9 +12,9 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.http.ContentType;
-import org.opensails.sails.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.tester.form.Form;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.util.RegexHelper;
 
 public class Page {

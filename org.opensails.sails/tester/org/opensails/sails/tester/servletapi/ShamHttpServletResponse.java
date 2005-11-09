@@ -3,7 +3,7 @@
  *
  * (c) 2005 Adam Williams
  */
-package org.opensails.sails.servletapi;
+package org.opensails.sails.tester.servletapi;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

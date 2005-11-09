@@ -4,10 +4,10 @@ import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.PostEvent;
 import org.opensails.sails.oem.SailsApplication;
-import org.opensails.sails.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.servletapi.ShamHttpSession;
 import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpSession;
 
 public class TestableSailsApplication extends SailsApplication {
 	protected ShamHttpSession session;

@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.url.EventUrl;
 
 public class EventUrlTest extends TestCase {

@@ -1,8 +1,8 @@
 package org.opensails.sails.oem;
 
 import org.apache.commons.configuration.Configuration;
-import org.opensails.sails.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 
 public class ShamEvent extends AbstractEvent {
     public boolean beginDispatchCalled;

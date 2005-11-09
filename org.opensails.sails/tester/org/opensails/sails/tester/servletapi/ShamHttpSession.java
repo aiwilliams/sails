@@ -1,4 +1,4 @@
-package org.opensails.sails.servletapi;
+package org.opensails.sails.tester.servletapi;
 
 import java.util.Collections;
 import java.util.Enumeration;

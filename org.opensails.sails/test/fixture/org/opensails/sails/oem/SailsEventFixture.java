@@ -7,8 +7,8 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.Sails;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.form.FormFields;
-import org.opensails.sails.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 
 public class SailsEventFixture {
 	public static AbstractEvent abstractEvent(ISailsApplication application) {

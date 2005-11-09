@@ -2,7 +2,7 @@ package org.opensails.sails.tester;
 
 import junit.framework.Assert;
 
-import org.opensails.sails.servletapi.ShamHttpSession;
+import org.opensails.sails.tester.servletapi.ShamHttpSession;
 
 public class TestSession {
 	protected final TestableSailsApplication application;

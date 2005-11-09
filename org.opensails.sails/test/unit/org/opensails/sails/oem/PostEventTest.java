@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.html.Submit;
-import org.opensails.sails.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 
 public class PostEventTest extends TestCase {
 	public void testGetAction_ImageSubmit() {

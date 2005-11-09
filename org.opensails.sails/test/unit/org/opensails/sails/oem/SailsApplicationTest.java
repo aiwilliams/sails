@@ -7,10 +7,10 @@ import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.ISailsApplicationConfigurator;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsApplicationConfiguratorFixture;
-import org.opensails.sails.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.servletapi.ShamHttpServletResponse;
-import org.opensails.sails.servletapi.ShamServletConfig;
-import org.opensails.sails.servletapi.ShamServletContext;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamServletConfig;
+import org.opensails.sails.tester.servletapi.ShamServletContext;
 
 public class SailsApplicationTest extends TestCase {
     private ISailsEvent dispatchedEvent;

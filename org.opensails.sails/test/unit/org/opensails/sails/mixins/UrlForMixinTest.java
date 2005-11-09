@@ -8,7 +8,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
-import org.opensails.sails.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.UrlType;
 

@@ -14,10 +14,10 @@ import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.persist.IIdentifiable;
-import org.opensails.sails.servletapi.ShamServletConfig;
-import org.opensails.sails.servletapi.ShamServletContext;
 import org.opensails.sails.tester.form.TestFormFields;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
+import org.opensails.sails.tester.servletapi.ShamServletConfig;
+import org.opensails.sails.tester.servletapi.ShamServletContext;
 import org.opensails.sails.util.ClassInstanceAccessor;
 
 public class SailsTester implements ISailsApplication {

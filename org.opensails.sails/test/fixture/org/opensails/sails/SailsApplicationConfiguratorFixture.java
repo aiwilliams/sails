@@ -9,7 +9,7 @@ import junit.framework.Assert;
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.SailsApplication;
-import org.opensails.sails.servletapi.ShamServletConfig;
+import org.opensails.sails.tester.servletapi.ShamServletConfig;
 import org.opensails.sails.util.ClassInstanceAccessor;
 
 public class SailsApplicationConfiguratorFixture {

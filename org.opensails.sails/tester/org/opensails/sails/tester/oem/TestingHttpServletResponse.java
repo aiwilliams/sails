@@ -1,7 +1,7 @@
 package org.opensails.sails.tester.oem;
 
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 
 public class TestingHttpServletResponse extends ShamHttpServletResponse {
     protected ISailsEvent event;
