@@ -1,0 +1,8 @@
+<html>
+<head>
+$script.builtin('prototype.js')
+</head>
+<body>
+<button onClick="new Ajax.Request('$urlfor.action('exception')', {onFailure: function(req) {alert(req.responseText);}})">Push Me</button>
+</body>
+</html>
