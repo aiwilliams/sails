@@ -55,6 +55,14 @@ public class BaseController implements IControllerImpl {
 		return null;
 	}
 
+	protected TemplateActionResult getTemplateResult() {
+		return setResult(new TemplateActionResult(event));
+	}
+
+	protected void layout(String templateIdentifier) {
+		getTemplateResult().setLayout(templateIdentifier);
+	}
+
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
 		return setResult(new RedirectActionResult(event, controller, action));
 	}

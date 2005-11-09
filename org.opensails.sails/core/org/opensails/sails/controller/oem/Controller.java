@@ -12,6 +12,7 @@ import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.oem.ExceptionEvent;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.PostEvent;
+import org.opensails.sails.template.Layout;
 
 public class Controller implements IController {
 	protected final Map<String, Action> actions;
@@ -62,7 +63,15 @@ public class Controller implements IController {
 	public IActionResult process(ISailsEvent event) {
 		IControllerImpl controller = createInstance(event);
 		Action action = getAction(event.getActionName());
-		return action.execute(event, controller, event.getActionParameters());
+		IActionResult actionResult = action.execute(event, controller, event.getActionParameters());
+		if (actionResult instanceof TemplateActionResult
+				&& !((TemplateActionResult) actionResult).hasLayoutBeenSet()
+				&& controller != null
+				&& controller.getClass().isAnnotationPresent(Layout.class)) {
+			Layout layout = controller.getClass().getAnnotation(Layout.class);
+			((TemplateActionResult) actionResult).setLayout(layout.value());
+		}
+		return actionResult;
 	}
 
 	public IActionResult process(PostEvent event) {

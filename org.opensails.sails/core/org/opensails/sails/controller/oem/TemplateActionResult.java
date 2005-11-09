@@ -5,6 +5,7 @@ import org.opensails.sails.http.ContentType;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class TemplateActionResult extends AbstractActionResult {
+	protected boolean hasLayoutBeenSet;
 	protected String identifier;
 	protected String layoutIdentifier;
 
@@ -34,7 +35,12 @@ public class TemplateActionResult extends AbstractActionResult {
 		return layoutIdentifier != null;
 	}
 
-	public void layout(String templateIdentifier) {
+	public boolean hasLayoutBeenSet() {
+		return hasLayoutBeenSet;
+	}
+
+	public void setLayout(String templateIdentifier) {
+		hasLayoutBeenSet = true;
 		layoutIdentifier = templateIdentifier;
 	}
 

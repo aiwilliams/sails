@@ -15,6 +15,7 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.template.Layout;
 
 public class Action implements IAction {
 	protected static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
@@ -77,10 +78,19 @@ public class Action implements IAction {
 		Method actionMethod = methodHavingArgCount(unadaptedParameters.length);
 		if (actionMethod == null) return defaultActionResult(event, implementationInstance);
 		Object[] actionArguments = adaptParameters(unadaptedParameters, actionMethod.getParameterTypes(), implementationInstance.getContainer());
-		return executeMethod(event, implementationInstance, actionMethod, actionArguments);
+		IActionResult result = executeMethod(event, implementationInstance, actionMethod, actionArguments);
+		if (result instanceof TemplateActionResult) {
+			TemplateActionResult templateResult = (TemplateActionResult) result;
+			if (!templateResult.hasLayoutBeenSet())
+				if (actionMethod.isAnnotationPresent(Layout.class)) 
+					templateResult.setLayout(actionMethod.getAnnotation(Layout.class).value());
+		}
+		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.opensails.sails.controller.oem.IAction#getParameterTypes(int)
 	 */
 	public Class<?>[] getParameterTypes(int numberOfArguments) {

@@ -36,7 +36,7 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		mixinResolver = new ShamMixinResolver();
 		actionGet.getContainer().register(IMixinResolver.class, mixinResolver);
 		TemplateActionResult actionResult = new TemplateActionResult(actionGet);
-		actionResult.layout("layout");
+		actionResult.setLayout("layout");
 		processor.process(actionResult);
 		assertTrue(shamTemplateRenderer.renderIExpectCalled);
 		CollectionAssert.containsOnlyOrdered(new String[] { "sham/action", "layout" }, shamTemplateRenderer.templatesRendered);

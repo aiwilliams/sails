@@ -24,6 +24,5 @@ public class StackTraceTest extends TestCase {
 		assertTrue(output.contains("cause message"));
 		assertTrue(output.contains("NullPointerException"));
 		assertTrue(output.contains("Caused by:"));
-		System.out.println(output);
 	}
 }

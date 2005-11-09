@@ -83,7 +83,32 @@ public class ControllerTest extends TestCase {
 		controllerImpl = new ShamControllerLayouts();
 		Controller controller = ControllerFixture.defaultAdapters(ShamControllerLayouts.class);
 		GetEvent event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "classLayout");
-		ScopedContainer container = new ScopedContainer(ApplicationScope.REQUEST) {
+		event.setContainer(createContainer());
+		TemplateActionResult result = (TemplateActionResult) controller.process(event);
+		assertEquals("classLayout", result.getLayout());
+		
+		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "actionLayout");
+		event.setContainer(createContainer());
+		result = (TemplateActionResult) controller.process(event);
+		assertEquals("actionLayout", result.getLayout());
+		
+		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "methodLayout");
+		event.setContainer(createContainer());
+		result = (TemplateActionResult) controller.process(event);
+		assertEquals("methodLayout", result.getLayout());
+		
+		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "layoutNoneMethod");
+		event.setContainer(createContainer());
+		result = (TemplateActionResult) controller.process(event);
+		assertEquals(null, result.getLayout());
+		
+		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "notTemplateResult");
+		event.setContainer(createContainer());
+		controller.process(event);
+	}
+
+	ScopedContainer createContainer() {
+		return new ScopedContainer(ApplicationScope.REQUEST) {
 			@Override
 			@SuppressWarnings("unchecked")
 			public <T> T instance(Class<T> key, Class defaultImplementation) {
@@ -94,10 +119,6 @@ public class ControllerTest extends TestCase {
 				return super.instance(key, defaultImplementation);
 			}
 		};
-		event.setContainer(container);
-		TemplateActionResult result = (TemplateActionResult) controller.process(event);
-		assertEquals("classLayout()", controllerImpl.actionInvoked);
-		assertEquals("classLayout", result.getLayout());
 	}
 
 	public void testProcess_NoControllerImpl() throws Exception {

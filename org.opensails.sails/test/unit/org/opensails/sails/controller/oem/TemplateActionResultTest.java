@@ -10,4 +10,15 @@ public class TemplateActionResultTest extends TestCase {
 		TemplateActionResult result = new TemplateActionResult(SailsEventFixture.actionGet());
 		assertEquals(ContentType.TEXT_HTML.toHttpValue(), result.getEvent().getResponse().getContentType());
 	}
+
+	public void testHasLayout() throws Exception {
+		TemplateActionResult result = new TemplateActionResult(SailsEventFixture.sham());
+		assertFalse(result.hasLayout());
+
+		result.setLayout("hello");
+		assertTrue(result.hasLayout());
+
+		result.setLayout(null);
+		assertFalse(result.hasLayout());
+	}
 }

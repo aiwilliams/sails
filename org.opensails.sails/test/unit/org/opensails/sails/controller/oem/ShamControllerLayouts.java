@@ -5,11 +5,21 @@ import org.opensails.sails.template.Layout;
 @Layout("classLayout")
 public class ShamControllerLayouts extends ShamController {
 	@Layout("actionLayout")
-	public void actionLayout() {
-		actionInvoked = "actionLayout";
+	public void actionLayout() {}
+
+	public void classLayout() {}
+
+	@Layout("actionLayout")
+	public void layoutNoneMethod() {
+		layout(null);
 	}
 
-	public void classLayout() {
-		actionInvoked = "classLayout()";
+	@Layout("actionLayout")
+	public void methodLayout() {
+		layout("methodLayout");
+	}
+
+	public void notTemplateResult() {
+		renderString("so the result isnt template");
 	}
 }
