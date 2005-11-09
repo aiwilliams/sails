@@ -1,0 +1,22 @@
+<!-- Follow the instructions here: http://maven.apache.org/maven-1.x/start/install.html
+	to setup the 1.1 beta version of maven, then from a console cd into this directory and run "maven test" -->
+
+<project>
+  <groupId>org.opensails</groupId>
+  <artifactId>org.opensails.rigging</artifactId>
+  <currentVersion>0.1</currentVersion>
+  
+  <repository>
+    <connection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.rigging</connection>
+  </repository>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+  </build>
+</project>
