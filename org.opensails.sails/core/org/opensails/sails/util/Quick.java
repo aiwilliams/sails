@@ -22,4 +22,11 @@ public class Quick {
             map.put((K)objects[i], (V)objects[i+1]);
         return map;
     }
+    
+    public static String string(Object... objects) {
+    	StringBuilder buffer = new StringBuilder();
+    	for (Object object : objects)
+			buffer.append(object);
+    	return buffer.toString();
+    }
 }
