@@ -64,6 +64,10 @@ public class SimpleContainerTest extends TestCase {
 			public boolean isInstantiated() {
 				return true;
 			}
+
+			public Class<?> type() {
+				return ShamComponent.class;
+			}
         });
 
         assertSame(component, container.instance(ShamComponent.class));
@@ -126,6 +130,12 @@ public class SimpleContainerTest extends TestCase {
         container.start();
         assertTrue(container.instance(ShamStartable.class).started);
     }
+    
+    public void testStart_Implementation() throws Exception {
+		container.register(ShamComponent.class, BreaksStart.class);
+		container.start();
+		assertTrue(((BreaksStart)container.instance(ShamComponent.class)).called);
+	}
 
     public void testStop() throws Exception {
         container.register(ShamStoppable.class);
@@ -197,5 +207,12 @@ public class SimpleContainerTest extends TestCase {
 		public boolean isTied() {
 			return tied;
 		}
+    }
+    
+    public static class BreaksStart extends ShamComponent implements Startable {
+    	boolean called = false;
+    	public void start() {
+    		called = true;
+    	}
     }
 }

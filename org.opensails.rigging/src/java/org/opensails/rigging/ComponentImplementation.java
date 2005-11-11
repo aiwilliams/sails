@@ -54,4 +54,8 @@ public class ComponentImplementation implements ComponentResolver {
 	public boolean isInstantiated() {
 		return instance != null;
 	}
+
+	public Class<?> type() {
+		return theClass;
+	}
 }

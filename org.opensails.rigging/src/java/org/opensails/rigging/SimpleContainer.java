@@ -111,10 +111,8 @@ public class SimpleContainer {
 		List<T> instances = new ArrayList<T>();
         for (IComponentResolverResolver resolverResolver : resolverResolvers)
             for (Class key : resolverResolver.keySet()) {
-            	if (!type.isAssignableFrom(key))
-            		continue;
             	ComponentResolver resolver = resolverResolver.resolve(key, this);
-                if (resolver.isInstantiated() || shouldInstantiate)
+                if (type.isAssignableFrom(resolver.type()) && (resolver.isInstantiated() || shouldInstantiate))
                 	instances.add((T) resolver.instance());
             }
         return instances;

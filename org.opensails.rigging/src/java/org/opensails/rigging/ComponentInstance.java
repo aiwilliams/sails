@@ -14,4 +14,8 @@ public class ComponentInstance implements ComponentResolver {
 	public boolean isInstantiated() {
 		return true;
 	}
+
+	public Class<?> type() {
+		return instance.getClass();
+	}
 }

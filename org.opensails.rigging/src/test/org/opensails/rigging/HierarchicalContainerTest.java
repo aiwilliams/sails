@@ -25,12 +25,6 @@ public class HierarchicalContainerTest extends TestCase {
 		assertNotSame(parent.instance(ShamComponent.class), child.instance(ShamComponent.class));
 	}
 
-    public void testDispose() throws Exception {
-		child.register(ShamDisposable.class);
-		parent.dispose();
-		assertTrue(child.instance(ShamDisposable.class).disposed);
-	}
-
 	public void testInstance_UnsatisfiableDependencies() throws Exception {
         parent.register(ShamComponentWithDependencies.class);
         try {
@@ -61,18 +55,6 @@ public class HierarchicalContainerTest extends TestCase {
 		parent.removeChild(child);
 		assertNull(child.getParent());
 		assertNull(child.instance(ShamComponent.class));
-	}
-	
-	public void testStart() throws Exception {
-		child.register(ShamStartable.class);
-		parent.start();
-		assertTrue(child.instance(ShamStartable.class).started);
-	}
-	
-	public void testStop() throws Exception {
-		child.register(ShamStoppable.class);
-		parent.stop();
-		assertTrue(child.instance(ShamStoppable.class).stopped);
 	}
 	
     public void testAllInstances() throws Exception {
