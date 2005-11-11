@@ -50,4 +50,8 @@ public class ComponentImplementation implements ComponentResolver {
             if (!container.contains(type)) canSatisfy = false;
         return canSatisfy;
     }
+
+	public boolean isInstantiated() {
+		return instance != null;
+	}
 }

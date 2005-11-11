@@ -74,4 +74,12 @@ public class HierarchicalContainerTest extends TestCase {
 		parent.stop();
 		assertTrue(child.instance(ShamStoppable.class).stopped);
 	}
+	
+    public void testAllInstances() throws Exception {
+		child.register(ShamComponent.class, new ShamComponent());
+		parent.register(ShamSubclassingComponent.class);
+		assertEquals(1, parent.allInstances(false).size());
+		assertEquals(2, parent.allInstances(true).size());
+		assertEquals(2, parent.allInstances(false).size());
+	}
 }

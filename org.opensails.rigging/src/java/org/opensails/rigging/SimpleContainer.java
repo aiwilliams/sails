@@ -1,6 +1,7 @@
 package org.opensails.rigging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -19,11 +20,12 @@ public class SimpleContainer {
             if (resolverResolver.canResolve(key, this)) return true;
         return false;
     }
-
+    
+    /**
+     * Only disposes things that are already instantiated.
+     */
     public void dispose() {
-        for (IComponentResolverResolver resolverResolver : resolverResolvers)
-            for (Class type : resolverResolver.keySet())
-                if (Disposable.class.isAssignableFrom(type)) ((Disposable) instance(type)).dispose();
+    	broadcast(Disposable.class, false).dispose();
     }
 
     public <T> T instance(Class<T> key) {
@@ -61,16 +63,18 @@ public class SimpleContainer {
         register((Class<T>) instance.getClass(), instance);
     }
 
+    /**
+     * Starts everything, even if it has to be instantiated.
+     */
     public void start() {
-        for (IComponentResolverResolver resolverResolver : resolverResolvers)
-            for (Class type : resolverResolver.keySet())
-                if (Startable.class.isAssignableFrom(type)) ((Startable) instance(type)).start();
+        broadcast(Startable.class, true).start();
     }
 
+    /**
+     * Only stops things that are already instantiated.
+     */
     public void stop() {
-        for (IComponentResolverResolver resolverResolver : resolverResolvers)
-            for (Class type : resolverResolver.keySet())
-                if (Stoppable.class.isAssignableFrom(type)) ((Stoppable) instance(type)).stop();
+    	broadcast(Stoppable.class, false).stop();
     }
 
     protected <T> ComponentResolver resolveResolver(Class<T> key) {
@@ -90,4 +94,29 @@ public class SimpleContainer {
 	public void registerAll(SimpleContainer anotherContainer) {
 		mapResolverResolver.componentResolvers.putAll(anotherContainer.mapResolverResolver.componentResolvers);
 	}
+
+	public <T> T broadcast(Class<T> type, boolean shouldInstantiate) {
+		return Broadcast.to(type, allInstances(type, shouldInstantiate));
+	}
+
+	public Collection<Object> allInstances(boolean shouldInstantiate) {
+		return allInstances(Object.class, shouldInstantiate);
+	}
+	
+	/**
+	 * Even if shouldInstantiate is true, it won't instantiate objects that do not subclass type. 
+	 * @return all instances that subclass the given type.
+	 */
+	public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
+		List<T> instances = new ArrayList<T>();
+        for (IComponentResolverResolver resolverResolver : resolverResolvers)
+            for (Class key : resolverResolver.keySet()) {
+            	if (!type.isAssignableFrom(key))
+            		continue;
+            	ComponentResolver resolver = resolverResolver.resolve(key, this);
+                if (resolver.isInstantiated() || shouldInstantiate)
+                	instances.add((T) resolver.instance());
+            }
+        return instances;
+    }
 }

@@ -1,6 +1,7 @@
 package org.opensails.rigging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class HierarchicalContainer extends SimpleContainer {
@@ -59,27 +60,6 @@ public class HierarchicalContainer extends SimpleContainer {
 		return parent.instance(key);
 	}
 
-	@Override
-	public void start() {
-		super.start();
-		for (HierarchicalContainer child : children)
-			child.start();
-	}
-
-	@Override
-	public void stop() {
-		super.stop();
-		for (HierarchicalContainer child : children)
-			child.stop();
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		for (HierarchicalContainer child : children)
-			child.dispose();
-	}
-	
 	public void removeChild(HierarchicalContainer child) {
 		children.remove(child);
 		child.orphan();
@@ -87,5 +67,13 @@ public class HierarchicalContainer extends SimpleContainer {
 	
 	protected void orphan() {
 		parent = null;
+	}
+	
+	@Override
+	public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
+		Collection<T> instances = super.allInstances(type, shouldInstantiate);
+		for (HierarchicalContainer child : children)
+			instances.addAll(child.allInstances(type, shouldInstantiate));
+		return instances;
 	}
 }

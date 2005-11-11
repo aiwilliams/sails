@@ -18,6 +18,8 @@ public class SimpleContainerTest extends TestCase {
     public void testDispose() throws Exception {
         container.register(ShamDisposable.class);
         container.dispose();
+        assertFalse("Should not instantiate", container.instance(ShamDisposable.class).disposed);
+        container.dispose();
         assertTrue(container.instance(ShamDisposable.class).disposed);
     }
 
@@ -58,6 +60,10 @@ public class SimpleContainerTest extends TestCase {
             public Object instance() {
                 return component;
             }
+
+			public boolean isInstantiated() {
+				return true;
+			}
         });
 
         assertSame(component, container.instance(ShamComponent.class));
@@ -124,6 +130,8 @@ public class SimpleContainerTest extends TestCase {
     public void testStop() throws Exception {
         container.register(ShamStoppable.class);
         container.stop();
+        assertFalse("Should not instantiate", container.instance(ShamStoppable.class).stopped);
+        container.stop();
         assertTrue(container.instance(ShamStoppable.class).stopped);
     }
     
@@ -142,4 +150,52 @@ public class SimpleContainerTest extends TestCase {
 		assertTrue(container.instance(ShamComponent.class) instanceof ShamSubclassingComponent);
 		assertSame(anotherContainer.instance(ShamStartable.class), container.instance(ShamStartable.class));
 	}
+   
+    public void testAllInstances() throws Exception {
+		container.register(ShamComponent.class, new ShamComponent());
+		container.register(ShamSubclassingComponent.class);
+		assertEquals(1, container.allInstances(ShamComponent.class, false).size());
+		assertEquals(2, container.allInstances(ShamComponent.class, true).size());
+		assertEquals(2, container.allInstances(ShamComponent.class, false).size());
+		
+		assertEquals(1, container.allInstances(ShamSubclassingComponent.class, false).size());
+	}
+    
+    public void testBroadcast() throws Exception {
+		container.register(IShoelace.class, Shoelace.class);
+		container.broadcast(IShoelace.class, false).tie();
+		
+		IShoelace shoelace = container.instance(IShoelace.class);
+		assertFalse(shoelace.isTied());
+
+		container.broadcast(IShoelace.class, false).tie();
+		assertTrue(shoelace.isTied());
+
+		container.register(IShoelace.class, Shoelace.class);
+		container.broadcast(IShoelace.class, true).tie();
+		IShoelace anotherShoelace = container.instance(IShoelace.class);
+		assertTrue(anotherShoelace.isTied());
+		assertNotSame(shoelace, anotherShoelace);
+	}
+
+    public static interface IShoelace {
+    	void tie(); 
+    	void untie();
+    	boolean isTied();
+    }
+    public static class Shoelace implements IShoelace {
+    	public boolean tied = false;
+    	
+    	public void tie() {
+    		tied = true;
+    	}
+
+		public void untie() {
+			tied = false;
+		}
+		
+		public boolean isTied() {
+			return tied;
+		}
+    }
 }

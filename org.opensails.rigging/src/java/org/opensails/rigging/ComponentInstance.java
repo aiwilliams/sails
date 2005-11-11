@@ -10,4 +10,8 @@ public class ComponentInstance implements ComponentResolver {
 	public Object instance() {
 		return instance;
 	}
+
+	public boolean isInstantiated() {
+		return true;
+	}
 }
