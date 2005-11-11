@@ -11,6 +11,8 @@
 		<javac destdir="${temp.classes}" debug="on" optimize="on" classpath="${lib.dir}">
 			<src path="builtin"/>
 			<src path="core"/>
+			<include name="**/*.java" />
+			<include name="**/*.vto" />
 			<classpath>
 				<fileset dir="${lib.dir}" includes="*.jar"/>
 			</classpath>
