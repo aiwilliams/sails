@@ -18,6 +18,10 @@ public class HierarchicalContainer extends SimpleContainer {
 		this.parent = parent;
 	}
 
+	public void addChild(ScopedContainer child) {
+		children.add(child);
+	}
+
 	/**
 	 * @return child
 	 */
