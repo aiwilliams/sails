@@ -15,7 +15,7 @@ public class FormTest extends TestCase {
 		SailsTester tester = new DockTester();
 		tester.setWorkingController(FormController.class);
 		Page page = tester.get("basic");
-		Form form = page.getForm();
+		Form form = page.form();
 		form.submit("Push Me");
 		form.text("example.text").labeled("Example Text");
 		form.select("example.select").labeled("Example Select").options().labels("", "option one", "option two");
@@ -33,7 +33,7 @@ public class FormTest extends TestCase {
 		FormFields formFields = new FormFields();
 		formFields.setValue("user.firstName", "James");
 		Page page = tester.post(FormController.class, "basicPost", formFields, user);
-		page.getForm().validated();
+		page.form().validated();
 		assertEquals("James", user.getFirstName());
 	}
 
