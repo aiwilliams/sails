@@ -9,6 +9,12 @@ public class HtmlPattern {
 	public static final Pattern ATTRIBUTE_VALUE = Pattern.compile("value=[\"|'](.*?)[\"|']", Pattern.CASE_INSENSITIVE);
 	public static final Pattern LABEL = Pattern.compile("<label for=\"(.*?)\">(.*?)</label>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
+	public static boolean matchesId(String source, String expected) {
+		Matcher matcher = HtmlPattern.ATTRIBUTE_ID.matcher(source);
+		if (matcher.find()) return matcher.group(1).equals(expected);
+		return false;
+	}
+
 	public static boolean matchesName(String source, String expected) {
 		Matcher matcher = HtmlPattern.ATTRIBUTE_NAME.matcher(source);
 		if (matcher.find()) return matcher.group(1).equals(expected);

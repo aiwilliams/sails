@@ -27,8 +27,14 @@ public abstract class TestFormElement<T extends TestFormElement> extends TestEle
 	public String getName() {
 		return name;
 	}
-	
-	@Override
+
+	/**
+	 * Asserts that this element has a label with expected value. This is done
+	 * differently by elements.
+	 * 
+	 * @param expected
+	 * @return this
+	 */
 	@SuppressWarnings("unchecked")
 	public T labeled(String expected) {
 		if (id == null) throw new TestElementError(getClass(), containerSource, "Cannot find label for form element without id");

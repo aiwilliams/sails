@@ -13,6 +13,7 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.form.Form;
+import org.opensails.sails.tester.html.FieldSet;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.util.RegexHelper;
@@ -33,7 +34,7 @@ public class Page {
 	}
 
 	public void assertContains(String message, String exactString) throws AssertionFailedError {
-		assertPageExpectation(message + " Expected " + getUrl() + " to contain <" + exactString + ">", response.getWrittenContent().contains(exactString));
+		assertPageExpectation(message + " Expected " + getUrl() + " to contain <" + exactString + ">", source().contains(exactString));
 	}
 
 	public void assertContentType(ContentType expected) throws AssertionFailedError {
@@ -45,21 +46,29 @@ public class Page {
 	}
 
 	public void assertMatches(String message, String regex) {
-		assertPageExpectation(message + " Expected " + getUrl() + " to match <" + regex + ">", RegexHelper.containsMatch(response.getWrittenContent(), regex));
+		assertPageExpectation(message + " Expected " + getUrl() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
 	}
 
 	public boolean contains(String exactString) {
-		return response.getWrittenContent().contains(exactString);
+		return source().contains(exactString);
+	}
+
+	/**
+	 * @param id
+	 * @return a FieldSet anywhere on this page
+	 */
+	public FieldSet fieldSet(String id) {
+		return new FieldSet(source(), id);
+	}
+
+	public Form form() {
+		HtmlForm htmlForm = getContainer().instance(HtmlForm.class);
+		if (htmlForm != null) return new Form(source(), htmlForm);
+		else return new Form(source());
 	}
 
 	public ScopedContainer getContainer() {
 		return event.getContainer();
-	}
-
-	public Form getForm() {
-		HtmlForm htmlForm = getContainer().instance(HtmlForm.class);
-		if (htmlForm != null) return new Form(response.getWrittenContent(), htmlForm);
-		else return new Form(response.getWrittenContent());
 	}
 
 	public TestRedirectUrl getRedirectUrl() {
@@ -71,7 +80,14 @@ public class Page {
 	}
 
 	public boolean matches(String regex) {
-		return response.getWrittenContent().matches(regex);
+		return source().matches(regex);
+	}
+
+	/**
+	 * @return the html source
+	 */
+	public String source() {
+		return response.getWrittenContent();
 	}
 
 	public void viewSource(Writer writer) {
@@ -79,7 +95,7 @@ public class Page {
 			writer.write("vvvvvvvvvvvvvvvvvv begin response to ");
 			writer.write(event.getEventUrl().getActionUrl());
 			writer.write(" vvvvvvvvvvvvvvvvvv\n");
-			writer.write(response.getWrittenContent());
+			writer.write(source());
 			writer.write("\n^^^^^^^^^^^^^^^^^^^ end response to ");
 			writer.write(event.getEventUrl().getActionUrl());
 			writer.write(" ^^^^^^^^^^^^^^^^^^^");

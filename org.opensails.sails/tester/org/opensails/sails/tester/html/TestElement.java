@@ -3,7 +3,6 @@ package org.opensails.sails.tester.html;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public abstract class TestElement<T extends TestElement> {
 	protected String containerSource;
 	protected String elementSource;
@@ -22,13 +21,17 @@ public abstract class TestElement<T extends TestElement> {
 	}
 
 	/**
-	 * Asserts that this element has a label with expected value. This is done
-	 * differently by elements.
-	 * 
-	 * @param expected
-	 * @return this
+	 * @param containerSource
+	 * @param matchCriteria used to select the correct source for this element
+	 *        when the pattern from {@link #getPattern()} matches multiple
+	 *        times. This can and will be subclass specific.
+	 * @param id expected id
 	 */
-	public abstract T labeled(String expected);
+	public TestElement(String containerSource, String matchCriteria, String id) {
+		this.containerSource = containerSource;
+		this.elementSource = elementSource(matchCriteria);
+		this.id = id;
+	}
 
 	/**
 	 * Finds the element source in the container source where the name attribute

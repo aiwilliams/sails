@@ -36,8 +36,9 @@ public class SailsTester implements ISailsApplication {
 	/**
 	 * Performs an HTTP GET request
 	 * 
-	 * @return the default page of the application, typically home/index. that
-	 *         is left up to the application, not determined by this method.
+	 * @return the default page of the workingController, if set, otherwise the
+	 *         default controller (Home, though that is left up to the
+	 *         application).
 	 */
 	public Page get() {
 		String controller = "";
@@ -110,7 +111,7 @@ public class SailsTester implements ISailsApplication {
 	public ScopedContainer getContainer() {
 		return application.getContainer();
 	}
-	
+
 	public SimpleContainer getRequestContainer() {
 		return requestContainer;
 	}
@@ -141,14 +142,14 @@ public class SailsTester implements ISailsApplication {
 	public <T> void inject(Class<? super T> key, T instance) {
 		getContainer().register(key, instance);
 	}
-	
+
 	/**
 	 * TODO register at the requested scope
 	 */
 	public <T> void inject(Class<? extends T> key, Class<? extends T> implementation, ApplicationScope scope) {
 		getRequestContainer().register(key, implementation);
 	}
-	
+
 	/**
 	 * TODO register at the requested scope
 	 */

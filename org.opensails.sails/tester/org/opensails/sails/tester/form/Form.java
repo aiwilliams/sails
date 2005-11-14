@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import junit.framework.AssertionFailedError;
 
 import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.tester.html.FieldSet;
 import org.opensails.sails.tester.html.SourceContentError;
 
 public class Form {
@@ -64,5 +65,13 @@ public class Form {
 	public Form validated() {
 		if (!form.isValid()) throw new AssertionFailedError(form.getMessage());
 		return this;
+	}
+
+	/**
+	 * @param id
+	 * @return a FieldSet limited to the scope of this form
+	 */
+	public FieldSet fieldSet(String id) {
+		return new FieldSet(getSource(), id);
 	}
 }

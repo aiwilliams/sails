@@ -13,16 +13,16 @@ public class PageTest extends TestCase {
 		GetEvent event = SailsEventFixture.actionGet();
 		event.write("<form></form>");
 		Page page = new Page(event);
-		assertNotNull(page.getForm());
+		assertNotNull(page.form());
 
 		event = SailsEventFixture.actionGet();
 		page = new Page(event);
 		try {
-			page.getForm();
+			page.form();
 			throw new RuntimeException("If there is no form in the source, or an HtmlForm in the container, invalid");
 		} catch (AssertionFailedError expected) {}
 
 		event.getContainer().register(HtmlForm.class, HtmlFormFixture.create());
-		assertNotNull(page.getForm());
+		assertNotNull(page.form());
 	}
 }
