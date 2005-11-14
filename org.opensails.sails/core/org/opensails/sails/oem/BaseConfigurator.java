@@ -14,6 +14,7 @@ import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsApplicationConfigurator;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.ISailsEventConfigurator;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapterResolver;
@@ -98,14 +99,14 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	/**
 	 * Called for each event, after
-	 * {@link #installMixinResolver(ISailsEvent, ScopedContainer)}
+	 * {@link #installMixinResolver(ISailsEvent, RequestContainer)}
 	 * 
 	 * @param event
 	 * @param resolver
 	 */
 	public void configure(ISailsEvent event, MixinResolver resolver) {}
 
-	public void configure(ISailsEvent event, ScopedContainer eventContainer) {
+	public void configure(ISailsEvent event, RequestContainer eventContainer) {
 		MixinResolver resolver = installMixinResolver(event, eventContainer);
 		configure(event, resolver);
 
@@ -225,7 +226,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return dispatcher;
 	}
 
-	protected MixinResolver installMixinResolver(ISailsEvent event, ScopedContainer eventContainer) {
+	protected MixinResolver installMixinResolver(ISailsEvent event, RequestContainer eventContainer) {
 		MixinResolver resolver = new MixinResolver(event);
 		resolver.push(new ComponentPackage(getBuiltinMixinsPackage(), "Mixin"));
 		resolver.push(new ComponentPackage(getDefaultMixinsPackage(), "Mixin"));

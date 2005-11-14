@@ -4,6 +4,7 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.url.UrlResolver;
 import org.opensails.sails.util.ClassHelper;
@@ -41,7 +42,7 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	public void configure(ISailsEvent event, ScopedContainer eventContainer) {
+	public void configure(ISailsEvent event, RequestContainer eventContainer) {
 		delegate.configure(event, eventContainer);
 	}
 
@@ -131,7 +132,7 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	protected MixinResolver installMixinResolver(ISailsEvent event, ScopedContainer eventContainer) {
+	protected MixinResolver installMixinResolver(ISailsEvent event, RequestContainer eventContainer) {
 		return delegate.installMixinResolver(event, eventContainer);
 	}
 

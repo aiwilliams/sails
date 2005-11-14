@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
-import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.url.IEventUrl;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.IUrlResolver;
@@ -38,7 +37,7 @@ public interface ISailsEvent {
 	/**
 	 * @return the event container (request scoped)
 	 */
-	ScopedContainer getContainer();
+	RequestContainer getContainer();
 
 	/**
 	 * @return the name of the controller this event is bound for

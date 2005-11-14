@@ -14,9 +14,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.oem.Controller;
@@ -28,7 +27,7 @@ import org.opensails.sails.url.UrlType;
 
 public abstract class AbstractEvent implements ILifecycleEvent {
 	protected ISailsApplication application;
-	protected ScopedContainer container;
+	protected RequestContainer container;
 	protected final HttpServletRequest req;
 	protected final HttpServletResponse response;
 	protected OutputStream responseOutputStream;
@@ -36,11 +35,16 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
 	protected EventUrl url;
 
-	public AbstractEvent(ISailsApplication application, HttpServletRequest req, HttpServletResponse resp) {
+	public AbstractEvent(ISailsApplication application, ScopedContainer parentContainer, HttpServletRequest req, HttpServletResponse resp) {
+		this(req, resp);
 		this.application = application;
+		initialize(parentContainer);
+	}
+
+	protected AbstractEvent(HttpServletRequest req, HttpServletResponse resp) {
+		// allow some control for subclasses
 		this.req = req;
 		this.response = resp;
-		initialize();
 	}
 
 	public void beginDispatch() {
@@ -68,7 +72,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return application.getConfiguration();
 	}
 
-	public ScopedContainer getContainer() {
+	public RequestContainer getContainer() {
 		return container;
 	}
 
@@ -136,12 +140,6 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return resolver.resolve(urlType, this, urlFragment);
 	}
 
-	public void setContainer(ScopedContainer container) {
-		if (container.getScope() != ApplicationScope.REQUEST) throw new IllegalArgumentException("Something is trying to associate a container from the wrong scope");
-		this.container = container;
-		containerSet();
-	}
-
 	@Override
 	public String toString() {
 		StringBuffer string = new StringBuffer();
@@ -178,10 +176,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	 * 
 	 * @param container
 	 */
-	protected void containerSet() {
-		container.register(ISailsEvent.class, this);
-		container.register(this);
-	}
+	protected void containerSet() {}
 
 	/**
 	 * @param prefix
@@ -197,7 +192,9 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return (String[]) fieldNames.toArray(new String[fieldNames.size()]);
 	}
 
-	protected void initialize() {
+	protected void initialize(ScopedContainer parentContainer) {
 		this.url = new EventUrl(req);
+		this.container = new RequestContainer(parentContainer, this);
+		containerSet();
 	}
 }

@@ -2,9 +2,12 @@ package org.opensails.sails.oem;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.oem.Controller;
+import org.opensails.sails.url.EventUrl;
 
 public class ExceptionEvent extends AbstractEvent {
 	public static final String CONTROLLER_NAME = "error";
@@ -13,18 +16,23 @@ public class ExceptionEvent extends AbstractEvent {
 	protected ISailsEvent originatingEvent;
 
 	public ExceptionEvent(ISailsEvent event, Throwable t) {
-		super(event.getApplication(), event.getRequest(), event.getResponse());
+		super(event.getRequest(), event.getResponse());
+		this.application = event.getApplication();
 		this.originatingEvent = event;
 		this.exception = t;
-		setContainer(event.getContainer());
 		getResponse().setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		initialize(event.getContainer());
 	}
 
 	@Override
-	public void beginDispatch() {}
+	public void beginDispatch() {
+	// not real beginning
+	}
 
 	@Override
-	public void endDispatch() {}
+	public void endDispatch() {
+	// not real ending
+	}
 
 	public Throwable getException() {
 		return exception;
@@ -45,9 +53,13 @@ public class ExceptionEvent extends AbstractEvent {
 	}
 
 	@Override
-	protected void initialize() {
-		super.initialize();
+	protected void initialize(ScopedContainer parentContainer) {
+		this.url = new EventUrl(req);
 		url.setAction("exception");
 		url.setController("error");
+
+		// you could consider the originating event as the parent ;)
+		container = (RequestContainer) parentContainer;
+		containerSet();
 	}
 }

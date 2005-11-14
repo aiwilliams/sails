@@ -16,17 +16,6 @@ public class TestingDispatcher extends Dispatcher {
 		super.endDispatch(event);
 	}
 
-	/**
-	 * Exposes container creation for use in TestableSailsApplication. Once this
-	 * has been called, subsequent calls will have no effect, thereby allowing
-	 * configuration of the event container before the event is dispatched.
-	 */
-	@Override
-	public void installContainer(ILifecycleEvent event) {
-		if (event.getContainer() != null) return;
-		super.installContainer(event);
-	}
-
 	@Override
 	protected void endDispatch(ILifecycleEvent event) {
 	// delayed until forced

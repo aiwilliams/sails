@@ -1,7 +1,5 @@
 package org.opensails.sails.oem;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.Sails;
@@ -12,9 +10,7 @@ import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 
 public class SailsEventFixture {
 	public static AbstractEvent abstractEvent(ISailsApplication application) {
-		AbstractEvent event = new AbstractEvent(application, new ShamHttpServletRequest(), new ShamHttpServletResponse()) {};
-		setContainer(event, application);
-		return event;
+		return new AbstractEvent(application, application.getContainer(), new ShamHttpServletRequest(), new ShamHttpServletResponse()) {};
 	}
 
 	public static ExceptionEvent actionException(Class<? extends IControllerImpl> originatingController, String originatingAction) {
@@ -38,8 +34,7 @@ public class SailsEventFixture {
 		ShamHttpServletRequest request = new ShamHttpServletRequest(ShamHttpServletRequest.GET);
 		setControllerAction(request, controller, action);
 		ISailsApplication application = SailsApplicationFixture.basic();
-		GetEvent event = new GetEvent(application, request, new ShamHttpServletResponse());
-		return setContainer(event, application);
+		return new GetEvent(application, request, new ShamHttpServletResponse());
 	}
 
 	public static PostEvent actionPost(FormFields fields) {
@@ -48,8 +43,7 @@ public class SailsEventFixture {
 
 	public static PostEvent actionPost(String controller, String action) {
 		ISailsApplication application = SailsApplicationFixture.basic();
-		PostEvent event = new PostEvent(application, setControllerAction(new ShamHttpServletRequest(), controller, action), new ShamHttpServletResponse());
-		return setContainer(event, application);
+		return new PostEvent(application, setControllerAction(new ShamHttpServletRequest(), controller, action), new ShamHttpServletResponse());
 	}
 
 	public static PostEvent actionPost(String controller, String action, FormFields formFields) {
@@ -57,30 +51,11 @@ public class SailsEventFixture {
 		request.setParameters(formFields.toMap());
 		setControllerAction(request, controller, action);
 		ISailsApplication application = SailsApplicationFixture.basic();
-		PostEvent event = new PostEvent(application, request, new ShamHttpServletResponse());
-		return setContainer(event, application);
+		return new PostEvent(application, request, new ShamHttpServletResponse());
 	}
 
 	public static String getImagePath(ISailsEvent event, String image) {
 		return event.getRequest().getContextPath() + "/" + event.getConfiguration().getString(Sails.ConfigurationKey.Url.IMAGES) + "/" + image;
-	}
-
-	/**
-	 * Sets a container onto the event. The container is a new instance for
-	 * every call.
-	 */
-	public static <T extends ILifecycleEvent> T setContainer(T event) {
-		event.setContainer(new ScopedContainer(ApplicationScope.REQUEST));
-		return event;
-	}
-
-	/**
-	 * Sets a container onto the event. The container is a new instance for
-	 * every call. The parent is that of the application.
-	 */
-	public static <T extends ILifecycleEvent> T setContainer(T event, ISailsApplication application) {
-		event.setContainer(application.getContainer().makeChild(ApplicationScope.REQUEST));
-		return event;
 	}
 
 	public static ShamHttpServletRequest setControllerAction(ShamHttpServletRequest request, String controller, String action) {
@@ -89,15 +64,14 @@ public class SailsEventFixture {
 	}
 
 	public static ShamEvent sham() {
-		ShamEvent event = new ShamEvent();
-		setContainer(event);
-		return event;
+		return new ShamEvent();
 	}
 
 	/**
 	 * An 'unknown' ILifecycleEvent subclass
 	 */
 	public static ILifecycleEvent unknown() {
-		return setContainer(new AbstractEvent(SailsApplicationFixture.basic(), new ShamHttpServletRequest(), new ShamHttpServletResponse()) {});
+		ISailsApplication app = SailsApplicationFixture.basic();
+		return new AbstractEvent(app, app.getContainer(), new ShamHttpServletRequest(), new ShamHttpServletResponse()) {};
 	}
 }

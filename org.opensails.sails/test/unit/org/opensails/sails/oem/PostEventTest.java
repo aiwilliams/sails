@@ -13,10 +13,10 @@ public class PostEventTest extends TestCase {
 		request.setPathInfo("controller/actionIsIgnoredWhenFormMetaActionFound");
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe.x", "45");
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe.y", "23");
-		PostEvent event = new PostEvent(new SailsApplication(), request, new ShamHttpServletResponse());
+		PostEvent event = new PostEvent(SailsApplicationFixture.basic(), request, new ShamHttpServletResponse());
 		assertEquals("pressMe", event.getActionName());
 
-		event = new PostEvent(new SailsApplication(), request, new ShamHttpServletResponse());
+		event = new PostEvent(SailsApplicationFixture.basic(), request, new ShamHttpServletResponse());
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe_parm1_parm2", "Press Me");
 		assertEquals("pressMe", event.getActionName());
 	}
@@ -33,7 +33,7 @@ public class PostEventTest extends TestCase {
 		ShamHttpServletRequest request = new ShamHttpServletRequest();
 		request.setPathInfo("controller/actionIsIgnoredWhenFormMetaActionFound/ignoreParm1/ignoreParm2");
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe_parm1_parm2", "Press Me");
-		PostEvent event = new PostEvent(new SailsApplication(), request, new ShamHttpServletResponse());
+		PostEvent event = new PostEvent(SailsApplicationFixture.basic(), request, new ShamHttpServletResponse());
 		assertEquals("pressMe", event.getActionName());
 		assertEquals("parm1", event.getActionParameters()[0]);
 		assertEquals("parm2", event.getActionParameters()[1]);
@@ -45,7 +45,7 @@ public class PostEventTest extends TestCase {
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe.x", "45");
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe_parm1_parm2", "Press Me");
 		request.setParameter(Submit.ACTION_PREFIX + "pressMe.y", "23");
-		PostEvent event = new PostEvent(new SailsApplication(), request, new ShamHttpServletResponse());
+		PostEvent event = new PostEvent(SailsApplicationFixture.basic(), request, new ShamHttpServletResponse());
 		assertEquals("pressMe", event.getActionName());
 		assertEquals("parm1", event.getActionParameters()[0]);
 		assertEquals("parm2", event.getActionParameters()[1]);
@@ -55,7 +55,6 @@ public class PostEventTest extends TestCase {
 		ShamHttpServletRequest request = new ShamHttpServletRequest();
 		request.setParameter("paramOne", "paramOneValue");
 		PostEvent event = new PostEvent(SailsApplicationFixture.basic(), request, new ShamHttpServletResponse());
-		SailsEventFixture.setContainer(event);
 		FormFields fields = event.getContainer().instance(FormFields.class);
 		assertEquals("paramOneValue", fields.value("paramOne"));
 	}

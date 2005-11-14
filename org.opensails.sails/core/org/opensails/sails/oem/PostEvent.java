@@ -18,14 +18,8 @@ public class PostEvent extends AbstractEvent {
 	protected static final Pattern XY_COORDINATE_REPLACE = Pattern.compile("\\.[x|y]$");
 
 	public PostEvent(ISailsApplication application, HttpServletRequest req, HttpServletResponse resp) {
-		super(application, req, resp);
+		super(application, application.getContainer(), req, resp);
 	}
-
-	@Override
-	public void beginDispatch() {}
-
-	@Override
-	public void endDispatch() {}
 
 	@Override
 	public String getActionName() {

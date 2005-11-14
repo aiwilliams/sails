@@ -2,8 +2,6 @@ package org.opensails.sails.oem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.IActionResultProcessor;
 import org.opensails.sails.IActionResultProcessorResolver;
 import org.opensails.sails.ISailsApplication;
@@ -61,20 +59,12 @@ public class Dispatcher {
 		event.beginDispatch();
 	}
 
-	protected void destroyContainer(ILifecycleEvent event) {
-		event.getContainer().getParent().removeChild(event.getContainer());
-	}
-
 	protected void endDispatch(ILifecycleEvent event) {
 		event.endDispatch();
-		destroyContainer(event);
 	}
 
 	protected void installContainer(ILifecycleEvent event) {
-		ScopedContainer applicationContainer = application.getContainer();
-		ScopedContainer eventContainer = applicationContainer.makeChild(ApplicationScope.REQUEST);
-		event.setContainer(eventContainer);
-		eventConfigurator.configure(event, eventContainer);
+		eventConfigurator.configure(event, event.getContainer());
 	}
 
 	@SuppressWarnings("unchecked")

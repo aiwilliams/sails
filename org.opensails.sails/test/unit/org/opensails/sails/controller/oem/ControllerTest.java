@@ -2,8 +2,6 @@ package org.opensails.sails.controller.oem;
 
 import junit.framework.TestCase;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
@@ -13,7 +11,6 @@ import org.opensails.sails.oem.SailsEventFixture;
 
 public class ControllerTest extends TestCase {
 	ShamController controllerImpl;
-	Class<?> requestedControllerType;
 
 	/**
 	 * A controller will always return an Action, even when it doesn't exist on
@@ -34,97 +31,51 @@ public class ControllerTest extends TestCase {
 	}
 
 	public void testProcess() throws Exception {
-		controllerImpl = new ShamController();
-		Controller controller = ControllerFixture.defaultAdapters(ShamController.class);
+		Controller controller = ControllerFixture.defaultAdapters(controllerImpl = new ShamController());
 		GetEvent event = SailsEventFixture.actionGet(ShamController.class, "resultAction");
-		ScopedContainer container = new ScopedContainer(ApplicationScope.REQUEST) {
-			@Override
-			@SuppressWarnings("unchecked")
-			public <T> T instance(Class<T> key, Class defaultImplementation) {
-				if (ShamController.class.isAssignableFrom(key)) {
-					requestedControllerType = key;
-					return (T) controllerImpl;
-				}
-				return super.instance(key);
-			}
-		};
-		event.setContainer(container);
 		IActionResult result = controller.process(event);
-		assertEquals(ShamController.class, requestedControllerType);
 		assertEquals("resultAction()", controllerImpl.actionInvoked);
 		assertSame(controllerImpl.resultReturned, result);
 		assertSame(event.getContainer(), controllerImpl.getContainer());
-		assertSame(controllerImpl, event.getContainer().instance(IControllerImpl.class));
 	}
 
 	public void testProcess_ExceptionEvent() throws Exception {
-		controllerImpl = new ShamController();
-		Controller controller = ControllerFixture.defaultAdapters(ShamController.class);
+		Controller controller = ControllerFixture.defaultAdapters(controllerImpl = new ShamController());
 		ExceptionEvent event = SailsEventFixture.actionException(ShamController.class, "resultAction");
-		ScopedContainer container = new ScopedContainer(ApplicationScope.REQUEST) {
-			@Override
-			@SuppressWarnings("unchecked")
-			public <T> T instance(Class<T> key, Class defaultImplementation) {
-				if (ShamController.class.isAssignableFrom(key)) {
-					requestedControllerType = key;
-					return (T) controllerImpl;
-				}
-				return super.instance(key, defaultImplementation);
-			}
-		};
-		event.setContainer(container);
 		controller.process(event);
 		assertEquals("exception(" + ExceptionEvent.class + ")", controllerImpl.actionInvoked);
 		assertSame(event.getContainer(), controllerImpl.getContainer());
-		assertSame(controllerImpl, event.getContainer().instance(IControllerImpl.class));
 	}
 
 	public void testProcess_LayoutAnnotations() throws Exception {
-		controllerImpl = new ShamControllerLayouts();
 		Controller controller = ControllerFixture.defaultAdapters(ShamControllerLayouts.class);
-		GetEvent event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "classLayout");
-		event.setContainer(createContainer());
-		TemplateActionResult result = (TemplateActionResult) controller.process(event);
-		assertEquals("classLayout", result.getLayout());
-		
-		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "actionLayout");
-		event.setContainer(createContainer());
-		result = (TemplateActionResult) controller.process(event);
-		assertEquals("actionLayout", result.getLayout());
-		
-		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "methodLayout");
-		event.setContainer(createContainer());
-		result = (TemplateActionResult) controller.process(event);
-		assertEquals("methodLayout", result.getLayout());
-		
-		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "layoutNoneMethod");
-		event.setContainer(createContainer());
-		result = (TemplateActionResult) controller.process(event);
-		assertEquals(null, result.getLayout());
-		
-		event = SailsEventFixture.actionGet(ShamControllerLayouts.class, "notTemplateResult");
-		event.setContainer(createContainer());
-		controller.process(event);
-	}
+		assertEquals("classLayout", processAsTemplate(controller, "classLayout").getLayout());
+		assertEquals("actionLayout", processAsTemplate(controller, "actionLayout").getLayout());
+		assertEquals("methodLayout", processAsTemplate(controller, "methodLayout").getLayout());
+		assertEquals(null, processAsTemplate(controller, "layoutNoneMethod").getLayout());
+		// Make sure non-TemplateActionResults don't blow up
+		process(controller, "notTemplateResult");
 
-	ScopedContainer createContainer() {
-		return new ScopedContainer(ApplicationScope.REQUEST) {
-			@Override
-			@SuppressWarnings("unchecked")
-			public <T> T instance(Class<T> key, Class defaultImplementation) {
-				if (ShamControllerLayouts.class.isAssignableFrom(key)) {
-					requestedControllerType = key;
-					return (T) controllerImpl;
-				}
-				return super.instance(key, defaultImplementation);
-			}
-		};
+		controller = ControllerFixture.defaultAdapters(ShamControllerLayoutsSubclass.class);
+		// A subclass does not inherit layouts for now, only because it is the
+		// simplest thing
+		// If we decide we want that, we need to make sure it is clearly defined
+		// behavior
+		assertEquals(null, processAsTemplate(controller, "actionLayout").getLayout());
 	}
 
 	public void testProcess_NoControllerImpl() throws Exception {
-		Controller controller = ControllerFixture.defaultAdapters();
+		Controller controller = ControllerFixture.create();
 		GetEvent event = SailsEventFixture.actionGet();
 		controller.process(event);
 		assertFalse(event.getContainer().contains(IControllerImpl.class));
+	}
+
+	IActionResult process(Controller controller, String actionName) {
+		return controller.process(SailsEventFixture.actionGet(controller.getImplementation(), actionName));
+	}
+
+	TemplateActionResult processAsTemplate(Controller controller, String actionName) {
+		return (TemplateActionResult) controller.process(SailsEventFixture.actionGet(controller.getImplementation(), actionName));
 	}
 }

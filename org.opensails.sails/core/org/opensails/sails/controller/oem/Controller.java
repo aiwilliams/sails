@@ -3,7 +3,6 @@ package org.opensails.sails.controller.oem;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IActionResult;
@@ -64,9 +63,7 @@ public class Controller implements IController {
 		IControllerImpl controller = createInstance(event);
 		Action action = getAction(event.getActionName());
 		IActionResult actionResult = action.execute(event, controller, event.getActionParameters());
-		if (actionResult instanceof TemplateActionResult
-				&& !((TemplateActionResult) actionResult).hasLayoutBeenSet()
-				&& controller != null
+		if (actionResult instanceof TemplateActionResult && !((TemplateActionResult) actionResult).hasLayoutBeenSet() && controller != null
 				&& controller.getClass().isAnnotationPresent(Layout.class)) {
 			Layout layout = controller.getClass().getAnnotation(Layout.class);
 			((TemplateActionResult) actionResult).setLayout(layout.value());
@@ -80,10 +77,12 @@ public class Controller implements IController {
 
 	protected IControllerImpl createInstance(ISailsEvent event) {
 		if (controllerImplementation == null) return null;
-		ScopedContainer container = event.getContainer();
-		IControllerImpl instance = container.instance(controllerImplementation, controllerImplementation);
-		container.register(IControllerImpl.class, instance);
+		IControllerImpl instance = createInstance(event, controllerImplementation);
 		instance.set(event, this);
 		return instance;
+	}
+
+	protected IControllerImpl createInstance(ISailsEvent event, Class<? extends IControllerImpl> controllerImpl) {
+		return event.getContainer().create(controllerImplementation, event);
 	}
 }

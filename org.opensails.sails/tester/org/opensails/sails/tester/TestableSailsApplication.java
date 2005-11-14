@@ -4,7 +4,6 @@ import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.PostEvent;
 import org.opensails.sails.oem.SailsApplication;
-import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpSession;
@@ -21,7 +20,6 @@ public class TestableSailsApplication extends SailsApplication {
 		request.setPathInfo(controller + "/" + action);
 		TestingHttpServletResponse response = new TestingHttpServletResponse();
 		TestGetEvent event = new TestGetEvent(this, request, response);
-		((TestingDispatcher) dispatcher).installContainer(event);
 		response.set(event);
 		return event;
 	}
@@ -32,7 +30,6 @@ public class TestableSailsApplication extends SailsApplication {
 		request.setParameters(formFields.toMap());
 		TestingHttpServletResponse response = new TestingHttpServletResponse();
 		TestPostEvent event = new TestPostEvent(this, request, response);
-		((TestingDispatcher) dispatcher).installContainer(event);
 		response.set(event);
 		return event;
 	}
@@ -47,7 +44,6 @@ public class TestableSailsApplication extends SailsApplication {
 		request.setPathInfo(controllerAction);
 		TestingHttpServletResponse response = new TestingHttpServletResponse();
 		TestGetEvent event = new TestGetEvent(this, request, response);
-		((TestingDispatcher) dispatcher).installContainer(event);
 		response.set(event);
 		return get(event);
 	}
@@ -80,7 +76,6 @@ public class TestableSailsApplication extends SailsApplication {
 		request.setParameters(formFields.toMap());
 		TestingHttpServletResponse response = new TestingHttpServletResponse();
 		TestPostEvent event = new TestPostEvent(this, request, response);
-		((TestingDispatcher) dispatcher).installContainer(event);
 		response.set(event);
 		return post(event);
 	}
