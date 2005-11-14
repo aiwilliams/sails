@@ -16,6 +16,10 @@ import org.opensails.sails.form.html.Submit;
 public class PostEvent extends AbstractEvent {
 	protected static final Pattern XY_COORDINATE_PATTERN = Pattern.compile(".*?\\.[x|y]$");
 	protected static final Pattern XY_COORDINATE_REPLACE = Pattern.compile("\\.[x|y]$");
+	
+	public PostEvent(HttpServletRequest req, HttpServletResponse resp) {
+		super(req, resp);
+	}
 
 	public PostEvent(ISailsApplication application, HttpServletRequest req, HttpServletResponse resp) {
 		super(application, application.getContainer(), req, resp);

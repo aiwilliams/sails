@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class TestSessionTest extends TestCase {
 	public void testAssertContains() {
-		TestSession testSession = new TestSession(new TestableSailsApplication());
+		TestSession testSession = new TestSession(new SailsTester());
 		try {
 			testSession.assertContains("heloo");
 			throw new RuntimeException("session doesn't have entry for key");
@@ -16,10 +16,10 @@ public class TestSessionTest extends TestCase {
 	}
 
 	public void testAssertExcludes() {
-		TestSession testSession = new TestSession(new TestableSailsApplication());
+		TestSession testSession = new TestSession(new SailsTester());
 		testSession.assertExcludes("heloo");
 
-		testSession = new TestSession(new TestableSailsApplication());
+		testSession = new TestSession(new SailsTester());
 		testSession.setAttribute("heloo", "goodbye");
 		try {
 			testSession.assertExcludes("heloo");
@@ -28,7 +28,7 @@ public class TestSessionTest extends TestCase {
 	}
 
 	public void testNullSession() {
-		TestSession testSession = new TestSession(new TestableSailsApplication());
+		TestSession testSession = new TestSession(new SailsTester());
 		try {
 			testSession.assertContains("xxx");
 			throw new RuntimeException("no session");

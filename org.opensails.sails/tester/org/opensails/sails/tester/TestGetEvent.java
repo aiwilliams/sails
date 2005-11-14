@@ -3,12 +3,17 @@ package org.opensails.sails.tester;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsApplication;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.oem.GetEvent;
 
 public class TestGetEvent extends GetEvent {
-	public TestGetEvent(ISailsApplication application, HttpServletRequest req, HttpServletResponse resp) {
-		super(application, req, resp);
+	public TestGetEvent(ISailsApplication application, TestRequestContainer container, HttpServletRequest req, HttpServletResponse resp) {
+		super(req, resp);
+		this.application = application;
+		this.container = container;
+		initialize(application.getContainer());
 	}
 
 	public void setActionParameters(String[] parameters) {
@@ -21,4 +26,8 @@ public class TestGetEvent extends GetEvent {
 		container.register(GetEvent.class, this);
 	}
 
+	@Override
+	protected RequestContainer createContainer(ScopedContainer parentContainer) {
+		return container;
+	}
 }

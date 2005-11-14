@@ -178,6 +178,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	 */
 	protected void containerSet() {}
 
+	protected RequestContainer createContainer(ScopedContainer parentContainer) {
+		return new RequestContainer(parentContainer, this);
+	}
+
 	/**
 	 * @param prefix
 	 * @return all field names with prefix, minus the prefix itself
@@ -194,7 +198,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
 	protected void initialize(ScopedContainer parentContainer) {
 		this.url = new EventUrl(req);
-		this.container = new RequestContainer(parentContainer, this);
+		this.container = createContainer(parentContainer);
 		containerSet();
 	}
 }

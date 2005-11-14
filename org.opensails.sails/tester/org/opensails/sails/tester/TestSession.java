@@ -5,10 +5,10 @@ import junit.framework.Assert;
 import org.opensails.sails.tester.servletapi.ShamHttpSession;
 
 public class TestSession {
-	protected final TestableSailsApplication application;
+	protected final SailsTester sessionProvider;
 
-	public TestSession(TestableSailsApplication application) {
-		this.application = application;
+	public TestSession(SailsTester sessionProvider) {
+		this.sessionProvider = sessionProvider;
 	}
 
 	public void assertContains(String key) {
@@ -34,6 +34,6 @@ public class TestSession {
 	}
 
 	protected ShamHttpSession getSession(boolean create) {
-		return application.getSession(create);
+		return sessionProvider.getSession(create);
 	}
 }

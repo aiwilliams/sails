@@ -4,11 +4,14 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.controller.IControllerImpl;
 
 public class RequestContainer extends ScopedContainer {
-	public RequestContainer(ScopedContainer parent, ISailsEvent event) {
+	public RequestContainer(ScopedContainer parent) {
 		super(parent, ApplicationScope.REQUEST);
 		parent.addChild(this);
-		register(ISailsEvent.class, event);
-		register(event);
+	}
+
+	public RequestContainer(ScopedContainer parent, ISailsEvent event) {
+		this(parent);
+		bind(event);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -22,5 +25,10 @@ public class RequestContainer extends ScopedContainer {
 	public void dispose() {
 		super.dispose();
 		getParent().removeChild(this);
+	}
+
+	protected void bind(ISailsEvent event) {
+		register(ISailsEvent.class, event);
+		register(event);
 	}
 }

@@ -8,6 +8,10 @@ import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.oem.Controller;
 
 public class GetEvent extends AbstractEvent {
+	public GetEvent(HttpServletRequest req, HttpServletResponse resp) {
+		super(req, resp);
+	}
+
 	public GetEvent(ISailsApplication application, HttpServletRequest req, HttpServletResponse resp) {
 		super(application, application.getContainer(), req, resp);
 	}

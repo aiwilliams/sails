@@ -7,8 +7,8 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
-import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.http.ContentType;
@@ -67,7 +67,10 @@ public class Page {
 		else return new Form(source());
 	}
 
-	public ScopedContainer getContainer() {
+	/**
+	 * @return the RequestContainer of the ISailsEvent that generated this page
+	 */
+	public RequestContainer getContainer() {
 		return event.getContainer();
 	}
 
