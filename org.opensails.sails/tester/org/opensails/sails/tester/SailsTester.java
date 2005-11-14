@@ -16,7 +16,6 @@ import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.tester.form.TestFormFields;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
-import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpSession;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
@@ -78,7 +77,7 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	public Page get(String controllerAction) {
-		return application.get(createGetEvent(controllerAction));
+		return doGet(createGetEvent(controllerAction));
 	}
 
 	/**
@@ -109,7 +108,7 @@ public class SailsTester implements ISailsApplication {
 		TestGetEvent event = createGetEvent(controller, action);
 		event.setActionParameters(parameters);
 		event.getContainer().registerAll(getRequestContainer());
-		return application.get(event);
+		return doGet(event);
 	}
 
 	public Configuration getConfiguration() {
@@ -185,18 +184,16 @@ public class SailsTester implements ISailsApplication {
 		TestPostEvent event = createPostEvent(Sails.controllerName(controller), action, formFields);
 		RequestContainer container = event.getContainer();
 		if (actionParameters != null && actionParameters.length > 0) {
-			IShamObjectPersister persister = container.instance(IShamObjectPersister.class);
 			IAdapterResolver resolver = container.instance(IAdapterResolver.class);
 			String[] params = new String[actionParameters.length];
 			for (int i = 0; i < actionParameters.length; i++) {
 				IIdentifiable object = actionParameters[i];
-				persister.provides(object);
 				IAdapter adapter = resolver.resolve(object.getClass(), container);
 				params[i] = (String) adapter.forWeb(object.getClass(), object);
 			}
 			event.setActionParameters(params);
 		}
-		return application.post(event);
+		return doPost(event);
 	}
 
 	/**
@@ -210,7 +207,14 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	public Page post(String controllerAction, FormFields formFields) {
-		return application.post(createPostEvent(controllerAction, formFields));
+		TestPostEvent postEvent = createPostEvent(controllerAction, formFields);
+		return doPost(postEvent);
+	}
+
+	protected void prepareForNextRequest() {
+		// TODO: Bind to lazy created session container
+		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
+		else requestContainer = new TestRequestContainer(getContainer());
 	}
 
 	public void setWorkingController(Class<? extends IControllerImpl> controller) {
@@ -225,7 +229,6 @@ public class SailsTester implements ISailsApplication {
 		requestContainer.bind(event);
 		response.set(event);
 		return event;
-
 	}
 
 	protected TestGetEvent createGetEvent(String controller, String action) {
@@ -265,6 +268,16 @@ public class SailsTester implements ISailsApplication {
 		};
 	}
 
+	protected Page doGet(TestGetEvent getEvent) {
+		prepareForNextRequest();
+		return application.get(getEvent);
+	}
+
+	protected Page doPost(TestPostEvent postEvent) {
+		prepareForNextRequest();
+		return application.post(postEvent);
+	}
+
 	protected String getWorkingControllerPathInfoForRequest() {
 		if (workingController != null) return Sails.controllerName(workingController);
 		else return "";
@@ -282,7 +295,6 @@ public class SailsTester implements ISailsApplication {
 		this.application = new TestableSailsApplication();
 		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
 		this.application.configure(new SailsTesterConfigurator(configuratorClass));
-		// TODO: Bind to lazy created session container
-		requestContainer = new TestRequestContainer(getContainer());
+		prepareForNextRequest();
 	}
 }

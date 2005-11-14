@@ -25,12 +25,25 @@ public class SailsTesterTest extends TestCase {
 		page.assertContains("Welcome to Sails");
 	}
 
+	public void testGetRequestContainer() {
+		SailsTester tester = new SailsTester();
+		TestRequestContainer requestContainer = tester.getRequestContainer();
+		assertNotNull("We can get it before we ever make a request", requestContainer);
+		assertSame("Same until request is made", requestContainer, tester.getRequestContainer());
+		Page pageOne = tester.get();
+		assertSame("Same in page as was in tester before request", requestContainer, pageOne.getContainer());
+		assertNotSame("New container for preparing for next request. Old container can still be obtained from Page of last request", requestContainer, tester.getRequestContainer());
+		Page pageTwo = tester.get();
+		assertNotSame(pageOne.getContainer(), pageTwo.getContainer());
+	}
+
 	public void testInject() {
 		SailsTester tester = new SailsTester(ShamConfigurator.class);
 		tester.inject(ILoveTesting.class, ReallyReallyIDo.class, ApplicationScope.REQUEST);
 		assertEquals(ReallyReallyIDo.class, tester.getRequestContainer().instance(ILoveTesting.class).getClass());
 		Page page = tester.get();
 		assertEquals(ReallyReallyIDo.class, page.getContainer().instance(ILoveTesting.class).getClass());
+		assertEquals("Injections should stick around", ReallyReallyIDo.class, tester.getRequestContainer().instance(ILoveTesting.class).getClass());
 	}
 
 	public void testPost() throws Exception {
@@ -41,16 +54,16 @@ public class SailsTesterTest extends TestCase {
 		page.assertContains("you entered bobby");
 	}
 
+	public static interface ILoveTesting {}
+
+	public static class ReallyIDo implements ILoveTesting {}
+
+	public static class ReallyReallyIDo implements ILoveTesting {}
+
 	public static class ShamConfigurator extends BaseConfigurator {
 		@Override
 		public void configure(ISailsEvent event, RequestContainer eventContainer) {
 			eventContainer.register(ILoveTesting.class, ReallyIDo.class);
 		}
 	}
-
-	public static interface ILoveTesting {}
-
-	public static class ReallyIDo implements ILoveTesting {}
-
-	public static class ReallyReallyIDo implements ILoveTesting {}
 }
