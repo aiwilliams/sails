@@ -23,6 +23,15 @@ public class AbstractEventTest extends TestCase {
 		CollectionAssert.containsOnlyOrdered(new String[] { "beginDispatch", "endDispatch" }, shamListener.receivedEvents);
 	}
 
+	public void testBeginAndEndDispatch_UsesApplicationContainer() {
+		AbstractEvent event = SailsEventFixture.abstractEvent();
+		ShamListener shamListener = new ShamListener();
+		event.getApplication().getContainer().register(shamListener);
+		event.beginDispatch();
+		event.endDispatch();
+		CollectionAssert.containsOnlyOrdered(new String[] { "beginDispatch", "endDispatch" }, shamListener.receivedEvents);
+	}
+
 	public void testResolve_UrlType() throws Exception {
 		ISailsApplication application = SailsApplicationFixture.basic();
 		AbstractEvent event = SailsEventFixture.abstractEvent(application);

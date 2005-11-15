@@ -50,13 +50,17 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
 	public void beginDispatch() {
 		container.start();
-		container.broadcast(ISailsEventListener.class, false).beginDispatch(this);
+		getBroadcaster().beginDispatch(this);
 	}
 
 	public void endDispatch() {
-		container.broadcast(ISailsEventListener.class, false).endDispatch(this);
+		getBroadcaster().endDispatch(this);
 		container.stop();
 		container.dispose();
+	}
+
+	protected ISailsEventListener getBroadcaster() {
+		return application.getContainer().broadcast(ISailsEventListener.class, false);
 	}
 
 	public String getActionName() {
