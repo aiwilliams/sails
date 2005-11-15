@@ -150,12 +150,16 @@ SimpleNode Template() : {}
 
 void Body() : {}
 {
-	( Statement() | Text() )*
+	(
+		LOOKAHEAD(2) Statement()
+|		Text()
+	)*
 }
 
 void Text() : { Token token; }
 {
-	((token = <TEXT>) | (token = <TEXT_IN_BLOCK>) | (token = <TEXT_IN_QUICK_BLOCK>) | (token = <HASH>) | (token = <TEXT_RBRACKET>))
+	((token = <TEXT>) | (token = <TEXT_IN_BLOCK>) | (token = <TEXT_IN_QUICK_BLOCK>) | (token = <HASH>) | (token = <TEXT_RBRACKET>) | (token = <DOLLAR>))
+
 	{ jjtThis.setContents(token.image); }
 }
 

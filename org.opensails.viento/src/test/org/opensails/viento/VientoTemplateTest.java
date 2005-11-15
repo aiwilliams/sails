@@ -186,6 +186,10 @@ public class VientoTemplateTest extends TestCase {
 	public void testStringEscape() throws Exception {
 		verifyRender("$escape('\\'\\\\\\n\\r\\t')", "'\\\n\r\t");
 	}
+	
+	public void testPrototype() {
+		verifyRender("$('id')", "$('id')");
+	}
 
 	protected void verifyRender(String input, String output) {
 		VientoTemplate template = new VientoTemplate(input);
