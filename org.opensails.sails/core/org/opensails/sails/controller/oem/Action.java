@@ -13,6 +13,7 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IAction;
+import org.opensails.sails.controller.IActionListener;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.template.Layout;
@@ -35,64 +36,55 @@ public class Action implements IAction {
 	/**
 	 * Executes this action without adapting the parameters.
 	 * 
-	 * @param event TODO
+	 * @param event
 	 * @param implementationInstance
 	 * 
 	 * @param parameters, which will not be adapted
 	 * @return the result
 	 */
 	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, Object[] parameters) {
-		if (implementationInstance == null) {
-			if (controllerImplementation != null) throw new NullPointerException("This action must be executed against a non null implementation of "
-					+ controllerImplementation);
-			else return defaultActionResult(event, implementationInstance);
-		}
-
-		if (!controllerImplementation.isAssignableFrom(implementationInstance.getClass())) throw new IllegalArgumentException("This action is not for "
-				+ implementationInstance.getClass());
-
+		IActionListener listener = getActionListeners(event);
+		listener.beginExecution(this);
+		ensureInstanceIsImplementation(implementationInstance);
 		Method actionMethod = methodHavingArgCount(parameters.length);
-		if (actionMethod == null) return defaultActionResult(event, implementationInstance);
-		return executeMethod(event, implementationInstance, actionMethod, parameters);
+
+		IActionResult result = null;
+		if (actionMethod == null) result = defaultActionResult(event, implementationInstance);
+		else result = executeMethod(event, implementationInstance, actionMethod, parameters);
+
+		listener.endExecution(this);
+		return result;
 	}
 
 	/**
 	 * Adapts the unadaptedParameters, then invokes the action.
 	 * 
-	 * @param event TODO
+	 * @param event
 	 * @param implementationInstance
 	 * @param unadaptedParameters
 	 * 
 	 * @return the result
 	 */
 	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, String[] unadaptedParameters) {
-		if (implementationInstance == null) {
-			if (controllerImplementation != null) throw new NullPointerException("This action must be executed against a non null implementation of "
-					+ controllerImplementation);
-			else return defaultActionResult(event, implementationInstance);
-		}
+		IActionListener listener = getActionListeners(event);
+		listener.beginExecution(this);
+		ensureInstanceIsImplementation(implementationInstance);
+		Method actionMethod = methodHavingArgCount(unadaptedParameters == null ? 0 : unadaptedParameters.length);
 
-		if (!controllerImplementation.isAssignableFrom(implementationInstance.getClass())) throw new IllegalArgumentException("This action is not for "
-				+ implementationInstance.getClass());
+		IActionResult result = null;
+		if (actionMethod != null) {
+			Object[] actionArguments = adaptParameters(unadaptedParameters, actionMethod.getParameterTypes(), implementationInstance.getContainer());
+			result = executeMethod(event, implementationInstance, actionMethod, actionArguments);
+			if (result instanceof TemplateActionResult) {
+				TemplateActionResult templateResult = (TemplateActionResult) result;
+				if (!templateResult.hasLayoutBeenSet()) if (actionMethod.isAnnotationPresent(Layout.class)) templateResult.setLayout(actionMethod.getAnnotation(Layout.class).value());
+			}
+		} else result = defaultActionResult(event, implementationInstance);
 
-		Method actionMethod = methodHavingArgCount(unadaptedParameters.length);
-		if (actionMethod == null) return defaultActionResult(event, implementationInstance);
-		Object[] actionArguments = adaptParameters(unadaptedParameters, actionMethod.getParameterTypes(), implementationInstance.getContainer());
-		IActionResult result = executeMethod(event, implementationInstance, actionMethod, actionArguments);
-		if (result instanceof TemplateActionResult) {
-			TemplateActionResult templateResult = (TemplateActionResult) result;
-			if (!templateResult.hasLayoutBeenSet())
-				if (actionMethod.isAnnotationPresent(Layout.class)) 
-					templateResult.setLayout(actionMethod.getAnnotation(Layout.class).value());
-		}
+		listener.endExecution(this);
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.opensails.sails.controller.oem.IAction#getParameterTypes(int)
-	 */
 	public Class<?>[] getParameterTypes(int numberOfArguments) {
 		return methodHavingArgCount(numberOfArguments).getParameterTypes();
 	}
@@ -114,6 +106,14 @@ public class Action implements IAction {
 
 	protected IActionResult defaultActionResult(ISailsEvent event, IControllerImpl implementationInstance) {
 		return new TemplateActionResult(event);
+	}
+
+	protected void ensureInstanceIsImplementation(IControllerImpl implementationInstance) {
+		if (implementationInstance == null && controllerImplementation != null) throw new NullPointerException("This action must be executed against a non null implementation of "
+				+ controllerImplementation);
+
+		if (controllerImplementation != null && !controllerImplementation.isAssignableFrom(implementationInstance.getClass())) throw new IllegalArgumentException("This action is not for "
+				+ implementationInstance.getClass());
 	}
 
 	protected IActionResult executeMethod(ISailsEvent event, IControllerImpl implementationInstance, Method actionMethod, Object[] actionArguments) {
@@ -147,6 +147,10 @@ public class Action implements IAction {
 			}
 		});
 		return matches.toArray(new Method[matches.size()]);
+	}
+
+	protected IActionListener getActionListeners(ISailsEvent event) {
+		return event.getApplication().getContainer().broadcast(IActionListener.class, false);
 	}
 
 	protected Method methodHavingArgCount(int i) {

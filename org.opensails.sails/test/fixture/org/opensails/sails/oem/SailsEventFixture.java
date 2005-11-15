@@ -9,6 +9,10 @@ import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 
 public class SailsEventFixture {
+	public static AbstractEvent abstractEvent() {
+		return abstractEvent(SailsApplicationFixture.basic());
+	}
+
 	public static AbstractEvent abstractEvent(ISailsApplication application) {
 		return new AbstractEvent(application, application.getContainer(), new ShamHttpServletRequest(), new ShamHttpServletResponse()) {};
 	}

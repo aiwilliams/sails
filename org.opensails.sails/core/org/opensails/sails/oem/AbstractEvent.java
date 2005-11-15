@@ -15,6 +15,7 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsApplication;
+import org.opensails.sails.ISailsEventListener;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.controller.IActionResult;
@@ -49,9 +50,11 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
 	public void beginDispatch() {
 		container.start();
+		container.broadcast(ISailsEventListener.class, false).beginDispatch(this);
 	}
 
 	public void endDispatch() {
+		container.broadcast(ISailsEventListener.class, false).endDispatch(this);
 		container.stop();
 		container.dispose();
 	}

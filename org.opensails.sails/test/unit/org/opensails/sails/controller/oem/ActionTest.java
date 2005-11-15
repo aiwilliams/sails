@@ -8,6 +8,8 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.oem.ShamEvent;
 import org.opensails.sails.util.CollectionAssert;
 
 public class ActionTest extends TestCase {
@@ -75,9 +77,39 @@ public class ActionTest extends TestCase {
 		assertNull(controller.actionInvoked);
 	}
 
+	public void testExecute_NotifiesListeners() {
+		Action action = ActionFixture.create();
+		ShamEvent event = SailsEventFixture.sham();
+		ShamActionListener listener = ActionFixture.addListener(event);
+		action.execute(event, null, null);
+		ActionFixture.assertNotificationsMade(listener);
+	}
+	
 	public void testExecute_NullControllerInstance() {
 		Action action = ActionFixture.defaultAdapters("voidActionMultiple", null);
 		assertNotNull(ActionFixture.execute(action, null, new String[] { "1" }));
+	}
+
+	public void testExecute_NullInstance_NonNullImplementation() {
+		Action action = ActionFixture.defaultAdapters("don't care", ShamController.class);
+		ShamEvent event = SailsEventFixture.sham();
+		ShamActionListener listener = ActionFixture.addListener(event);
+		
+		try {
+			action.execute(event, null, null);
+			fail("Should have thrown exception for null instance with non-null implementation");
+		} catch (Exception e) {
+			CollectionAssert.containsOnly(new String[] { "beginExecution" }, listener.notifications);
+		}
+	}
+
+	public void testExecute_ObtainsBroadcasterFromApplicationScope() {
+		Action action = ActionFixture.create();
+		ShamEvent event = SailsEventFixture.sham();
+		ShamActionListener listener = new ShamActionListener();
+		event.getApplication().getContainer().register(listener);
+		action.execute(event, null, null);
+		ActionFixture.assertNotificationsMade(listener);
 	}
 
 	public void testExecute_ResultDefault() {
@@ -99,6 +131,18 @@ public class ActionTest extends TestCase {
 		ShamController controller = new ShamController();
 		IActionResult result = ActionFixture.execute(action, controller);
 		assertSame("make sure it is the same one placed in the container by the action", controller.resultReturned, result);
+	}
+
+	public void testExecute_WrongInstanceType() {
+		Action action = ActionFixture.defaultAdapters("don't care", ShamController.class);
+		ShamEvent event = SailsEventFixture.sham();
+		ShamActionListener listener = ActionFixture.addListener(event);
+		try {
+			action.execute(event, new BaseController(), null);
+			fail("Should have thrown exception due to wrong instance type");
+		} catch (Exception e) {
+			CollectionAssert.containsOnly(new String[] { "beginExecution" }, listener.notifications);
+		}
 	}
 
 	public void testGetParameterTypes() throws Exception {
