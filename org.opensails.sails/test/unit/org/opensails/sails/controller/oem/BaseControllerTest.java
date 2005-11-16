@@ -19,6 +19,10 @@ public class BaseControllerTest extends TestCase {
 		assertNull(controller.field("whatever"));
 	}
 
+	public void testGetTemplateResult() throws Exception {
+		fail("write tests. ensure that the existing template result is used, create it if it don't");
+	}
+
 	public void testRenderTemplate() throws Exception {
 		BaseController controller = new BaseController();
 		GetEvent actionGet = SailsEventFixture.actionGet();

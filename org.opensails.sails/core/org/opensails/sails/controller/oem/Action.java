@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
@@ -53,7 +54,7 @@ public class Action implements IAction {
 		else result = executeMethod(event, implementationInstance, actionMethod, parameters);
 
 		listener.endExecution(this);
-		return result;
+		return finalizeExecution(event, result);
 	}
 
 	/**
@@ -82,7 +83,7 @@ public class Action implements IAction {
 		} else result = defaultActionResult(event, implementationInstance);
 
 		listener.endExecution(this);
-		return result;
+		return finalizeExecution(event, result);
 	}
 
 	public Class<?>[] getParameterTypes(int numberOfArguments) {
@@ -131,6 +132,13 @@ public class Action implements IAction {
 		} catch (InvocationTargetException e) {
 			throw new SailsException("An exception [" + e.getCause().getClass() + "] occurred in the action " + actionMethod, e.getCause());
 		}
+	}
+
+	protected IActionResult finalizeExecution(ISailsEvent event, IActionResult result) {
+		RequestContainer container = event.getContainer();
+		container.register(IActionResult.class, result);
+		container.register(result);
+		return result;
 	}
 
 	protected Method[] findMethods(String name) {

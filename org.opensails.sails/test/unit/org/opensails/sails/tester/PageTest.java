@@ -25,4 +25,8 @@ public class PageTest extends TestCase {
 		event.getContainer().register(HtmlForm.class, HtmlFormFixture.create());
 		assertNotNull(page.form());
 	}
+
+	public void testAssertLayout() throws Exception {
+		fail("note to self: mocks are good");
+	}
 }

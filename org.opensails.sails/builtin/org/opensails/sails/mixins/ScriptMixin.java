@@ -4,44 +4,56 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.template.IMixinMethod;
 import org.opensails.sails.url.UrlType;
 
-public class ScriptMixin implements IMixinMethod {
+public class ScriptMixin implements IMixinMethod<AbstractScript> {
 	protected final ISailsEvent event;
 
 	public ScriptMixin(ISailsEvent event) {
 		this.event = event;
 	}
 
-	public Object invoke(Object... args) {
-		return new Script(args != null && args.length > 0 ? (String) args[0] : null);
+	public AbstractScript invoke(Object... args) {
+		return new ApplicationScript(event, args != null && args.length > 0 ? (String) args[0] : null);
+	}
+}
+
+class ApplicationScript extends AbstractScript {
+	public ApplicationScript(ISailsEvent event, String argument) {
+		super(event, argument);
 	}
 
-	public class BuiltinScript {
-		protected final String argument;
+	protected UrlType urlType() {
+		return UrlType.SCRIPT;
+	}
+}
 
-		public BuiltinScript(String argument) {
-			this.argument = argument;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("<script src=\"%s\"></script>", event.resolve(UrlType.SCRIPT_BUILTIN, argument));
-		}
+class BuiltinScript extends AbstractScript {
+	public BuiltinScript(ISailsEvent event, String argument) {
+		super(event, argument);
 	}
 
-	public class Script {
-		protected final String argument;
-
-		public Script(String argument) {
-			this.argument = argument;
-		}
-
-		public BuiltinScript builtin(String argument) {
-			return new BuiltinScript(argument);
-		}
-
-		@Override
-		public String toString() {
-			return String.format("<script src=\"%s\"></script>", event.resolve(UrlType.SCRIPT, argument));
-		}
+	@Override
+	protected UrlType urlType() {
+		return UrlType.SCRIPT_BUILTIN;
 	}
+}
+
+abstract class AbstractScript {
+	protected final String argument;
+	protected final ISailsEvent event;
+
+	public AbstractScript(ISailsEvent event, String argument) {
+		this.event = event;
+		this.argument = argument;
+	}
+
+	public BuiltinScript builtin(String argument) {
+		return new BuiltinScript(event, argument);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("<script type=\"text/javascript\" src=\"%s\"></script>", event.resolve(urlType(), argument));
+	}
+
+	protected abstract UrlType urlType();
 }

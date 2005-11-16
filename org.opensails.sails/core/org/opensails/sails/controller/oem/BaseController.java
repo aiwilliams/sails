@@ -56,6 +56,10 @@ public class BaseController implements IControllerImpl {
 	}
 
 	protected TemplateActionResult getTemplateResult() {
+		IActionResult result = getContainer().instance(IActionResult.class);
+		if (result != null) {
+			if (TemplateActionResult.class.isAssignableFrom(result.getClass())) return (TemplateActionResult) result;
+		}
 		return setResult(new TemplateActionResult(event));
 	}
 
@@ -86,7 +90,10 @@ public class BaseController implements IControllerImpl {
 	 * @return the TemplateActionResult for template
 	 */
 	protected TemplateActionResult renderTemplate(String template) {
-		return setResult(new TemplateActionResult(event, template));
+		TemplateActionResult result = getTemplateResult();
+		// TODO: Forein behavior - move into TemplateActionResult
+		result.setTemplate(String.format("%s/%s", event.getControllerName(), template));
+		return result;
 	}
 
 	protected <T extends IActionResult> T setResult(T result) {

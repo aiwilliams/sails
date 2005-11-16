@@ -1,10 +1,14 @@
 package org.opensails.sails.controller.oem;
 
+import java.util.regex.Pattern;
+
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class TemplateActionResult extends AbstractActionResult {
+	static final Pattern CONTROLLER_ACTION_PATTERN = Pattern.compile("^(.*?)/(.*?)?");
+
 	protected boolean hasLayoutBeenSet;
 	protected String identifier;
 	protected String layoutIdentifier;
@@ -44,6 +48,10 @@ public class TemplateActionResult extends AbstractActionResult {
 		layoutIdentifier = templateIdentifier;
 	}
 
+	public void setTemplate(String templateIdentifier) {
+		this.identifier = templateIdentifier;
+	}
+
 	@Override
 	public String toString() {
 		return "Template: <" + identifier + ">";
@@ -63,6 +71,7 @@ public class TemplateActionResult extends AbstractActionResult {
 	}
 
 	protected void initializeIdentifier(ISailsEvent event, String identifier) {
-		this.identifier = String.format("%s/%s", event.getControllerName(), identifier);
+		if (CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) setTemplate(identifier);
+		setTemplate(String.format("%s/%s", event.getControllerName(), identifier));
 	}
 }

@@ -10,6 +10,7 @@ import junit.framework.AssertionFailedError;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.form.Form;
@@ -34,11 +35,20 @@ public class Page {
 	}
 
 	public void assertContains(String message, String exactString) throws AssertionFailedError {
-		assertPageExpectation(message + " Expected " + getUrl() + " to contain <" + exactString + ">", source().contains(exactString));
+		assertPageExpectation(message + " Expected " + url() + " to contain <" + exactString + ">", source().contains(exactString));
 	}
 
 	public void assertContentType(ContentType expected) throws AssertionFailedError {
 		Assert.assertEquals(expected.toHttpValue(), response.getContentType());
+	}
+
+	public void assertLayout(String expected) throws AssertionFailedError {
+		TemplateActionResult result = container().instance(TemplateActionResult.class);
+		if (result == null) {
+			if (expected != null) throw new AssertionFailedError("A template was not rendered");
+			else return; // not template, layout expected to be null, so no problem
+		}
+		Assert.assertEquals("Layout was not rendered as expected", expected, result.getLayout());
 	}
 
 	public void assertMatches(String regex) {
@@ -46,7 +56,14 @@ public class Page {
 	}
 
 	public void assertMatches(String message, String regex) {
-		assertPageExpectation(message + " Expected " + getUrl() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
+		assertPageExpectation(message + " Expected " + url() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
+	}
+
+	/**
+	 * @return the RequestContainer of the ISailsEvent that generated this page
+	 */
+	public RequestContainer container() {
+		return event.getContainer();
 	}
 
 	public boolean contains(String exactString) {
@@ -62,28 +79,17 @@ public class Page {
 	}
 
 	public Form form() {
-		HtmlForm htmlForm = getContainer().instance(HtmlForm.class);
+		HtmlForm htmlForm = container().instance(HtmlForm.class);
 		if (htmlForm != null) return new Form(source(), htmlForm);
 		else return new Form(source());
 	}
 
-	/**
-	 * @return the RequestContainer of the ISailsEvent that generated this page
-	 */
-	public RequestContainer getContainer() {
-		return event.getContainer();
-	}
-
-	public TestRedirectUrl getRedirectUrl() {
-		return null;
-	}
-
-	public TestUrl getUrl() {
-		return new TestUrl(event.getEventUrl());
-	}
-
 	public boolean matches(String regex) {
 		return source().matches(regex);
+	}
+
+	public TestRedirectUrl redirectUrl() {
+		return null;
 	}
 
 	/**
@@ -91,6 +97,10 @@ public class Page {
 	 */
 	public String source() {
 		return response.getWrittenContent();
+	}
+
+	public TestUrl url() {
+		return new TestUrl(event.getEventUrl());
 	}
 
 	public void viewSource(Writer writer) {

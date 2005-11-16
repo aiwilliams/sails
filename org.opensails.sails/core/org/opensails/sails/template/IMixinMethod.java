@@ -8,6 +8,6 @@ package org.opensails.sails.template;
  * 
  * @author aiwilliams
  */
-public interface IMixinMethod {
-	public Object invoke(Object... args);
+public interface IMixinMethod<T> {
+	public T invoke(Object... args);
 }

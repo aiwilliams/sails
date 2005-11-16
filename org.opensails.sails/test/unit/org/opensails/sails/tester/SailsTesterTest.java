@@ -21,7 +21,7 @@ public class SailsTesterTest extends TestCase {
 	public void testGet() throws Exception {
 		SailsTester tester = new SailsTester();
 		Page page = tester.get();
-		assertTrue(page.getUrl().matches("http://"));
+		assertTrue(page.url().matches("http://"));
 		page.assertContains("Welcome to Sails");
 	}
 
@@ -31,10 +31,10 @@ public class SailsTesterTest extends TestCase {
 		assertNotNull("We can get it before we ever make a request", requestContainer);
 		assertSame("Same until request is made", requestContainer, tester.getRequestContainer());
 		Page pageOne = tester.get();
-		assertSame("Same in page as was in tester before request", requestContainer, pageOne.getContainer());
+		assertSame("Same in page as was in tester before request", requestContainer, pageOne.container());
 		assertNotSame("New container for preparing for next request. Old container can still be obtained from Page of last request", requestContainer, tester.getRequestContainer());
 		Page pageTwo = tester.get();
-		assertNotSame(pageOne.getContainer(), pageTwo.getContainer());
+		assertNotSame(pageOne.container(), pageTwo.container());
 	}
 
 	public void testInject() {
@@ -42,7 +42,7 @@ public class SailsTesterTest extends TestCase {
 		tester.inject(ILoveTesting.class, ReallyReallyIDo.class, ApplicationScope.REQUEST);
 		assertEquals(ReallyReallyIDo.class, tester.getRequestContainer().instance(ILoveTesting.class).getClass());
 		Page page = tester.get();
-		assertEquals(ReallyReallyIDo.class, page.getContainer().instance(ILoveTesting.class).getClass());
+		assertEquals(ReallyReallyIDo.class, page.container().instance(ILoveTesting.class).getClass());
 		assertEquals("Injections should stick around", ReallyReallyIDo.class, tester.getRequestContainer().instance(ILoveTesting.class).getClass());
 	}
 

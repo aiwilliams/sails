@@ -6,6 +6,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.oem.SailsEventFixture;
@@ -84,7 +85,7 @@ public class ActionTest extends TestCase {
 		action.execute(event, null, null);
 		ActionFixture.assertNotificationsMade(listener);
 	}
-	
+
 	public void testExecute_NullControllerInstance() {
 		Action action = ActionFixture.defaultAdapters("voidActionMultiple", null);
 		assertNotNull(ActionFixture.execute(action, null, new String[] { "1" }));
@@ -94,7 +95,7 @@ public class ActionTest extends TestCase {
 		Action action = ActionFixture.defaultAdapters("don't care", ShamController.class);
 		ShamEvent event = SailsEventFixture.sham();
 		ShamActionListener listener = ActionFixture.addListener(event);
-		
+
 		try {
 			action.execute(event, null, null);
 			fail("Should have thrown exception for null instance with non-null implementation");
@@ -127,10 +128,20 @@ public class ActionTest extends TestCase {
 	}
 
 	public void testExecute_ResultInContainer() {
-		Action action = ActionFixture.defaultAdapters("voidActionContainerResult", ShamController.class);
-		ShamController controller = new ShamController();
-		IActionResult result = ActionFixture.execute(action, controller);
-		assertSame("make sure it is the same one placed in the container by the action", controller.resultReturned, result);
+		final IActionResult result = ActionResultFixture.template();
+		ShamController controller = new ShamController() {
+			@SuppressWarnings("unused")
+			public IActionResult someAction() {
+				return result;
+			}
+		};
+		ISailsEvent event = SailsEventFixture.sham();
+		// the getClass is because of the way the action caches the methods
+		Action action = ActionFixture.defaultAdapters("someAction", controller.getClass());
+		controller.set(event, null);
+		action.execute(event, controller, null);
+		assertSame("make sure it is the same one placed in the container by the action", result, event.getContainer().instance(IActionResult.class));
+		assertSame("not only as the interface but also as the concrete type", result, event.getContainer().instance(TemplateActionResult.class));
 	}
 
 	public void testExecute_WrongInstanceType() {
