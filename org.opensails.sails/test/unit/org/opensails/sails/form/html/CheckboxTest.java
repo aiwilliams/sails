@@ -27,7 +27,7 @@ public class CheckboxTest extends TestCase {
 	public void testChecked() throws Exception {
 		Checkbox checkbox = new Checkbox("name", "custom");
 		checkbox.checked();
-		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"custom\" checked=\"true\" />", checkbox.toString());
+		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"custom\" checked=\"checked\" />", checkbox.toString());
 		checkbox.checked(false);
 		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"custom\" />", checkbox.toString());
 	}

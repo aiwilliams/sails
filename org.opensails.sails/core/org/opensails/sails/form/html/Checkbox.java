@@ -97,6 +97,6 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
 		super.writeAttributes(generator);
-		if (checked) generator.attribute(CHECKED, true);
+		if (checked) generator.attribute(CHECKED, CHECKED);
 	}
 }
