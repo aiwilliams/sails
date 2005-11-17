@@ -1,48 +1,36 @@
 package org.opensails.sails.url;
 
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.Sails;
 
-public abstract class AbsoluteUrl<T extends AbsoluteUrl> implements IUrl {
-	protected ISailsEvent event;
-	protected boolean secure;
+public class AbsoluteUrl extends AbstractUrl<AbsoluteUrl> {
+	protected String absoluteHref;
 
-	public AbsoluteUrl(ISailsEvent event) {
-		this.event = event;
+	public AbsoluteUrl(ISailsEvent event, String absoluteHref) {
+		super(event);
+		this.absoluteHref = absoluteHref;
 	}
 
-	/**
-	 * Aliases {@link #secure()} to make Velocity templates idiomatic, or is it
-	 * idiotic?
-	 */
-	public T getSecure() {
-		return secure();
-	}
-
-	public String render() {
-		String url = renderAbsoluteUrl();
-		if (secure) {
-			String secureScheme = event.getConfiguration().getString(Sails.ConfigurationKey.Url.SECURE_SCHEME);
-			url = url.replaceFirst("^http://", secureScheme + "://");
-		}
-		return url;
-	}
-
-	@SuppressWarnings("unchecked")
-	public T secure() {
-		this.secure = true;
-		return (T) this;
+	public AbsoluteUrl absolute() {
+		return this;
 	}
 
 	@Override
-	public String toString() {
-		return render();
+	public boolean equals(Object obj) {
+		return render().equals(((IUrl) obj).render());
 	}
 
-	/**
-	 * Subclasses override to render url
-	 * 
-	 * @return the absolute url
-	 */
-	protected abstract String renderAbsoluteUrl();
+	@Override
+	public int hashCode() {
+		return render().hashCode();
+	}
+
+	@Override
+	protected String doRender() {
+		return renderAbsoluteUrl();
+	}
+
+	@Override
+	protected String renderAbsoluteUrl() {
+		return absoluteHref;
+	}
 }
