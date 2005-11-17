@@ -16,11 +16,11 @@ public class ServletUrl implements IUrl {
 		this.url = url;
 	};
 
-	public IUrl absolute() {
+	public AbsoluteUrl absolute() {
 		StringBuilder builder = new StringBuilder();
 		builder.append(event.getEventUrl().getAbsolutServletUrl());
 		appendUrl(builder);
-		return new ExternalUrl(event, builder.toString());
+		return new AbsoluteUrl(event, builder.toString());
 	}
 
 	public String render() {

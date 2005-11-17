@@ -7,7 +7,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 
-public class ActionUrl extends AbsoluteUrl<ActionUrl> {
+public class ActionUrl extends AbstractUrl<ActionUrl> {
 	protected String action;
 	protected String controller;
 	protected Object[] unadaptedParameters;
@@ -60,6 +60,13 @@ public class ActionUrl extends AbsoluteUrl<ActionUrl> {
 		IAdapterResolver resolver = event.getContainer().instance(IAdapterResolver.class);
 		IAdapter adapter = resolver.resolve(parameter.getClass(), event.getContainer());
 		return (String) adapter.forWeb(parameter.getClass(), parameter);
+	}
+
+	@Override
+	protected String doRender() {
+		// TODO: this is not correct, but maintains previous behavior. Change
+		// it.
+		return renderAbsoluteUrl();
 	}
 
 	protected String getParametersString() {

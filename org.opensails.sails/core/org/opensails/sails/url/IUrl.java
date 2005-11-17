@@ -1,6 +1,11 @@
 package org.opensails.sails.url;
 
 public interface IUrl {
+	/**
+	 * @return the absolute version of this url
+	 */
+	AbsoluteUrl absolute();
+
 	String render();
 
 	/**
