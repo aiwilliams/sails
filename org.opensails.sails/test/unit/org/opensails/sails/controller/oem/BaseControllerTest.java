@@ -20,7 +20,10 @@ public class BaseControllerTest extends TestCase {
 	}
 
 	public void testGetTemplateResult() throws Exception {
-		fail("write tests. ensure that the existing template result is used, create it if it don't");
+		BaseController controller = new BaseController();
+		controller.set(SailsEventFixture.sham(), null);
+		TemplateActionResult templateResult = controller.getTemplateResult();
+		assertSame(templateResult, controller.getTemplateResult());
 	}
 
 	public void testRenderTemplate() throws Exception {

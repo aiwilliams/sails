@@ -16,8 +16,8 @@ import org.opensails.sails.ISailsEvent;
  * 
  * An IControllerImpl can answer the IController which represents it to the
  * framework. There is only ONE
- * {@link org.opensails.sails.controller.IController} for a particular name
- * and many {@link IControllerImpl}s. Every request causes an IControllerImpl
+ * {@link org.opensails.sails.controller.IController} for a particular name and
+ * many {@link IControllerImpl}s. Every request causes an IControllerImpl
  * instance to be created.
  * 
  * @author aiwilliams
@@ -32,6 +32,12 @@ public interface IControllerImpl {
 	 * @return the Controller for this implementation
 	 */
 	IController getController();
+
+	/**
+	 * @return the result decided by the controller implementation, possibly
+	 *         null.
+	 */
+	IActionResult result();
 
 	/**
 	 * Called before the controller is invoked, but only if it is invoked

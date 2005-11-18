@@ -121,8 +121,8 @@ public class Action implements IAction {
 		try {
 			Object result = actionMethod.invoke(implementationInstance, actionArguments);
 			if (result != null && result instanceof IActionResult) return (IActionResult) result;
-			IActionResult resultInContainer = implementationInstance.getContainer().instance(IActionResult.class);
-			if (resultInContainer != null) return resultInContainer;
+			IActionResult resultFromController = implementationInstance.result();
+			if (resultFromController != null) return resultFromController;
 			return defaultActionResult(event, implementationInstance);
 		} catch (IllegalArgumentException e) {
 			// TODO: Handle illegal argument when invoking action method

@@ -13,6 +13,7 @@ import org.opensails.sails.template.ITemplateBinding;
 public class BaseController implements IControllerImpl {
 	protected IController controller;
 	protected ISailsEvent event;
+	protected IActionResult result;
 
 	public ScopedContainer getContainer() {
 		return event.getContainer();
@@ -20,6 +21,10 @@ public class BaseController implements IControllerImpl {
 
 	public IController getController() {
 		return controller;
+	}
+
+	public IActionResult result() {
+		return result;
 	}
 
 	public void set(ISailsEvent event, IController controller) {
@@ -56,7 +61,6 @@ public class BaseController implements IControllerImpl {
 	}
 
 	protected TemplateActionResult getTemplateResult() {
-		IActionResult result = getContainer().instance(IActionResult.class);
 		if (result != null) {
 			if (TemplateActionResult.class.isAssignableFrom(result.getClass())) return (TemplateActionResult) result;
 		}
@@ -97,7 +101,7 @@ public class BaseController implements IControllerImpl {
 	}
 
 	protected <T extends IActionResult> T setResult(T result) {
-		getContainer().register(IActionResult.class, result);
+		this.result = result;
 		return result;
 	}
 

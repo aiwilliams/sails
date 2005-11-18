@@ -128,11 +128,11 @@ public class ActionTest extends TestCase {
 	}
 
 	public void testExecute_ResultInContainer() {
-		final IActionResult result = ActionResultFixture.template();
+		final IActionResult testResult = ActionResultFixture.template();
 		ShamController controller = new ShamController() {
 			@SuppressWarnings("unused")
 			public IActionResult someAction() {
-				return result;
+				return testResult;
 			}
 		};
 		ISailsEvent event = SailsEventFixture.sham();
@@ -140,8 +140,8 @@ public class ActionTest extends TestCase {
 		Action action = ActionFixture.defaultAdapters("someAction", controller.getClass());
 		controller.set(event, null);
 		action.execute(event, controller, null);
-		assertSame("make sure it is the same one placed in the container by the action", result, event.getContainer().instance(IActionResult.class));
-		assertSame("not only as the interface but also as the concrete type", result, event.getContainer().instance(TemplateActionResult.class));
+		assertSame("make sure it is the same one placed in the container by the action", testResult, event.getContainer().instance(IActionResult.class));
+		assertSame("not only as the interface but also as the concrete type", testResult, event.getContainer().instance(TemplateActionResult.class));
 	}
 
 	public void testExecute_WrongInstanceType() {
