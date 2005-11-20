@@ -1,26 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="org.opensails.sails" default="build" basedir=".">
-	<property name="temp.root" location="buildtemp"/>
-	<property name="temp.classes" location="${temp.root}/classes"/>
-
-	<target name="build" depends="clean">
-		<ant antfile="../org.opensails.rigging/build.xml" inheritall="false"/>
-		<ant antfile="../org.opensails.viento/build.xml" inheritall="false"/>
-		<ant antfile="../org.opensails.sails.vendor/build.xml" inheritall="false"/>
-		<mkdir dir="${temp.classes}"/>
-		<javac destdir="${temp.classes}" debug="on" optimize="on" classpath="${lib.dir}">
-			<src path="builtin"/>
-			<src path="core"/>
-			<include name="**/*.java" />
-			<include name="**/*.vto" />
-			<classpath>
-				<fileset dir="${lib.dir}" includes="*.jar"/>
-			</classpath>
-		</javac>
-		<jar destfile="${dist.dir}/sails.jar" basedir="${temp.classes}"/>
-	</target>
+<project name="org.opensails.sails" default="sails" basedir=".">
+	<property name="sails.version" value="0.2.0" />
+	<property name="temp.build" location="buildtemp" />
 	
-	<target name="clean">
-		<delete dir="${temp.root}" />
+	<!-- Compatibility with Current Big Project lib.dir dist.dir -->
+	<property name="lib.dir" value="${temp.build}/lib" />
+	<property name="dist.dir" value="dist" />
+
+	<property name="temp.classes" location="${temp.build}/classes" />
+	<property name="temp.lib" location="${lib.dir}" />
+	<property name="vendor.lib" location="../org.opensails.sails.vendor/lib" />
+	<property name="product.jar.path" location="${temp.build}/dist" />
+	<property name="product.jar" value="sails_${sails.version}.jar" />
+	<property name="product.dist" location="${dist.dir}" />
+
+	<path id="compile.classpath">
+		<fileset dir="${temp.lib}" includes="*.jar" />
+		<fileset dir="${vendor.lib}" includes="*.jar" />
+	</path>
+
+	<target name="dist" depends="sails.jar" description="Constructs zip and tar.gz files that include sails.jar and all vendor libraries.">
+		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
+			<fileset dir="${product.jar.path}" includes="${product.jar}" />
+			<!-- <fileset dir="." includes="src/**/*" />
+			<zipfileset dir="vendor/apache/lib" prefix="vendor" includes="*.jar" /> -->
+		</zip>
+	</target>
+
+	<!--+
+	    | This can be called by dependent build scripts. It will place all of sails and it's
+	    | dependencies into product.dist. Override the value of that when you call this.
+	    +-->
+	<target name="dist.depends" depends="sails.jar" description="Constructs sails.jar. Copies it and all vendor libraries into product.dist.">
+		<copy file="${product.jar.path}/${product.jar}" todir="${product.dist}" />
+		<copy todir="${product.dist}">
+			<fileset dir="${vendor.lib}" />
+		</copy>
+	</target>
+
+	<target name="sails" depends="sails.jar" description="Compiles a jar file containing Sails. No vendor libraries are included.">
+	</target>
+
+	<target name="sails.compile" depends="build.depends">
+		<javac destdir="${temp.classes}" debug="off" optimize="on">
+			<src path="builtin" />
+			<src path="core" />
+			<!-- <src path="tester" /> -->
+			<classpath refid="compile.classpath" />
+			<include name="**/*.java" />
+		</javac>
+
+		<copy todir="${temp.classes}">
+			<fileset dir="builtin">
+				<include name="**/views/**" />
+				<include name="**/common/**" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: gather.libs                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="build.depends" depends="make.dirs">
+		<ant antfile="../org.opensails.rigging/build.xml" inheritall="false">
+			<property name="dist.dir" location="${temp.lib}" />
+		</ant>
+		<ant antfile="../org.opensails.viento/build.xml" inheritall="false">
+			<property name="dist.dir" location="${temp.lib}" />
+		</ant>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: make.dirs                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="make.dirs">
+		<mkdir dir="${temp.classes}" />
+		<mkdir dir="${temp.lib}" />
+		<mkdir dir="${product.dist}" />
+		<mkdir dir="${product.jar.path}" />
+	</target>
+
+	<target name="sails.jar" depends="sails.compile">
+		<jar destfile="${product.jar.path}/${product.jar}">
+			<fileset dir="${temp.classes}" includes="**/*" />
+		</jar>
+	</target>
+
+	<target name="clean" description="Delete everything that I generate, excluding whatever is in product.path.">
+		<delete dir="${temp.build}" />
 	</target>
 </project>
