@@ -3,10 +3,10 @@
 	<property name="sails.version" value="0.2.0" />
 	<property name="temp.build" location="buildtemp" />
 	
-	<!-- Compatibility with Current Big Project lib.dir dist.dir -->
+	<!-- Compatibility with Current Big Project -->
 	<property name="lib.dir" value="${temp.build}/lib" />
 	<property name="dist.dir" value="dist" />
-
+	
 	<property name="temp.classes" location="${temp.build}/classes" />
 	<property name="temp.lib" location="${lib.dir}" />
 	<property name="vendor.lib" location="../org.opensails.sails.vendor/lib" />
@@ -18,6 +18,8 @@
 		<fileset dir="${temp.lib}" includes="*.jar" />
 		<fileset dir="${vendor.lib}" includes="*.jar" />
 	</path>
+
+	<target name="build" depends="dist.depends" description="Compatibility with Current Big Project" />
 
 	<target name="dist" depends="sails.jar" description="Constructs zip and tar.gz files that include sails.jar and all vendor libraries.">
 		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
