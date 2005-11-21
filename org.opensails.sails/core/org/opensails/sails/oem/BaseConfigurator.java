@@ -106,10 +106,11 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	 */
 	public void configure(ISailsEvent event, MixinResolver resolver) {}
 
-	public void configure(ISailsEvent event, RequestContainer eventContainer) {
+	public void configure(final ISailsEvent event, RequestContainer eventContainer) {
 		MixinResolver resolver = installMixinResolver(event, eventContainer);
 		configure(event, resolver);
 
+		eventContainer.register(Flash.class, new FlashComponentResolver(event));
 		eventContainer.register(ScopedContainer.class, eventContainer);
 		eventContainer.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
 		eventContainer.register(ITemplateBinding.class, VientoBinding.class);

@@ -46,7 +46,7 @@ public class Dispatcher {
 	}
 
 	protected void beginDispatch(ILifecycleEvent event) {
-		installContainer(event);
+		configureContainer(event);
 		event.beginDispatch();
 	}
 
@@ -54,7 +54,7 @@ public class Dispatcher {
 		event.endDispatch();
 	}
 
-	protected void installContainer(ILifecycleEvent event) {
+	protected void configureContainer(ILifecycleEvent event) {
 		eventConfigurator.configure(event, event.getContainer());
 	}
 

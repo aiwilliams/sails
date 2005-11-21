@@ -8,6 +8,7 @@ import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.mixins.UrlforMixin;
+import org.opensails.sails.oem.Flash;
 import org.opensails.sails.template.ITemplateBinding;
 
 public class BaseController implements IControllerImpl {
@@ -48,6 +49,22 @@ public class BaseController implements IControllerImpl {
 
 	protected String[] fields(String name) {
 		return event.getFieldValues(name);
+	}
+
+	/**
+	 * @param key
+	 * @return the value in the flash for key
+	 */
+	protected Object flash(Object key) {
+		return getContainer().instance(Flash.class).get(key);
+	}
+
+	/**
+	 * Places the value in the flash as the provided key. In templates, this is
+	 * accessed as $flash(key).
+	 */
+	protected void flash(Object key, Object value) {
+		getContainer().instance(Flash.class).put(key, value);
 	}
 
 	protected ITemplateBinding getBinding() {

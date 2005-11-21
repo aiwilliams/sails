@@ -102,14 +102,18 @@ public class SailsApplication extends HttpServlet implements IConfigurableSailsA
         return new GetEvent(this, req, resp);
     }
 
+    protected PostEvent createPostEvent(HttpServletRequest req, HttpServletResponse resp) {
+		return new PostEvent(this, req, resp);
+	}
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         dispatcher.dispatch(createGetEvent(req, resp));
     }
 
-    @Override
+	@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        dispatcher.dispatch(new PostEvent(this, req, resp));
+        dispatcher.dispatch(createPostEvent(req, resp));
     }
 
     protected String getConfiguratorClassName(ServletConfig config, String configuratorParamName) {

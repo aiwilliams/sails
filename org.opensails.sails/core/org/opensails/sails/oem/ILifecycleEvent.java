@@ -1,5 +1,7 @@
 package org.opensails.sails.oem;
 
+import javax.servlet.http.HttpSession;
+
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.oem.Controller;
@@ -23,6 +25,13 @@ public interface ILifecycleEvent extends ISailsEvent {
 	 * {@link #visit(Controller)).
 	 */
 	void endDispatch();
+
+	/**
+	 * Invoked when a session is created for the request of this event.
+	 * 
+	 * @param session
+	 */
+	void sessionCreated(HttpSession session);
 
 	/**
 	 * This exists to make the Dispatcher a bit cleaner. Implementations call

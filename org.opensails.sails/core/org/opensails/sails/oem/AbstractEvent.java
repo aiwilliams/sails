@@ -42,9 +42,9 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		initialize(parentContainer);
 	}
 
+	// allow some control for subclasses
 	protected AbstractEvent(HttpServletRequest req, HttpServletResponse resp) {
-		// allow some control for subclasses
-		this.req = req;
+		this.req = new EventServletRequest(this, req);
 		this.response = resp;
 	}
 
@@ -57,10 +57,6 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		getBroadcaster().endDispatch(this);
 		container.stop();
 		container.dispose();
-	}
-
-	protected ISailsEventListener getBroadcaster() {
-		return application.getContainer().broadcast(ISailsEventListener.class, false);
 	}
 
 	public String getActionName() {
@@ -147,6 +143,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return resolver.resolve(urlType, this, urlFragment);
 	}
 
+	public void sessionCreated(HttpSession session) {
+		getBroadcaster().sessionCreated(this, session);
+	}
+
 	@Override
 	public String toString() {
 		StringBuffer string = new StringBuffer();
@@ -187,6 +187,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
 	protected RequestContainer createContainer(ScopedContainer parentContainer) {
 		return new RequestContainer(parentContainer, this);
+	}
+
+	protected ISailsEventListener getBroadcaster() {
+		return application.getContainer().broadcast(ISailsEventListener.class, false);
 	}
 
 	/**

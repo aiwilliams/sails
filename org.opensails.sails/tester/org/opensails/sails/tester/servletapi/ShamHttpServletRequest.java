@@ -264,6 +264,7 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	public HttpSession getSession() {
+		if (httpSession == null) httpSession = new ShamHttpSession();
 		return httpSession;
 	}
 

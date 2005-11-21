@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import javax.servlet.http.HttpServletRequest;
+
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
@@ -13,20 +15,20 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.http.ContentType;
+import org.opensails.sails.oem.Flash;
 import org.opensails.sails.tester.form.Form;
 import org.opensails.sails.tester.html.FieldSet;
-import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.util.RegexHelper;
 
 public class Page {
 	protected final ISailsEvent event;
-	protected ShamHttpServletRequest request;
+	protected HttpServletRequest request;
 	protected ShamHttpServletResponse response;
 
 	public Page(ISailsEvent event) {
 		this.event = event;
-		this.request = (ShamHttpServletRequest) event.getRequest();
+		this.request = event.getRequest();
 		this.response = (ShamHttpServletResponse) event.getResponse();
 	}
 
@@ -46,7 +48,8 @@ public class Page {
 		TemplateActionResult result = container().instance(TemplateActionResult.class);
 		if (result == null) {
 			if (expected != null) throw new AssertionFailedError("A template was not rendered");
-			else return; // not template, layout expected to be null, so no problem
+			else return; // not template, layout expected to be null, so no
+			// problem
 		}
 		Assert.assertEquals("Layout was not rendered as expected", expected, result.getLayout());
 	}
@@ -76,6 +79,10 @@ public class Page {
 	 */
 	public FieldSet fieldSet(String id) {
 		return new FieldSet(source(), id);
+	}
+
+	public TestFlash flash() {
+		return new TestFlash(container().instance(Flash.class));
 	}
 
 	public Form form() {

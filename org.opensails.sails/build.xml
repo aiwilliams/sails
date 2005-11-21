@@ -2,11 +2,11 @@
 <project name="org.opensails.sails" default="sails" basedir=".">
 	<property name="sails.version" value="0.2.0" />
 	<property name="temp.build" location="buildtemp" />
-	
+
 	<!-- Compatibility with Current Big Project -->
 	<property name="lib.dir" value="${temp.build}/lib" />
 	<property name="dist.dir" value="dist" />
-	
+
 	<property name="temp.classes" location="${temp.build}/classes" />
 	<property name="temp.lib" location="${lib.dir}" />
 	<property name="vendor.lib" location="../org.opensails.sails.vendor/lib" />
@@ -19,13 +19,19 @@
 		<fileset dir="${vendor.lib}" includes="*.jar" />
 	</path>
 
-	<target name="build" depends="dist.depends" description="Compatibility with Current Big Project" />
+	<target name="build" description="Compatibility with Current Big Project">
+		<copy file="${product.jar.path}/${product.jar}" todir="${product.dist}" />
+		<copy todir="${product.dist}">
+			<fileset dir="${temp.lib}" />
+			<fileset dir="${vendor.lib}" />
+		</copy>
+	</target>
 
 	<target name="dist" depends="sails.jar" description="Constructs zip and tar.gz files that include sails.jar and all vendor libraries.">
 		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
 			<fileset dir="${product.jar.path}" includes="${product.jar}" />
-			<!-- <fileset dir="." includes="src/**/*" />
-			<zipfileset dir="vendor/apache/lib" prefix="vendor" includes="*.jar" /> -->
+			<fileset dir="${temp.lib}" includes="*.jar" />
+			<zipfileset dir="${vendor.lib}" prefix="lib" includes="*.jar" />
 		</zip>
 	</target>
 
@@ -34,10 +40,6 @@
 	    | dependencies into product.dist. Override the value of that when you call this.
 	    +-->
 	<target name="dist.depends" depends="sails.jar" description="Constructs sails.jar. Copies it and all vendor libraries into product.dist.">
-		<copy file="${product.jar.path}/${product.jar}" todir="${product.dist}" />
-		<copy todir="${product.dist}">
-			<fileset dir="${vendor.lib}" />
-		</copy>
 	</target>
 
 	<target name="sails" depends="sails.jar" description="Compiles a jar file containing Sails. No vendor libraries are included.">
