@@ -23,4 +23,14 @@ public class VientoExceptionHandler extends DefaultExceptionHandler implements I
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Object resolutionFailed(Throwable cause, String methodName, Object[] args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object resolutionFailed(Throwable cause, Object target, String methodName, Object[] args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

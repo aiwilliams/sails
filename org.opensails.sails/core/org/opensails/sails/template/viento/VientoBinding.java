@@ -36,6 +36,14 @@ public class VientoBinding extends Binding implements ITemplateBinding {
 			public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
 				return exceptionHandler.resolutionFailed(key.methodName, args);
 			}
+			
+			public Object resolutionFailed(Throwable exception, TargetedMethodKey key, Object target, Object[] args) {
+				return exceptionHandler.resolutionFailed(exception, target, key.methodName, args);
+			}
+
+			public Object resolutionFailed(Throwable exception, TopLevelMethodKey key, Object[] args) {
+				return exceptionHandler.resolutionFailed(exception, key.methodName, args);
+			}
 		});
 	}
 }
