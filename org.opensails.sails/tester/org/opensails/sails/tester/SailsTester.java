@@ -13,7 +13,6 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
-import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.tester.form.TestFormFields;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
@@ -180,14 +179,14 @@ public class SailsTester implements ISailsApplication {
 		return post(Sails.controllerName(controller), formFields);
 	}
 
-	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, IIdentifiable... actionParameters) {
+	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, Object... actionParameters) {
 		TestPostEvent event = createPostEvent(Sails.controllerName(controller), action, formFields);
 		RequestContainer container = event.getContainer();
 		if (actionParameters != null && actionParameters.length > 0) {
 			IAdapterResolver resolver = container.instance(IAdapterResolver.class);
 			String[] params = new String[actionParameters.length];
 			for (int i = 0; i < actionParameters.length; i++) {
-				IIdentifiable object = actionParameters[i];
+				Object object = actionParameters[i];
 				IAdapter adapter = resolver.resolve(object.getClass(), container);
 				params[i] = (String) adapter.forWeb(object.getClass(), object);
 			}

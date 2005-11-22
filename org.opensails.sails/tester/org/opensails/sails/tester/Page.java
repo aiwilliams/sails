@@ -37,11 +37,15 @@ public class Page {
 	}
 
 	public void assertContains(String message, String exactString) throws AssertionFailedError {
-		assertPageExpectation(message + " Expected " + url() + " to contain <" + exactString + ">", source().contains(exactString));
+		assertPageExpectation(message + " Expected " + url() + " to contain <" + exactString + ">", contains(exactString));
 	}
 
 	public void assertContentType(ContentType expected) throws AssertionFailedError {
 		Assert.assertEquals(expected.toHttpValue(), response.getContentType());
+	}
+
+	public void assertExcludes(String exactString) {
+		assertPageExpectation("Expected " + url() + " not to contain <" + exactString + ">", !contains(exactString));
 	}
 
 	public void assertLayout(String expected) throws AssertionFailedError {
