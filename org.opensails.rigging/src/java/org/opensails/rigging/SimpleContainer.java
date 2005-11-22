@@ -25,7 +25,7 @@ public class SimpleContainer {
      * Only disposes things that are already instantiated.
      */
     public void dispose() {
-    	broadcast(Disposable.class, false).dispose();
+    		broadcast(Disposable.class, false).dispose();
     }
 
     public <T> T instance(Class<T> key) {
@@ -74,7 +74,7 @@ public class SimpleContainer {
      * Only stops things that are already instantiated.
      */
     public void stop() {
-    	broadcast(Stoppable.class, false).stop();
+    		broadcast(Stoppable.class, false).stop();
     }
 
     protected <T> ComponentResolver resolveResolver(Class<T> key) {
