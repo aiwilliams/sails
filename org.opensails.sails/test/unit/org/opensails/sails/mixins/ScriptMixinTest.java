@@ -5,19 +5,18 @@ import junit.framework.TestCase;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.url.UrlType;
+import org.opensails.viento.tester.VientoTester;
 
 public class ScriptMixinTest extends TestCase {
 	public void testScript() throws Exception {
 		GetEvent event = SailsEventFixture.actionGet();
-		ScriptMixin mixin = new ScriptMixin(event);
-		String scriptHtml = mixin.invoke(new Object[] { "myscript" }).toString();
-		assertEquals("<script type=\"text/javascript\" src=\"" + event.resolve(UrlType.SCRIPT, "myscript") + "\"></script>", scriptHtml);
+		VientoTester tester = new SailsBuiltinVientoTester(event);
+		tester.verifyRender("$script(myscript)", "<script type=\"text/javascript\" src=\"" + event.resolve(UrlType.SCRIPT, "myscript") + "\"></script>");
 	}
 
 	public void testBuiltin() throws Exception {
 		GetEvent event = SailsEventFixture.actionGet();
-		ScriptMixin mixin = new ScriptMixin(event);
-		String scriptHtml = mixin.invoke(new Object[] { null }).builtin("myscript").toString();
-		assertEquals("<script type=\"text/javascript\" src=\"" + event.resolve(UrlType.SCRIPT_BUILTIN, "myscript") + "\"></script>", scriptHtml);
+		VientoTester tester = new SailsBuiltinVientoTester(event);
+		tester.verifyRender("$script.builtin(myscript)", "<script type=\"text/javascript\" src=\"" + event.resolve(UrlType.SCRIPT_BUILTIN, "myscript") + "\"></script>");
 	}
 }

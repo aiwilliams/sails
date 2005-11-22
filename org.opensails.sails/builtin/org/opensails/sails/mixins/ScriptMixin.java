@@ -2,7 +2,6 @@ package org.opensails.sails.mixins;
 
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.template.IMixinMethod;
-import org.opensails.sails.url.UrlType;
 
 public class ScriptMixin implements IMixinMethod<AbstractScript> {
 	protected final ISailsEvent event;
