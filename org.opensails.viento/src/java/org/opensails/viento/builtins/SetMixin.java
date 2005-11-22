@@ -1,12 +1,12 @@
 package org.opensails.viento.builtins;
 
-import org.opensails.viento.Binding;
+import org.opensails.viento.IBinding;
 
 
 public class SetMixin {
-	protected Binding binding;
+	protected IBinding binding;
 
-	public SetMixin(Binding binding) {
+	public SetMixin(IBinding binding) {
 		this.binding = binding;
 	}
 	

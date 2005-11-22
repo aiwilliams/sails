@@ -10,7 +10,7 @@ import org.opensails.viento.builtins.SetMixin;
 import org.opensails.viento.builtins.SilenceMixin;
 import org.opensails.viento.builtins.WithMixin;
 
-public class Binding {
+public class Binding implements IBinding {
 	protected ExceptionHandler exceptionHandler;
 	protected Binding parent;
 //	protected Cache cache;
