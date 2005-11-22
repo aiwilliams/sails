@@ -9,10 +9,10 @@ import junit.framework.TestCase;
 import org.opensails.sails.controller.oem.PartialActionResult;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
-import org.opensails.sails.template.IExceptionHandler;
 import org.opensails.sails.template.IMixinResolver;
-import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.viento.ExceptionHandler;
+import org.opensails.viento.IBinding;
 
 public class PartialActionResultProcessorTest extends TestCase {
 	ShamMixinResolver mixinResolver;
@@ -22,7 +22,7 @@ public class PartialActionResultProcessorTest extends TestCase {
 	public void testProcess() throws Exception {
 		PartialActionResultProcessor processor = new PartialActionResultProcessor(new ShamTemplateRenderer());
 		GetEvent actionGet = SailsEventFixture.actionGet("controller", "action");
-		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
+		actionGet.getContainer().register(IBinding.class, new ShamTemplateBinding());
 		mixinResolver = new ShamMixinResolver();
 		actionGet.getContainer().register(IMixinResolver.class, mixinResolver);
 		processor.process(new PartialActionResult(actionGet));
@@ -36,7 +36,7 @@ public class PartialActionResultProcessorTest extends TestCase {
 		}
 	}
 
-	class ShamTemplateBinding implements ITemplateBinding {
+	class ShamTemplateBinding implements IBinding {
 		public void mixin(Class<?> target, Object behaviour) {}
 
 		public void mixin(Object behavior) {
@@ -45,7 +45,7 @@ public class PartialActionResultProcessorTest extends TestCase {
 
 		public void put(String key, Object object) {}
 
-		public void setExceptionHandler(IExceptionHandler exceptionHandler) {}
+		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
 	}
 
 	class ShamTemplateRenderer implements ITemplateRenderer<ShamTemplateBinding> {

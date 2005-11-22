@@ -5,7 +5,6 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;

@@ -4,7 +4,6 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.opensails.sails.form.HtmlFormFixture;
-import org.opensails.sails.tester.form.Form;
 
 public class FormTest extends TestCase {
 	public void testConstructor() throws Exception {

@@ -13,11 +13,11 @@ import org.opensails.sails.controller.oem.ShamController;
 import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
-import org.opensails.sails.template.IExceptionHandler;
 import org.opensails.sails.template.IMixinResolver;
-import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.util.CollectionAssert;
+import org.opensails.viento.ExceptionHandler;
+import org.opensails.viento.IBinding;
 
 /*
  * TODO: Refactor these tests. Oh my.
@@ -32,7 +32,7 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		GetEvent actionGet = SailsEventFixture.actionGet(ShamController.class, "action");
 		ShamController controllerImpl = new ShamController();
 		actionGet.getContainer().register(IControllerImpl.class, controllerImpl);
-		actionGet.getContainer().register(ITemplateBinding.class, new ShamTemplateBinding());
+		actionGet.getContainer().register(IBinding.class, new ShamTemplateBinding());
 		mixinResolver = new ShamMixinResolver();
 		actionGet.getContainer().register(IMixinResolver.class, mixinResolver);
 		TemplateActionResult actionResult = new TemplateActionResult(actionGet);
@@ -50,7 +50,7 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		}
 	}
 
-	class ShamTemplateBinding implements ITemplateBinding {
+	class ShamTemplateBinding implements IBinding {
 		public void mixin(Class<?> target, Object behaviour) {}
 
 		public void mixin(Object behaviour) {
@@ -59,11 +59,11 @@ public class TemplateActionResultProcessorTest extends TestCase {
 
 		public void put(String key, Object object) {}
 
-		public void setExceptionHandler(IExceptionHandler exceptionHandler) {}
+		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
 	}
 
 	class ShamTemplateRenderer implements ITemplateRenderer<ShamTemplateBinding> {
-		List<ITemplateBinding> bindingsUsed = new ArrayList<ITemplateBinding>();
+		List<IBinding> bindingsUsed = new ArrayList<IBinding>();
 		boolean renderIExpectCalled;
 		List<String> templatesRendered = new ArrayList<String>();
 

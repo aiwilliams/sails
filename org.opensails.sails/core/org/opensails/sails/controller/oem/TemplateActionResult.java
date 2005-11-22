@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.http.ContentType;
-import org.opensails.sails.template.ITemplateBinding;
+import org.opensails.viento.IBinding;
 
 public class TemplateActionResult extends AbstractActionResult {
 	static final Pattern CONTROLLER_ACTION_PATTERN = Pattern.compile("^(.*?)/(.*?)?");
@@ -23,8 +23,8 @@ public class TemplateActionResult extends AbstractActionResult {
 		initialize(event, identifier);
 	}
 
-	public ITemplateBinding getBinding() {
-		return getContainer().instance(ITemplateBinding.class);
+	public IBinding getBinding() {
+		return getContainer().instance(IBinding.class);
 	}
 
 	public String getIdentifier() {

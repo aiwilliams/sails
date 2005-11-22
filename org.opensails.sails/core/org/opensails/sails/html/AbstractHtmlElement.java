@@ -6,6 +6,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import org.opensails.sails.SailsException;
+import org.opensails.sails.form.html.FormElement;
 
 public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> implements IHtmlElement<T> {
 	public static String idForName(String name) {

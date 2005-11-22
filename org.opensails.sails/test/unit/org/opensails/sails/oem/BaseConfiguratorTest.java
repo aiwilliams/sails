@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.template.IMixinResolver;
-import org.opensails.sails.template.ITemplateBinding;
+import org.opensails.viento.IBinding;
 
 public class BaseConfiguratorTest extends TestCase {
 	public void testConfigureISailsEventScopedContainer() {
@@ -16,7 +16,7 @@ public class BaseConfiguratorTest extends TestCase {
 
 		assertSame("The event container is needed by various components (i.e. HtmlForm)", eventContainer, eventContainer.instance(ScopedContainer.class));
 		assertNotNull(eventContainer.instance(IMixinResolver.class));
-		assertNotNull(eventContainer.instance(ITemplateBinding.class));
+		assertNotNull(eventContainer.instance(IBinding.class));
 	}
 
 }

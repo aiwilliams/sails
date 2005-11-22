@@ -9,7 +9,7 @@ import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.oem.Flash;
-import org.opensails.sails.template.ITemplateBinding;
+import org.opensails.viento.IBinding;
 
 public class BaseController implements IControllerImpl {
 	protected IController controller;
@@ -67,8 +67,8 @@ public class BaseController implements IControllerImpl {
 		getContainer().instance(Flash.class).put(key, value);
 	}
 
-	protected ITemplateBinding getBinding() {
-		return getContainer().instance(ITemplateBinding.class);
+	protected IBinding getBinding() {
+		return getContainer().instance(IBinding.class);
 	}
 
 	protected Object getSessionAttribute(String key) {

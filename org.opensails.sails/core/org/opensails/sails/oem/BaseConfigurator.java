@@ -23,7 +23,6 @@ import org.opensails.sails.controller.oem.IControllerResolver;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.UnderscoreIdGenerator;
 import org.opensails.sails.template.IMixinResolver;
-import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.viento.VientoBinding;
@@ -34,6 +33,7 @@ import org.opensails.sails.util.ClassHelper;
 import org.opensails.sails.util.ComponentPackage;
 import org.opensails.sails.validation.IValidationEngine;
 import org.opensails.sails.validation.oem.SailsValidationEngine;
+import org.opensails.viento.IBinding;
 
 /**
  * The base implementation of ISailsApplicationConfigurator.
@@ -113,7 +113,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		eventContainer.register(Flash.class, new FlashComponentResolver(event));
 		eventContainer.register(ScopedContainer.class, eventContainer);
 		eventContainer.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
-		eventContainer.register(ITemplateBinding.class, VientoBinding.class);
+		eventContainer.register(IBinding.class, VientoBinding.class);
 	}
 
 	public void configure(ResourceResolver resourceResolver) {}
@@ -197,7 +197,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		container.register(ISailsEventConfigurator.class, this);
 		container.register(IValidationEngine.class, SailsValidationEngine.class);
 		container.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
-		container.register(ITemplateBinding.class, VientoBinding.class);
+		container.register(IBinding.class, VientoBinding.class);
 		container.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
 
 		container.register(ISailsApplication.class, application);

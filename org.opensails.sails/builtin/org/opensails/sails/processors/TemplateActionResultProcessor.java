@@ -5,8 +5,8 @@ import org.opensails.sails.IActionResultProcessor;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.template.IMixinResolver;
-import org.opensails.sails.template.ITemplateBinding;
 import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.viento.IBinding;
 
 public class TemplateActionResultProcessor implements IActionResultProcessor<TemplateActionResult> {
 	protected final ITemplateRenderer renderer;
@@ -17,7 +17,7 @@ public class TemplateActionResultProcessor implements IActionResultProcessor<Tem
 
 	@SuppressWarnings("unchecked")
 	public void process(TemplateActionResult result) {
-		ITemplateBinding binding = result.getBinding();
+		IBinding binding = result.getBinding();
 
 		IControllerImpl controllerImpl = result.getController();
 		if (controllerImpl != null)

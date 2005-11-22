@@ -1,12 +1,14 @@
 package org.opensails.sails.template;
 
+import org.opensails.viento.IBinding;
+
 /**
  * Allows for the rendering of templates from anywhere within the
  * SailsApplication.
  * 
  * @author aiwilliams
  */
-public interface ITemplateRenderer<T extends ITemplateBinding> {
+public interface ITemplateRenderer<T extends IBinding> {
 	/**
 	 * @param parent
 	 * @return a new T with given parent
