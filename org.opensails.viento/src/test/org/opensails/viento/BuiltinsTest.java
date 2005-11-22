@@ -61,15 +61,7 @@ public class BuiltinsTest extends TestCase {
 
         verifyRender("$![[asdf$notHere]].?[[not here]]", "not here");
 
-        binding.setExceptionHandler(new ExceptionHandler() {
-			public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args) {
-				return "here";
-			}
-
-			public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
-				return "here";
-			}
-        });
+        binding.setExceptionHandler(new ShamExceptionHandler());
         verifyRender("$![[$notHere]]", "");
     }
     

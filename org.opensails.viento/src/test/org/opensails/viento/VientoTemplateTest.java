@@ -133,20 +133,12 @@ public class VientoTemplateTest extends TestCase {
 	}
 	
 	public void testFailure() throws Exception {
-		binding.setExceptionHandler(new ExceptionHandler() {
-			public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args) {
-				return "failed";
-			}
-
-			public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
-				return "failed";
-			}
-		});
+		binding.setExceptionHandler(new ShamExceptionHandler());
 		
-		verifyRender("$notHere", "failed");
+		verifyRender("$notHere", "here");
 		
 		binding.put("key", "value");
-		verifyRender("$key.notHere", "failed");
+		verifyRender("$key.notHere", "here");
 	}
 	
 	public void testSilence() throws Exception {

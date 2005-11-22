@@ -112,7 +112,15 @@ public class Binding {
 			return resolutionFailed(key, target, args);
 		}
 //		cache.put(key, method);
-		Object result = method.call(target, args);
+		Object result = null;
+		try {
+			result = method.call(target, args);
+		} catch (Throwable t) {
+			if (isSilent)
+				return "";
+			return resolutionFailed(t, key, target, args);
+		}
+		
 		if (result == null) {
 			if (isSilent)
 				return "";
@@ -125,6 +133,12 @@ public class Binding {
 		if (key instanceof TargetedMethodKey)
 			return exceptionHandler.resolutionFailed((TargetedMethodKey)key, target, args);
 		return exceptionHandler.resolutionFailed((TopLevelMethodKey)key, args);
+	}
+
+	protected Object resolutionFailed(Throwable exception, MethodKey key, Object target, Object[] args) {
+		if (key instanceof TargetedMethodKey)
+			return exceptionHandler.resolutionFailed(exception, (TargetedMethodKey)key, target, args);
+		return exceptionHandler.resolutionFailed(exception, (TopLevelMethodKey)key, args);
 	}
 
 	public void mixin(Class<?> target, Object mixin) {

@@ -7,6 +7,11 @@ public class ResolutionFailedException extends RuntimeException {
 	private final Object target;
 
 	public ResolutionFailedException(Object target, String methodName, Object[] args) {
+		this(null, target, methodName, args);
+	}
+
+	public ResolutionFailedException(Throwable exception, Object target, String methodName, Object[] args) {
+		super(exception);
 		this.target = target;
 		this.methodName = methodName;
 		this.args = args;

@@ -75,15 +75,7 @@ public class BindingTest extends TestCase {
 	}
 	
 	public void testParent() throws Exception {
-		binding.setExceptionHandler(new ExceptionHandler() {
-			public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args) {
-				return "here";
-			}
-
-			public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
-				return "here";
-			}
-		});
+		binding.setExceptionHandler(new ShamExceptionHandler());
 		Binding child = new Binding(binding);
 		binding.put("one", new ShamObject());
 		assertNotNull(child.call("one"));
@@ -92,6 +84,11 @@ public class BindingTest extends TestCase {
 		assertEquals("overrides", child.call("one"));
 		
 		assertEquals("here", child.call("notHere"));
+	}
+	
+	public void testException() throws Exception {
+		binding.setExceptionHandler(new ShamExceptionHandler());
+		assertEquals("here", binding.call(new ShamObject(), "exception"));
 	}
 	
 	public void testMethodMissing() throws Exception {
