@@ -2,17 +2,21 @@ package org.opensails.rigging;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class SimpleContainer {
     protected MapComponentResolverResolver mapResolverResolver;
     protected List<IComponentResolverResolver> resolverResolvers;
+	protected Map<Class<?>, List<InstantiationListener>> instantiationListeners;
 
     public SimpleContainer() {
         resolverResolvers = new ArrayList<IComponentResolverResolver>();
         mapResolverResolver = new MapComponentResolverResolver();
         push(mapResolverResolver);
+        instantiationListeners = new HashMap<Class<?>, List<InstantiationListener>>();
     }
 
     public boolean contains(Class key) {
@@ -117,4 +121,20 @@ public class SimpleContainer {
             }
         return instances;
     }
+
+	public <T> void registerInstantiationListener(Class<T> type, InstantiationListener<T> listener) {
+		instantiationListenersForType(type).add(listener);
+	}
+	
+	protected <T> List<InstantiationListener<T>> instantiationListenersForType(Class<T> type) {
+		if (!instantiationListeners.containsKey(type))
+			instantiationListeners.put(type, new ArrayList<InstantiationListener>());
+			
+		return (List<InstantiationListener<T>>) instantiationListeners.get(type);
+	}
+	
+	protected void notifyInstantiationListeners(Class<?> type, Object instance) {
+		for (InstantiationListener listener : instantiationListenersForType(type))
+			listener.instantiated(instance);
+	}
 }

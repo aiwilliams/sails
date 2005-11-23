@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 public class SimpleContainerTest extends TestCase {
     SimpleContainer container = new SimpleContainer();
     boolean resolverResolverCalled;
+    boolean listenerCalled;
     
     public void testContains() throws Exception {
         assertFalse(container.contains(ShamComponent.class));
@@ -187,12 +188,39 @@ public class SimpleContainerTest extends TestCase {
 		assertTrue(anotherShoelace.isTied());
 		assertNotSame(shoelace, anotherShoelace);
 	}
+    
+    public void testInstantiationListeners() throws Exception {
+		container.register(ShamComponent.class);
+		listenerCalled = false;
+		container.registerInstantiationListener(ShamComponent.class, new InstantiationListener<ShamComponent>() {
+			public void instantiated(ShamComponent newInstance) {
+				listenerCalled = true;
+			}
+		});
+		
+		container.instance(ShamComponent.class);
+		assertTrue(listenerCalled);
+		
+		listenerCalled = false;
+		container.instance(ShamComponent.class);
+		assertFalse(listenerCalled);
+		
+		container.register(new ShamSubclassingComponent());
+		container.registerInstantiationListener(ShamSubclassingComponent.class, new InstantiationListener<ShamSubclassingComponent>() {
+			public void instantiated(ShamSubclassingComponent newInstance) {
+				listenerCalled = true;
+			}
+		});
+		container.instance(ShamSubclassingComponent.class);
+		assertFalse(listenerCalled);
+	}
 
     public static interface IShoelace {
     	void tie(); 
     	void untie();
     	boolean isTied();
     }
+    
     public static class Shoelace implements IShoelace {
     	public boolean tied = false;
     	

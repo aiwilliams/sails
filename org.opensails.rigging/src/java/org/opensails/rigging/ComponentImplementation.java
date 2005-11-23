@@ -26,7 +26,9 @@ public class ComponentImplementation implements ComponentResolver {
         for (int i = 0; i < parameterTypes.length; i++)
             parameters[i] = container.instance(parameterTypes[i]);
         try {
-            return constructor.newInstance(parameters);
+            Object newInstance = constructor.newInstance(parameters);
+            container.notifyInstantiationListeners(theClass, newInstance);
+			return newInstance;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
