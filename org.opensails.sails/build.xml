@@ -46,7 +46,7 @@
 	</target>
 
 	<target name="sails.compile" depends="build.depends">
-		<javac destdir="${temp.classes}" debug="off" optimize="on">
+		<javac destdir="${temp.classes}" debug="on" optimize="on">
 			<src path="builtin" />
 			<src path="core" />
 			<!-- <src path="tester" /> -->
