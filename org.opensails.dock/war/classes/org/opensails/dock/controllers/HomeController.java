@@ -1,5 +1,6 @@
 package org.opensails.dock.controllers;
 
+import org.opensails.dock.model.Person;
 import org.opensails.dock.model.User;
 import org.opensails.sails.controller.oem.BaseController;
 
@@ -11,6 +12,11 @@ public class HomeController extends BaseController {
 
 	public void helloUser(User who) {
 		expose("who", who.getFirstName());
+		renderTemplate("index");
+	}
+
+	public void helloPerson(Person who) {
+		expose("who", who.getName());
 		renderTemplate("index");
 	}
 
