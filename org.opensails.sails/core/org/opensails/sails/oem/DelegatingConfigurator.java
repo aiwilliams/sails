@@ -8,6 +8,7 @@ import org.opensails.sails.RequestContainer;
 import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.url.UrlResolver;
 import org.opensails.sails.util.ClassHelper;
+import org.opensails.viento.IBinding;
 
 public class DelegatingConfigurator extends BaseConfigurator {
 	protected BaseConfigurator delegate;
@@ -34,6 +35,12 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	@Override
 	public void configure(IConfigurableSailsApplication application) {
 		super.configure(application);
+	}
+
+	@Override
+	public void configure(ISailsEvent event, IBinding binding) {
+		// TODO Auto-generated method stub
+		super.configure(event, binding);
 	}
 
 	@Override
@@ -89,6 +96,12 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	@Override
 	protected String getDefaultActionResultProcessorPackage() {
 		return delegate.getDefaultActionResultProcessorPackage();
+	}
+
+	@Override
+	protected String getDefaultAdaptersPackage() {
+		// TODO Auto-generated method stub
+		return super.getDefaultAdaptersPackage();
 	}
 
 	@Override

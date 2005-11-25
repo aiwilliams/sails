@@ -15,8 +15,8 @@ public class BaseConfiguratorTest extends TestCase {
 		configurator.configure(event, eventContainer);
 
 		assertSame("The event container is needed by various components (i.e. HtmlForm)", eventContainer, eventContainer.instance(ScopedContainer.class));
+		assertSame("The event container is needed by various components (i.e. HtmlForm)", eventContainer, eventContainer.instance(RequestContainer.class));
 		assertNotNull(eventContainer.instance(IMixinResolver.class));
 		assertNotNull(eventContainer.instance(IBinding.class));
 	}
-
 }

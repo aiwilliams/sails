@@ -4,6 +4,7 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.configuration.web.ServletConfiguration;
 import org.apache.commons.configuration.web.ServletContextConfiguration;
+import org.opensails.rigging.InstantiationListener;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.IActionResultProcessor;
@@ -17,6 +18,7 @@ import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.IControllerResolver;
@@ -98,6 +100,15 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	}
 
 	/**
+	 * Invoked just after an IBinding is created. Override to extend the binding
+	 * for every event.
+	 * 
+	 * @param event
+	 * @param binding
+	 */
+	public void configure(ISailsEvent event, IBinding binding) {}
+
+	/**
 	 * Called for each event, after
 	 * {@link #installMixinResolver(ISailsEvent, RequestContainer)}
 	 * 
@@ -111,9 +122,15 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		configure(event, resolver);
 
 		eventContainer.register(Flash.class, new FlashComponentResolver(event));
+		eventContainer.register(RequestContainer.class, eventContainer);
 		eventContainer.register(ScopedContainer.class, eventContainer);
 		eventContainer.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
 		eventContainer.register(IBinding.class, VientoBinding.class);
+		eventContainer.registerInstantiationListener(IBinding.class, new InstantiationListener<IBinding>() {
+			public void instantiated(IBinding newInstance) {
+				configure(event, newInstance);
+			}
+		});
 	}
 
 	public void configure(ResourceResolver resourceResolver) {}
@@ -128,7 +145,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	/**
 	 * Called after the container has been installed and before any other
 	 * configure* methods (except configureConfiguration). This DOES NOT
-	 * disallow, nor discourage, other conigurator methods from modifying the
+	 * disallow, nor discourage, other configurator methods from modifying the
 	 * container.
 	 * 
 	 * @param application
@@ -163,6 +180,10 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return getApplicationRootPackage() + ".processors";
 	}
 
+	protected String getDefaultAdaptersPackage() {
+		return getApplicationRootPackage() + ".adapters";
+	}
+
 	protected String getDefaultControllerPackage() {
 		return getApplicationRootPackage() + ".controllers";
 	}
@@ -181,6 +202,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		AdapterResolver resolver = new AdapterResolver();
+		resolver.push(new ComponentPackage<IAdapter>(getDefaultAdaptersPackage(), "Adapter"));
 		container.register(IAdapterResolver.class, resolver);
 		return resolver;
 	}

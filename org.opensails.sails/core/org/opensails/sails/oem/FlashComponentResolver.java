@@ -18,7 +18,7 @@ public class FlashComponentResolver implements ComponentResolver {
 	}
 
 	public boolean isInstantiated() {
-		return flash != null;
+		return flash != null || Flash.exists(event.getSession(false));
 	}
 
 	public Class<?> type() {

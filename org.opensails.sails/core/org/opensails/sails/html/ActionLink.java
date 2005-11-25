@@ -16,8 +16,6 @@ import org.opensails.sails.url.ActionUrl;
  * If no text is explicitly provided, the controller and action will be used. If
  * those are not specified, the value 'home' is used. What links are useful
  * without text?
- * 
- * If you must have no text, consider subclassing LinkTool.
  */
 public class ActionLink extends AbstractLink<ActionLink> {
 	protected String action;
@@ -65,7 +63,7 @@ public class ActionLink extends AbstractLink<ActionLink> {
 		return imageLink;
 	}
 
-	public ActionLink setParameters(List<Object> parameters) {
+	public ActionLink parameters(List<? extends Object> parameters) {
 		getUrl().setParameters(parameters.toArray(new Object[parameters.size()]));
 		return this;
 	}

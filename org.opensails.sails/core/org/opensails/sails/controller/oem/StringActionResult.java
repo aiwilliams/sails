@@ -5,9 +5,9 @@ import org.opensails.sails.ISailsEvent;
 public class StringActionResult extends AbstractActionResult {
 	protected String content;
 
-	public StringActionResult(ISailsEvent event, String content) {
+	public StringActionResult(ISailsEvent event, Object content) {
 		super(event);
-		this.content = content;
+		this.content = content != null ? content.toString() : "";
 	}
 
 	public String getContent() {

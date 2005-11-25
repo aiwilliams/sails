@@ -99,7 +99,7 @@ public class BaseController implements IControllerImpl {
 	 * @param content
 	 * @return the StringActionResult with content
 	 */
-	protected StringActionResult renderString(String content) {
+	protected StringActionResult renderString(Object content) {
 		return setResult(new StringActionResult(event, content));
 	}
 

@@ -35,6 +35,14 @@ public class Flash implements Map<Object, Object>, ISailsEventListener {
 	 */
 	public static final String PROBLEM = "problem";
 
+	/**
+	 * @param session
+	 * @return true if there is a Flash in the session
+	 */
+	public static boolean exists(HttpSession session) {
+		return session != null && session.getAttribute(KEY) != null;
+	}
+
 	public static Flash load(HttpServletRequest request, HttpSession session) {
 		return session != null ? Flash.load(session) : Flash.load(request);
 	}
