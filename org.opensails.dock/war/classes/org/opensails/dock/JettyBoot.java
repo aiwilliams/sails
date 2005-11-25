@@ -1,30 +1,14 @@
 package org.opensails.dock;
 
-import org.mortbay.jetty.Server;
+import org.opensails.sails.util.DevelopmentBoot;
 
-public class JettyBoot {
+public class JettyBoot extends DevelopmentBoot {
     public static void main(String[] args) {
         new JettyBoot().startServer();
     }
-
-    protected Server server;
-
-    public void startServer() {
-        try {
-            server = new Server();
-            server.addListener(":1111");
-            server.addWebApplication("/", "./war");
-            server.start();
-        } catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
-
-    public void stopServer() {
-        try {
-            server.stop();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    
+    @Override
+    protected String contextDirectory() {
+        return "./war";
     }
 }
