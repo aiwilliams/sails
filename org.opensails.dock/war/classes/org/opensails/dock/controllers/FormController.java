@@ -1,7 +1,7 @@
 package org.opensails.dock.controllers;
 
 import org.opensails.dock.model.User;
-import org.opensails.rigging.ScopedContainer;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.controller.oem.BaseController;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.html.ListSelectModel;
@@ -23,7 +23,7 @@ public class FormController extends BaseController {
 	}
 
 	protected boolean formToModel(User user) {
-		ScopedContainer container = event.getContainer();
+		RequestContainer container = event.getContainer();
 		container.register(IModelContext.class, new SingleModelContext(user));
 		HtmlForm form = container.instance(HtmlForm.class, HtmlForm.class);
 		return form.isValid();
