@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="Sails Project Structure Generator" default="new.project" basedir="..">
+	<!-- TODO: Calculate package/directory name/structure
+	     TODO: Work out dependencies of tasks
+	     -->
+	<property name="generator.target.dir" location="applications" description="The directory in which assets will be generated" />
+	<property name="application.name" value="org.sails.example" description="The name of the application being generated" />
+	<property name="application.dir" value="${application.name}" description="The directory name for the application being generated - defaults to value of application.name" />
+	<property name="application.rootpackage" value="org/sails/example" description="The application's root package fragment, in the form of 'com/example/package'" />
+	<property name="application.configurator.classname" value="Configurator" description="The name to use for the ISailsApplicationConfigurator implementation" />
+	<property name="application.configurator.classname.qualified" value="org.sails.example.${application.configurator.classname}" description="The name to use for the ISailsApplicationConfigurator implementation" />
+
+	<!-- Internal properties -->
+	<property name="generator.root.dir" location="generators" />
+	<property name="generator.working.dir" location="${generator.target.dir}/${application.dir}" />
+	<property name="application.context.name" value="war" />
+	<property name="application.war.dir" location="${generator.working.dir}/${application.context.name}" />
+	<property name="web.inf.dir" location="${application.war.dir}/WEB-INF" />
+
+	<path id="classpath.ant.tasks">
+		<pathelement location="${generator.root.dir}/tasks" />
+		<pathelement location="../org.opensails.viento/tools/eclipse/classes" />
+	</path>
+
+	<!-- ================================= 
+          tasks
+         ================================= -->
+	<taskdef name="viento" classpathref="classpath.ant.tasks" classname="org.opensails.ant.VientoTask" />
+
+	<!-- ================================= 
+          targets
+         ================================= -->
+	<target name="new.project" description="Creates a folder/file structure for a new Sails Application">
+		<mkdir dir="${generator.working.dir}/src/${application.rootpackage}" />
+		<mkdir dir="${generator.working.dir}/tools/eclipse/classes" />
+		<antcall target="new.war" />
+	</target>
+
+	<target name="new.war">
+		<mkdir dir="${application.war.dir}/images" />
+		<mkdir dir="${application.war.dir}/scripts" />
+		<mkdir dir="${application.war.dir}/styles" />
+		<mkdir dir="${web.inf.dir}/views" />
+
+		<copy tofile="${web.inf.dir}/web.xml" file="${generator.root.dir}/web.xml" />
+		<viento file="${web.inf.dir}/web.xml" />
+	</target>
+</project>
+
