@@ -146,4 +146,14 @@ public class Page {
 			Assert.fail(message);
 		}
 	}
+
+	public void assertContainsInOrder(String... strings) {
+		String source = source();
+		int index = 0;
+		for (String string : strings) {
+			index = source.indexOf(string, index);
+			if (index == -1)
+				assertPageExpectation("Expected " + url() + " to contain <" + string + "> in a particular place", false);
+		}
+	}
 }

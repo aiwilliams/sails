@@ -29,4 +29,23 @@ public class PageTest extends TestCase {
 	public void testAssertLayout() throws Exception {
 		fail("note to self: mocks are good");
 	}
+	
+	public void testAssertContainsInOrder() throws Exception {
+		GetEvent event = SailsEventFixture.actionGet();
+		event.write("one two three");
+		Page page = new Page(event);
+		
+		page.assertContainsInOrder("two");
+		page.assertContainsInOrder("one", "three");
+		
+		try {
+			page.assertContainsInOrder("two", "one");
+			throw new RuntimeException();
+		} catch (AssertionFailedError expected) {}
+
+		try {
+			page.assertContainsInOrder("two", "four");
+			throw new RuntimeException();
+		} catch (AssertionFailedError expected) {}
+	}
 }
