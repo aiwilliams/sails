@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <project name="Sails Project Structure Generator" default="new.project" basedir="..">
-	<!-- TODO: Calculate package/directory name/structure
-	     TODO: Work out dependencies of tasks
-	     -->
+	<!-- Public properties -->
 	<property name="generator.target.dir" location="applications" description="The directory in which assets will be generated" />
 	<property name="application.name" value="org.sails.example" description="The name of the application being generated" />
 	<property name="application.dir" value="${application.name}" description="The directory name for the application being generated - defaults to value of application.name" />
-	<property name="application.rootpackage" value="org/sails/example" description="The application's root package fragment, in the form of 'com/example/package'" />
+	<property name="application.java.srcdir" value="src" description="The directory that contains java files to be compiled" />
+	<property name="application.output.classdir" value="bin" description="The directory into which classes should be generated" />
+	<property name="application.rootpackage" value="org.sails.example" description="The application's root package fragment, in the form of 'com/example/package'" />
 	<property name="application.configurator.classname" value="Configurator" description="The name to use for the ISailsApplicationConfigurator implementation" />
-	<property name="application.configurator.classname.qualified" value="org.sails.example.${application.configurator.classname}" description="The name to use for the ISailsApplicationConfigurator implementation" />
+	<property name="application.configurator.classname.qualified" value="${application.rootpackage}.${application.configurator.classname}" description="The name to use for the ISailsApplicationConfigurator implementation" />
 
 	<!-- Internal properties -->
 	<property name="generator.root.dir" location="generators" />
@@ -16,23 +16,40 @@
 	<property name="application.context.name" value="war" />
 	<property name="application.war.dir" location="${generator.working.dir}/${application.context.name}" />
 	<property name="web.inf.dir" location="${application.war.dir}/WEB-INF" />
+	<property name="viento.classpath" value="viento.jar" />
 
 	<path id="classpath.ant.tasks">
 		<pathelement location="${generator.root.dir}/tasks" />
-		<pathelement location="../org.opensails.viento/tools/eclipse/classes" />
+		<pathelement location="${viento.classpath}" />
 	</path>
 
 	<!-- ================================= 
           tasks
          ================================= -->
 	<taskdef name="viento" classpathref="classpath.ant.tasks" classname="org.opensails.ant.VientoTask" />
+	<taskdef name="dot.to.slash" classpathref="classpath.ant.tasks" classname="org.opensails.ant.DotToSlashTask" />
 
 	<!-- ================================= 
           targets
          ================================= -->
 	<target name="new.project" description="Creates a folder/file structure for a new Sails Application">
-		<mkdir dir="${generator.working.dir}/src/${application.rootpackage}" />
-		<mkdir dir="${generator.working.dir}/tools/eclipse/classes" />
+		<!-- Create source directories -->
+		<dot.to.slash name="application.rootpackage.dir" value="${application.rootpackage}" />
+		<property name="package.dir" location="${generator.working.dir}/${application.java.srcdir}/${application.rootpackage.dir}" />
+		<mkdir dir="${package.dir}" />
+
+		<!-- Create configuration Java file -->
+		<property name="configurator.file" value="${package.dir}/${application.configurator.classname}.java"/>
+		<copy tofile="${configurator.file}" file="${generator.root.dir}/Configurator.java" />
+		<viento file="${configurator.file}" />
+		
+		<!-- Create jetty boot Java file -->
+		<property name="jettyboot.file" value="${package.dir}/JettyBoot.java"/>
+		<copy tofile="${jettyboot.file}" file="${generator.root.dir}/JettyBoot.java" />
+		<viento file="${jettyboot.file}" />
+		
+		<!-- Create class output directory -->
+		<mkdir dir="${generator.working.dir}/${application.output.classdir}" />
 		<antcall target="new.war" />
 	</target>
 
