@@ -101,4 +101,15 @@
 	<target name="clean" description="Delete everything that I generate, excluding whatever is in product.path.">
 		<delete dir="${temp.build}" />
 	</target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: Perform an svn update. Primarily used by cruisecontrol.
+         - - - - - - - - - - - - - - - - - -->
+	<target name="svn.update">
+		<exec executable="svn" dir="../org.opensails.hibernate"><arg line="svn update"/></exec>
+		<exec executable="svn" dir="../org.opensails.rigging"><arg line="svn update"/></exec>
+		<exec executable="svn" dir="../org.opensails.sails"><arg line="svn update"/></exec>
+		<exec executable="svn" dir="../org.opensails.sails.vendor"><arg line="svn update"/></exec>
+		<exec executable="svn" dir="../org.opensails.sails.viento"><arg line="svn update"/></exec>
+	</target>
 </project>
