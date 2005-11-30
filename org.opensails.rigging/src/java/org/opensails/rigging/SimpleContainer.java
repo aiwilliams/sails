@@ -10,13 +10,13 @@ import java.util.Map;
 public class SimpleContainer {
     protected MapComponentResolverResolver mapResolverResolver;
     protected List<IComponentResolverResolver> resolverResolvers;
-	protected Map<Class<?>, List<InstantiationListener>> instantiationListeners;
+	protected Map<Class<?>, List<InstantiationListener<?>>> instantiationListeners;
 
     public SimpleContainer() {
         resolverResolvers = new ArrayList<IComponentResolverResolver>();
         mapResolverResolver = new MapComponentResolverResolver();
         push(mapResolverResolver);
-        instantiationListeners = new HashMap<Class<?>, List<InstantiationListener>>();
+        instantiationListeners = new HashMap<Class<?>, List<InstantiationListener<?>>>();
     }
 
     public boolean contains(Class key) {
@@ -126,11 +126,11 @@ public class SimpleContainer {
 		instantiationListenersForType(type).add(listener);
 	}
 	
-	protected <T> List<InstantiationListener<T>> instantiationListenersForType(Class<T> type) {
+	protected <T> List<InstantiationListener<?>> instantiationListenersForType(Class<T> type) {
 		if (!instantiationListeners.containsKey(type))
-			instantiationListeners.put(type, new ArrayList<InstantiationListener>());
+			instantiationListeners.put(type, new ArrayList<InstantiationListener<?>>());
 			
-		return (List<InstantiationListener<T>>) instantiationListeners.get(type);
+		return (List<InstantiationListener<?>>) instantiationListeners.get(type);
 	}
 	
 	protected void notifyInstantiationListeners(Class<?> type, Object instance) {
