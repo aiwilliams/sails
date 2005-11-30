@@ -27,11 +27,19 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="sails.jar" description="Constructs zip and tar.gz files that include sails.jar and all vendor libraries.">
-		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
-			<fileset dir="${product.jar.path}" includes="${product.jar}" />
+	<target name="dist" depends="sails.jar" description="Constructs a zip file that is a running Sails application.">
+		<ant antfile="generators/generate.xml" inheritall="false">
+			<property name="viento.classpath" value="../org.opensails.viento/tools/eclipse/classes"/>
+			<property name="generator.target.dir" location="${temp.build}" />
+			<property name="application.name" value="project" />
+		</ant>
+		<copy todir="${temp.build}/project/war/WEB-INF/lib">
+			<fileset dir="${vendor.lib}" includes="*.jar" />
 			<fileset dir="${temp.lib}" includes="*.jar" />
-			<zipfileset dir="${vendor.lib}" prefix="lib" includes="*.jar" />
+			<fileset dir="${product.jar.path}" includes="${product.jar}" />
+		</copy>
+		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
+			<fileset dir="${temp.build}/project" includes="**" />
 		</zip>
 	</target>
 
@@ -63,7 +71,7 @@
 	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - 
-          target: gather.libs                      
+          target: build.depends
          - - - - - - - - - - - - - - - - - -->
 	<target name="build.depends" depends="make.dirs">
 		<ant antfile="../org.opensails.rigging/build.xml" inheritall="false">
