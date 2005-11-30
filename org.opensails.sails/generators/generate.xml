@@ -39,18 +39,17 @@
 		<mkdir dir="${package.dir}" />
 
 		<!-- Create configuration Java file -->
-		<property name="configurator.file" value="${package.dir}/${application.configurator.classname}.java"/>
-		<copy tofile="${configurator.file}" file="${generator.root.dir}/Configurator.java" />
-		<viento file="${configurator.file}" />
+		<viento tofile="${package.dir}/${application.configurator.classname}.java" file="${generator.root.dir}/Configurator.java" />
 		
 		<!-- Create jetty boot Java file -->
-		<property name="jettyboot.file" value="${package.dir}/JettyBoot.java"/>
-		<copy tofile="${jettyboot.file}" file="${generator.root.dir}/JettyBoot.java" />
-		<viento file="${jettyboot.file}" />
+		<viento tofile="${package.dir}/JettyBoot.java" file="${generator.root.dir}/JettyBoot.java" />
 		
 		<!-- Create class output directory -->
 		<mkdir dir="${generator.working.dir}/${application.output.classdir}" />
 		<antcall target="new.war" />
+		
+		<!-- Create eclipse launch config -->
+		<viento tofile="${generator.working.dir}/${application.name}.launch" file="${generator.root.dir}/eclipse.launch" />
 	</target>
 
 	<target name="new.war">
@@ -61,8 +60,7 @@
 		<mkdir dir="${web.inf.dir}/lib" />
 		<mkdir dir="${web.inf.dir}/views" />
 
-		<copy tofile="${web.inf.dir}/web.xml" file="${generator.root.dir}/web.xml" />
-		<viento file="${web.inf.dir}/web.xml" />
+		<viento tofile="${web.inf.dir}/web.xml" file="${generator.root.dir}/web.xml" />
 	</target>
 </project>
 

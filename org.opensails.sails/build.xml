@@ -28,10 +28,11 @@
 	</target>
 
 	<target name="dist" depends="sails.jar" description="Constructs a zip file that is a running Sails application.">
+		<property name="application.name" value="project"/>
 		<ant antfile="generators/generate.xml" inheritall="false">
 			<property name="viento.classpath" value="../org.opensails.viento/tools/eclipse/classes"/>
 			<property name="generator.target.dir" location="${temp.build}" />
-			<property name="application.name" value="project" />
+			<property name="application.name" value="${application.name}" />
 		</ant>
 		<copy todir="${temp.build}/project/war/WEB-INF/lib">
 			<fileset dir="${vendor.lib}" includes="*.jar" />
@@ -39,7 +40,7 @@
 			<fileset dir="${product.jar.path}" includes="${product.jar}" />
 		</copy>
 		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
-			<fileset dir="${temp.build}/project" includes="**" />
+			<fileset dir="${temp.build}" includes="${application.name}/**" />
 		</zip>
 	</target>
 

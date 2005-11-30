@@ -15,15 +15,22 @@ import org.opensails.viento.VientoTemplate;
 
 public class VientoTask extends Task {
 	private File file;
+	private File tofile;
 
 	@Override
 	public void execute() throws BuildException {
+		if (tofile == null) throw new BuildException("Must specify tofile (destination file)");
+		if (file == null) throw new BuildException("Must specify file (template file)");
 		try {
 			VientoTemplate template = new VientoTemplate(new FileInputStream(file));
 			save(template.render(createBinding()));
 		} catch (FileNotFoundException e) {
 			throw new BuildException("File does not exist", e);
 		}
+	}
+
+	public void setTofile(File tofile) {
+		this.tofile = tofile;
 	}
 
 	public void setFile(File file) {
@@ -39,7 +46,7 @@ public class VientoTask extends Task {
 	private void save(String content) {
 		Writer writer = null;
 		try {
-			writer = new OutputStreamWriter(new FileOutputStream(file));
+			writer = new OutputStreamWriter(new FileOutputStream(tofile));
 			writer.write(content);
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to save to file.", e);
