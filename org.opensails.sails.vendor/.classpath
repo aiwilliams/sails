@@ -12,5 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/jasper-runtime.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" sourcepath="src/ant/ant_src.zip" kind="lib" path="lib/ant/ant.jar"/>
+	<classpathentry exported="true" sourcepath="src/junit_src.zip" kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
