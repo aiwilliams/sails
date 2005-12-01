@@ -1,0 +1,195 @@
+		* 	{
+			padding:0;
+			margin:0;
+			}
+		body {
+			text-align: center;
+			font-family: arial, helvetica, arial, sans-serif;	
+			font-size: small;		
+			}
+		#Wrapper {
+			width: 675px;
+			margin: 0 auto;
+			text-align: left;
+			}
+		#Header {
+			height: 170px;
+			position: relative;
+			}
+		#Content {
+			position: relative;
+			}
+			
+		.LeftColumn {
+			width: 160px;
+			padding: 0 20px;
+			}
+		#Content .LeftColumn {
+			width: 200px;
+			padding: 0;
+			padding-bottom: 45px; 
+			border-top: 1px #73BE1E solid;			
+			}
+		.RightColumn {
+			width: 430px;
+			padding: 0 10px;
+			float: right;
+			}			
+		#Content .RightColumn {
+			padding-top: 20px;
+			margin-bottom: 30px;
+			border-top: 1px #73BE1E solid;
+			border-bottom: 1px #73BE1E solid;				
+			}
+		#Header .RightColumn {
+			position: absolute;
+			bottom: 45px;
+			right: 0;
+			text-align: right;
+			}
+			
+		#Logo img {
+			border: 0px;
+			}
+
+		#SubNavigation, #Tidbits, #Footer {
+			padding: 0 20px;
+			}
+		#Navigation {
+			background: #F6FBF1;
+			padding-top: 17px;
+			padding-bottom: 20px;
+			border-bottom: 1px #73BE1E solid;	
+			font-size: large;				
+			}
+		#Navigation a:visited {
+			color: blue;
+			}	
+		#Navigation li a:hover, #Navigation li a:active {
+			background: #EDF7E3;
+			text-decoration: none;			
+			}				
+		#CurrentSection a, #Navigation #CurrentSection a:visited, #Navigation #CurrentSection a:hover, #Navigation #CurrentSection a:active {
+			color: white;
+			background: #73BE1E;
+			}	
+		html body #Navigation li a {
+			padding: 3px 20px;
+			display: block;
+			width: 160px;
+			}
+	 
+			
+
+		#SubNavigation {
+			padding-top: 20px;
+			padding-bottom: 20px;
+			border-bottom: 1px #73BE1E solid;					
+			}			
+			
+			
+		#Tidbits {
+			padding-top: 30px;
+			padding-bottom: 20px;			
+			}
+		#Tidbits span {
+			display: block;
+			padding-bottom: 10px;
+			}
+		#Tidbits h4 {
+			display: inline;
+			}
+		
+		.LeftColumn ul {
+			list-style-type: none;
+			list-style-position: outside;
+			}
+		#Footer {
+			padding-top: 10px;
+			margin-bottom: 30pz;
+			border-top: 1px #73BE1E solid;	
+			color: gray;
+			font-size: 11px;
+			font-style: italic;
+			}			
+
+
+		h1, h2, h3, h4 {
+			font-family: arial, helvetica, arial, sans-serif;
+			}
+		h1	{
+			display: none;
+			}
+		h2 	{
+			color: silver;
+			}						
+		h3 	{
+			color: blue;
+			font-size: x-large;
+			font-weight: normal;
+			}			
+		h4	{
+			font-size: small;
+			color: #62942B;
+			}
+		#Tidbits h4	{
+			padding-right: 3px;
+			color: black;
+			}	
+		.break {
+			margin-bottom: 10px;
+			}		
+		.alignleft {
+			float: left;
+			text-align: left;
+			}
+		.alignright {
+			float: right;
+			text-align: right;
+			}
+		a, a:active, a:visited, a:hover {
+			color: blue;
+			text-decoration: none;
+			}
+		a:active, a:hover {
+			text-decoration: underline;
+			}			
+		.Post	{
+			padding-bottom: 8px;
+			}
+		.PostComments {
+			display: inline;
+			}
+		.PostInfo {
+			margin-bottom: 8px;
+			color: gray;
+			font-style: italic;
+			}
+		.PostBody p {
+			padding-bottom: 12px;
+			}
+		
+			
+			
+		#HomeLogo {
+			margin-top: 50px;
+			}
+		#HomeNavigation {
+			width: 750;
+			margin: 25px auto 0;
+			font-size: 35px;
+			color: blue;
+			}			
+		#HomeAbout {
+			width: 500px;
+			margin: 60px auto 0;
+			background: #F6FBF1;
+			padding: 20px 20px;
+			border-bottom: 1px #73BE1E solid;	
+			border-top: 1px #73BE1E solid;			
+			font-size: 18px;				
+			font-weight: 50;
+			}			
+		.LinkCategory {
+			padding-bottom: 5px;
+			}
