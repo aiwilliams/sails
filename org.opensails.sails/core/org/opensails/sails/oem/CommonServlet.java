@@ -20,9 +20,14 @@ public class CommonServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String pathInfo = request.getPathInfo();
 		InputStream stream = resolver.resolve(pathInfo);
-		ServletOutputStream outputStream = response.getOutputStream();
-		byte data = -1;
-		while ((data = (byte) stream.read()) != -1)
-			outputStream.write(data);
+		if (stream == null) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.getWriter().write("Not found");
+		} else {
+			byte data = -1;
+			ServletOutputStream outputStream = response.getOutputStream();
+			while ((data = (byte) stream.read()) != -1)
+				outputStream.write(data);
+		}
 	}
 }
