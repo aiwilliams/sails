@@ -14,4 +14,6 @@ public interface IConfigurableSailsApplication extends ISailsApplication, Servle
     void setDispatcher(Dispatcher dispatcher);
 
     void setName(String name);
+
+	void setConfigurator(ISailsApplicationConfigurator configurator);
 }

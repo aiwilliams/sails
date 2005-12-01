@@ -8,6 +8,12 @@ import org.opensails.sails.template.IMixinResolver;
 import org.opensails.viento.IBinding;
 
 public class BaseConfiguratorTest extends TestCase {
+	public void testConfigure() {
+		BaseConfigurator configurator = new BaseConfigurator();
+		SailsApplication sailsApplication = (SailsApplication) SailsApplicationFixture.configured(configurator);
+		assertSame(configurator, sailsApplication.configurator);
+	}
+
 	public void testConfigureISailsEventScopedContainer() {
 		BaseConfigurator configurator = new BaseConfigurator();
 		GetEvent event = SailsEventFixture.actionGet();

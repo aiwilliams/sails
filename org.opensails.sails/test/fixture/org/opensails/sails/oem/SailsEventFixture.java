@@ -2,6 +2,7 @@ package org.opensails.sails.oem;
 
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.Sails;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.form.FormFields;
@@ -38,7 +39,9 @@ public class SailsEventFixture {
 		ShamHttpServletRequest request = new ShamHttpServletRequest(ShamHttpServletRequest.GET);
 		setControllerAction(request, controller, action);
 		ISailsApplication application = SailsApplicationFixture.basic();
-		return new GetEvent(application, request, new ShamHttpServletResponse());
+		GetEvent getEvent = new GetEvent(application, request, new ShamHttpServletResponse());
+		application.getContainer().instance(ISailsEventConfigurator.class).configure(getEvent, getEvent.getContainer());
+		return getEvent;
 	}
 
 	public static PostEvent actionPost(FormFields fields) {

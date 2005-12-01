@@ -74,6 +74,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	public void configure(ControllerResolver controllerResolver) {}
 
 	public void configure(IConfigurableSailsApplication application) {
+		installConfigurator(application);
+		
 		CompositeConfiguration configuration = installConfiguration(application);
 		configure(application, configuration);
 		configureName(application, configuration);
@@ -211,6 +213,10 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
 		application.setConfiguration(compositeConfiguration);
 		return compositeConfiguration;
+	}
+
+	protected void installConfigurator(IConfigurableSailsApplication application) {
+		application.setConfigurator(this);
 	}
 
 	protected ScopedContainer installContainer(IConfigurableSailsApplication application) {

@@ -130,6 +130,11 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
+	protected void installConfigurator(IConfigurableSailsApplication application) {
+		delegate.installConfigurator(application);
+	}
+
+	@Override
 	protected ScopedContainer installContainer(IConfigurableSailsApplication application) {
 		return delegate.installContainer(application);
 	}

@@ -1,10 +1,14 @@
 package org.opensails.sails.tester;
 
 import org.apache.commons.configuration.CompositeConfiguration;
+import org.opensails.rigging.ComponentImplementation;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IActionResultProcessor;
 import org.opensails.sails.IActionResultProcessorResolver;
 import org.opensails.sails.IConfigurableSailsApplication;
+import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.ISailsEventConfigurator;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
@@ -19,14 +23,26 @@ import org.opensails.sails.oem.ExceptionEvent;
 import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.oem.ErrorController;
 import org.opensails.sails.tester.oem.LazyActionResultProcessor;
+import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.persist.MemoryObjectPersister;
 import org.opensails.sails.util.IClassResolver;
+import org.opensails.viento.IBinding;
 
 public class SailsTesterConfigurator extends DelegatingConfigurator {
 	public SailsTesterConfigurator(Class<? extends BaseConfigurator> delegateClass) {
 		super(delegateClass);
+	}
+
+	@Override
+	public void configure(ISailsEvent event, RequestContainer eventContainer) {
+		super.configure(event, eventContainer);
+
+		// Expose the same instance as two types
+		ComponentImplementation bindingComponent = new ComponentImplementation(TestingBinding.class, eventContainer);
+		eventContainer.register(IBinding.class, bindingComponent);
+		eventContainer.register(TestingBinding.class, bindingComponent);
 	}
 
 	@Override
@@ -51,6 +67,18 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 		};
 		container.register(IActionResultProcessorResolver.class, interceptingResolver);
 		return interceptingResolver;
+	}
+
+	@Override
+	protected void installConfigurator(IConfigurableSailsApplication application) {
+		application.setConfigurator(this);
+	}
+
+	@Override
+	protected ScopedContainer installContainer(IConfigurableSailsApplication application) {
+		ScopedContainer container = super.installContainer(application);
+		container.register(ISailsEventConfigurator.class, this);
+		return container;
 	}
 
 	@Override

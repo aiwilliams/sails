@@ -7,8 +7,39 @@ import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.HtmlFormFixture;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.viento.IBinding;
 
 public class PageTest extends TestCase {
+	public void testAssertContainsInOrder() throws Exception {
+		GetEvent event = SailsEventFixture.actionGet();
+		event.write("one two three");
+		Page page = new Page(event);
+
+		page.assertContainsInOrder("two");
+		page.assertContainsInOrder("one", "three");
+
+		try {
+			page.assertContainsInOrder("two", "one");
+			throw new RuntimeException();
+		} catch (AssertionFailedError expected) {}
+
+		try {
+			page.assertContainsInOrder("two", "four");
+			throw new RuntimeException();
+		} catch (AssertionFailedError expected) {}
+	}
+
+	public void testAssertLayout() throws Exception {
+		fail("note to self: mocks are good");
+	}
+
+	public void testExposed() {
+		GetEvent event = SailsEventFixture.actionGet();
+		event.getContainer().instance(IBinding.class).put("mything", "you found it");
+		Page page = new Page(event);
+		assertEquals("you found it", page.exposed("mything").value);
+	}
+
 	public void testGetForm() throws Exception {
 		GetEvent event = SailsEventFixture.actionGet();
 		event.write("<form></form>");
@@ -24,28 +55,5 @@ public class PageTest extends TestCase {
 
 		event.getContainer().register(HtmlForm.class, HtmlFormFixture.create());
 		assertNotNull(page.form());
-	}
-
-	public void testAssertLayout() throws Exception {
-		fail("note to self: mocks are good");
-	}
-	
-	public void testAssertContainsInOrder() throws Exception {
-		GetEvent event = SailsEventFixture.actionGet();
-		event.write("one two three");
-		Page page = new Page(event);
-		
-		page.assertContainsInOrder("two");
-		page.assertContainsInOrder("one", "three");
-		
-		try {
-			page.assertContainsInOrder("two", "one");
-			throw new RuntimeException();
-		} catch (AssertionFailedError expected) {}
-
-		try {
-			page.assertContainsInOrder("two", "four");
-			throw new RuntimeException();
-		} catch (AssertionFailedError expected) {}
 	}
 }

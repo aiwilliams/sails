@@ -3,6 +3,7 @@ package org.opensails.sails.tester;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +19,9 @@ import org.opensails.sails.http.ContentType;
 import org.opensails.sails.oem.Flash;
 import org.opensails.sails.tester.form.Form;
 import org.opensails.sails.tester.html.FieldSet;
+import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.util.CollectionAssert;
 import org.opensails.sails.util.RegexHelper;
 
 public class Page {
@@ -38,6 +41,15 @@ public class Page {
 
 	public void assertContains(String message, String exactString) throws AssertionFailedError {
 		assertPageExpectation(message + " Expected " + url() + " to contain <" + exactString + ">", contains(exactString));
+	}
+
+	public void assertContainsInOrder(String... strings) {
+		String source = source();
+		int index = 0;
+		for (String string : strings) {
+			index = source.indexOf(string, index);
+			if (index == -1) assertPageExpectation("Expected " + url() + " to contain <" + string + "> in a particular place", false);
+		}
 	}
 
 	public void assertContentType(ContentType expected) throws AssertionFailedError {
@@ -75,6 +87,10 @@ public class Page {
 
 	public boolean contains(String exactString) {
 		return source().contains(exactString);
+	}
+
+	public ExposedObject exposed(String nameAsExposed) {
+		return new ExposedObject(container().instance(TestingBinding.class).get(nameAsExposed));
 	}
 
 	/**
@@ -147,13 +163,18 @@ public class Page {
 		}
 	}
 
-	public void assertContainsInOrder(String... strings) {
-		String source = source();
-		int index = 0;
-		for (String string : strings) {
-			index = source.indexOf(string, index);
-			if (index == -1)
-				assertPageExpectation("Expected " + url() + " to contain <" + string + "> in a particular place", false);
+	public class ExposedObject {
+		public Object value;
+
+		public ExposedObject(Object value) {
+			this.value = value;
+		}
+
+		// TODO: Make this support all the possible things the exposed value
+		// might be (Collection<T>, T[], etc)
+		@SuppressWarnings("unchecked")
+		public <T> void assertContainsOnly(T[] expected) {
+			CollectionAssert.containsOnly(expected, (Collection<T>) value);
 		}
 	}
 }
