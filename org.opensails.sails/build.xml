@@ -7,6 +7,10 @@
 	<property name="lib.dir" value="${temp.build}/lib" />
 	<property name="dist.dir" value="dist" />
 
+	<property name="source.builtin" value="builtin" />
+	<property name="source.core" value="core" />
+	<property name="source.tester" value="tester" />
+
 	<property name="temp.classes" location="${temp.build}/classes" />
 	<property name="temp.lib" location="${lib.dir}" />
 	<property name="vendor.lib" location="../org.opensails.sails.vendor/lib" />
@@ -28,19 +32,20 @@
 	</target>
 
 	<target name="dist" depends="sails.jar" description="Constructs a zip file that is a running Sails application.">
-		<property name="application.name" value="project"/>
-		<ant antfile="generators/generate.xml" inheritall="false">
-			<property name="viento.classpath" value="../org.opensails.viento/tools/eclipse/classes"/>
+		<property name="application.name" value="sailsapp" />
+		<ant antfile="generators/generate.xml" target="new.project.with.libraries">
+			<property name="viento.classpath" value="../org.opensails.viento/tools/eclipse/classes" />
 			<property name="generator.target.dir" location="${temp.build}" />
-			<property name="application.name" value="${application.name}" />
+			<property name="sails.dependencies" value="${temp.lib}"/>
+			<property name="sails.product.jar" location="${product.jar.path}/${product.jar}"/>
 		</ant>
-		<copy todir="${temp.build}/project/war/WEB-INF/lib">
-			<fileset dir="${vendor.lib}" includes="*.jar" />
-			<fileset dir="${temp.lib}" includes="*.jar" />
-			<fileset dir="${product.jar.path}" includes="${product.jar}" />
-		</copy>
 		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
 			<fileset dir="${temp.build}" includes="${application.name}/**" />
+		</zip>
+		<zip destfile="${product.dist}/sails_${sails.version}_src.zip" update="false">
+			<fileset dir="${source.builtin}" includes="**" />
+			<fileset dir="${source.core}" includes="**" />
+			<fileset dir="${source.tester}" includes="**" />
 		</zip>
 	</target>
 
@@ -55,19 +60,13 @@
 	</target>
 
 	<target name="sails.compile" depends="build.depends">
-		<javac destdir="${temp.classes}" debug="on" optimize="on">
-			<src path="builtin" />
-			<src path="core" />
-			<!-- <src path="tester" /> -->
+		<javac srcdir="${source.core}:${source.builtin}:${source.tester}" destdir="${temp.classes}" debug="on" optimize="on">
 			<classpath refid="compile.classpath" />
-			<include name="**/*.java" />
 		</javac>
 
 		<copy todir="${temp.classes}">
-			<fileset dir="builtin">
-				<include name="**/views/**" />
-				<include name="**/common/**" />
-			</fileset>
+			<fileset dir="builtin/views" includes="**" />
+			<fileset dir="builtin" includes="**/common/**" />
 		</copy>
 	</target>
 
@@ -102,15 +101,25 @@
 	<target name="clean" description="Delete everything that I generate, excluding whatever is in product.path.">
 		<delete dir="${temp.build}" />
 	</target>
-	
+
 	<!-- - - - - - - - - - - - - - - - - - 
           target: Perform an svn update. Primarily used by cruisecontrol.
          - - - - - - - - - - - - - - - - - -->
 	<target name="svn.update">
-		<exec executable="svn" dir="../org.opensails.hibernate"><arg line="svn update"/></exec>
-		<exec executable="svn" dir="../org.opensails.rigging"><arg line="svn update"/></exec>
-		<exec executable="svn" dir="../org.opensails.sails"><arg line="svn update"/></exec>
-		<exec executable="svn" dir="../org.opensails.sails.vendor"><arg line="svn update"/></exec>
-		<exec executable="svn" dir="../org.opensails.sails.viento"><arg line="svn update"/></exec>
+		<exec executable="svn" dir="../org.opensails.hibernate">
+			<arg line="svn update" />
+		</exec>
+		<exec executable="svn" dir="../org.opensails.rigging">
+			<arg line="svn update" />
+		</exec>
+		<exec executable="svn" dir="../org.opensails.sails">
+			<arg line="svn update" />
+		</exec>
+		<exec executable="svn" dir="../org.opensails.sails.vendor">
+			<arg line="svn update" />
+		</exec>
+		<exec executable="svn" dir="../org.opensails.sails.viento">
+			<arg line="svn update" />
+		</exec>
 	</target>
 </project>

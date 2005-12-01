@@ -155,7 +155,7 @@ public class SailsTester implements ISailsApplication {
 	/**
 	 * TODO register at the requested scope
 	 */
-	public <T> void inject(Class<? extends T> key, Class<? extends T> implementation, ApplicationScope scope) {
+	public <T> void inject(Class<? super T> key, Class<T> implementation, ApplicationScope scope) {
 		getRequestContainer().inject(key, implementation);
 	}
 

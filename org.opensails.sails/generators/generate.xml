@@ -23,6 +23,10 @@
 		<pathelement location="${viento.classpath}" />
 	</path>
 
+	<path id="compile.classpath">
+		<fileset dir="${temp.lib}" includes="*.jar" />
+		<fileset dir="${vendor.lib}" includes="*.jar" />
+	</path>
 	<!-- ================================= 
           tasks
          ================================= -->
@@ -40,17 +44,52 @@
 
 		<!-- Create configuration Java file -->
 		<viento tofile="${package.dir}/${application.configurator.classname}.java" file="${generator.root.dir}/Configurator.java" />
-		
+
 		<!-- Create jetty boot Java file -->
 		<viento tofile="${package.dir}/JettyBoot.java" file="${generator.root.dir}/JettyBoot.java" />
-		
+
 		<!-- Create class output directory -->
 		<mkdir dir="${generator.working.dir}/${application.output.classdir}" />
 		<antcall target="new.war" />
-		
+
 		<!-- Create eclipse launch config -->
 		<viento tofile="${generator.working.dir}/${application.name}.launch" file="${generator.root.dir}/eclipse.launch" />
+
+		<!-- Create Windoze batch file -->
+		<viento tofile="${generator.working.dir}/${application.name}.bat" file="${generator.root.dir}/windoze.bat" />
 	</target>
+
+
+	<!-- ================================= 
+          target: new.project.with.libraries              
+         ================================= -->
+	<target name="new.project.with.libraries" depends="new.project" description="--> create a new project and place all libraries in project">
+		<!-- Runtime dependencies -->
+		<copy todir="${web.inf.dir}/lib">
+			<fileset dir="${vendor.lib}">
+				<include name="commons*.jar" />
+			</fileset>
+			<fileset dir="${sails.dependencies}" includes="*.jar" />
+			<fileset file="${sails.product.jar}" />
+		</copy>
+
+		<!-- Development dependencies -->
+		<copy todir="${generator.working.dir}/lib">
+			<fileset dir="${vendor.lib}">
+				<include name="*.jar" />
+				<exclude name="commons*.jar" />
+			</fileset>
+		</copy>
+
+		<javac srcdir="${generator.working.dir}/${application.java.srcdir}" destdir="${generator.working.dir}/${application.output.classdir}" debug="on">
+			<classpath>
+				<fileset dir="${vendor.lib}" includes="**/*.jar" />
+				<fileset dir="${sails.dependencies}" includes="*.jar" />
+				<fileset file="${sails.product.jar}" />
+			</classpath>
+		</javac>
+	</target>
+
 
 	<target name="new.war">
 		<mkdir dir="${application.war.dir}/images" />
