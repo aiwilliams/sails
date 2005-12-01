@@ -14,7 +14,11 @@ public class Statics {
 			return null;
 		return new ObjectReference(object);
 	}
-	
+
+	public Object get(String key) {
+		return map.get(key);
+	}
+
 	public void put(String key, Object object) {
 		map.put(key, object);
 	}
