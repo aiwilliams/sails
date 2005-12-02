@@ -57,6 +57,9 @@
 
 		<!-- Create Windoze batch file -->
 		<viento tofile="${generator.working.dir}/${application.name}.bat" file="${generator.root.dir}/windoze.bat" />
+		
+		<!-- Create Windoze batch file -->
+		<viento tofile="${generator.working.dir}/${application.name}.sh" file="${generator.root.dir}/unix.sh" />
 	</target>
 
 
