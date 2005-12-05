@@ -20,15 +20,6 @@ public abstract class ValueElement<T extends ValueElement> extends FormElement<T
 		super(elementName, name);
 	}
 
-	/**
-	 * @param elementName
-	 * @param name
-	 * @param id
-	 */
-	public ValueElement(String elementName, String name, String id) {
-		super(elementName, name, id);
-	}
-
 	public String getValue() {
 		return value;
 	}

@@ -5,12 +5,17 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.form.html.FormElement;
 
 public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> implements IHtmlElement<T> {
 	public static String idForName(String name) {
 		return name.replace('.', '_');
+	}
+	
+	public static String idForNameAndValue(String name, String value) {
+		return idForName(name) + (StringUtils.isBlank(name) || StringUtils.isBlank(value) ? "" : "-") + value;
 	}
 
 	protected Map<String, String> attributes;
@@ -21,12 +26,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	public AbstractHtmlElement(String elementName) {
 		this.elementName = elementName;
 	}
-
-	public AbstractHtmlElement(String elementName, String id) {
-		this(elementName);
-		this.id = id;
-	}
-
+	
 	/**
 	 * @param attributes
 	 *            a Map containing extra element attributes to be rendered.
@@ -35,6 +35,16 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	@SuppressWarnings("unchecked")
 	public T attributes(Map attributes) {
 		this.attributes = attributes;
+		return (T) this;
+	}
+	
+	public String getId() {
+		return id;
+	}
+
+	@SuppressWarnings("unchecked")
+	public T id(String id) {
+		this.id = id;
 		return (T) this;
 	}
 
@@ -92,7 +102,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	 * @throws IOException
 	 */
 	protected void render(HtmlGenerator generator) throws IOException {
-		generator.openTag(elementName, id);
+		generator.openTag(elementName, getId());
 		writeAttributes(generator);
 		if (hasBody()) {
 			generator.closeTag();

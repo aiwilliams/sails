@@ -15,7 +15,7 @@ public class TextAreaTest extends TestCase {
         textArea.value("heloo");
         assertEquals("<textarea name=\"name\">heloo</textarea>", textArea.toString());
 
-        textArea = new TextArea("name", "id");
+        textArea = new TextArea("name").id("id");
         assertEquals("<textarea id=\"id\" name=\"name\"></textarea>", textArea.toString());
     }
 }

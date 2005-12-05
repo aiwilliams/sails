@@ -60,8 +60,6 @@ public class Label extends AbstractHtmlElement<Label> {
 	public Label(Labelable<? extends Labelable> labelable) {
 		super(LABEL);
 		this.labelable = labelable;
-		if (StringUtils.isBlank(labelable.getId()))
-			throw new IllegalArgumentException("Cannot create a valid label when element to be labeled <" + labelable.getName() + "> has no id");
 	}
 
 	/**
@@ -88,6 +86,13 @@ public class Label extends AbstractHtmlElement<Label> {
 	@Override
 	protected boolean hasBody() {
 		return true;
+	}
+	
+	@Override
+	protected void render(HtmlGenerator generator) throws IOException {
+		if (StringUtils.isBlank(labelable.getId()))
+			throw new IllegalArgumentException("Cannot render a valid label when element to be labeled <" + labelable.getName() + "> has no id");
+		super.render(generator);
 	}
 
 	@Override

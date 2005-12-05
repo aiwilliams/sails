@@ -31,30 +31,20 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 
     /**
      * @param name
-     * @param id
-     */
-    public Select(String name, String id) {
-        super(Select.SELECT, name, id);
-    }
-
-    /**
-     * @param name
-     * @param id
      * @param selectModel
      */
-    public Select(String name, String id, SelectModel selectModel) {
-        this(name, id);
+    public Select(String name, SelectModel selectModel) {
+        this(name);
         this.selectModel = selectModel;
     }
 
     /**
      * @param name
-     * @param id
      * @param selectModel
      * @param attributes
      */
-    public Select(String name, String id, SelectModel selectModel, Map<String, String> attributes) {
-        this(name, id, selectModel);
+    public Select(String name, SelectModel selectModel, Map<String, String> attributes) {
+        this(name, selectModel);
         this.attributes = attributes;
     }
 

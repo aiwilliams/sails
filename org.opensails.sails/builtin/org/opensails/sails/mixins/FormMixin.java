@@ -42,11 +42,11 @@ public class FormMixin {
 	}
 
 	public Radio radio(String name) {
-		return new Radio(name, name, idGenerator.idForName(name));
+		return new Radio(name, name);
 	}
 
 	public Select select(String name) {
-		return new Select(name, idGenerator.idForName(name));
+		return new Select(name).id(idGenerator.idForName(name));
 	}
 
 	public String start() {
@@ -62,6 +62,6 @@ public class FormMixin {
 	}
 
 	public TextArea textarea(String name) {
-		return new TextArea(name, idGenerator.idForName(name));
+		return new TextArea(name).id(idGenerator.idForName(name));
 	}
 }

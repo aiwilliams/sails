@@ -21,11 +21,6 @@ public abstract class FormElement<T extends FormElement> extends AbstractHtmlEle
 		this.name = name;
 	}
 
-	protected FormElement(String elementName, String name, String id) {
-		super(elementName, id);
-		this.name = name;
-	}
-
 	public String getName() {
 		return name;
 	}

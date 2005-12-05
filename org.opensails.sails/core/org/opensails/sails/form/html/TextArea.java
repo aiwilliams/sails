@@ -25,14 +25,6 @@ public class TextArea extends ValueElement<TextArea> implements Labelable<TextAr
 		super(TEXTAREA, name);
 	}
 
-	/**
-	 * @param name
-	 * @param id
-	 */
-	public TextArea(String name, String id) {
-		super(TextArea.TEXTAREA, name, id);
-	}
-
 	public String getId() {
 		return id;
 	}

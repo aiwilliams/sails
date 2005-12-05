@@ -8,4 +8,9 @@ public class FormElementTest extends TestCase {
         assertEquals("somename", FormElement.idForName("somename"));
     }
 
+    public void testIdForNameAndValue() throws Exception {
+    	assertEquals("some_name-value", FormElement.idForNameAndValue("some.name", "value"));
+    	assertEquals("some_name", FormElement.idForNameAndValue("some.name", ""));
+    	assertEquals("value", FormElement.idForNameAndValue("", "value"));
+    }
 }

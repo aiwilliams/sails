@@ -23,6 +23,11 @@ public class CheckboxTest extends TestCase {
 		checkbox.getBoolean();
 		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"hello, mate\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"false\" />", checkbox.toString());
 	}
+	
+	public void testId() {
+		Checkbox checkbox = new Checkbox("name").id("someId");
+		assertEquals("<input id=\"someId\" name=\"name\" type=\"checkbox\" value=\"true\" />", checkbox.toString());
+	}
 
 	public void testChecked() throws Exception {
 		Checkbox checkbox = new Checkbox("name", "custom");
@@ -36,10 +41,16 @@ public class CheckboxTest extends TestCase {
 		Checkbox checkbox = new Checkbox("name.besure");
 		// setting the label implies that an id is required and desired
 		checkbox.label("hello");
-		String id = FormElement.idForName("name.besure");
+		String id = FormElement.idForNameAndValue("name.besure", "true");
 		assertEquals("<input id=\"" + id + "\" name=\"name.besure\" type=\"checkbox\" value=\"true\" /><label for=\"" + id + "\">hello</label>", checkbox.toString());
 
-		checkbox.getBoolean();
+		checkbox = new Checkbox("name.besure").label("hello").value("optionOne");
+		id = FormElement.idForNameAndValue("name.besure", "optionOne");
+		assertEquals("<input id=\"" + id + "\" name=\"name.besure\" type=\"checkbox\" value=\"optionOne\" /><label for=\"" + id + "\">hello</label>", checkbox.toString());
+
+		checkbox = new Checkbox("name.besure").label("hello").getBoolean();
+		// TODO should this just be idForName since for boolean checkboxes the value is always true?
+		id = FormElement.idForNameAndValue("name.besure", "true");
 		assertEquals("<input id=\"" + id + "\" name=\"name.besure\" type=\"checkbox\" value=\"true\" /><label for=\"" + id
 				+ "\">hello</label><input name=\"form.meta.cb.name.besure\" type=\"hidden\" value=\"false\" />", checkbox.toString());
 	}

@@ -15,7 +15,7 @@ public class SelectTest extends TestCase {
         Select select = new Select("name");
         assertEquals("<select name=\"name\" disabled=\"true\"></select>", select.toString());
 
-        select = new Select("name", "id");
+        select = new Select("name").id("id");
         assertEquals("<select id=\"id\" name=\"name\" disabled=\"true\"></select>", select.toString());
     }
 
@@ -26,14 +26,14 @@ public class SelectTest extends TestCase {
         attributes.put("myattrempty", " ");
         
         SelectModel selectModel = new ListSelectModel(new Object[] { "one", "two" });
-        Select select = new Select("name", "id", selectModel, attributes);
+        Select select = new Select("name", selectModel, attributes).id("id");
         String expected = "<select id=\"id\" name=\"name\" myattr=\"myvalue\" myattrempty=\" \"><option value=\"" + SelectModel.NULL_OPTION_VALUE + "\" selected=\"true\"></option><option value=\"one\">one</option><option value=\"two\">two</option></select>";
         assertEquals(expected, select.toString());
     }
     
     public void testToString_SelectModel() {
         SelectModel selectModel = new ListSelectModel(new Object[] { "one", "two" });
-        Select select = new Select("name", "id", selectModel);
+        Select select = new Select("name", selectModel).id("id");
         String expected = "<select id=\"id\" name=\"name\"><option value=\"" + SelectModel.NULL_OPTION_VALUE + "\" selected=\"true\"></option><option value=\"one\">one</option><option value=\"two\">two</option></select>";
         assertEquals(expected, select.toString());
         
