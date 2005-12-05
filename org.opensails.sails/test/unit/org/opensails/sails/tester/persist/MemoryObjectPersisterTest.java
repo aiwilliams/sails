@@ -5,7 +5,7 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.opensails.sails.persist.PersistException;
-import org.opensails.sails.util.CollectionAssert;
+import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.FieldAccessor;
 
 public class MemoryObjectPersisterTest extends TestCase {

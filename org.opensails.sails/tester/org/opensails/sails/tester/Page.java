@@ -21,7 +21,7 @@ import org.opensails.sails.tester.form.Form;
 import org.opensails.sails.tester.html.FieldSet;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
-import org.opensails.sails.util.CollectionAssert;
+import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.RegexHelper;
 
 public class Page {

@@ -3,8 +3,8 @@ package org.opensails.sails.oem;
 import junit.framework.TestCase;
 
 import org.opensails.sails.model.AccessorException;
+import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.ClassInstanceAccessor;
-import org.opensails.sails.util.CollectionAssert;
 
 public class ClassInstanceAccessorTest extends TestCase {
     protected ClassInstanceAccessor accessor;

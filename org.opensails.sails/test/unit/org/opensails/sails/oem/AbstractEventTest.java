@@ -11,9 +11,9 @@ import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.ISailsEventListener;
 import org.opensails.sails.Sails;
+import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
-import org.opensails.sails.util.CollectionAssert;
 
 public class AbstractEventTest extends TestCase {
 	public void testBeginAndEndDispatch_NotifiesListeners() {

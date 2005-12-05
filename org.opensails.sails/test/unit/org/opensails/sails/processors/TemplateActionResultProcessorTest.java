@@ -15,7 +15,7 @@ import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
-import org.opensails.sails.util.CollectionAssert;
+import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.viento.ExceptionHandler;
 import org.opensails.viento.IBinding;
 

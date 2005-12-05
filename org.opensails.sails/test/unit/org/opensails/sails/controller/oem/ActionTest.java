@@ -11,7 +11,7 @@ import org.opensails.sails.controller.IAction;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.oem.ShamEvent;
-import org.opensails.sails.util.CollectionAssert;
+import org.opensails.sails.tester.util.CollectionAssert;
 
 public class ActionTest extends TestCase {
 	Method actionMethodNoParams;

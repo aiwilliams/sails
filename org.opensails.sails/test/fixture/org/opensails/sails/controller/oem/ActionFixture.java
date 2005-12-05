@@ -9,7 +9,7 @@ import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.oem.AdapterResolver;
 import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.oem.ShamEvent;
-import org.opensails.sails.util.CollectionAssert;
+import org.opensails.sails.tester.util.CollectionAssert;
 
 public class ActionFixture {
 	public static IAction adapters(String actionName, Class<? extends IControllerImpl> controllerImpl, IAdapterResolver adapterResolver) {
