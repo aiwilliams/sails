@@ -270,7 +270,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	protected ResourceResolver installResourceResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		ResourceResolver resolver = new ResourceResolver();
 		resolver.push(new ClasspathResourceResolver());
-		resolver.push(new ServletContextResourceResolver(application.getServletConfig().getServletContext(), "/WEB-INF/views"));
+		resolver.push(new ServletContextResourceResolver(application.getServletConfig().getServletContext(), "/views"));
+		resolver.push(new ServletContextResourceResolver(application.getServletConfig().getServletContext(), "/"));
 		container.register(IResourceResolver.class, resolver);
 		return resolver;
 	}

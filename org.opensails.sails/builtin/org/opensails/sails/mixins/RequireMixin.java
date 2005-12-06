@@ -9,27 +9,41 @@ import java.util.Set;
 import org.opensails.sails.IResourceResolver;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.oem.IControllerResolver;
 import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
+import org.opensails.viento.IBinding;
 
 // TODO: Get rid of 'script' and 'style' html duplication
 public class RequireMixin {
 	protected ISailsEvent event;
 	protected IResourceResolver loader;
 	protected Set<Requirement> requirements;
+	protected UrlForBuiltin urlForBuiltin;
+	private final IControllerResolver controllerResolver;
+	private final IBinding binding;
 
-	public RequireMixin(ISailsEvent event, IResourceResolver loader) {
+	public RequireMixin(ISailsEvent event, IResourceResolver loader, IBinding binding, IControllerResolver controllerResolver) {
 		this.event = event;
 		this.loader = loader;
+		this.binding = binding;
+		this.controllerResolver = controllerResolver;
 		this.requirements = new LinkedHashSet<Requirement>();
+	}
+
+	public UrlForBuiltin builtin() {
+		if (urlForBuiltin == null) urlForBuiltin = new UrlForBuiltin(event);
+		return urlForBuiltin;
 	}
 
 	/**
 	 * @param identifier
 	 */
 	public void component(String identifier) {
-		String descriptor = "component/" + identifier + "/.component";
+		String directory = "components/" + identifier + "/";
+		String descriptor = directory + ".component";
 		InputStream stream = loader.resolve(descriptor);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
@@ -40,6 +54,18 @@ public class RequireMixin {
 		} catch (Exception e) {
 			throw new SailsException("Could not locate component descriptor " + descriptor, e);
 		}
+		
+		String script = directory + "script.js";
+		if (loader.resolve(script) != null)
+			requirements.add(new ComponentRequirement(identifier, "script.js"));
+
+		String style = directory + "style.css";
+		if (loader.resolve(style) != null)
+			requirements.add(new ComponentRequirement(identifier, "style.css"));
+		
+		IControllerImpl controllerImpl = controllerResolver.resolve(identifier).createInstance(event);
+		if (controllerImpl != null)
+			binding.put(identifier, controllerImpl);
 	}
 
 	public String output() {
@@ -75,7 +101,7 @@ public class RequireMixin {
 		public IUrl initializeUrl() {
 			if (line.startsWith("http://")) return new ExternalUrl(event, line);
 			if (line.startsWith("/")) return event.resolve(UrlType.CONTEXT, line);
-			return event.resolve(UrlType.CONTEXT, "component" + "/" + componentName + "/" + line);
+			return event.resolve(UrlType.CONTEXT, "components" + "/" + componentName + "/" + line);
 		}
 
 		@Override

@@ -1,5 +1,7 @@
 package org.opensails.sails.controller;
 
+import org.opensails.sails.ISailsEvent;
+
 
 /**
  * A controller descriptor, if you will.
@@ -20,7 +22,7 @@ package org.opensails.sails.controller;
  * @author aiwilliams
  */
 public interface IController {
+	IControllerImpl createInstance(ISailsEvent event);
 	IAction getAction(String name);
-
 	Class<? extends IControllerImpl> getImplementation();
 }

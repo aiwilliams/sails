@@ -18,6 +18,7 @@ import org.opensails.sails.url.UrlType;
  */
 public class UrlforMixin {
 	protected final ISailsEvent event;
+
 	protected UrlForBuiltin urlForBuiltin;
 
 	public UrlforMixin(ISailsEvent event) {
@@ -72,7 +73,7 @@ public class UrlforMixin {
 	}
 
 	public UrlForBuiltin builtin() {
-		if (urlForBuiltin == null) urlForBuiltin = new UrlForBuiltin();
+		if (urlForBuiltin == null) urlForBuiltin = new UrlForBuiltin(event);
 		return urlForBuiltin;
 	}
 
@@ -110,21 +111,5 @@ public class UrlforMixin {
 	 */
 	public IUrl style(String cssFile) {
 		return event.resolve(UrlType.STYLE, cssFile);
-	}
-
-	class UrlForBuiltin {
-		/**
-		 * @return an url to a builtin script file
-		 */
-		public IUrl script(String scriptFile) {
-			return event.resolve(UrlType.SCRIPT_BUILTIN, scriptFile);
-		}
-
-		/**
-		 * @return an url to a builtin css file
-		 */
-		public IUrl style(String cssFile) {
-			return event.resolve(UrlType.STYLE_BUILTIN, cssFile);
-		}
 	}
 }

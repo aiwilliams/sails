@@ -2,6 +2,8 @@ package org.opensails.sails.html;
 
 import java.io.IOException;
 
+import org.opensails.viento.builtins.EscapeMixin;
+
 public class StackTrace extends AbstractHtmlElement<StackTrace> {
 	protected Throwable root;
 
@@ -25,7 +27,7 @@ public class StackTrace extends AbstractHtmlElement<StackTrace> {
 		generator.openTag("div").attribute("class", "exception").closeTag();
 
 		generator.openTag("div").attribute("class", "exception-class").closeTag().write(throwable.getClass().getName()).endTag("div");
-		generator.openTag("div").attribute("class", "message").closeTag().write(throwable.getMessage()).endTag("div");
+		generator.openTag("div").attribute("class", "message").closeTag().write(EscapeMixin.escapeHtml(throwable.getMessage())).endTag("div");
 
 		generator.openTag("div").attribute("class", "stack-trace").closeTag();
 		StackTraceElement[] stackTrace = throwable.getStackTrace();
