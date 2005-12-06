@@ -78,6 +78,16 @@ public class Page {
 		assertPageExpectation(message + " Expected " + url() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
 	}
 
+	public void assertTemplate(String expected) {
+		TemplateActionResult result = container().instance(TemplateActionResult.class);
+		if (result == null) {
+			if (expected != null) throw new AssertionFailedError("A template was not rendered");
+			else return; // not template, layout expected to be null, so no
+			// problem
+		}
+		Assert.assertEquals("Template was not rendered as expected", expected, result.getIdentifier());
+	}
+
 	/**
 	 * @return the RequestContainer of the ISailsEvent that generated this page
 	 */
@@ -175,6 +185,10 @@ public class Page {
 		@SuppressWarnings("unchecked")
 		public <T> void assertContainsOnly(T[] expected) {
 			CollectionAssert.containsOnly(expected, (Collection<T>) value);
+		}
+
+		public void assertEquals(Object expectedValue) {
+			Assert.assertEquals(expectedValue, value);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package org.opensails.sails.tester;
 import java.io.File;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.ArrayUtils;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
@@ -48,7 +49,7 @@ public class SailsTester implements ISailsApplication {
 	 *         application).
 	 */
 	public Page get() {
-		return get(getWorkingControllerPathInfoForRequest());
+		return get("index");
 	}
 
 	/**
@@ -75,8 +76,8 @@ public class SailsTester implements ISailsApplication {
 		return get(action, parameters);
 	}
 
-	public Page get(String controllerAction) {
-		return doGet(createGetEvent(controllerAction));
+	public Page get(String action) {
+		return get(workingController(), action, ArrayUtils.EMPTY_STRING_ARRAY);
 	}
 
 	/**
@@ -87,7 +88,7 @@ public class SailsTester implements ISailsApplication {
 	 * @return the page for &lt;workingController&gt;/action
 	 */
 	public Page get(String action, String... parameters) {
-		return get(Sails.controllerName(workingController), action, parameters);
+		return get(workingController(), action, parameters);
 	}
 
 	/**
@@ -198,26 +199,40 @@ public class SailsTester implements ISailsApplication {
 	/**
 	 * Performs an HTTP POST request
 	 * 
-	 * @return the default page of the application, typically home/index. that
-	 *         is left up to the application, not determined by this method.
+	 * @return the index page of the current working controller
 	 */
 	public Page post(FormFields formFields) {
-		return post(getWorkingControllerPathInfoForRequest(), formFields);
+		return post("index", formFields);
 	}
 
-	public Page post(String controllerAction, FormFields formFields) {
-		TestPostEvent postEvent = createPostEvent(controllerAction, formFields);
+	public Page post(String action, FormFields formFields) {
+		return post(workingController(), action, formFields);
+	}
+
+	/**
+	 * Performs an HTTP POST request
+	 * 
+	 * This is the 'fundamental' post method. It will not alter the working
+	 * controller. The other post methods, which take an IControllerImpl class,
+	 * are what should be used unless there is no controller class for the
+	 * action you would like to get.
+	 * 
+	 * @param controller the controller name
+	 * @param action
+	 * @param parameters
+	 * @return the page for the given controller/action
+	 */
+	public Page post(String controller, String action, FormFields formFields) {
+		TestPostEvent postEvent = createPostEvent(controller, action, formFields);
 		return doPost(postEvent);
-	}
-
-	protected void prepareForNextRequest() {
-		// TODO: Bind to lazy created session container
-		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
-		else requestContainer = new TestRequestContainer(getContainer());
 	}
 
 	public void setWorkingController(Class<? extends IControllerImpl> controller) {
 		this.workingController = controller;
+	}
+
+	public String workingController() {
+		return workingController != null ? Sails.controllerName(workingController) : "home";
 	}
 
 	protected TestGetEvent createGetEvent(String pathInfo) {
@@ -277,11 +292,6 @@ public class SailsTester implements ISailsApplication {
 		return application.post(postEvent);
 	}
 
-	protected String getWorkingControllerPathInfoForRequest() {
-		if (workingController != null) return Sails.controllerName(workingController);
-		else return "";
-	}
-
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
 		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
 	}
@@ -295,5 +305,11 @@ public class SailsTester implements ISailsApplication {
 		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
 		this.application.configure(new SailsTesterConfigurator(configuratorClass));
 		prepareForNextRequest();
+	}
+
+	protected void prepareForNextRequest() {
+		// TODO: Bind to lazy created session container
+		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
+		else requestContainer = new TestRequestContainer(getContainer());
 	}
 }
