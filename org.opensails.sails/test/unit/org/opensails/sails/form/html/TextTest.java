@@ -10,10 +10,10 @@ import junit.framework.TestCase;
 public class TextTest extends TestCase {
     public void testToString() {
         Text text = new Text("name");
-        assertEquals("<input name=\"name\" type=\"text\" value=\"\" />", text.toString());
+        assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"\" />", text.toString());
 
         text.value("hellomate");
-        assertEquals("<input name=\"name\" type=\"text\" value=\"hellomate\" />", text.toString());
+        assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"hellomate\" />", text.toString());
         
         text = new Text("name", "id");
         assertEquals("<input id=\"id\" name=\"name\" type=\"text\" value=\"\" />", text.toString());

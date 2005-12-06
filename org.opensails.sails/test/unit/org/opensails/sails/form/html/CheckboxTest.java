@@ -21,7 +21,7 @@ public class CheckboxTest extends TestCase {
 		Checkbox checkbox = new Checkbox("name");
 		checkbox.value("hello, mate");
 		checkbox.getBoolean();
-		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"hello, mate\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"false\" />", checkbox.toString());
+		assertEquals("<input id=\"name-hello_mate\" name=\"name\" type=\"checkbox\" value=\"hello, mate\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"false\" />", checkbox.toString());
 	}
 	
 	public void testId() {
@@ -32,9 +32,9 @@ public class CheckboxTest extends TestCase {
 	public void testChecked() throws Exception {
 		Checkbox checkbox = new Checkbox("name", "custom");
 		checkbox.checked();
-		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"custom\" checked=\"checked\" />", checkbox.toString());
+		assertEquals("<input id=\"name-custom\" name=\"name\" type=\"checkbox\" value=\"custom\" checked=\"checked\" />", checkbox.toString());
 		checkbox.checked(false);
-		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"custom\" />", checkbox.toString());
+		assertEquals("<input id=\"name-custom\" name=\"name\" type=\"checkbox\" value=\"custom\" />", checkbox.toString());
 	}
 
 	public void testLabel() throws Exception {
@@ -57,14 +57,14 @@ public class CheckboxTest extends TestCase {
 
 	public void testToString() throws Exception {
 		Checkbox checkbox = new Checkbox("name");
-		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"true\" />", checkbox.toString());
+		assertEquals("<input id=\"name-true\" name=\"name\" type=\"checkbox\" value=\"true\" />", checkbox.toString());
 
 		checkbox = new Checkbox("name");
 		checkbox.value("myvalue");
-		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"myvalue\" />", checkbox.toString());
+		assertEquals("<input id=\"name-myvalue\" name=\"name\" type=\"checkbox\" value=\"myvalue\" />", checkbox.toString());
 
 		checkbox = new Checkbox("name");
 		checkbox.value(false);
-		assertEquals("<input name=\"name\" type=\"checkbox\" value=\"false\" />", checkbox.toString());
+		assertEquals("<input id=\"name-false\" name=\"name\" type=\"checkbox\" value=\"false\" />", checkbox.toString());
 	}
 }

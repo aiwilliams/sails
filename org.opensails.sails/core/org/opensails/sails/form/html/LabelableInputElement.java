@@ -32,7 +32,7 @@ public abstract class LabelableInputElement<T extends LabelableInputElement> ext
     }
 
     public String getId() {
-    	if (StringUtils.isBlank(id) && label != null)
+    	if (StringUtils.isBlank(id))
     		id = FormElement.idForNameAndValue(getName(), getValue());
         return id;
     }

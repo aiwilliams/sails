@@ -12,5 +12,6 @@ public class FormElementTest extends TestCase {
     	assertEquals("some_name-value", FormElement.idForNameAndValue("some.name", "value"));
     	assertEquals("some_name", FormElement.idForNameAndValue("some.name", ""));
     	assertEquals("value", FormElement.idForNameAndValue("", "value"));
+    	assertEquals("some_name-value_with_spaces_and_dots_and_commas", FormElement.idForNameAndValue("some.name", "value, with spaces.and.dots,and,commas"));
     }
 }

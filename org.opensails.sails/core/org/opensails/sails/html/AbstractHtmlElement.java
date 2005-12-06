@@ -15,7 +15,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	}
 	
 	public static String idForNameAndValue(String name, String value) {
-		return idForName(name) + (StringUtils.isBlank(name) || StringUtils.isBlank(value) ? "" : "-") + value;
+		return idForName(name) + (StringUtils.isBlank(name) || StringUtils.isBlank(value) ? "" : "-") + (value == null ? "" : value.replaceAll("[\\s\\.,]+", "_"));
 	}
 
 	protected Map<String, String> attributes;
