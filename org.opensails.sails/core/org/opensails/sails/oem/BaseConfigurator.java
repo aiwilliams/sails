@@ -75,7 +75,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	public void configure(IConfigurableSailsApplication application) {
 		installConfigurator(application);
-		
+
 		CompositeConfiguration configuration = installConfiguration(application);
 		configure(application, configuration);
 		configureName(application, configuration);
@@ -166,6 +166,10 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return ClassHelper.getPackage(getClass());
 	}
 
+	protected String getBuiltinComponentPackage() {
+		return getApplicationRootPackage() + ".components";
+	}
+
 	protected String getBuiltinControllerPackage() {
 		return ClassHelper.getPackage(Sails.class) + ".controllers";
 	}
@@ -244,6 +248,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	 */
 	protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		ControllerResolver resolver = (ControllerResolver) container.instance(IControllerResolver.class, ControllerResolver.class);
+		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinComponentPackage(), "Component"));
 		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinControllerPackage(), "Controller"));
 		resolver.push(new ComponentPackage<IControllerImpl>(getDefaultControllerPackage(), "Controller"));
 		return resolver;
