@@ -1,0 +1,16 @@
+<div id='$id'>
+	<span style="float: left">
+	$name
+	(<span id='$id;_count'></span>)
+	</span>
+	<span class="fake-dropdown-button">
+		<select onbeforeactivate="return false;"></select>
+	</span>
+</div>
+<div id='$id;_content'>
+	$options.each(option) [[
+		<label for="$form.idFor($id, $option)">$form.checkbox($id).value($option)$option</label>
+	]]
+</div>
+
+<script>new Multiselect('$id;');</script>

@@ -1,0 +1,11 @@
+<html>
+<head>
+	$require.component(multiselect)
+	$require.output
+</head>
+<body>
+	$set(assayOptions, [one, two, three, four, five, six, seven, eight, nine, ten])
+	
+	$multiselect.new('Assay Technology', $assayOptions)
+</body>
+</html>
