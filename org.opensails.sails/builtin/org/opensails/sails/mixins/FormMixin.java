@@ -6,6 +6,7 @@ import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FormElement;
+import org.opensails.sails.form.html.Label;
 import org.opensails.sails.form.html.Radio;
 import org.opensails.sails.form.html.Select;
 import org.opensails.sails.form.html.Submit;
@@ -42,6 +43,14 @@ public class FormMixin {
 		return "</form>";
 	}
 
+	public String idFor(String name, String value) {
+		return FormElement.idForNameAndValue(name, value);
+	}
+
+	public Label label(String forId, String text) {
+		return new Label(forId).text(text);
+	}
+
 	public Radio radio(String name) {
 		return new Radio(name, name);
 	}
@@ -64,9 +73,5 @@ public class FormMixin {
 
 	public TextArea textarea(String name) {
 		return new TextArea(name).id(idGenerator.idForName(name));
-	}
-	
-	public String idFor(String name, String value) {
-		return FormElement.idForNameAndValue(name, value);
 	}
 }
