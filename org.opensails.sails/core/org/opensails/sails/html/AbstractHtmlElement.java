@@ -3,6 +3,7 @@ package org.opensails.sails.html;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +14,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	public static String idForName(String name) {
 		return name.replace('.', '_');
 	}
-	
+
 	public static String idForNameAndValue(String name, String value) {
 		return idForName(name) + (StringUtils.isBlank(name) || StringUtils.isBlank(value) ? "" : "-") + (value == null ? "" : value.replaceAll("[\\s\\.,]+", "_"));
 	}
@@ -26,10 +27,17 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	public AbstractHtmlElement(String elementName) {
 		this.elementName = elementName;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public T attribute(String name, String value) {
+		if (attributes == null) attributes = new HashMap<String, String>();
+		attributes.put(name, value);
+		return (T) this;
+	}
+
 	/**
-	 * @param attributes
-	 *            a Map containing extra element attributes to be rendered.
+	 * @param attributes a Map containing extra element attributes to be
+	 *        rendered.
 	 * @see FormElement#writeAttributes(Writer)
 	 */
 	@SuppressWarnings("unchecked")
@@ -37,7 +45,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 		this.attributes = attributes;
 		return (T) this;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -49,7 +57,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	}
 
 	@Override
-    public String toString() {
+	public String toString() {
 		StringWriter writer = new StringWriter(75);
 		try {
 			toString(writer);
@@ -62,7 +70,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	public void toString(HtmlGenerator generator) throws IOException {
 		render(generator);
 	}
-	
+
 	public void toString(Writer writer) throws IOException {
 		render(writer);
 	}
@@ -74,8 +82,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	 * @param generator
 	 * @throws IOException
 	 */
-	protected void body(HtmlGenerator generator) throws IOException {
-	}
+	protected void body(HtmlGenerator generator) throws IOException {}
 
 	/**
 	 * @return whether or not this element can have a body. Many elements do
@@ -108,14 +115,13 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 			generator.closeTag();
 			body(generator);
 			generator.endTag(elementName);
-		} else
-			generator.closeTag(true);
+		} else generator.closeTag(true);
 	}
 
 	protected void render(Writer writer) throws IOException {
 		render(new HtmlGenerator(writer));
 	}
-	
+
 	/**
 	 * Override to add attributes to the element when it is written. The default
 	 * implementation writes the attributes Map, so be sure to call this if you

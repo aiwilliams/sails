@@ -1,6 +1,7 @@
 package org.opensails.sails.mixins;
 
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.html.Script;
 import org.opensails.sails.url.UrlType;
 
 public abstract class AbstractScript {
@@ -18,7 +19,7 @@ public abstract class AbstractScript {
 
 	@Override
 	public String toString() {
-		return String.format("<script type=\"text/javascript\" src=\"%s\"></script>", event.resolve(urlType(), argument));
+		return new Script().src(event.resolve(urlType(), argument)).toString();
 	}
 
 	protected abstract UrlType urlType();
