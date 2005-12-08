@@ -24,10 +24,11 @@ public class CommonServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			response.getWriter().write("Not found");
 		} else {
-			byte data = -1;
+			int amountRead = 0;
+			byte[] data = new byte[1024];
 			ServletOutputStream outputStream = response.getOutputStream();
-			while ((data = (byte) stream.read()) != -1)
-				outputStream.write(data);
+			while ((amountRead = stream.read(data)) != -1)
+				outputStream.write(data, 0, amountRead);
 		}
 	}
 }
