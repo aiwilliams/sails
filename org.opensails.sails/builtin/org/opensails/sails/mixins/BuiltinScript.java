@@ -1,15 +1,17 @@
 package org.opensails.sails.mixins;
 
 import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.html.Script;
 import org.opensails.sails.url.UrlType;
 
-class BuiltinScript extends AbstractScript {
-	public BuiltinScript(ISailsEvent event, String argument) {
-		super(event, argument);
+public class BuiltinScript extends Script {
+	private final ISailsEvent event;
+
+	public BuiltinScript(ISailsEvent event) {
+		this.event = event;
 	}
 
-	@Override
-	protected UrlType urlType() {
-		return UrlType.SCRIPT_BUILTIN;
+	public BuiltinScript builtin(String argument) {
+		return (BuiltinScript) src(event.resolve(UrlType.SCRIPT_BUILTIN, argument));
 	}
 }

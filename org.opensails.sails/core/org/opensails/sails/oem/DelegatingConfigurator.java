@@ -79,6 +79,11 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
+	protected String getBuiltinComponentPackage() {
+		return delegate.getBuiltinComponentPackage();
+	}
+
+	@Override
 	protected String getBuiltinControllerPackage() {
 		return delegate.getBuiltinControllerPackage();
 	}

@@ -14,6 +14,12 @@ public class ScriptMixinTest extends TestCase {
 		tester.verifyRender("$script(myscript)", "<script type=\"text/javascript\" src=\"" + event.resolve(UrlType.SCRIPT, "myscript") + "\"></script>");
 	}
 
+	public void testScript_WithBlock() throws Exception {
+		GetEvent event = SailsEventFixture.actionGet();
+		VientoTester tester = new SailsBuiltinVientoTester(event);
+		tester.verifyRender("$script [[ some script ]]", "<script type=\"text/javascript\">\n some script \n</script>");
+	}
+	
 	public void testBuiltin() throws Exception {
 		GetEvent event = SailsEventFixture.actionGet();
 		VientoTester tester = new SailsBuiltinVientoTester(event);

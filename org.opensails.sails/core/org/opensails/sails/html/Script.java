@@ -23,8 +23,9 @@ public class Script extends AbstractHtmlElement<Script> {
 		return attribute("defer", Boolean.toString(defer));
 	}
 
-	public void inline(Block block) {
+	public Script inline(Block block) {
 		this.block = block;
+		return this;
 	}
 
 	public Script language(String lang) {
@@ -42,13 +43,15 @@ public class Script extends AbstractHtmlElement<Script> {
 
 	@Override
 	protected void body(HtmlGenerator generator) throws IOException {
-		generator.write("\n");
-		generator.write(block.evaluate());
-		generator.write("\n");
+		if (block != null) {
+			generator.write("\n");
+			generator.write(block.evaluate());
+			generator.write("\n");
+		}
 	}
 
 	@Override
 	protected boolean hasBody() {
-		return block != null;
+		return true;
 	}
 }
