@@ -100,7 +100,7 @@ public class RequireMixin {
 		@Override
 		public IUrl initializeUrl() {
 			if (line.startsWith("http://")) return new ExternalUrl(event, line);
-			if (line.startsWith("/")) return event.resolve(UrlType.CONTEXT, line);
+			if (line.startsWith("/")) return event.resolve(UrlType.CONTEXT, line.substring(1));
 			return event.resolve(UrlType.CONTEXT, "components" + "/" + componentName + "/" + line);
 		}
 

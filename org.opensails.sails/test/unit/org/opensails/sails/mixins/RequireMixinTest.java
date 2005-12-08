@@ -27,7 +27,7 @@ public class RequireMixinTest extends TestCase {
 			@Override
 			public InputStream resolve(String identifier) {
 				if (identifier.equals("components/mycomponent/.component"))
-					return new ByteArrayInputStream("one.js\ntwo.js\none.css".getBytes());
+					return new ByteArrayInputStream("one.js\ntwo.js\none.css\n/from/context.js".getBytes());
 				if (identifier.equals("components/home/.component"))
 					return new ByteArrayInputStream("".getBytes());
 				return null;
@@ -36,7 +36,7 @@ public class RequireMixinTest extends TestCase {
 		
 		String rootUrl = event.resolve(UrlType.CONTEXT, "components/mycomponent").render();
 		String expected = "<script type=\"text/javascript\" src=\"" + rootUrl + "/one.js\"></script><script type=\"text/javascript\" src=\"" + rootUrl
-				+ "/two.js\"></script><link href=\"" + rootUrl + "/one.css\" type=\"text/css\" rel=\"stylesheet\" />";
+				+ "/two.js\"></script><link href=\"" + rootUrl + "/one.css\" type=\"text/css\" rel=\"stylesheet\" /><script type=\"text/javascript\" src=\"/shamcontext/from/context.js\"></script>";
 		require.component("mycomponent");
 		require.component("mycomponent");
 		assertEquals(expected, require.output());
