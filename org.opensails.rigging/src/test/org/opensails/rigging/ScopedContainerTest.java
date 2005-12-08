@@ -1,7 +1,8 @@
 package org.opensails.rigging;
 
+import junit.framework.*;
 
-import junit.framework.TestCase;
+import org.opensails.rigging.ScopedContainer.*;
 
 public class ScopedContainerTest extends TestCase {
 	ScopedContainer first = new ScopedContainer(ShamScope.FIRST);
@@ -13,34 +14,37 @@ public class ScopedContainerTest extends TestCase {
 		assertSame(first, second.getParent());
 		assertEquals(ShamScope.THIRD, third.getScope());
 		assertSame(second, third.getParent());
-		
+
 		try {
 			third.makeChild();
 			fail("Expected an exception");
-		} catch(NotEnoughScopesException expected) {
+		} catch (NotEnoughScopesException expected) {
 		}
 	}
-	
+
+	public void testMakeChildUnscoped() throws Exception {
+		assertEquals(ContainerScope.UNDEFINED, third.makeChildUnscoped().getScope());
+		assertEquals("Can do this a lot!", ContainerScope.UNDEFINED, third.makeChildUnscoped().getScope());
+	}
+
 	public void testGetConainerInHierarchy() throws Exception {
 		assertSame(third, third.getContainerInHierarchy(ShamScope.THIRD));
 		assertSame(second, third.getContainerInHierarchy(ShamScope.SECOND));
 		assertSame(first, third.getContainerInHierarchy(ShamScope.FIRST));
-	
+
 		assertNull(second.getContainerInHierarchy(ShamScope.THIRD));
 		assertSame(second, second.getContainerInHierarchy(ShamScope.SECOND));
 		assertSame(first, second.getContainerInHierarchy(ShamScope.FIRST));
 	}
-	
+
 	public void testMakeChild_Scope() throws Exception {
 		ScopedContainer child = first.makeChild(ShamScope.THIRD);
 		assertSame(first, child.getParent());
 		assertNull(child.getContainerInHierarchy(ShamScope.SECOND));
 		assertSame(first, child.getContainerInHierarchy(ShamScope.FIRST));
 	}
-	
+
 	enum ShamScope {
-		FIRST,
-		SECOND,
-		THIRD,
+		FIRST, SECOND, THIRD,
 	}
 }

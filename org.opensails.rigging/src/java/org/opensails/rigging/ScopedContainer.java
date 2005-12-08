@@ -16,6 +16,25 @@ public class ScopedContainer extends HierarchicalContainer {
 		this.scope = scope;
 	}
 
+	/**
+	 * @param scope
+	 * @return a container at the requested scope. Will be either this
+	 *         container, or a container in its ancestry, or null if none could
+	 *         be found.
+	 */
+	public ScopedContainer getContainerInHierarchy(Enum scope) {
+		if (scope == this.scope)
+			return this;
+		if (parent == null)
+			return null;
+		return getParent().getContainerInHierarchy(scope);
+	}
+
+	@Override
+	public ScopedContainer getParent() {
+		return (ScopedContainer) super.getParent();
+	}
+
 	public Enum getScope() {
 		return scope;
 	}
@@ -34,32 +53,6 @@ public class ScopedContainer extends HierarchicalContainer {
 		return makeChild(childScope());
 	}
 
-	protected Enum childScope() {
-		int next = scope.ordinal() + 1;
-		if (next >= scope.getClass().getEnumConstants().length)
-			throw new NotEnoughScopesException(scope);
-		return scope.getClass().getEnumConstants()[next];
-	}
-
-	/**
-	 * @param scope
-	 * @return a container at the requested scope. Will be either this
-	 *         container, or a container in its ancestry, or null if none
-	 *         could be found.
-	 */
-	public ScopedContainer getContainerInHierarchy(Enum scope) {
-		if (scope == this.scope)
-			return this;
-		if (parent == null)
-			return null;
-		return getParent().getContainerInHierarchy(scope);
-	}
-
-	@Override
-	public ScopedContainer getParent() {
-		return (ScopedContainer) super.getParent();
-	}
-
 	/**
 	 * Creates a <em>immediate</em> child with the given scope. Does
 	 * <em>not</em> walk down the tree.
@@ -73,8 +66,29 @@ public class ScopedContainer extends HierarchicalContainer {
 		return child;
 	}
 
-    @Override
-    public String toString() {
-    	return scope + ": " + super.toString();
-    }
+	/**
+	 * Uses an undefined scope
+	 * 
+	 * @return child
+	 * @see ScopedContainer#makeChild(Enum)
+	 */
+	public ScopedContainer makeChildUnscoped() {
+		return makeChild(ContainerScope.UNDEFINED);
+	}
+
+	@Override
+	public String toString() {
+		return scope + ": " + super.toString();
+	}
+
+	protected Enum childScope() {
+		int next = scope.ordinal() + 1;
+		if (next >= scope.getClass().getEnumConstants().length)
+			throw new NotEnoughScopesException(scope);
+		return scope.getClass().getEnumConstants()[next];
+	}
+
+	enum ContainerScope {
+		UNDEFINED
+	}
 }
