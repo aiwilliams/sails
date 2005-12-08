@@ -1,8 +1,6 @@
 package org.opensails.rigging;
 
-import junit.framework.*;
-
-import org.opensails.rigging.ScopedContainer.*;
+import junit.framework.TestCase;
 
 public class ScopedContainerTest extends TestCase {
 	ScopedContainer first = new ScopedContainer(ShamScope.FIRST);
@@ -23,8 +21,7 @@ public class ScopedContainerTest extends TestCase {
 	}
 
 	public void testMakeChildUnscoped() throws Exception {
-		assertEquals(ContainerScope.UNDEFINED, third.makeChildUnscoped().getScope());
-		assertEquals("Can do this a lot!", ContainerScope.UNDEFINED, third.makeChildUnscoped().getScope());
+		assertEquals(third, third.makeChildUnscoped().getParent());
 	}
 
 	public void testGetConainerInHierarchy() throws Exception {

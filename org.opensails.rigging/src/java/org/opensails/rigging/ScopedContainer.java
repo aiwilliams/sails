@@ -67,13 +67,13 @@ public class ScopedContainer extends HierarchicalContainer {
 	}
 
 	/**
-	 * Uses an undefined scope
+	 * Creates a child that is a HierarchicalContainer
 	 * 
 	 * @return child
-	 * @see ScopedContainer#makeChild(Enum)
+	 * @see HierarchicalContainer#makeChild()
 	 */
-	public ScopedContainer makeChildUnscoped() {
-		return makeChild(ContainerScope.UNDEFINED);
+	public HierarchicalContainer makeChildUnscoped() {
+		return super.makeChild();
 	}
 
 	@Override
@@ -86,9 +86,5 @@ public class ScopedContainer extends HierarchicalContainer {
 		if (next >= scope.getClass().getEnumConstants().length)
 			throw new NotEnoughScopesException(scope);
 		return scope.getClass().getEnumConstants()[next];
-	}
-
-	enum ContainerScope {
-		UNDEFINED
 	}
 }
