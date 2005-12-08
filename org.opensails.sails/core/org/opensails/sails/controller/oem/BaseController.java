@@ -1,15 +1,16 @@
 package org.opensails.sails.controller.oem;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.IController;
-import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.mixins.UrlforMixin;
-import org.opensails.sails.oem.Flash;
-import org.opensails.viento.IBinding;
+import org.opensails.rigging.*;
+import org.opensails.sails.*;
+import org.opensails.sails.controller.*;
+import org.opensails.sails.form.*;
+import org.opensails.sails.mixins.*;
+import org.opensails.sails.model.*;
+import org.opensails.sails.model.oem.*;
+import org.opensails.sails.oem.*;
+import org.opensails.viento.*;
 
 public class BaseController implements IControllerImpl {
 	protected IController controller;
@@ -65,6 +66,16 @@ public class BaseController implements IControllerImpl {
 	 */
 	protected void flash(Object key, Object value) {
 		getContainer().instance(Flash.class).put(key, value);
+	}
+
+	// TODO: Don't make child - use factory see
+	// http://trac.opensails.org/sails/ticket/79
+	// TODO: Write tests outside of Dock
+	protected boolean formToModel(Object modelInstance) {
+		SimpleContainer container = event.getContainer().makeChildUnscoped();
+		container.register(IModelContext.class, new SingleModelContext(modelInstance));
+		HtmlForm form = container.instance(HtmlForm.class, HtmlForm.class);
+		return form.isValid();
 	}
 
 	protected IBinding getBinding() {

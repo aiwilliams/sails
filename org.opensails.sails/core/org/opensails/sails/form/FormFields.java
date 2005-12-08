@@ -1,11 +1,9 @@
 package org.opensails.sails.form;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.lang.StringUtils;
-import org.opensails.sails.model.IPropertyAccessor.FieldType;
+import org.apache.commons.lang.*;
+import org.opensails.sails.model.IPropertyAccessor.*;
 
 /**
  * Why? Provides a way for objects that are created within a dependancy
@@ -18,28 +16,28 @@ import org.opensails.sails.model.IPropertyAccessor.FieldType;
 public class FormFields {
 	public static FormFields quick(Object... objects) {
 		if (objects.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
-		Map<String, Object> map = new HashMap<String, Object>();
-		for (int i = 0; i < objects.length; i += 2)
-			map.put((String) objects[i], (Object) objects[i + 1]);
+		Map<String, String[]> map = new HashMap<String, String[]>();
+		for (int i = 0; i < objects.length; i += 2) {
+			String key = (String) objects[i];
+			Object value = objects[i + 1];
+			if (value instanceof String[]) map.put(key, (String[]) value);
+			else map.put(key, new String[] { (String) value });
+		}
 		return new FormFields(map);
 	}
 
-	protected Map<String, Object> backingMap;
+	protected Map<String, String[]> backingMap;
 
 	public FormFields() {
-		this(new HashMap<String, Object>());
+		this(new HashMap<String, String[]>());
 	}
 
-	public FormFields(Map<String, Object> backingMap) {
+	public FormFields(Map<String, String[]> backingMap) {
 		this.backingMap = backingMap;
 	}
 
-	/**
-	 * @param fieldName
-	 * @return the actual value for fieldName
-	 */
-	public Object actualValue(String fieldName) {
-		return backingMap.get(fieldName);
+	public boolean contains(String key) {
+		return backingMap.containsKey(key);
 	}
 
 	public String[] fieldNames() {
@@ -61,7 +59,7 @@ public class FormFields {
 	}
 
 	public void setValue(String name, String value) {
-		backingMap.put(name, value);
+		backingMap.put(name, new String[] { value });
 	}
 
 	public void setValues(String name, String[] values) {
