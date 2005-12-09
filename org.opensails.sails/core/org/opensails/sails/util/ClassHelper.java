@@ -1,5 +1,9 @@
 package org.opensails.sails.util;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
 
@@ -15,6 +19,21 @@ import org.opensails.sails.SailsException;
  * 
  */
 public class ClassHelper {
+	public static Field fieldNamed(Class clazz, String name) {
+		try {
+			return clazz.getDeclaredField(name);
+		} catch (Throwable t) {
+			throw new RuntimeException(String.format("Could not find a field named %s on %s", name, clazz), t);
+		}
+	}
+
+	public static Field[] fieldsNamed(Class clazz, String... names) {
+		List<Field> fields = new ArrayList<Field>();
+		for (String name : names)
+			fields.add(fieldNamed(clazz, name));
+		return fields.toArray(new Field[fields.size()]);
+	}
+
 	public static String getName(Class clazz) {
 		return ClassUtils.getShortClassName(clazz);
 	}
