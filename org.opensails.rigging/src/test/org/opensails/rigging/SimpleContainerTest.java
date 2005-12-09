@@ -214,6 +214,28 @@ public class SimpleContainerTest extends TestCase {
 		container.instance(ShamSubclassingComponent.class);
 		assertFalse(listenerCalled);
 	}
+    
+    public void testBroadcast_ThreadSafety() throws Exception {
+		container.register(Shoelace.class);
+		container.register(ShamSubclassingComponent.class);
+		container.registerInstantiationListener(Shoelace.class, new InstantiationListener<Shoelace>() {
+			public void instantiated(Shoelace newInstance) {
+				container.register(ShamComponent.class);
+			}
+		});
+		container.broadcast(IShoelace.class, true).untie();
+		assertNotNull(container.instance(ShamComponent.class));
+	}
+    
+    public static interface IModifiesContainer {
+    	void go(SimpleContainer container);
+    }
+    
+    public static class ModifiesContainer implements IModifiesContainer {
+    	public void go(SimpleContainer container) {
+    		container.register(ShamComponent.class);
+    	}
+    }
 
     public static interface IShoelace {
     	void tie(); 
