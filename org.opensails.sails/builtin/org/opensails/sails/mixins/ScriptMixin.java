@@ -15,8 +15,8 @@ public class ScriptMixin implements IMixinMethod<Script> {
 
 	public Script invoke(Object... args) {
 		if (args == null || args.length == 0) return new BuiltinScript(event);
-		if (args[0].getClass().equals(String.class)) return new Script().src(event.resolve(UrlType.SCRIPT, (String) args[0]));
-		if (args[0].getClass().equals(Block.class)) return new Script().inline((Block) args[0]);
+		if (args[0].getClass().equals(String.class)) return new Script(event.resolve(UrlType.SCRIPT, (String) args[0]));
+		if (args[0].getClass().equals(Block.class)) return new Script((Block) args[0]);
 		throw new IllegalArgumentException("Only URL String or script code Block accepted");
 	}
 }

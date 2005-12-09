@@ -19,8 +19,28 @@ public class Script extends AbstractHtmlElement<Script> {
 		type("text/javascript");
 	}
 
+	public Script(Block block2) {
+		this();
+		inline(block);
+	}
+
+	public Script(IUrl url) {
+		this();
+		src(url);
+	}
+
 	public Script defer(boolean defer) {
 		return attribute("defer", Boolean.toString(defer));
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return src.equals(((Script) obj).src);
+	}
+
+	@Override
+	public int hashCode() {
+		return src.hashCode();
 	}
 
 	public Script inline(Block block) {
