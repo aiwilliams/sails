@@ -13,20 +13,20 @@ public class SailsTesterTest extends TestCase {
 	 * When you use a simple SailsTester, it will boot using all the defaults.
 	 */
 	public void testConstructor() throws Exception {
-		SailsTester tester = new SailsTester();
+		SailsTester tester = SailsTesterFixture.create();
 		assertNotNull(tester.getConfiguration());
 		assertNotNull(tester.getContainer());
 	}
 
 	public void testGet() throws Exception {
-		SailsTester tester = new SailsTester();
+		SailsTester tester = SailsTesterFixture.create();
 		Page page = tester.get();
 		assertTrue(page.url().matches("http://"));
 		page.assertContains("Welcome to Sails");
 	}
 
 	public void testGetRequestContainer() {
-		SailsTester tester = new SailsTester();
+		SailsTester tester = SailsTesterFixture.create();
 		TestRequestContainer requestContainer = tester.getRequestContainer();
 		assertNotNull("We can get it before we ever make a request", requestContainer);
 		assertSame("Same until request is made", requestContainer, tester.getRequestContainer());

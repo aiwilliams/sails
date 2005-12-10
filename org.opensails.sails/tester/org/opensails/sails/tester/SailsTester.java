@@ -33,10 +33,19 @@ public class SailsTester implements ISailsApplication {
 	protected ShamHttpSession session;
 	protected Class<? extends IControllerImpl> workingController;
 
-	public SailsTester() {
-		initialize(BaseConfigurator.class);
-	}
-
+	/**
+	 * <p>
+	 * You must provide your class that extends BaseConfigurator so the
+	 * SailsTester knows how to find your resources.
+	 * <p>
+	 * <p>
+	 * Ie your Controller's, IAdapter's and Templates.
+	 * </p>
+	 * <p>
+	 * If you provide BaseConfigurator the only resources the SailsTester will
+	 * be able to find are those builtins, in the jar.
+	 * </p>
+	 */
 	public SailsTester(Class<? extends BaseConfigurator> configurator) {
 		initialize(configurator);
 	}
