@@ -34,17 +34,11 @@ public class SailsTester implements ISailsApplication {
 	protected Class<? extends IControllerImpl> workingController;
 
 	/**
-	 * <p>
-	 * You must provide your class that extends BaseConfigurator so the
-	 * SailsTester knows how to find your resources.
-	 * <p>
-	 * <p>
-	 * Ie your Controller's, IAdapter's and Templates.
-	 * </p>
-	 * <p>
-	 * If you provide BaseConfigurator the only resources the SailsTester will
-	 * be able to find are those builtins, in the jar.
-	 * </p>
+	 * @see org.opensails.sails.ISailsApplicationConfigurator
+	 * @param configurator the BaseConfigurator used to configure the
+	 *        Application Under Test. Note: if you don't provide a subclass
+	 *        BaseConfigurator, the tester will not find the assets of your
+	 *        project - it will only be able to find those built into Sails.
 	 */
 	public SailsTester(Class<? extends BaseConfigurator> configurator) {
 		initialize(configurator);

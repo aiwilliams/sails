@@ -4,7 +4,6 @@ import javax.servlet.http.HttpSession;
 
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.oem.Controller;
 
 /**
  * This is the interface of an ISailsEvent as needed by the framework itself to
@@ -35,10 +34,10 @@ public interface ILifecycleEvent extends ISailsEvent {
 
 	/**
 	 * This exists to make the Dispatcher a bit cleaner. Implementations call
-	 * the most specific Controller#process() methods.
+	 * the most specific process methods.
 	 * 
-	 * @param controller
-	 * @return IActionResult of Controller process method
+	 * @param eventProcessor
+	 * @return result of event processing
 	 */
-	IActionResult visit(Controller controller);
+	IActionResult visit(IActionEventProcessor eventProcessor);
 }

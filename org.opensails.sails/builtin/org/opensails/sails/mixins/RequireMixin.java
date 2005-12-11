@@ -9,7 +9,7 @@ import java.util.Set;
 import org.opensails.sails.IResourceResolver;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsException;
-import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.oem.IControllerResolver;
 import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;
@@ -18,12 +18,12 @@ import org.opensails.viento.IBinding;
 
 // TODO: Get rid of 'script' and 'style' html duplication
 public class RequireMixin {
+	private final IBinding binding;
+	private final IControllerResolver controllerResolver;
 	protected ISailsEvent event;
 	protected IResourceResolver loader;
 	protected Set<Requirement> requirements;
 	protected UrlForBuiltin urlForBuiltin;
-	private final IControllerResolver controllerResolver;
-	private final IBinding binding;
 
 	public RequireMixin(ISailsEvent event, IResourceResolver loader, IBinding binding, IControllerResolver controllerResolver) {
 		this.event = event;
@@ -54,18 +54,15 @@ public class RequireMixin {
 		} catch (Exception e) {
 			throw new SailsException("Could not locate component descriptor " + descriptor, e);
 		}
-		
+
 		String script = directory + "script.js";
-		if (loader.resolve(script) != null)
-			requirements.add(new ComponentRequirement(identifier, "script.js"));
+		if (loader.resolve(script) != null) requirements.add(new ComponentRequirement(identifier, "script.js"));
 
 		String style = directory + "style.css";
-		if (loader.resolve(style) != null)
-			requirements.add(new ComponentRequirement(identifier, "style.css"));
-		
-		IControllerImpl controllerImpl = controllerResolver.resolve(identifier).createInstance(event);
-		if (controllerImpl != null)
-			binding.put(identifier, controllerImpl);
+		if (loader.resolve(style) != null) requirements.add(new ComponentRequirement(identifier, "style.css"));
+
+		IController component = controllerResolver.resolve(identifier);
+		if (component.hasImplementation()) binding.put(identifier, component.createInstance(event));
 	}
 
 	public String output() {

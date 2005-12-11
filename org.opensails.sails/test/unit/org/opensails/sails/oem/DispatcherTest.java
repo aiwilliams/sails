@@ -10,6 +10,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.oem.ActionResultFixture;
 import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.controller.oem.IControllerResolver;
@@ -157,7 +158,7 @@ public class DispatcherTest extends TestCase {
 
 	protected Dispatcher createDispatcher(ISailsApplication application) {
 		return new Dispatcher(application, application.getContainer().instance(ISailsEventConfigurator.class), new IControllerResolver() {
-			public Controller resolve(String controllerIdentifier) {
+			public IController resolve(String controllerIdentifier) {
 				return controller;
 			}
 		}, new IActionResultProcessorResolver() {

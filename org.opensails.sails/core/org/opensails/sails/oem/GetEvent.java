@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.oem.Controller;
 
 public class GetEvent extends AbstractEvent {
 	public GetEvent(HttpServletRequest req, HttpServletResponse resp) {
@@ -17,7 +16,7 @@ public class GetEvent extends AbstractEvent {
 	}
 
 	@Override
-	public IActionResult visit(Controller controller) {
-		return controller.process(this);
+	public IActionResult visit(IActionEventProcessor eventProcessor) {
+		return eventProcessor.process(this);
 	}
 }

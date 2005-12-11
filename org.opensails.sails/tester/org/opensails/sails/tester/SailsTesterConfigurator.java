@@ -11,8 +11,8 @@ import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.controller.oem.IControllerResolver;
 import org.opensails.sails.oem.ActionResultProcessorResolver;
 import org.opensails.sails.oem.BaseConfigurator;
@@ -91,7 +91,7 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 			}
 
 			@Override
-			public Controller resolve(String controllerIdentifier) {
+			public IController resolve(String controllerIdentifier) {
 				return ExceptionEvent.CONTROLLER_NAME.equals(controllerIdentifier) ? new ErrorController() : controllerResolver.resolve(controllerIdentifier);
 			}
 		};

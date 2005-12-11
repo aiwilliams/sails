@@ -6,7 +6,6 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.url.EventUrl;
 
 public class ExceptionEvent extends AbstractEvent {
@@ -43,8 +42,8 @@ public class ExceptionEvent extends AbstractEvent {
 	}
 
 	@Override
-	public IActionResult visit(Controller controller) {
-		return controller.process(this);
+	public IActionResult visit(IActionEventProcessor eventProcessor) {
+		return eventProcessor.process(this);
 	}
 
 	@Override

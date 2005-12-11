@@ -8,6 +8,7 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.NoImplementationException;
 import org.opensails.sails.oem.ExceptionEvent;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.PostEvent;
@@ -22,6 +23,11 @@ public class Controller implements IController {
 		this.controllerImplementation = controller;
 		this.adapterResolver = adapterResolver;
 		this.actions = new HashMap<String, Action>();
+	}
+
+	public IControllerImpl createInstance(ISailsEvent event) throws NoImplementationException {
+		if (!hasImplementation()) throw new NoImplementationException(this);
+		return createInstanceOrNull(event);
 	}
 
 	/*
@@ -47,6 +53,10 @@ public class Controller implements IController {
 		return controllerImplementation;
 	}
 
+	public boolean hasImplementation() {
+		return controllerImplementation != null;
+	}
+
 	public IActionResult process(ExceptionEvent event) {
 		IControllerImpl controller = createInstance(event);
 		Action action = getAction(event.getActionName());
@@ -60,7 +70,7 @@ public class Controller implements IController {
 	}
 
 	public IActionResult process(ISailsEvent event) {
-		IControllerImpl controller = createInstance(event);
+		IControllerImpl controller = createInstanceOrNull(event);
 		Action action = getAction(event.getActionName());
 		IActionResult actionResult = action.execute(event, controller, event.getActionParameters());
 		if (actionResult instanceof TemplateActionResult && !((TemplateActionResult) actionResult).hasLayoutBeenSet() && controller != null
@@ -75,8 +85,8 @@ public class Controller implements IController {
 		return process((ISailsEvent) event);
 	}
 
-	public IControllerImpl createInstance(ISailsEvent event) {
-		if (controllerImplementation == null) return null;
+	private IControllerImpl createInstanceOrNull(ISailsEvent event) {
+		if (!hasImplementation()) return null;
 		IControllerImpl instance = createInstance(event, controllerImplementation);
 		instance.set(event, this);
 		return instance;

@@ -5,7 +5,7 @@ import org.opensails.sails.IActionResultProcessorResolver;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.oem.Controller;
+import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.oem.IControllerResolver;
 
 public class Dispatcher {
@@ -50,18 +50,18 @@ public class Dispatcher {
 		event.beginDispatch();
 	}
 
-	protected void endDispatch(ILifecycleEvent event) {
-		event.endDispatch();
-	}
-
 	protected void configureContainer(ILifecycleEvent event) {
 		eventConfigurator.configure(event, event.getContainer());
 	}
 
+	protected void endDispatch(ILifecycleEvent event) {
+		event.endDispatch();
+	}
+
 	@SuppressWarnings("unchecked")
 	protected void process(ILifecycleEvent event) {
-		Controller controller = controllerResolver.resolve(event.getControllerName());
-		// delegate to event so that is calls most specific process
+		IController controller = controllerResolver.resolve(event.getControllerName());
+		// delegate to event so that it calls most specific process
 		IActionResult result = event.visit(controller);
 		IActionResultProcessor processor = processorResolver.resolve(result);
 		processor.process(result);

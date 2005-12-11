@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.controller.oem.IControllerResolver;
@@ -27,7 +28,7 @@ public class ControllerResolver implements IControllerResolver {
         classResolvers.add(0, controllerClassResolver);
     }
 
-    public Controller resolve(String controllerIdentifier) {
+    public IController resolve(String controllerIdentifier) {
         Controller controller = controllerCache.get(controllerIdentifier);
         if (controller == null) {
             Class<? extends IControllerImpl> controllerImplementation = null;

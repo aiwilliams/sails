@@ -9,7 +9,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.html.Submit;
 
@@ -41,8 +40,8 @@ public class PostEvent extends AbstractEvent {
 	}
 
 	@Override
-	public IActionResult visit(Controller controller) {
-		return controller.process(this);
+	public IActionResult visit(IActionEventProcessor eventProcessor) {
+		return eventProcessor.process(this);
 	}
 
 	@Override

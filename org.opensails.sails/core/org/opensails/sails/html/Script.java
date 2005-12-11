@@ -19,7 +19,7 @@ public class Script extends AbstractHtmlElement<Script> {
 		type("text/javascript");
 	}
 
-	public Script(Block block2) {
+	public Script(Block block) {
 		this();
 		inline(block);
 	}

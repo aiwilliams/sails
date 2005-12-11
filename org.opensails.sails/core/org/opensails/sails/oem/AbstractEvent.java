@@ -19,7 +19,6 @@ import org.opensails.sails.ISailsEventListener;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.url.EventUrl;
 import org.opensails.sails.url.IEventUrl;
 import org.opensails.sails.url.IUrl;
@@ -164,8 +163,8 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	 * Controller#process() method. This implementation will cause the generic
 	 * ISailsEvent method to be invoked.
 	 */
-	public IActionResult visit(Controller controller) {
-		return controller.process(this);
+	public IActionResult visit(IActionEventProcessor eventProcessor) {
+		return eventProcessor.process(this);
 	}
 
 	/**

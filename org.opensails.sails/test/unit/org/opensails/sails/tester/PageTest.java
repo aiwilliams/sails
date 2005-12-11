@@ -3,10 +3,12 @@ package org.opensails.sails.tester;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
+import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.HtmlFormFixture;
 import org.opensails.sails.oem.GetEvent;
 import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.oem.ShamEvent;
 import org.opensails.viento.IBinding;
 
 public class PageTest extends TestCase {
@@ -30,7 +32,20 @@ public class PageTest extends TestCase {
 	}
 
 	public void testAssertLayout() throws Exception {
-		fail("note to self: mocks are good");
+		ShamEvent event = SailsEventFixture.sham();
+		TemplateActionResult templateActionResult = new TemplateActionResult(event);
+		templateActionResult.setLayout("the layout");
+		event.getContainer().register(templateActionResult);
+		Page page = new Page(event);
+		page.assertLayout("the layout");
+		try {
+			page.assertLayout("not it");
+			throw new RuntimeException("Not the layout that was rendered");
+		} catch (AssertionFailedError expected) {}
+		try {
+			page.assertLayout(null);
+			throw new RuntimeException("Expected none, but there was one, so fail");
+		} catch (AssertionFailedError expected) {}
 	}
 
 	public void testExposed() {

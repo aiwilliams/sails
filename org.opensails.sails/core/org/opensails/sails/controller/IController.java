@@ -1,7 +1,7 @@
 package org.opensails.sails.controller;
 
 import org.opensails.sails.ISailsEvent;
-
+import org.opensails.sails.oem.IActionEventProcessor;
 
 /**
  * A controller descriptor, if you will.
@@ -21,8 +21,31 @@ import org.opensails.sails.ISailsEvent;
  * 
  * @author aiwilliams
  */
-public interface IController {
-	IControllerImpl createInstance(ISailsEvent event);
+public interface IController extends IActionEventProcessor {
+	/**
+	 * @param event
+	 * @see #hasImplementation()
+	 * @return an IControllerImpl instance bound to event
+	 * @throws NoImplementationException when there is no IControllerImpl
+	 *         associated with this
+	 */
+	IControllerImpl createInstance(ISailsEvent event) throws NoImplementationException;
+
+	/**
+	 * @param name of action
+	 * @return an IAction for name - there may or may not be code or a template
+	 *         behind this action
+	 */
 	IAction getAction(String name);
+
+	/**
+	 * @return the IControllerImpl that implements the code behind this - may be
+	 *         null
+	 */
 	Class<? extends IControllerImpl> getImplementation();
+
+	/**
+	 * @return true if this has an IControllerImpl
+	 */
+	boolean hasImplementation();
 }
