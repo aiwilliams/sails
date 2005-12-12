@@ -1,6 +1,6 @@
 package org.opensails.sails.persist;
 
-import java.util.Collection;
+import java.util.*;
 
 public interface IObjectPersister {
 	<T extends IIdentifiable> Collection<T> all(Class<T> objectType) throws PersistException;
@@ -21,7 +21,7 @@ public interface IObjectPersister {
 	 */
 	void commit() throws PersistException;
 
-	<T extends IIdentifiable> void destroy(T object) throws PersistException;
+	void destroy(IIdentifiable object) throws PersistException;
 
 	<T extends IIdentifiable> T find(Class<T> objectType, Long id) throws PersistException;
 
@@ -29,9 +29,11 @@ public interface IObjectPersister {
 
 	<T extends IIdentifiable> T find(Class<T> theClass, String[] attributeNames, Object[] values) throws PersistException;
 
+	<T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, Long... ids) throws PersistException;
+
 	<T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, String attributeName, Object value) throws PersistException;
 
 	<T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, String[] attributeNames, Object[] values) throws PersistException;
 
-	<T extends IIdentifiable> void save(T object) throws PersistException;
+	void save(IIdentifiable object) throws PersistException;
 }

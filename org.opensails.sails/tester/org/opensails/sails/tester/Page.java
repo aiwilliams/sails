@@ -186,6 +186,10 @@ public class Page {
 		public <T> void assertContainsOnly(T[] expected) {
 			CollectionAssert.containsOnly(expected, (Collection<T>) value);
 		}
+		
+		public void assertExists() {
+			Assert.assertNotNull(value);
+		}
 
 		public void assertEquals(Object expectedValue) {
 			Assert.assertEquals(expectedValue, value);

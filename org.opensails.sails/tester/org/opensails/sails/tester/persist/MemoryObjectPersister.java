@@ -1,19 +1,10 @@
 package org.opensails.sails.tester.persist;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.opensails.sails.persist.IIdentifiable;
-import org.opensails.sails.persist.PersistException;
-import org.opensails.sails.util.DoubleKeyedMap;
-import org.opensails.sails.util.FieldAccessor;
-import org.opensails.sails.util.IIdGenerator;
-import org.opensails.sails.util.TimeUniqueIdGenerator;
+import org.apache.commons.lang.builder.*;
+import org.opensails.sails.persist.*;
+import org.opensails.sails.util.*;
 
 public class MemoryObjectPersister implements IShamObjectPersister {
 	protected Collection<IIdentifiable> destroyedInTransaction;
@@ -180,5 +171,9 @@ public class MemoryObjectPersister implements IShamObjectPersister {
 		for (Long id : ids)
 			results.add(find(type, id));
 		return results;
+	}
+
+	public <T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, Long... ids) throws PersistException {
+		throw new UnsupportedOperationException("implement");
 	}
 }
