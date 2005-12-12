@@ -121,7 +121,7 @@ public class Action implements IAction {
 		try {
 			Object result = actionMethod.invoke(implementationInstance, actionArguments);
 			if (result != null && result instanceof IActionResult) return (IActionResult) result;
-			IActionResult resultFromController = implementationInstance.result();
+			IActionResult resultFromController = implementationInstance.getActionResult();
 			if (resultFromController != null) return resultFromController;
 			return defaultActionResult(event, implementationInstance);
 		} catch (IllegalArgumentException e) {

@@ -25,11 +25,11 @@ public class BaseController implements IControllerImpl {
 		return controller;
 	}
 
-	public IActionResult result() {
+	public IActionResult getActionResult() {
 		return result;
 	}
 
-	public void set(ISailsEvent event, IController controller) {
+	public void setEventContext(ISailsEvent event, IController controller) {
 		this.event = event;
 		this.controller = controller;
 	}

@@ -7,7 +7,7 @@ import org.opensails.rigging.ScopedContainer;
  * implementation is annotated with
  * {@link org.opensails.sails.Scope), it will be instantiated using the provided {@link org.opensails.rigging.ScopedContainer}
  * 
- * @author aiwilliams
+ * @author Adam 'Programmer' Williams
  */
 public interface IAdapterResolver {
     IAdapter resolve(Class<?> parameterClass, ScopedContainer container);

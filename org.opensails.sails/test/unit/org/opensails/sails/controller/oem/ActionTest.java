@@ -138,7 +138,7 @@ public class ActionTest extends TestCase {
 		ISailsEvent event = SailsEventFixture.sham();
 		// the getClass is because of the way the action caches the methods
 		Action action = ActionFixture.defaultAdapters("someAction", controller.getClass());
-		controller.set(event, null);
+		controller.setEventContext(event, null);
 		action.execute(event, controller, null);
 		assertSame("make sure it is the same one placed in the container by the action", testResult, event.getContainer().instance(IActionResult.class));
 		assertSame("not only as the interface but also as the concrete type", testResult, event.getContainer().instance(TemplateActionResult.class));

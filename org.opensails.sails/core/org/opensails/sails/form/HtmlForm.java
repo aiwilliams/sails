@@ -1,23 +1,14 @@
 package org.opensails.sails.form;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.*;
+import java.util.Map.*;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.adapter.AdaptationException;
-import org.opensails.sails.adapter.IAdapter;
-import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.model.AccessorException;
-import org.opensails.sails.model.IModelContext;
-import org.opensails.sails.model.IPropertyAccessor;
-import org.opensails.sails.model.IPropertyPath;
-import org.opensails.sails.model.PropertyPathException;
-import org.opensails.sails.model.oem.DotPropertyPath;
-import org.opensails.sails.model.oem.PropertyAccessor;
-import org.opensails.sails.util.WriteOnceHashMap;
-import org.opensails.sails.validation.IInvalidProperty;
-import org.opensails.sails.validation.IValidationEngine;
-import org.opensails.sails.validation.IValidationResult;
+import org.opensails.sails.*;
+import org.opensails.sails.adapter.*;
+import org.opensails.sails.model.*;
+import org.opensails.sails.model.oem.*;
+import org.opensails.sails.util.*;
+import org.opensails.sails.validation.*;
 
 public class HtmlForm {
 	/**
@@ -26,13 +17,13 @@ public class HtmlForm {
 	public static final String META_PREFIX = "form.meta.";
 
 	protected final IAdapterResolver adapterResolver;
-	protected final ScopedContainer container;
+	protected final RequestContainer container;
 	protected final FormFields formFields;
 	protected Map<String, IInvalidProperty> invalids;
 	protected final IModelContext modelContext;
 	protected final IValidationEngine validationEngine;
 
-	public HtmlForm(ScopedContainer container, IModelContext modelContext, FormFields formFields, IAdapterResolver adapterResolver, IValidationEngine validationEngine) {
+	public HtmlForm(RequestContainer container, IModelContext modelContext, FormFields formFields, IAdapterResolver adapterResolver, IValidationEngine validationEngine) {
 		this.container = container;
 		this.modelContext = modelContext;
 		this.formFields = formFields;

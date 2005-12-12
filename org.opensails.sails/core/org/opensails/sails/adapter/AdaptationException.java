@@ -1,5 +1,15 @@
 package org.opensails.sails.adapter;
 
-public class AdaptationException extends RuntimeException {
-    private static final long serialVersionUID = 4366026779396966497L;
+import org.opensails.sails.*;
+
+/**
+ * Thrown by {@link org.opensails.sails.adapter.IAdapter}'s when they are
+ * unable to adapt objects for the web or for the model.
+ * 
+ * @author Adam 'Programmer' Williams
+ */
+public class AdaptationException extends SailsException {
+	public AdaptationException() {
+		super("Failure adapting object");
+	}
 }

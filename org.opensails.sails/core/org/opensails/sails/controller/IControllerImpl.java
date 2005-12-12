@@ -1,7 +1,7 @@
 package org.opensails.sails.controller;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ISailsEvent;
+import org.opensails.rigging.*;
+import org.opensails.sails.*;
 
 /**
  * A controller implementation.
@@ -20,29 +20,30 @@ import org.opensails.sails.ISailsEvent;
  * many {@link IControllerImpl}s. Every request causes an IControllerImpl
  * instance to be created.
  * 
- * @author aiwilliams
+ * @author Adam 'Programmer' Williams
  */
 public interface IControllerImpl {
+	/**
+	 * @return the result decided by the controller implementation. This may be
+	 *         null, in which case the Sails framework will decide the result.
+	 */
+	IActionResult getActionResult();
+
 	/**
 	 * @return the container that created this
 	 */
 	ScopedContainer getContainer();
 
 	/**
-	 * @return the Controller for this implementation
+	 * @return the IController for this implementation
 	 */
 	IController getController();
-
-	/**
-	 * @return the result decided by the controller implementation, possibly
-	 *         null.
-	 */
-	IActionResult result();
 
 	/**
 	 * Called before the controller is invoked, but only if it is invoked
 	 * 
 	 * @param event
+	 * @param controller
 	 */
-	void set(ISailsEvent event, IController controller);
+	void setEventContext(ISailsEvent event, IController controller);
 }

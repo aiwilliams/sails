@@ -1,15 +1,14 @@
 package org.opensails.sails.form;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ApplicationScope;
-import org.opensails.sails.adapter.IAdapter;
-import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.model.oem.SingleModelContext;
-import org.opensails.sails.validation.oem.SailsValidationEngine;
+import org.opensails.rigging.*;
+import org.opensails.sails.*;
+import org.opensails.sails.adapter.*;
+import org.opensails.sails.model.oem.*;
+import org.opensails.sails.validation.oem.*;
 
 public class HtmlFormFixture {
 	public static HtmlForm create() {
-		return new HtmlForm(new ScopedContainer(ApplicationScope.REQUEST), new SingleModelContext(null), new FormFields(), new IAdapterResolver() {
+		return new HtmlForm(new RequestContainer(new ScopedContainer(ApplicationScope.SERVLET)), new SingleModelContext(null), new FormFields(), new IAdapterResolver() {
 			public IAdapter resolve(Class<?> parameterClass, ScopedContainer container) {
 				return null;
 			}

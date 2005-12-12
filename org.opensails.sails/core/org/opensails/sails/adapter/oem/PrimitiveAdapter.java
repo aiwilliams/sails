@@ -6,6 +6,11 @@ import java.util.Map;
 import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.adapter.IAdapter;
 
+/**
+ * Supports adapting primitive and wrapper objects forModel and forWeb.
+ * 
+ * @author Adam 'Programmer' Williams
+ */
 public class PrimitiveAdapter implements IAdapter {
     public static final Class[] SUPPORTED_TYPES;
 

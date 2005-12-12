@@ -3,8 +3,13 @@ package org.opensails.sails.adapter;
 import org.opensails.rigging.ScopedContainer;
 
 /**
- * Convenience. Already bound to a container, allows for dependence on one class
- * only.
+ * Things in a Sails application that are interested in obtaining
+ * {@link org.opensails.sails.adapter.IAdapter} instances within a particular
+ * scoped container can depend on an instance of this instead of depending on
+ * both an {@link org.opensails.sails.adapter.IAdapterResolver} and
+ * {@link org.opensails.rigging.ScopedContainer}.
+ * 
+ * @author Adam 'Programmer' Williams
  */
 public class ContainerAdapterResolver {
 	protected final ScopedContainer container;

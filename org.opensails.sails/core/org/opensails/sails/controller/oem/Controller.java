@@ -88,7 +88,7 @@ public class Controller implements IController {
 	private IControllerImpl createInstanceOrNull(ISailsEvent event) {
 		if (!hasImplementation()) return null;
 		IControllerImpl instance = createInstance(event, controllerImplementation);
-		instance.set(event, this);
+		instance.setEventContext(event, this);
 		return instance;
 	}
 

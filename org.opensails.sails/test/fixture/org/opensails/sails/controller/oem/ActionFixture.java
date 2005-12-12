@@ -41,7 +41,7 @@ public class ActionFixture {
 	public static IActionResult execute(Action action, IControllerImpl controller, String[] unadaptedArguments) {
 		ShamEvent event = SailsEventFixture.sham();
 		ShamActionListener listener = ActionFixture.addListener(event);
-		if (controller != null) controller.set(event, new Controller(controller.getClass(), new AdapterResolver()));
+		if (controller != null) controller.setEventContext(event, new Controller(controller.getClass(), new AdapterResolver()));
 		IActionResult result = action.execute(event, controller, unadaptedArguments);
 		ActionFixture.assertNotificationsMade(listener);
 		return result;
