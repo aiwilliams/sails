@@ -35,5 +35,7 @@ public interface IObjectPersister {
 
 	<T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, String[] attributeNames, Object[] values) throws PersistException;
 
+	<T extends IIdentifiable> T reload(T instance);
+
 	void save(IIdentifiable object) throws PersistException;
 }

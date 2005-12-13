@@ -92,6 +92,13 @@ public class MemoryObjectPersister implements IShamObjectPersister {
 		throw new PersistException("There is more than one item that matches 'unique' criterion.");
 	}
 
+	public <T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, Long... ids) throws PersistException {
+		List<T> all = new ArrayList<T>();
+		for (Long id : ids)
+			all.add(find(theClass, id));
+		return all;
+	}
+
 	public <T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, String attributeName, Object value) {
 		return findAll(theClass, new String[] { attributeName }, new Object[] { value });
 	}
@@ -130,6 +137,11 @@ public class MemoryObjectPersister implements IShamObjectPersister {
 	public void provides(IIdentifiable... objects) {
 		for (IIdentifiable object : objects)
 			provides(object.getClass(), object);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends IIdentifiable> T reload(T instance) {
+		return (T) find(instance.getClass(), instance.getId());
 	}
 
 	public void reset() {
@@ -171,9 +183,5 @@ public class MemoryObjectPersister implements IShamObjectPersister {
 		for (Long id : ids)
 			results.add(find(type, id));
 		return results;
-	}
-
-	public <T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, Long... ids) throws PersistException {
-		throw new UnsupportedOperationException("implement");
 	}
 }
