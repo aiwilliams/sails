@@ -1,16 +1,21 @@
 package org.opensails.sails.controller.oem;
 
-import javax.servlet.http.*;
+import java.util.List;
 
-import org.opensails.rigging.*;
-import org.opensails.sails.*;
-import org.opensails.sails.controller.*;
-import org.opensails.sails.form.*;
-import org.opensails.sails.mixins.*;
-import org.opensails.sails.model.*;
-import org.opensails.sails.model.oem.*;
-import org.opensails.sails.oem.*;
-import org.opensails.viento.*;
+import javax.servlet.http.HttpSession;
+
+import org.opensails.rigging.ScopedContainer;
+import org.opensails.rigging.SimpleContainer;
+import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.mixins.UrlforMixin;
+import org.opensails.sails.model.IModelContext;
+import org.opensails.sails.model.oem.SingleModelContext;
+import org.opensails.sails.oem.Flash;
+import org.opensails.viento.IBinding;
 
 public class BaseController implements IControllerImpl {
 	protected IController controller;
@@ -101,6 +106,10 @@ public class BaseController implements IControllerImpl {
 
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
 		return setResult(new RedirectActionResult(event, controller, action));
+	}
+	
+	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action, List<?> parameters) {
+		return setResult(new RedirectActionResult(event, controller, action, parameters));
 	}
 
 	/**
