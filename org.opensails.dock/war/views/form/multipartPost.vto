@@ -1,0 +1,8 @@
+$simpleText<br />
+$!someFile
+
+<form method="post" enctype="multipart/form-data">
+	$form.text('simpleText').value('you found me')
+	$form.file('someFile')
+	$form.submit
+</form>

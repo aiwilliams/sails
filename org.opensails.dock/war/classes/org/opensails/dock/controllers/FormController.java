@@ -15,11 +15,17 @@ public class FormController extends BaseController {
 	}
 
 	public void basicPost(User user) {
-		if (!formToModel(user)) renderTemplate("basic");
+		if (!formToModel(user))
+			renderTemplate("basic");
 	}
 
 	public SelectModel exampleSelectModel() {
 		return new ListSelectModel("option one", "option two");
+	}
+
+	public void multipartPost() {
+		expose("simpleText", String.format("You entered [%s]", field("simpleText")));
+		expose("someFile", file("someFile"));
 	}
 
 	protected boolean formToModel(User user) {
