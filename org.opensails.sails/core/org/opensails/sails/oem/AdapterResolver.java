@@ -49,8 +49,7 @@ public class AdapterResolver implements IAdapterResolver {
 		} else { // IAdapter did not declare scope - instance will be cached
 			try {
 				adapter = adapterClass.newInstance();
-				for (Class supportedType : adapter.getSupportedTypes())
-					adapterInstanceCache.put(supportedType, adapter);
+				adapterInstanceCache.put(parameterClass, adapter);
 				return adapter;
 			} catch (Exception e) {
 				throw new SailsException("Your adapter " + adapterClass + " does not decare it's Scope. Therefore, it must have a default constructor, as it will be cached.");

@@ -3,6 +3,7 @@ package org.opensails.sails.adapter.oem;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.adapter.IAdapter;
 
@@ -11,7 +12,7 @@ import org.opensails.sails.adapter.IAdapter;
  * 
  * @author Adam 'Programmer' Williams
  */
-public class PrimitiveAdapter implements IAdapter {
+public class PrimitiveAdapter extends AbstractAdapter<Object, Object> {
     public static final Class[] SUPPORTED_TYPES;
 
     private static final Map<Class<?>, IAdapter> ADAPTERS;
@@ -36,144 +37,104 @@ public class PrimitiveAdapter implements IAdapter {
         ADAPTERS.put(boolean.class, new BooleanAdapter());
         ADAPTERS.put(Boolean.class, new BooleanAdapter());
         ADAPTERS.put(String.class, new StringAdapter());
-        // TODO: Add remaining adapters
+        // TODO: Add remaining adapters (like arrays)
     }
 
-    public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
+	@SuppressWarnings("unchecked")
+	public Object forModel(Class<? extends Object> modelType, Object fromWeb) throws AdaptationException {
         return ADAPTERS.get(modelType).forModel(modelType, fromWeb);
     }
 
-    public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+    @SuppressWarnings("unchecked")
+	public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
         return ADAPTERS.get(modelType).forWeb(modelType, fromModel);
     }
 
-    public Class[] getSupportedTypes() {
-        return SUPPORTED_TYPES;
-    }
-    
-    public static class BooleanAdapter implements IAdapter {
-        public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-            return Boolean.valueOf((String)fromWeb);
+    public static class BooleanAdapter extends AbstractAdapter<Boolean, String> {
+        public Boolean forModel(Class<? extends Boolean> modelType, String fromWeb) throws AdaptationException {
+            return Boolean.valueOf(fromWeb);
         }
 
-        public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+        public String forWeb(Class<? extends Boolean> modelType, Boolean fromModel) throws AdaptationException {
             return fromModel == null ? null : fromModel.toString();
         }
-
-        public Class[] getSupportedTypes() {
-            return new Class[] {boolean.class, Boolean.class};
-        }
     }
     
-    public static class ByteAdapter implements IAdapter {
-    	public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-    		return Byte.valueOf((String)fromWeb);
+    public static class ByteAdapter extends AbstractAdapter<Byte, String> {
+    	public Byte forModel(Class<? extends Byte> modelType, String fromWeb) throws AdaptationException {
+    		return Byte.valueOf(fromWeb);
     	}
     	
-    	public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+    	public String forWeb(Class<? extends Byte> modelType, Byte fromModel) throws AdaptationException {
     		return fromModel == null ? null : fromModel.toString();
-    	}
-    	
-    	public Class[] getSupportedTypes() {
-    		return new Class[] {byte.class, Byte.class};
     	}
     }
     
-    public static class CharAdapter implements IAdapter {
-    	public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-    		return ((String)fromWeb).charAt(0);
+    public static class CharAdapter extends AbstractAdapter<Character, String> {
+    	public Character forModel(Class<? extends Character> modelType, String fromWeb) throws AdaptationException {
+    		return fromWeb.charAt(0);
     	}
     	
-    	public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+    	public String forWeb(Class<? extends Character> modelType, Character fromModel) throws AdaptationException {
     		return fromModel == null ? null : fromModel.toString();
     	}
-    	
-    	public Class[] getSupportedTypes() {
-    		return new Class[] {char.class, Character.class};
-    	}
-    	
     }
     
-    public static class DoubleAdapter implements IAdapter {
-    	public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-    		return Double.valueOf((String)fromWeb);
+    public static class DoubleAdapter extends AbstractAdapter<Double, String> {
+    	public Double forModel(Class<? extends Double> modelType, String fromWeb) throws AdaptationException {
+    		return Double.valueOf(fromWeb);
     	}
     	
-    	public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+    	public String forWeb(Class<? extends Double> modelType, Double fromModel) throws AdaptationException {
     		return fromModel == null ? null : fromModel.toString();
     	}
-    	
-    	public Class[] getSupportedTypes() {
-    		return new Class[] {double.class, Double.class};
-    	}
     }
-    public static class FloatAdapter implements IAdapter {
-        public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-            return Float.valueOf((String)fromWeb);
+    public static class FloatAdapter extends AbstractAdapter<Float, String> {
+        public Float forModel(Class<? extends Float> modelType, String fromWeb) throws AdaptationException {
+            return Float.valueOf(fromWeb);
         }
 
-        public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+        public String forWeb(Class<? extends Float> modelType, Float fromModel) throws AdaptationException {
             return fromModel == null ? null : fromModel.toString();
         }
-
-        public Class[] getSupportedTypes() {
-            return new Class[] {float.class, Float.class};
-        }
     }
     
-    public static class IntAdapter implements IAdapter {
-        public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-            return Integer.valueOf((String)fromWeb);
+    public static class IntAdapter extends AbstractAdapter<Integer, String> {
+        public Integer forModel(Class<? extends Integer> modelType, String fromWeb) throws AdaptationException {
+            return Integer.valueOf(fromWeb);
         }
-        public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+        public String forWeb(Class<? extends Integer> modelType, Integer fromModel) throws AdaptationException {
             return fromModel == null ? null : fromModel.toString();
         }
-
-        public Class[] getSupportedTypes() {
-            return new Class[] {int.class, Integer.class};
-        }
     }
     
-    public static class LongAdapter implements IAdapter {
-        public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-            return Long.valueOf((String)fromWeb);
+    public static class LongAdapter extends AbstractAdapter<Long, String> {
+        public Long forModel(Class<? extends Long> modelType, String fromWeb) throws AdaptationException {
+            return Long.valueOf(fromWeb);
         }
 
-        public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+        public String forWeb(Class<? extends Long> modelType, Long fromModel) throws AdaptationException {
             return fromModel == null ? null : fromModel.toString();
         }
-
-        public Class[] getSupportedTypes() {
-            return new Class[] {long.class, Long.class};
-        }
     }
     
-    public static class ShortAdapter implements IAdapter {
-    	public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
-    		return Short.valueOf((String)fromWeb);
+    public static class ShortAdapter extends AbstractAdapter<Short, String> {
+    	public Short forModel(Class<? extends Short> modelType, String fromWeb) throws AdaptationException {
+    		return Short.valueOf(fromWeb);
     	}
     	
-    	public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+    	public String forWeb(Class<? extends Short> modelType, Short fromModel) throws AdaptationException {
     		return fromModel == null ? null : fromModel.toString();
     	}
-    	
-    	public Class[] getSupportedTypes() {
-    		return new Class[] {short.class, Short.class};
-    	}
     }
 
-    public static class StringAdapter implements IAdapter {
-        public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
+    public static class StringAdapter extends AbstractAdapter<String, String> {
+        public String forModel(Class<? extends String> modelType, String fromWeb) throws AdaptationException {
             return fromWeb;
         }
 
-        public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
+        public String forWeb(Class<? extends String> modelType, String fromModel) throws AdaptationException {
             return fromModel == null ? "" : fromModel.toString();
         }
-
-        public Class[] getSupportedTypes() {
-            return new Class[] {String.class};
-        }
-
     }
 }

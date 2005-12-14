@@ -1,14 +1,23 @@
 package org.opensails.sails.form;
 
-import java.util.*;
-import java.util.Map.*;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.opensails.sails.*;
-import org.opensails.sails.adapter.*;
-import org.opensails.sails.model.*;
-import org.opensails.sails.model.oem.*;
-import org.opensails.sails.util.*;
-import org.opensails.sails.validation.*;
+import org.opensails.sails.RequestContainer;
+import org.opensails.sails.adapter.AdaptationException;
+import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.model.AccessorException;
+import org.opensails.sails.model.IModelContext;
+import org.opensails.sails.model.IPropertyAccessor;
+import org.opensails.sails.model.IPropertyPath;
+import org.opensails.sails.model.PropertyPathException;
+import org.opensails.sails.model.oem.DotPropertyPath;
+import org.opensails.sails.model.oem.PropertyAccessor;
+import org.opensails.sails.util.WriteOnceHashMap;
+import org.opensails.sails.validation.IInvalidProperty;
+import org.opensails.sails.validation.IValidationEngine;
+import org.opensails.sails.validation.IValidationResult;
 
 public class HtmlForm {
 	/**
@@ -62,7 +71,7 @@ public class HtmlForm {
 					IPropertyAccessor accessor = accessor(path);
 					Class propertyTypeOnTarget = accessor.getPropertyType(model);
 					IAdapter adapter = adapter(path, propertyTypeOnTarget);
-					accessor.set(model, adapter.forModel(accessor.getPropertyType(model), formFields.valueAs(fieldName, accessor.getFieldType(model))));
+					accessor.set(model, adapter.forModel(accessor.getPropertyType(model), formFields.valueAs(fieldName, adapter.getFieldType())));
 
 					// now that everything is transferred, validate
 					IValidationResult validationResult = validationEngine.validate(model);

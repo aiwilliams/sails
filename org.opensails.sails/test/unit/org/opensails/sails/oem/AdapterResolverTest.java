@@ -6,6 +6,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.Scope;
+import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.oem.PrimitiveAdapter;
@@ -45,20 +46,16 @@ public class AdapterResolverTest extends TestCase {
 		IAdapter stringAdapter = resolver.resolve(String.class, null);
 		assertEquals(PrimitiveAdapter.class, stringAdapter.getClass());
 		assertSame(stringAdapter, resolver.resolve(String.class, null));
-		assertSame(stringAdapter, resolver.resolve(int.class, null));
+		assertEquals(PrimitiveAdapter.class, resolver.resolve(int.class, null).getClass());
 	}
 
 	@Scope(ApplicationScope.REQUEST)
-	public static class ShamAdapter implements IAdapter {
+	public static class ShamAdapter extends AbstractAdapter {
 		public Object forModel(Class modelType, Object fromWeb) throws AdaptationException {
 			return null;
 		}
 
 		public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
-			return null;
-		}
-
-		public Class[] getSupportedTypes() {
 			return null;
 		}
 	}

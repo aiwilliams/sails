@@ -1,9 +1,11 @@
 package org.opensails.sails.form;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.commons.lang.*;
-import org.opensails.sails.model.IPropertyAccessor.*;
+import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.adapter.FieldType;
 
 /**
  * Why? Provides a way for objects that are created within a dependancy
