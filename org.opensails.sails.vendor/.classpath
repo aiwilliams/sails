@@ -13,5 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" sourcepath="src/ant/ant_src.zip" kind="lib" path="lib/ant/ant.jar"/>
 	<classpathentry exported="true" sourcepath="src/junit_src.zip" kind="lib" path="lib/junit.jar"/>
+	<classpathentry exported="true" sourcepath="src/commons-fileupload-1.0-src.zip" kind="lib" path="lib/commons-fileupload-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
