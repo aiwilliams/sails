@@ -79,6 +79,11 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
+	protected String getBuiltinAdaptersPackage() {
+		return delegate.getBuiltinAdaptersPackage();
+	}
+
+	@Override
 	protected String getBuiltinComponentPackage() {
 		return delegate.getBuiltinComponentPackage();
 	}
@@ -92,7 +97,7 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	protected String getBuiltinMixinsPackage() {
 		return delegate.getBuiltinMixinsPackage();
 	}
-
+	
 	@Override
 	protected String getBuitinActionResultProcessorPackage() {
 		return delegate.getBuitinActionResultProcessorPackage();

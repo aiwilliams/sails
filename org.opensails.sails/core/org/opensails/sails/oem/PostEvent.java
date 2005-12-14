@@ -9,13 +9,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.html.Submit;
 
 public class PostEvent extends AbstractEvent {
 	protected static final Pattern XY_COORDINATE_PATTERN = Pattern.compile(".*?\\.[x|y]$");
 	protected static final Pattern XY_COORDINATE_REPLACE = Pattern.compile("\\.[x|y]$");
-	
+
 	public PostEvent(HttpServletRequest req, HttpServletResponse resp) {
 		super(req, resp);
 	}
@@ -42,13 +41,6 @@ public class PostEvent extends AbstractEvent {
 	@Override
 	public IActionResult visit(IActionEventProcessor eventProcessor) {
 		return eventProcessor.process(this);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	protected void containerSet() {
-		super.containerSet();
-		container.register(FormFields.class, new FormFields(req.getParameterMap()));
 	}
 
 	protected String findActionMeta() {

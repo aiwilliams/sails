@@ -44,6 +44,10 @@ public class FormMixin {
 		return "</form>";
 	}
 
+	public FileInput file(String name) {
+		return new FileInput(name);
+	}
+
 	public Hidden hidden(String name) {
 		return new Hidden(name);
 	}
@@ -66,6 +70,10 @@ public class FormMixin {
 
 	public String start() {
 		return "<form method=\"post\">";
+	}
+
+	public Submit submit() {
+		return submit("Submit");
 	}
 
 	public Submit submit(String valueAttribute) {

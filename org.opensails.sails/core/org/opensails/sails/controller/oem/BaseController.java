@@ -10,6 +10,7 @@ import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.model.IModelContext;
@@ -22,16 +23,16 @@ public class BaseController implements IControllerImpl {
 	protected ISailsEvent event;
 	protected IActionResult result;
 
+	public IActionResult getActionResult() {
+		return result;
+	}
+
 	public ScopedContainer getContainer() {
 		return event.getContainer();
 	}
 
 	public IController getController() {
 		return controller;
-	}
-
-	public IActionResult getActionResult() {
-		return result;
 	}
 
 	public void setEventContext(ISailsEvent event, IController controller) {
@@ -55,6 +56,10 @@ public class BaseController implements IControllerImpl {
 
 	protected String[] fields(String name) {
 		return event.getFieldValues(name);
+	}
+
+	protected FileUpload file(String name) {
+		return event.getFileUpload(name);
 	}
 
 	/**
@@ -107,7 +112,7 @@ public class BaseController implements IControllerImpl {
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
 		return setResult(new RedirectActionResult(event, controller, action));
 	}
-	
+
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action, List<?> parameters) {
 		return setResult(new RedirectActionResult(event, controller, action, parameters));
 	}

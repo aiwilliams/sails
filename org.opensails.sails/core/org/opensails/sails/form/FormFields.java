@@ -1,24 +1,35 @@
 package org.opensails.sails.form;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.FieldType;
 
 /**
- * Why? Provides a way for objects that are created within a dependancy
- * injection container to declare their need for the form fields of the current
- * post event. And, since we have it, also provides ability to remove fields -
- * the HttpServletRequest won't allow that.
+ * Why? Provides:
+ * <ul>
+ * <li>a way for objects that are created within a dependancy injection
+ * container to declare their need for the form fields of the current post event</li>
+ * <li>ability to remove fields - the HttpServletRequest won't allow that</li>
+ * <li>a unified interface to reading values from different enctype (like
+ * multipart forms)</li>
+ * </ul>
  * 
  * @see org.opensails.sails.form.HtmlForm
  */
 public class FormFields {
 	public static FormFields quick(Object... objects) {
 		if (objects.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
-		Map<String, String[]> map = new HashMap<String, String[]>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		for (int i = 0; i < objects.length; i += 2) {
 			String key = (String) objects[i];
 			Object value = objects[i + 1];
@@ -28,13 +39,34 @@ public class FormFields {
 		return new FormFields(map);
 	}
 
-	protected Map<String, String[]> backingMap;
+	protected Map<String, Object> backingMap;
 
 	public FormFields() {
-		this(new HashMap<String, String[]>());
+		this(new HashMap<String, Object>());
 	}
 
-	public FormFields(Map<String, String[]> backingMap) {
+	@SuppressWarnings("unchecked")
+	public FormFields(HttpServletRequest request) {
+		if (!DiskFileUpload.isMultipartContent(request)) {
+			backingMap = new HashMap<String, Object>(request.getParameterMap());
+			return;
+		}
+
+		backingMap = new HashMap<String, Object>();
+		DiskFileUpload upload = new DiskFileUpload();
+		try {
+			List<FileItem> list = upload.parseRequest(request);
+			for (FileItem item : list) {
+				String fieldName = item.getFieldName();
+				if (item.isFormField()) addFieldValue(fieldName, item.getString());
+				else backingMap.put(fieldName, new FileUpload(item));
+			}
+		} catch (FileUploadException e) {
+			throw new SailsException(e);
+		}
+	}
+
+	private FormFields(Map<String, Object> backingMap) {
 		this.backingMap = backingMap;
 	}
 
@@ -48,6 +80,14 @@ public class FormFields {
 
 	public Set fieldNamesSet() {
 		return backingMap.keySet();
+	}
+
+	public FileUpload file(String name) {
+		return (FileUpload) backingMap.get(name);
+	}
+
+	public boolean isEmpty() {
+		return backingMap.isEmpty();
 	}
 
 	/**
@@ -84,6 +124,7 @@ public class FormFields {
 	 */
 	public String value(String fieldName) {
 		Object value = backingMap.get(fieldName);
+		if (value == null) return null;
 		if (value.getClass().isArray()) {
 			String[] values = (String[]) value;
 			if (values.length == 0) return nullValue((String) null);
@@ -97,6 +138,8 @@ public class FormFields {
 		switch (fieldType) {
 		case STRING:
 			return value(fieldName);
+		case FILE_UPLOAD:
+			return file(fieldName);
 		default:
 			return values(fieldName);
 		}
@@ -110,8 +153,10 @@ public class FormFields {
 	 * @return a String[] for fieldName
 	 */
 	public String[] values(String fieldName) {
-		String[] values = null;
 		Object value = backingMap.get(fieldName);
+		if (value == null) return null;
+
+		String[] values = null;
 		if (value.getClass().isArray()) {
 			values = (String[]) value;
 			if (values.length == 0) return nullValue((String[]) null);
@@ -139,5 +184,16 @@ public class FormFields {
 	 */
 	protected String[] nullValue(String[] nullOrZeroLengthStringArray) {
 		return null;
+	}
+
+	private void addFieldValue(String fieldName, String string) {
+		String[] existing = (String[]) backingMap.get(fieldName);
+		if (existing == null) existing = new String[] { string };
+		else {
+			String[] expanded = new String[existing.length + 1];
+			System.arraycopy(existing, 0, expanded, 0, existing.length);
+			existing = expanded;
+		}
+		backingMap.put(fieldName, existing);
 	}
 }

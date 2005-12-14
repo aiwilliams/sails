@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +18,8 @@ import org.opensails.sails.ISailsEventListener;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.form.FileUpload;
+import org.opensails.sails.form.FormFields;
 import org.opensails.sails.url.EventUrl;
 import org.opensails.sails.url.IEventUrl;
 import org.opensails.sails.url.IUrl;
@@ -28,11 +29,12 @@ import org.opensails.sails.url.UrlType;
 public abstract class AbstractEvent implements ILifecycleEvent {
 	protected ISailsApplication application;
 	protected RequestContainer container;
+	protected FormFields fields;
 	protected final HttpServletRequest req;
 	protected final HttpServletResponse response;
 	protected OutputStream responseOutputStream;
-	protected PrintWriter responseWriter;
 
+	protected PrintWriter responseWriter;
 	protected EventUrl url;
 
 	public AbstractEvent(ISailsApplication application, ScopedContainer parentContainer, HttpServletRequest req, HttpServletResponse resp) {
@@ -45,6 +47,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected AbstractEvent(HttpServletRequest req, HttpServletResponse resp) {
 		this.req = new EventServletRequest(this, req);
 		this.response = resp;
+		this.fields = new FormFields(req);
 	}
 
 	public void beginDispatch() {
@@ -87,11 +90,15 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	}
 
 	public String getFieldValue(String name) {
-		return req.getParameter(name);
+		return fields.value(name);
+	}
+	
+	public String[] getFieldValues(String name) {
+		return fields.values(name);
 	}
 
-	public String[] getFieldValues(String name) {
-		return req.getParameterValues(name);
+	public FileUpload getFileUpload(String name) {
+		return fields.file(name);
 	}
 
 	public HttpServletRequest getRequest() {
@@ -198,10 +205,9 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	 */
 	@SuppressWarnings("unchecked")
 	protected String[] getFieldNamesPrefixed(String prefix) {
-		Map<String, Object> parameterMap = req.getParameterMap();
-		if (parameterMap.isEmpty()) return ArrayUtils.EMPTY_STRING_ARRAY;
+		if (fields.isEmpty()) return ArrayUtils.EMPTY_STRING_ARRAY;
 		List<String> fieldNames = new ArrayList<String>(5);
-		for (String key : parameterMap.keySet())
+		for (String key : fields.fieldNames())
 			if (key.startsWith(prefix)) fieldNames.add(key.substring(prefix.length()));
 		return (String[]) fieldNames.toArray(new String[fieldNames.size()]);
 	}
@@ -209,6 +215,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected void initialize(ScopedContainer parentContainer) {
 		this.url = new EventUrl(req);
 		this.container = createContainer(parentContainer);
+		this.container.register(FormFields.class, fields);
 		containerSet();
 	}
 }

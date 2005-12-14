@@ -166,8 +166,12 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return ClassHelper.getPackage(getClass());
 	}
 
+	protected String getBuiltinAdaptersPackage() {
+		return ClassHelper.getPackage(Sails.class) + ".adapters";
+	}
+
 	protected String getBuiltinComponentPackage() {
-		return getApplicationRootPackage() + ".components";
+		return ClassHelper.getPackage(Sails.class) + ".components";
 	}
 
 	protected String getBuiltinControllerPackage() {
@@ -208,6 +212,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		AdapterResolver resolver = new AdapterResolver();
+		resolver.push(new ComponentPackage<IAdapter>(getBuiltinAdaptersPackage(), "Adapter"));
 		resolver.push(new ComponentPackage<IAdapter>(getDefaultAdaptersPackage(), "Adapter"));
 		container.register(IAdapterResolver.class, resolver);
 		return resolver;

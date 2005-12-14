@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.configuration.Configuration;
+import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.url.IEventUrl;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.IUrlResolver;
@@ -68,6 +69,12 @@ public interface ISailsEvent {
 	 * @return the values for the request parameter with name
 	 */
 	String[] getFieldValues(String name);
+
+	/**
+	 * @param name
+	 * @return the FileUpload for the given name, null if it's not there
+	 */
+	FileUpload getFileUpload(String name);
 
 	HttpServletRequest getRequest();
 
