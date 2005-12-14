@@ -6,6 +6,7 @@ import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FormElement;
+import org.opensails.sails.form.html.Hidden;
 import org.opensails.sails.form.html.Label;
 import org.opensails.sails.form.html.Radio;
 import org.opensails.sails.form.html.Select;
@@ -41,6 +42,10 @@ public class FormMixin {
 
 	public String end() {
 		return "</form>";
+	}
+
+	public Hidden hidden(String name) {
+		return new Hidden(name);
 	}
 
 	public String idFor(String name, String value) {

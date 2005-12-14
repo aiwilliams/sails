@@ -78,6 +78,14 @@ public class Page {
 		assertPageExpectation(message + " Expected " + url() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
 	}
 
+	public void assertRenders() throws AssertionFailedError {
+		try {
+			source();
+		} catch (Throwable notExpected) {
+			Assert.fail(String.format("Page did not render successfully\n%s", notExpected.getMessage()));
+		}
+	}
+
 	public void assertTemplate(String expected) {
 		TemplateActionResult result = container().instance(TemplateActionResult.class);
 		if (result == null) {
@@ -186,13 +194,13 @@ public class Page {
 		public <T> void assertContainsOnly(T[] expected) {
 			CollectionAssert.containsOnly(expected, (Collection<T>) value);
 		}
-		
-		public void assertExists() {
-			Assert.assertNotNull(value);
-		}
 
 		public void assertEquals(Object expectedValue) {
 			Assert.assertEquals(expectedValue, value);
+		}
+
+		public void assertExists() {
+			Assert.assertNotNull(value);
 		}
 	}
 }

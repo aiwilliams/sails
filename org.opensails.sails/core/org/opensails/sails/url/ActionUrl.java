@@ -2,6 +2,7 @@ package org.opensails.sails.url;
 
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.adapter.IAdapter;
@@ -48,7 +49,7 @@ public class ActionUrl extends AbstractUrl<ActionUrl> {
 	}
 
 	public void setParameters(List<?> parameters) {
-		setParameters(parameters.toArray());
+		setParameters(parameters == null ? ArrayUtils.EMPTY_OBJECT_ARRAY : parameters.toArray());
 	}
 
 	public void setParameters(Object... args) {
