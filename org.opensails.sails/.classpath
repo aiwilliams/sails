@@ -7,7 +7,7 @@
 	<classpathentry kind="src" path="test/fixture"/>
 	<classpathentry kind="src" path="tester"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.rigging"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.rigging"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.sails.vendor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.viento"/>
 	<classpathentry output="generators/tasks" kind="src" path="generators/tasks"/>
