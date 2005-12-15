@@ -1,14 +1,12 @@
 package org.opensails.sails.oem;
 
-import org.apache.commons.configuration.CompositeConfiguration;
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.IConfigurableSailsApplication;
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.RequestContainer;
-import org.opensails.sails.template.MixinResolver;
-import org.opensails.sails.url.UrlResolver;
-import org.opensails.sails.util.ClassHelper;
-import org.opensails.viento.IBinding;
+import org.apache.commons.configuration.*;
+import org.opensails.rigging.*;
+import org.opensails.sails.*;
+import org.opensails.sails.template.*;
+import org.opensails.sails.url.*;
+import org.opensails.sails.util.*;
+import org.opensails.viento.*;
 
 public class DelegatingConfigurator extends BaseConfigurator {
 	protected BaseConfigurator delegate;
@@ -34,13 +32,14 @@ public class DelegatingConfigurator extends BaseConfigurator {
 
 	@Override
 	public void configure(IConfigurableSailsApplication application) {
+		// Intentional super call. The root configure causes all methods to be
+		// called on this.
 		super.configure(application);
 	}
 
 	@Override
 	public void configure(ISailsEvent event, IBinding binding) {
-		// TODO Auto-generated method stub
-		super.configure(event, binding);
+		delegate.configure(event, binding);
 	}
 
 	@Override
@@ -94,10 +93,10 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	protected String getBuiltinMixinsPackage() {
-		return delegate.getBuiltinMixinsPackage();
+	protected String getBuiltinMixinPackage() {
+		return delegate.getBuiltinMixinPackage();
 	}
-	
+
 	@Override
 	protected String getBuitinActionResultProcessorPackage() {
 		return delegate.getBuitinActionResultProcessorPackage();
@@ -110,8 +109,12 @@ public class DelegatingConfigurator extends BaseConfigurator {
 
 	@Override
 	protected String getDefaultAdaptersPackage() {
-		// TODO Auto-generated method stub
-		return super.getDefaultAdaptersPackage();
+		return delegate.getDefaultAdaptersPackage();
+	}
+
+	@Override
+	protected String getDefaultComponentPackage() {
+		return delegate.getDefaultComponentPackage();
 	}
 
 	@Override
@@ -120,8 +123,8 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	}
 
 	@Override
-	protected String getDefaultMixinsPackage() {
-		return delegate.getDefaultMixinsPackage();
+	protected String getDefaultMixinPackage() {
+		return delegate.getDefaultMixinPackage();
 	}
 
 	@Override

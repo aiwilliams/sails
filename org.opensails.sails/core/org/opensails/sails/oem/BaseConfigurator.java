@@ -178,7 +178,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		return ClassHelper.getPackage(Sails.class) + ".controllers";
 	}
 
-	protected String getBuiltinMixinsPackage() {
+	protected String getBuiltinMixinPackage() {
 		return ClassHelper.getPackage(Sails.class) + ".mixins";
 	}
 
@@ -197,8 +197,12 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	protected String getDefaultControllerPackage() {
 		return getApplicationRootPackage() + ".controllers";
 	}
+	
+	protected String getDefaultComponentPackage() {
+		return getApplicationRootPackage() + ".components";
+	}
 
-	protected String getDefaultMixinsPackage() {
+	protected String getDefaultMixinPackage() {
 		return getApplicationRootPackage() + ".mixins";
 	}
 
@@ -254,6 +258,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		ControllerResolver resolver = (ControllerResolver) container.instance(IControllerResolver.class, ControllerResolver.class);
 		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinComponentPackage(), "Component"));
+		resolver.push(new ComponentPackage<IControllerImpl>(getDefaultComponentPackage(), "Component"));
 		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinControllerPackage(), "Controller"));
 		resolver.push(new ComponentPackage<IControllerImpl>(getDefaultControllerPackage(), "Controller"));
 		return resolver;
@@ -267,8 +272,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	protected MixinResolver installMixinResolver(ISailsEvent event, RequestContainer eventContainer) {
 		MixinResolver resolver = new MixinResolver(event);
-		resolver.push(new ComponentPackage(getBuiltinMixinsPackage(), "Mixin"));
-		resolver.push(new ComponentPackage(getDefaultMixinsPackage(), "Mixin"));
+		resolver.push(new ComponentPackage(getBuiltinMixinPackage(), "Mixin"));
+		resolver.push(new ComponentPackage(getDefaultMixinPackage(), "Mixin"));
 		eventContainer.register(IMixinResolver.class, resolver);
 		return resolver;
 	}

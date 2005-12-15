@@ -1,28 +1,23 @@
 package org.opensails.sails.tester;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.Collection;
+import java.io.*;
+import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
+import junit.framework.*;
 
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.RequestContainer;
-import org.opensails.sails.SailsException;
-import org.opensails.sails.controller.oem.TemplateActionResult;
-import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.http.ContentType;
-import org.opensails.sails.oem.Flash;
-import org.opensails.sails.tester.form.Form;
-import org.opensails.sails.tester.html.FieldSet;
-import org.opensails.sails.tester.oem.TestingBinding;
-import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
-import org.opensails.sails.tester.util.CollectionAssert;
-import org.opensails.sails.util.RegexHelper;
+import org.opensails.sails.*;
+import org.opensails.sails.controller.oem.*;
+import org.opensails.sails.form.*;
+import org.opensails.sails.http.*;
+import org.opensails.sails.oem.*;
+import org.opensails.sails.tester.form.*;
+import org.opensails.sails.tester.html.*;
+import org.opensails.sails.tester.oem.*;
+import org.opensails.sails.tester.servletapi.*;
+import org.opensails.sails.tester.util.*;
+import org.opensails.sails.util.*;
 
 public class Page {
 	protected final ISailsEvent event;
@@ -82,7 +77,14 @@ public class Page {
 		try {
 			source();
 		} catch (Throwable notExpected) {
-			Assert.fail(String.format("Page did not render successfully\n%s", notExpected.getMessage()));
+			StringBuilder message = new StringBuilder();
+			Throwable cause = notExpected;
+			do {
+				message.append(cause);
+				cause = cause.getCause();
+				if (cause != null) message.append(" caused by\n");
+			} while (cause != null);
+			Assert.fail(String.format("Page did not render successfully\n%s", message));
 		}
 	}
 
