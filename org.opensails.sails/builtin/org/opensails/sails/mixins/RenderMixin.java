@@ -31,7 +31,7 @@ public class RenderMixin implements IMixinMethod {
 		@SuppressWarnings("unchecked")
 		public String toString() {
 			IBinding partialLocalBinding = renderer.createBinding(binding);
-			if (templateIdentifier.contains("/")) templateIdentifier = templateIdentifier.replaceFirst("/", "/_");
+			if (templateIdentifier.contains("/")) templateIdentifier = templateIdentifier.replaceFirst("/([^/]*)$", "/_$1");
 			else templateIdentifier = event.getControllerName() + "/_" + templateIdentifier;
 			return renderer.render(templateIdentifier, partialLocalBinding).toString();
 		}

@@ -37,7 +37,7 @@ public class StackTrace extends AbstractHtmlElement<StackTrace> {
 
 		generator.endTag("div");
 
-		if (throwable.getCause() != null) {
+		if (throwable.getCause() != null && throwable.getCause() != throwable) {
 			generator.openTag("div").attribute("class", "caused-by").closeTag().write("Caused by:").endTag("div");
 			printStackTrace(throwable.getCause(), generator);
 		}

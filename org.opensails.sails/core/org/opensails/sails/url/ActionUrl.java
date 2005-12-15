@@ -55,6 +55,13 @@ public class ActionUrl extends AbstractUrl<ActionUrl> {
 	public void setParameters(Object... args) {
 		this.unadaptedParameters = args;
 	}
+	
+	public void appendParameter(Object parameter) {
+		Object[] newParameters = new Object[unadaptedParameters.length + 1];
+		System.arraycopy(unadaptedParameters, 0, newParameters, 0, unadaptedParameters.length);
+		newParameters[unadaptedParameters.length] = parameter;
+		unadaptedParameters = newParameters;
+	}
 
 	// TODO: Make this more robust - like what about things adapted to String[]
 	protected String adapt(Object parameter) {

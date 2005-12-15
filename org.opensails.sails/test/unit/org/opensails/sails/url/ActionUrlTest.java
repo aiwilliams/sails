@@ -16,4 +16,11 @@ public class ActionUrlTest extends TestCase {
 		ActionUrl url = new ActionUrl(SailsEventFixture.sham());
 		url.setParameters((Object[]) null);
 	}
+	
+	public void testAppendParameter() {
+		ActionUrl url = new ActionUrl(SailsEventFixture.sham());
+		url.setParameters("one", "two");
+		url.appendParameter("three");
+		assertEquals("/one/two/three", url.getParametersString());
+	}
 }

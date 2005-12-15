@@ -41,8 +41,8 @@ public class RenderMixinTest extends TestCase {
 		assertNotNull(bindingGiven);
 		assertSame("Templates have the same binding", binding, bindingGiven);
 
-		render.invoke().partial("myController/templateName").toString();
-		assertEquals("myController/_templateName", templateIdentifierGiven);
+		render.invoke().partial("components/myComponent/templateName").toString();
+		assertEquals("components/myComponent/_templateName", templateIdentifierGiven);
 		assertNotNull(bindingGiven);
 		assertSame("Partials have a local binding", createdBinding, bindingGiven);
 	}
