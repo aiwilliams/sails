@@ -1,4 +1,0 @@
-modified=2005/09/22
-hibernate3.jar=3.1beta3
-hibernate-annotations.jar=3.1beta5
-ejb3-persistence.jar=draft preview

@@ -4,9 +4,15 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails"/>
 	<classpathentry kind="src" path="test/unit"/>
-	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
-	<classpathentry kind="lib" path="vendor/jboss/lib/ejb3-persistence.jar"/>
-	<classpathentry kind="lib" path="vendor/jboss/lib/hibernate3.jar"/>
-	<classpathentry sourcepath="vendor/jboss/src/hibernate-annotations_src.zip" kind="lib" path="vendor/jboss/lib/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="vendor/optional/jdbc2_0-stdext.jar"/>
+	<classpathentry kind="lib" path="vendor/required/antlr-2.7.6rc1.jar"/>
+	<classpathentry kind="lib" path="vendor/optional/jta.jar"/>
+	<classpathentry kind="lib" path="vendor/required/cglib-nodep-2.1_3.jar"/>
+	<classpathentry kind="lib" path="vendor/required/dom4j-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="vendor/required/ejb3-persistence.jar"/>
+	<classpathentry exported="true" sourcepath="vendor/src/hibernate3.zip" kind="lib" path="vendor/required/hibernate3.jar"/>
+	<classpathentry exported="true" sourcepath="vendor/src/hibernate-annotations.zip" kind="lib" path="vendor/required/hibernate-annotations.jar"/>
+	<classpathentry sourcepath="vendor/src/hsqldb_1_8_0_2.zip" kind="lib" path="vendor/optional/hsqldb.jar"/>
+	<classpathentry kind="lib" path="vendor/optional/ehcache-1.1.jar"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>
