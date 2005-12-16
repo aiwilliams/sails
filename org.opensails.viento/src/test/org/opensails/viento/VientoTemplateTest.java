@@ -78,6 +78,7 @@ public class VientoTemplateTest extends TestCase {
 	public void testSymbol() throws Exception {
 		binding.put("first", "aaaabbbbcccc");
 		verifyRender("stuff$first.replaceAll('b+', d)\nstuff", "stuffaaaadcccc\nstuff");
+		verifyRender("stuff$first.replaceAll('b+', :d)\nstuff", "stuffaaaadcccc\nstuff");
 	}
 
 	public void testList() throws Exception {

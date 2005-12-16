@@ -8,7 +8,10 @@ import junit.framework.TestCase;
 
 public class PerformanceTest extends TestCase {
 
-	public void testPerformance() {
+	public void testNoWarnings() {
+	}
+	
+	public void OFFtestPerformance() {
 		Binding binding = new Binding();
 		List<String> list = new ArrayList<String>();
 		for (int i = 0; i < 10000; i++)

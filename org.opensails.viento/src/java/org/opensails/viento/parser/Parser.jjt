@@ -246,6 +246,7 @@ void Null() : {}
 
 void Symbol() : {Token t;}
 {
+	[<COLON>]
 	t = <SYMBOL>
 	{ jjtThis.setValue(t.image); }
 }
