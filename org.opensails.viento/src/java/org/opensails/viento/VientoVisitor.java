@@ -117,12 +117,12 @@ public class VientoVisitor extends AbstractParserVisitor {
 		if (node instanceof ASTNot)
 			return !nullOrFalse(evaluate((ASTStatement)node.jjtGetChild(0)));
 		if (node instanceof ASTStringBlock)
-			return evaluateBlock((ASTBody) node.jjtGetChild(0)).evaluate().replace("\\\"", "\"");
+			return unescape(evaluateBlock((ASTBody) node.jjtGetChild(0)).evaluate());
 		return null;
 	}
 
 	protected String unescape(String value) {
-		return value.replace("\\'", "'").replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t");
+		return value.replace("\\'", "'").replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\\"", "\"");
 	}
 
 	protected boolean evaluate(ASTBooleanExpression expression) {
