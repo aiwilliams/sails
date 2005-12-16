@@ -1,5 +1,7 @@
 package org.opensails.sails.mixins;
 
+import java.util.Map;
+
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.template.IMixinMethod;
 import org.opensails.sails.template.ITemplateRenderer;
@@ -22,9 +24,15 @@ public class RenderMixin implements IMixinMethod {
 
 	public class Partial {
 		protected String templateIdentifier;
+		private Map<String, Object> stuff;
 
 		public Partial(String templateIdentifier) {
 			this.templateIdentifier = templateIdentifier;
+		}
+		
+		public Partial expose(Map<String, Object> stuff) {
+			this.stuff = stuff;
+			return this;
 		}
 
 		@Override
@@ -33,6 +41,8 @@ public class RenderMixin implements IMixinMethod {
 			IBinding partialLocalBinding = renderer.createBinding(binding);
 			if (templateIdentifier.contains("/")) templateIdentifier = templateIdentifier.replaceFirst("/([^/]*)$", "/_$1");
 			else templateIdentifier = event.getProcessorName() + "/_" + templateIdentifier;
+			if (stuff != null)
+				partialLocalBinding.putAll(stuff);
 			return renderer.render(templateIdentifier, partialLocalBinding).toString();
 		}
 

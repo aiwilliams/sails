@@ -1,6 +1,7 @@
 package org.opensails.sails.processors;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.AssertionFailedError;
@@ -46,6 +47,8 @@ public class PartialActionResultProcessorTest extends TestCase {
 		public void put(String key, Object object) {}
 
 		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
+
+		public void putAll(Map<String, Object> map) {}
 	}
 
 	class ShamTemplateRenderer implements ITemplateRenderer<ShamTemplateBinding> {

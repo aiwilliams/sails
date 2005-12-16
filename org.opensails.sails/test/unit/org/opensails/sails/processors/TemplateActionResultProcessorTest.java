@@ -3,6 +3,7 @@ package org.opensails.sails.processors;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.AssertionFailedError;
@@ -60,6 +61,8 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		public void put(String key, Object object) {}
 
 		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
+		
+		public void putAll(Map<String, Object> map) {}
 	}
 
 	class ShamTemplateRenderer implements ITemplateRenderer<ShamTemplateBinding> {
