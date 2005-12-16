@@ -11,7 +11,7 @@ public class ExceptionEventTest extends TestCase {
 	public void testInitialize() throws Exception {
 		ISailsEvent originatingEvent = SailsEventFixture.actionGet("controller", "action");
 		ExceptionEvent event = new ExceptionEvent(originatingEvent, new RuntimeException());
-		assertEquals("error", event.getControllerName());
+		assertEquals("error", event.getProcessorName());
 		assertEquals("exception", event.getActionName());
 		assertNotNull(event.getApplication());
 		assertSame(originatingEvent.getApplication(), event.getApplication());

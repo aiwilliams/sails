@@ -13,6 +13,6 @@ public class PartialActionResult extends TemplateActionResult {
 
 	@Override
 	protected void initializeIdentifier(ISailsEvent event, String identifier) {
-		this.identifier = String.format("%s/_%s", event.getControllerName(), identifier);
+		this.identifier = String.format("%s/_%s", event.getProcessorName(), identifier);
 	}
 }

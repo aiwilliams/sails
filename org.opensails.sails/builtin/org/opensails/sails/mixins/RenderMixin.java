@@ -32,7 +32,7 @@ public class RenderMixin implements IMixinMethod {
 		public String toString() {
 			IBinding partialLocalBinding = renderer.createBinding(binding);
 			if (templateIdentifier.contains("/")) templateIdentifier = templateIdentifier.replaceFirst("/([^/]*)$", "/_$1");
-			else templateIdentifier = event.getControllerName() + "/_" + templateIdentifier;
+			else templateIdentifier = event.getProcessorName() + "/_" + templateIdentifier;
 			return renderer.render(templateIdentifier, partialLocalBinding).toString();
 		}
 
@@ -52,7 +52,7 @@ public class RenderMixin implements IMixinMethod {
 		@Override
 		@SuppressWarnings("unchecked")
 		public String toString() {
-			if (!templateIdentifier.contains("/")) templateIdentifier = event.getControllerName() + "/" + templateIdentifier;
+			if (!templateIdentifier.contains("/")) templateIdentifier = event.getProcessorName() + "/" + templateIdentifier;
 			return renderer.render(templateIdentifier, binding).toString();
 		}
 	}

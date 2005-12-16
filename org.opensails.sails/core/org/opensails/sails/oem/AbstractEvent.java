@@ -81,7 +81,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return container;
 	}
 
-	public String getControllerName() {
+	public String getProcessorName() {
 		return url.getController();
 	}
 

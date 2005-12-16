@@ -35,7 +35,7 @@ public class UrlforMixin {
 	 * @see #action(String, String)
 	 */
 	public ActionUrl action(String action) {
-		return action(event.getControllerName(), action);
+		return action(event.getProcessorName(), action);
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class UrlforMixin {
 	 *        action
 	 */
 	public ActionUrl action(String action, List<?> parameters) {
-		return action(event.getControllerName(), action, parameters);
+		return action(event.getProcessorName(), action, parameters);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class UrlforMixin {
 	}
 
 	public ActionUrl controller() {
-		return controller(event.getControllerName());
+		return controller(event.getProcessorName());
 	}
 
 	/**

@@ -15,7 +15,7 @@ public class TemplateActionResultTest extends TestCase {
 	public void testSetTemplate() throws Exception {
 		ShamEvent event = SailsEventFixture.sham();
 		TemplateActionResult result = new TemplateActionResult(event);
-		assertEquals(String.format("%s/%s", event.getControllerName(), event.getActionName()), result.getIdentifier());
+		assertEquals(String.format("%s/%s", event.getProcessorName(), event.getActionName()), result.getIdentifier());
 
 		result.setTemplate("test/someaction");
 		assertEquals(String.format("%s/%s", "test", "someaction"), result.getIdentifier());

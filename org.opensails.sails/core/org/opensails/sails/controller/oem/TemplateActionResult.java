@@ -72,6 +72,6 @@ public class TemplateActionResult extends AbstractActionResult {
 
 	protected void initializeIdentifier(ISailsEvent event, String identifier) {
 		if (CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) setTemplate(identifier);
-		setTemplate(String.format("%s/%s", event.getControllerName(), identifier));
+		setTemplate(String.format("%s/%s", event.getProcessorName(), identifier));
 	}
 }

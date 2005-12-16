@@ -138,7 +138,7 @@ public class BaseController implements IControllerImpl {
 	protected TemplateActionResult renderTemplate(String template) {
 		TemplateActionResult result = getTemplateResult();
 		// TODO: Forein behavior - move into TemplateActionResult
-		result.setTemplate(String.format("%s/%s", event.getControllerName(), template));
+		result.setTemplate(String.format("%s/%s", event.getProcessorName(), template));
 		return result;
 	}
 

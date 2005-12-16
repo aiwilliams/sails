@@ -60,7 +60,7 @@ public class Dispatcher {
 
 	@SuppressWarnings("unchecked")
 	protected void process(ILifecycleEvent event) {
-		IController controller = controllerResolver.resolve(event.getControllerName());
+		IController controller = controllerResolver.resolve(event.getProcessorName());
 		// delegate to event so that it calls most specific process
 		IActionResult result = event.visit(controller);
 		IActionResultProcessor processor = processorResolver.resolve(result);

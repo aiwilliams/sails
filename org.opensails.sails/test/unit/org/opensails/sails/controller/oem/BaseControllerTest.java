@@ -31,6 +31,6 @@ public class BaseControllerTest extends TestCase {
 		GetEvent actionGet = SailsEventFixture.actionGet();
 		controller.setEventContext(actionGet, null);
 		TemplateActionResult result = controller.renderTemplate("justTheActionName");
-		assertEquals(String.format("%s/%s", actionGet.getControllerName(), "justTheActionName"), result.getIdentifier());
+		assertEquals(String.format("%s/%s", actionGet.getProcessorName(), "justTheActionName"), result.getIdentifier());
 	}
 }

@@ -33,7 +33,7 @@ public class ParameterMismatchException extends SailsException {
     }
 
     public String getController() {
-        return event.getControllerName();
+        return event.getProcessorName();
     }
 
     public String getMessage() {

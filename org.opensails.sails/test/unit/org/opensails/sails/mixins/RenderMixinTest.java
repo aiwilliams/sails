@@ -37,7 +37,7 @@ public class RenderMixinTest extends TestCase {
 		});
 
 		render.invoke("templateName").toString();
-		assertEquals(event.getControllerName() + "/templateName", templateIdentifierGiven);
+		assertEquals(event.getProcessorName() + "/templateName", templateIdentifierGiven);
 		assertNotNull(bindingGiven);
 		assertSame("Templates have the same binding", binding, bindingGiven);
 

@@ -37,7 +37,7 @@ public class ActionUrl extends AbstractUrl<ActionUrl> {
 	}
 
 	public String getControllerName() {
-		return controller == null ? event.getControllerName() : controller;
+		return controller == null ? event.getProcessorName() : controller;
 	}
 
 	public void setAction(String action) {

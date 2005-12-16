@@ -41,9 +41,9 @@ public interface ISailsEvent {
 	RequestContainer getContainer();
 
 	/**
-	 * @return the name of the controller this event is bound for
+	 * @return the name of the IActionEventProcessor this event is bound for
 	 */
-	String getControllerName();
+	String getProcessorName();
 
 	IEventUrl getEventUrl();
 
