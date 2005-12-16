@@ -21,6 +21,7 @@ import org.opensails.viento.parser.ASTNumber;
 import org.opensails.viento.parser.ASTOr;
 import org.opensails.viento.parser.ASTStatement;
 import org.opensails.viento.parser.ASTString;
+import org.opensails.viento.parser.ASTStringBlock;
 import org.opensails.viento.parser.ASTSymbol;
 import org.opensails.viento.parser.ASTText;
 import org.opensails.viento.parser.Node;
@@ -87,7 +88,7 @@ public class VientoVisitor extends AbstractParserVisitor {
 		return args;
 	}
 
-	protected Object evaluateBlock(ASTBody body) {
+	protected Block evaluateBlock(ASTBody body) {
 		return new Block(binding, body);
 	}
 
@@ -115,6 +116,8 @@ public class VientoVisitor extends AbstractParserVisitor {
 			return evaluate((ASTBooleanExpression)node.jjtGetChild(0)) || evaluate((ASTBooleanExpression)node.jjtGetChild(1));
 		if (node instanceof ASTNot)
 			return !nullOrFalse(evaluate((ASTStatement)node.jjtGetChild(0)));
+		if (node instanceof ASTStringBlock)
+			return evaluateBlock((ASTBody) node.jjtGetChild(0)).evaluate().replace("\\\"", "\"");
 		return null;
 	}
 

@@ -106,6 +106,12 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("stuff$tool.timesTwo (3) [{$tool.timesTwo(34)}]stuff", "stuff6 [{68}]stuff");
 	}
 	
+	public void testStringBlock() throws Exception {
+		binding.put("tool", new Tool());
+		verifyRender("stuff$tool.stringTwice(\"{$tool.timesTwo(34)}\")stuff", "stuff{68}{68}stuff");
+		verifyRender("stuff$tool.stringTwice(\"hehe\\\"{$tool.timesTwo(34)}\")stuff", "stuffhehe\"{68}hehe\"{68}stuff");
+	}
+	
 	public void testQuickBlock() throws Exception {
 		binding.put("tool", new Tool());
 		verifyRender("stuff$tool.twice>[block]\nstuff", "stuff[block][block]\nstuff");
@@ -227,6 +233,10 @@ public class VientoTemplateTest extends TestCase {
 
 		public String twice(Block block) {
 			return block.evaluate() + block.evaluate();
+		}
+		
+		public String stringTwice(String string) {
+			return string + string;
 		}
 		
 		public String loop(int times, Block block) {

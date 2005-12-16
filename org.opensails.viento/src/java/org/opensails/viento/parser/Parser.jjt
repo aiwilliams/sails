@@ -61,11 +61,15 @@ TOKEN : {
 	<TEXT_IN_QUICK_BLOCK: (~["$", "#", "\n"])+ >
 }
 
-<DEFAULT, IN_BLOCK, IN_QUICK_BLOCK> TOKEN : {
+<STRING_BLOCK> TOKEN : {
+	<TEXT_IN_STRING_BLOCK: (~["$", "#", "\"", "\n"] | "\\\"")+ >
+}
+
+<DEFAULT, IN_BLOCK, IN_QUICK_BLOCK, STRING_BLOCK> TOKEN : {
 	<HASH: "#">
 }
 
-<DEFAULT, EXPRESSION, IN_BLOCK, IN_QUICK_BLOCK> TOKEN : {
+<DEFAULT, EXPRESSION, IN_BLOCK, IN_QUICK_BLOCK, STRING_BLOCK> TOKEN : {
 	<DOLLAR: "$" > {pushState(STATEMENT);}
 }
 
@@ -117,6 +121,7 @@ TOKEN : {
 |	<BOOLEAN: (<TRUE>|<FALSE>)>
 |	<NULL: "null">
 |	<OPEN_SQUOTE: "'"> {pushState(STRING_LITERAL);}
+|	<OPEN_DQUOTE: "\""> {pushState(STRING_BLOCK);}
 |	<LBRACKET: "[">
 |	<RBRACKET: "]">
 |	<MAP_LBRACE: "{">
@@ -131,6 +136,10 @@ TOKEN : {
 <STRING_LITERAL> TOKEN : {
 	<STRING: ((~["'"]) | ("\\'"))*>
 |	<CLOSE_SQUOTE: "'"> {popState();}
+}
+
+<STRING_BLOCK> TOKEN : {
+	<CLOSE_DQUOTE: "\""> {popState();}
 }
 
 <IN_BLOCK> TOKEN : {
@@ -158,7 +167,7 @@ void Body() : {}
 
 void Text() : { Token token; }
 {
-	((token = <TEXT>) | (token = <TEXT_IN_BLOCK>) | (token = <TEXT_IN_QUICK_BLOCK>) | (token = <HASH>) | (token = <TEXT_RBRACKET>) | (token = <DOLLAR>))
+	((token = <TEXT>) | (token = <TEXT_IN_BLOCK>) | (token = <TEXT_IN_QUICK_BLOCK>) | (token = <HASH>) | (token = <TEXT_RBRACKET>) | (token = <DOLLAR>) | (token = <TEXT_IN_STRING_BLOCK>))
 
 	{ jjtThis.setContents(token.image); }
 }
@@ -202,6 +211,7 @@ void Expression() : {}
 |	Number()
 |	Boolean()
 |	Null()
+|	StringBlock()
 //|	Float()
 //|	Enum()
 }
@@ -275,4 +285,9 @@ void MapEntry() : {}
 void Block() : {}
 {
 	(<BEGIN_BLOCK>|<BEGIN_QUICK_BLOCK>) Body() (<END_BLOCK>|<END_QUICK_BLOCK>)
+}
+
+void StringBlock() : {}
+{
+	<OPEN_DQUOTE> Body() <CLOSE_DQUOTE>
 }

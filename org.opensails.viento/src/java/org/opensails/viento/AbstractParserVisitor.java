@@ -18,6 +18,7 @@ import org.opensails.viento.parser.ASTNumber;
 import org.opensails.viento.parser.ASTOr;
 import org.opensails.viento.parser.ASTStatement;
 import org.opensails.viento.parser.ASTString;
+import org.opensails.viento.parser.ASTStringBlock;
 import org.opensails.viento.parser.ASTSymbol;
 import org.opensails.viento.parser.ASTTemplate;
 import org.opensails.viento.parser.ASTText;
@@ -90,6 +91,9 @@ public class AbstractParserVisitor implements ParserVisitor {
     }
 
     public void visit(ASTBooleanExpression node) {
+    }
+    
+    public void visit(ASTStringBlock node) {
     }
 
 	public Object visit(SimpleNode node, Object data) {
@@ -198,6 +202,11 @@ public class AbstractParserVisitor implements ParserVisitor {
 	}
 
 	public Object visit(ASTBooleanExpression node, Object data) {
+		visit(node);
+		return data;
+	}
+	
+	public Object visit(ASTStringBlock node, Object data) {
 		visit(node);
 		return data;
 	}
