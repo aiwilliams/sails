@@ -31,7 +31,7 @@ public class BaseController implements IControllerImpl {
 		return event.getContainer();
 	}
 
-	public IController getController() {
+	public IController getEventProcessor() {
 		return controller;
 	}
 

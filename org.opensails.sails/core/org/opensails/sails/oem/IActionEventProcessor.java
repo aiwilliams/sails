@@ -3,6 +3,11 @@ package org.opensails.sails.oem;
 import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.controller.IActionResult;
 
+/**
+ * Anything that can process an incoming ISailsEvent.
+ * 
+ * @author Adam 'Programmer' Williams
+ */
 public interface IActionEventProcessor {
 	public IActionResult process(ExceptionEvent event);
 
