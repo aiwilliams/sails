@@ -1,6 +1,7 @@
 package org.opensails.viento;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.opensails.viento.builtins.EscapeMixin;
 import org.opensails.viento.builtins.IfMixin;
@@ -151,6 +152,11 @@ public class Binding implements IBinding {
 
 	public void put(String key, Object object) {
 		statics.put(key, object);
+	}
+	
+	public void putAll(Map<String, Object> map) {
+		for (Map.Entry<String, Object> entry : map.entrySet())
+			put(entry.getKey(), entry.getValue());
 	}
 	
 //	public void add(DynamicResolver dynamicResolver) {
