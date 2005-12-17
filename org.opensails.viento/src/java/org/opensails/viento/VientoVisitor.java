@@ -38,7 +38,7 @@ public class VientoVisitor extends AbstractParserVisitor {
 
 	@Override
 	public void visit(ASTText node) {
-		buffer.append(node.getContents());
+		buffer.append(unescape(node.getContents()));
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class VientoVisitor extends AbstractParserVisitor {
 		if (node instanceof ASTBoolean)
 			return ((ASTBoolean) node).getValue();
 		if (node instanceof ASTString)
-			return unescape(((ASTString) node).getValue());
+			return unescapeString(((ASTString) node).getValue());
 		if (node instanceof ASTList)
 			return evaluate((ASTList) node);
 		if (node instanceof ASTMap)
@@ -117,14 +117,18 @@ public class VientoVisitor extends AbstractParserVisitor {
 		if (node instanceof ASTNot)
 			return !nullOrFalse(evaluate((ASTStatement)node.jjtGetChild(0)));
 		if (node instanceof ASTStringBlock)
-			return unescape(evaluateBlock((ASTBody) node.jjtGetChild(0)).evaluate());
+			return unescapeString(evaluateBlock((ASTBody) node.jjtGetChild(0)).evaluate());
 		return null;
 	}
 
-	protected String unescape(String value) {
-		return value.replace("\\'", "'").replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\\"", "\"");
+	protected String unescapeString(String value) {
+		return value.replace("\\'", "'").replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\\"", "\"").replace("\\$", "$");
 	}
-
+	
+	protected String unescape(String value) {
+		return value.replace("\\$", "$");
+	}
+	
 	protected boolean evaluate(ASTBooleanExpression expression) {
 		Node node = expression.jjtGetChild(0);
 		if (node instanceof ASTStatement)

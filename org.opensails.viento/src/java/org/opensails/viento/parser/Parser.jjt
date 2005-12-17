@@ -50,19 +50,19 @@ TOKEN_MGR_DECLS : {
 }
 
 TOKEN : {
-	<TEXT: (~["$", "#"])+>
+	<TEXT: (~["$", "#"] | "\\$")+>
 }
 
 <IN_BLOCK> TOKEN : {
-	<TEXT_IN_BLOCK: (~["$", "#", "]"])+ >
+	<TEXT_IN_BLOCK: (~["$", "#", "]"] | "\\$")+ >
 }
 
 <IN_QUICK_BLOCK> TOKEN : {
-	<TEXT_IN_QUICK_BLOCK: (~["$", "#", "\n"])+ >
+	<TEXT_IN_QUICK_BLOCK: (~["$", "#", "\n"] | "\\$")+ >
 }
 
 <STRING_BLOCK> TOKEN : {
-	<TEXT_IN_STRING_BLOCK: (~["$", "#", "\"", "\n"] | "\\\"")+ >
+	<TEXT_IN_STRING_BLOCK: (~["$", "#", "\"", "\n"] | "\\\"" | "\\$")+ >
 }
 
 <DEFAULT, IN_BLOCK, IN_QUICK_BLOCK, STRING_BLOCK> TOKEN : {
