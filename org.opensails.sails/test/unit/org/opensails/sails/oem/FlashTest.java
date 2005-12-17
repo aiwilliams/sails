@@ -7,7 +7,8 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.tester.util.CollectionAssert;
 
 public class FlashTest extends TestCase {

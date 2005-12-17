@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.event.ISailsEvent;
 
 public class ActionUrl extends AbstractUrl<ActionUrl> {
 	protected String action;

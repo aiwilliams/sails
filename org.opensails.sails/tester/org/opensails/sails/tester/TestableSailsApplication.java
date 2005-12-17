@@ -1,7 +1,7 @@
 package org.opensails.sails.tester;
 
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.PostEvent;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.PostEvent;
 import org.opensails.sails.oem.SailsApplication;
 
 public class TestableSailsApplication extends SailsApplication {

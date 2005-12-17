@@ -1,9 +1,9 @@
 package org.opensails.sails.tester.oem;
 
-import org.opensails.sails.IActionResultProcessor;
-import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.IActionResultProcessor;
+import org.opensails.sails.event.oem.ILifecycleEvent;
 import org.opensails.sails.oem.Dispatcher;
-import org.opensails.sails.oem.ILifecycleEvent;
 
 public class LazyActionResultProcessor implements IActionResultProcessor {
     protected final IActionResultProcessor delegate;

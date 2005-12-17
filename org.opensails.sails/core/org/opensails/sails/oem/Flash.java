@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.ISailsEventListener;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.ISailsEventListener;
 
 /**
  * A Flash exposes values for use by the next ActionEvent.

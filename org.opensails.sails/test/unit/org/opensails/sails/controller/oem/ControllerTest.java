@@ -2,12 +2,13 @@ package org.opensails.sails.controller.oem;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.controller.IAction;
-import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.action.IAction;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.oem.ExceptionEvent;
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.event.oem.ExceptionEvent;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 
 public class ControllerTest extends TestCase {
 	ShamController controllerImpl;

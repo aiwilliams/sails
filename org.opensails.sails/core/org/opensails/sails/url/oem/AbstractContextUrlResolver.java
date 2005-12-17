@@ -1,6 +1,6 @@
 package org.opensails.sails.url.oem;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.ContextUrl;
 import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;

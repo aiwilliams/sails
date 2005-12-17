@@ -8,7 +8,7 @@ package org.opensails.sails.mixins;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;

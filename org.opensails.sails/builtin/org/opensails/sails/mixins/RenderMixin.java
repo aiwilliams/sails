@@ -2,7 +2,7 @@ package org.opensails.sails.mixins;
 
 import java.util.Map;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.template.IMixinMethod;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.viento.IBinding;

@@ -4,6 +4,7 @@ import junit.framework.*;
 
 import org.opensails.rigging.*;
 import org.opensails.sails.*;
+import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.model.oem.*;
 import org.opensails.sails.oem.*;
 import org.opensails.sails.validation.oem.*;

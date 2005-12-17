@@ -9,11 +9,11 @@ import java.util.Set;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
+import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.ShamController;
-import org.opensails.sails.controller.oem.TemplateActionResult;
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.tester.util.CollectionAssert;

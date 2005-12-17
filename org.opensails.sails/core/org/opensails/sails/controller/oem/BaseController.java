@@ -6,10 +6,13 @@ import javax.servlet.http.HttpSession;
 
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.rigging.SimpleContainer;
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.oem.RedirectActionResult;
+import org.opensails.sails.action.oem.StringActionResult;
+import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.mixins.UrlforMixin;

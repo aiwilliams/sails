@@ -1,7 +1,7 @@
 package org.opensails.sails.mixins;
 
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.html.Checkbox;

@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.RequestContainer;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.viento.IBinding;
 

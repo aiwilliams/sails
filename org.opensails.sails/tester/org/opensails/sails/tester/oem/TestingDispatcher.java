@@ -1,11 +1,11 @@
 package org.opensails.sails.tester.oem;
 
-import org.opensails.sails.IActionResultProcessorResolver;
 import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.ISailsEventConfigurator;
-import org.opensails.sails.controller.oem.IControllerResolver;
+import org.opensails.sails.action.IActionResultProcessorResolver;
+import org.opensails.sails.controller.IControllerResolver;
+import org.opensails.sails.event.ISailsEventConfigurator;
+import org.opensails.sails.event.oem.ILifecycleEvent;
 import org.opensails.sails.oem.Dispatcher;
-import org.opensails.sails.oem.ILifecycleEvent;
 
 public class TestingDispatcher extends Dispatcher {
 	public TestingDispatcher(ISailsApplication application, ISailsEventConfigurator configurator, IControllerResolver controllerResolver, IActionResultProcessorResolver processorResolver) {

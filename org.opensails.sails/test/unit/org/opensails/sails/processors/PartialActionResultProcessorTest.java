@@ -7,9 +7,9 @@ import java.util.Set;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.opensails.sails.controller.oem.PartialActionResult;
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.action.oem.PartialActionResult;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.viento.ExceptionHandler;

@@ -3,15 +3,17 @@ package org.opensails.sails.controller.oem;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.oem.Action;
+import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.controller.IActionResult;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.NoImplementationException;
-import org.opensails.sails.oem.ExceptionEvent;
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.PostEvent;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.oem.ExceptionEvent;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.PostEvent;
 import org.opensails.sails.template.Layout;
 
 public class Controller implements IController {

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.RequestContainer;
-import org.opensails.sails.oem.GetEvent;
+import org.opensails.sails.event.oem.GetEvent;
 
 public class TestGetEvent extends GetEvent {
 	public TestGetEvent(ISailsApplication application, TestRequestContainer container, HttpServletRequest req, HttpServletResponse resp) {

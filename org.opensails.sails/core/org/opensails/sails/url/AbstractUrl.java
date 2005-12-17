@@ -1,7 +1,7 @@
 package org.opensails.sails.url;
 
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.Sails;
+import org.opensails.sails.event.ISailsEvent;
 
 public abstract class AbstractUrl<T extends AbstractUrl> implements IUrl {
 	protected ISailsEvent event;

@@ -1,6 +1,6 @@
 package org.opensails.sails.html;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 
 public class EventDependentHtmlElement<T extends EventDependentHtmlElement> extends AbstractHtmlElement<T> {
 	protected ISailsEvent event;

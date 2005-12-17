@@ -1,7 +1,7 @@
 package org.opensails.sails.processors;
 
-import org.opensails.sails.IActionResultProcessor;
-import org.opensails.sails.controller.oem.PartialActionResult;
+import org.opensails.sails.action.IActionResultProcessor;
+import org.opensails.sails.action.oem.PartialActionResult;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.viento.IBinding;

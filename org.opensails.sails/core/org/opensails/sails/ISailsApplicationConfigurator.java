@@ -10,9 +10,9 @@ package org.opensails.sails;
  * values to perform the work of responding to client requests. These services
  * include things like these (there are more):
  * <ul>
- * <li>Controller implementation resolution ({@link org.opensails.sails.controller.oem.IControllerResolver})</li>
+ * <li>Controller implementation resolution ({@link org.opensails.sails.controller.IControllerResolver})</li>
  * <li>Template, script, css, image etc. resolution ({@link org.opensails.sails.IResourceResolver})</li>
- * <li>Action result processor resolution ({@link org.opensails.sails.IActionResultProcessorResolver})</li>
+ * <li>Action result processor resolution ({@link org.opensails.sails.action.IActionResultProcessorResolver})</li>
  * <li>Parameter adapter resolution ({@link org.opensails.sails.adapter.IAdapterResolver})</li>
  * </ul>
  * </p>

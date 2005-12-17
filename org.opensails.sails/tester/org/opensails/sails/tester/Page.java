@@ -8,7 +8,9 @@ import javax.servlet.http.*;
 import junit.framework.*;
 
 import org.opensails.sails.*;
+import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.oem.*;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.*;
 import org.opensails.sails.http.*;
 import org.opensails.sails.oem.*;

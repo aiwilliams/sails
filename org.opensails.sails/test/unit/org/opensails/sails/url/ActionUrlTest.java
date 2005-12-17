@@ -4,7 +4,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.event.oem.SailsEventFixture;
 
 public class ActionUrlTest extends TestCase {
 	public void testSetParameters_List() {

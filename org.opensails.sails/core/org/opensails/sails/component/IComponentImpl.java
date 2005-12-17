@@ -1,6 +1,6 @@
 package org.opensails.sails.component;
 
-import org.opensails.sails.event.IActionEventProcessingContext;
+import org.opensails.sails.event.IEventProcessingContext;
 
 /**
  * A component implementation.
@@ -19,4 +19,4 @@ import org.opensails.sails.event.IActionEventProcessingContext;
  * 
  * @author Adam 'Programmer' Williams
  */
-public interface IComponentImpl extends IActionEventProcessingContext<IComponent> {}
+public interface IComponentImpl extends IEventProcessingContext<IComponent> {}

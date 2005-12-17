@@ -2,6 +2,7 @@ package org.opensails.sails;
 
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.event.ISailsEvent;
 
 public class RequestContainer extends ScopedContainer {
 	public RequestContainer(ScopedContainer parent) {

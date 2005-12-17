@@ -1,7 +1,7 @@
 package org.opensails.sails.oem;
 
 import org.opensails.rigging.ComponentResolver;
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 
 public class FlashComponentResolver implements ComponentResolver {
 	protected final ISailsEvent event;

@@ -7,21 +7,24 @@ import org.apache.commons.configuration.web.ServletContextConfiguration;
 import org.opensails.rigging.InstantiationListener;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
-import org.opensails.sails.IActionResultProcessor;
-import org.opensails.sails.IActionResultProcessorResolver;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.IResourceResolver;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsApplicationConfigurator;
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.Sails;
+import org.opensails.sails.action.IActionResultProcessor;
+import org.opensails.sails.action.IActionResultProcessorResolver;
+import org.opensails.sails.action.oem.ActionResultProcessorResolver;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.controller.oem.IControllerResolver;
+import org.opensails.sails.controller.IControllerResolver;
+import org.opensails.sails.controller.oem.ControllerResolver;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.UnderscoreIdGenerator;
 import org.opensails.sails.template.IMixinResolver;
@@ -248,7 +251,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	/**
 	 * Installs an
-	 * {@link org.opensails.sails.controller.oem.IControllerResolver} into the
+	 * {@link org.opensails.sails.controller.IControllerResolver} into the
 	 * application and configures the default controller class resolvers.
 	 * 
 	 * @param application

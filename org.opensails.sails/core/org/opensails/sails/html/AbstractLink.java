@@ -2,7 +2,7 @@ package org.opensails.sails.html;
 
 import java.io.IOException;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;
 

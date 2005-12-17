@@ -2,13 +2,14 @@ package org.opensails.sails.controller.oem;
 
 import java.util.Map;
 
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.controller.IActionResult;
-import org.opensails.sails.oem.ExceptionEvent;
+import org.opensails.sails.action.ActionResultFixture;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.oem.ExceptionEvent;
 
 /**
  * DO NOT SORT THIS FILE. It is imperative to validate the behavior of
- * {@link org.opensails.sails.controller.oem.Action} - methods are stored there
+ * {@link org.opensails.sails.action.oem.Action} - methods are stored there
  * in order of least arguments to most to allow for finding the best action
  * method.
  * 

@@ -2,9 +2,10 @@ package org.opensails.sails.controller.oem;
 
 import junit.framework.TestCase;
 
+import org.opensails.sails.action.oem.TemplateActionResult;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.form.FormFields;
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.SailsEventFixture;
 
 public class BaseControllerTest extends TestCase {
 	public void testFieldAndFields() {

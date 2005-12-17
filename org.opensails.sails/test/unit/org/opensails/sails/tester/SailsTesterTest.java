@@ -3,8 +3,8 @@ package org.opensails.sails.tester;
 import junit.framework.TestCase;
 
 import org.opensails.sails.ApplicationScope;
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.RequestContainer;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
 

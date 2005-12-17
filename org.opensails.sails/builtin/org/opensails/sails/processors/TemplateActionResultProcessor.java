@@ -1,9 +1,9 @@
 package org.opensails.sails.processors;
 
 import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.IActionResultProcessor;
+import org.opensails.sails.action.IActionResultProcessor;
+import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.controller.oem.TemplateActionResult;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.viento.IBinding;

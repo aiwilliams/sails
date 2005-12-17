@@ -6,8 +6,8 @@ import java.io.Writer;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.ActionUrl;
 
 /**

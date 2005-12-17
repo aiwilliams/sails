@@ -1,6 +1,6 @@
 package org.opensails.sails.url;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 
 /**
  * An IUrlResolver is used to resolve urls in a Sails application.
@@ -10,7 +10,7 @@ import org.opensails.sails.ISailsEvent;
  * you need the url. The event is the common thread throughout request
  * processing, and is therefore the natural place to go to resolve urls. That is
  * fine, but we don't want to have an explosion of methods on the event. Look
- * into the {@link org.opensails.sails.ISailsEvent#resolve(UrlType, String)}
+ * into the {@link org.opensails.sails.event.ISailsEvent#resolve(UrlType, String)}
  * method.
  * 
  * This does not prevent, nor should it discourage, folks from instantiating

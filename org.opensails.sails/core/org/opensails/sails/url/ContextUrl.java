@@ -1,7 +1,7 @@
 package org.opensails.sails.url;
 
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.event.ISailsEvent;
 
 public class ContextUrl extends AbstractUrl<ContextUrl> {
 	protected String url;

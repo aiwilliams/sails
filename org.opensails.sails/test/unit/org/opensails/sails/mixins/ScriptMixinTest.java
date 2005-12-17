@@ -2,8 +2,8 @@ package org.opensails.sails.mixins;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.url.UrlType;
 import org.opensails.viento.tester.VientoTester;
 

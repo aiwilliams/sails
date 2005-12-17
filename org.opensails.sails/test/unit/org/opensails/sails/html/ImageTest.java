@@ -2,8 +2,8 @@ package org.opensails.sails.html;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.oem.SailsEventFixture;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 
 public class ImageTest extends TestCase {
 

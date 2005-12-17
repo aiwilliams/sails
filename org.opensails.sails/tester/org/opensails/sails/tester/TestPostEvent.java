@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.RequestContainer;
-import org.opensails.sails.oem.PostEvent;
+import org.opensails.sails.event.oem.PostEvent;
 
 public class TestPostEvent extends PostEvent {
 	public TestPostEvent(ISailsApplication application, TestRequestContainer container, HttpServletRequest req, HttpServletResponse resp) {

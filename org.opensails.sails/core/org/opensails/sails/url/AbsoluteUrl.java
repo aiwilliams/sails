@@ -1,6 +1,6 @@
 package org.opensails.sails.url;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 
 public class AbsoluteUrl extends AbstractUrl<AbsoluteUrl> {
 	protected String absoluteHref;

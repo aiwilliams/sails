@@ -7,11 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.opensails.sails.IResourceResolver;
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.controller.IController;
-import org.opensails.sails.controller.oem.IControllerResolver;
+import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.MissingComponentDependenciesException;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;

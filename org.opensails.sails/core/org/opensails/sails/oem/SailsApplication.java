@@ -14,6 +14,8 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.ISailsApplicationConfigurator;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.PostEvent;
 
 public class SailsApplication extends HttpServlet implements IConfigurableSailsApplication {
 	protected ScopedContainer applicationContainer;

@@ -1,8 +1,8 @@
 package org.opensails.sails.controller.oem;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.oem.AdapterResolver;
+import org.opensails.sails.event.ISailsEvent;
 
 public class ControllerFixture {
 	public static Controller create() {

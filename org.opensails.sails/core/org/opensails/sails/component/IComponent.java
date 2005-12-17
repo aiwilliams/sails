@@ -1,9 +1,9 @@
 package org.opensails.sails.component;
 
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.controller.IAction;
+import org.opensails.sails.action.IAction;
 import org.opensails.sails.controller.NoImplementationException;
-import org.opensails.sails.oem.IActionEventProcessor;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.oem.IActionEventProcessor;
 
 /**
  * A component implementation.

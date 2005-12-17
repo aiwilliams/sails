@@ -3,12 +3,12 @@ package org.opensails.sails.tester;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.opensails.sails.controller.oem.TemplateActionResult;
+import org.opensails.sails.action.oem.TemplateActionResult;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
+import org.opensails.sails.event.oem.ShamEvent;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.HtmlFormFixture;
-import org.opensails.sails.oem.GetEvent;
-import org.opensails.sails.oem.SailsEventFixture;
-import org.opensails.sails.oem.ShamEvent;
 import org.opensails.viento.IBinding;
 
 public class PageTest extends TestCase {

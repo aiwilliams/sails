@@ -6,8 +6,10 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.controller.oem.ShamController;
 import org.opensails.sails.util.ClassResolverAdapter;
 

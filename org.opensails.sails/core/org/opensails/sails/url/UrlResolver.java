@@ -3,7 +3,7 @@ package org.opensails.sails.url;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.util.ClassHelper;
 
 public class UrlResolver implements IUrlResolver {

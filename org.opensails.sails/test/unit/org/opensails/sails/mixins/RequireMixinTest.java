@@ -5,14 +5,14 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.controller.oem.MissingComponentDependenciesException;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.fixture.controllers.HomeController;
-import org.opensails.sails.oem.AdapterResolver;
-import org.opensails.sails.oem.ControllerResolver;
 import org.opensails.sails.oem.ResourceResolver;
-import org.opensails.sails.oem.SailsEventFixture;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.url.UrlType;
 import org.opensails.sails.util.ComponentPackage;

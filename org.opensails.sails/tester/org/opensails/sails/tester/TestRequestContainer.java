@@ -7,8 +7,8 @@ import org.opensails.rigging.ComponentImplementation;
 import org.opensails.rigging.ComponentInstance;
 import org.opensails.rigging.ComponentResolver;
 import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ISailsEvent;
 import org.opensails.sails.RequestContainer;
+import org.opensails.sails.event.ISailsEvent;
 
 public class TestRequestContainer extends RequestContainer {
 	protected Map<Class<?>, ComponentResolver> injections = new HashMap<Class<?>, ComponentResolver>();

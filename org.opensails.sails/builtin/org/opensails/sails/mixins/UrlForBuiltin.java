@@ -1,6 +1,6 @@
 package org.opensails.sails.mixins;
 
-import org.opensails.sails.ISailsEvent;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
 

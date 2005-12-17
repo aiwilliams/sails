@@ -3,17 +3,23 @@ package org.opensails.sails.oem;
 import junit.framework.TestCase;
 
 import org.opensails.sails.ApplicationScope;
-import org.opensails.sails.IActionResultProcessor;
-import org.opensails.sails.IActionResultProcessorResolver;
 import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.ISailsEvent;
-import org.opensails.sails.ISailsEventConfigurator;
 import org.opensails.sails.RequestContainer;
-import org.opensails.sails.controller.IActionResult;
+import org.opensails.sails.action.ActionResultFixture;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.IActionResultProcessor;
+import org.opensails.sails.action.IActionResultProcessorResolver;
 import org.opensails.sails.controller.IController;
-import org.opensails.sails.controller.oem.ActionResultFixture;
+import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.Controller;
-import org.opensails.sails.controller.oem.IControllerResolver;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.ISailsEventConfigurator;
+import org.opensails.sails.event.oem.ExceptionEvent;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.ILifecycleEvent;
+import org.opensails.sails.event.oem.PostEvent;
+import org.opensails.sails.event.oem.SailsEventFixture;
+import org.opensails.sails.event.oem.ShamEvent;
 
 public class DispatcherTest extends TestCase {
 	boolean beginDispatchCalled;

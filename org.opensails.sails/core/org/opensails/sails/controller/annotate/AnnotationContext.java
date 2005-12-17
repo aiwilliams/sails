@@ -2,7 +2,7 @@ package org.opensails.sails.controller.annotate;
 
 import java.lang.annotation.Annotation;
 
-import org.opensails.sails.controller.IAction;
+import org.opensails.sails.action.IAction;
 import org.opensails.sails.controller.IControllerImpl;
 
 public class AnnotationContext {
