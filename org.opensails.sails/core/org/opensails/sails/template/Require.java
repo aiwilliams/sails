@@ -1,4 +1,4 @@
-package org.opensails.sails.oem;
+package org.opensails.sails.template;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;

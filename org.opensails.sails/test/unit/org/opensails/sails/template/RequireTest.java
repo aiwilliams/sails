@@ -1,8 +1,9 @@
-package org.opensails.sails.oem;
+package org.opensails.sails.template;
 
 import junit.framework.TestCase;
 
 import org.opensails.sails.html.Script;
+import org.opensails.sails.template.Require;
 import org.opensails.sails.url.UrlFixture;
 
 public class RequireTest extends TestCase {
