@@ -3,15 +3,15 @@ package org.opensails.sails.html;
 import java.io.IOException;
 
 import org.opensails.sails.url.IUrl;
-import org.opensails.viento.Block;
 
 /**
  * Script with src or in-line content
  */
-public class Script extends AbstractHtmlElement<Script> {
+public class Script extends AbstractHtmlElement<Script> implements IInlineContentElement<Script> {
 	public static final String NAME = "script";
 
-	protected Block block;
+	private IInlineContent inlineContent;
+
 	protected IUrl src;
 
 	public Script() {
@@ -19,9 +19,9 @@ public class Script extends AbstractHtmlElement<Script> {
 		type("text/javascript");
 	}
 
-	public Script(Block block) {
+	public Script(IInlineContent inlineContent) {
 		this();
-		inline(block);
+		inline(inlineContent);
 	}
 
 	public Script(IUrl url) {
@@ -43,8 +43,8 @@ public class Script extends AbstractHtmlElement<Script> {
 		return src.hashCode();
 	}
 
-	public Script inline(Block block) {
-		this.block = block;
+	public Script inline(IInlineContent content) {
+		this.inlineContent = content;
 		return this;
 	}
 
@@ -63,13 +63,21 @@ public class Script extends AbstractHtmlElement<Script> {
 
 	@Override
 	protected void body(HtmlGenerator generator) throws IOException {
-		if (block != null) {
+		if (inlineContent != null) {
 			generator.write("\n");
-			generator.write(block.evaluate());
+			generator.write(inlineContent.render());
 			generator.write("\n");
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.opensails.sails.html.AbstractHtmlElement#hasBody()
+	 * 
+	 * Always return true due to bugs in older browsers where script tag must
+	 * end with close tag.
+	 */
 	@Override
 	protected boolean hasBody() {
 		return true;

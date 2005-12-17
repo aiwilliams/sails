@@ -2,7 +2,6 @@ package org.opensails.sails.html;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.template.BlockFixture;
 import org.opensails.sails.url.UrlFixture;
 
 /**
@@ -12,7 +11,7 @@ import org.opensails.sails.url.UrlFixture;
 public class ScriptTest extends TestCase {
 	public void testToString_InLine() {
 		Script script = new Script();
-		script.inline(BlockFixture.create("stuff"));
+		script.inline(InlineContentFixture.create("stuff"));
 		assertEquals("<script type=\"text/javascript\">\nstuff\n</script>", script.toString());
 	}
 

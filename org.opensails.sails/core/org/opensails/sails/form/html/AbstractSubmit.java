@@ -14,8 +14,8 @@ import org.opensails.sails.form.HtmlForm;
  * having the FormMixin output a hidden field at the bottom of the form that
  * included information that could be used on the server side to determine which
  * action to execute. After some consideration, I decided that, for now, it is
- * preferable to not have a dependency on the FormMixin. Therefore, the name
- * is utilized.
+ * preferable to not have a dependency on the FormMixin. Therefore, the name is
+ * utilized.
  * 
  * If the form author does not declare the action on the Submit (using
  * #action(String)), then they must make the form action attribute point to the
@@ -53,6 +53,7 @@ public abstract class AbstractSubmit<T extends AbstractSubmit> extends InputElem
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public String getName() {
 		if (action != null) {
 			StringBuilder name = new StringBuilder();

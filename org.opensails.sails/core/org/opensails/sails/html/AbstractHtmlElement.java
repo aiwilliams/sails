@@ -21,33 +21,60 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 
 	protected Map<String, String> attributes;
 	protected String elementName;
-
 	protected String id;
 
 	public AbstractHtmlElement(String elementName) {
 		this.elementName = elementName;
 	}
 
+	/**
+	 * @param attributes a Map defining additional attributes to be rendered.
+	 * @see FormElement#writeAttributes(Writer)
+	 * @see #attributes
+	 */
+	@SuppressWarnings("unchecked")
+	public T addAttributes(Map<String, String> attributes) {
+		attributes().putAll(attributes);
+		return (T) this;
+	}
+
 	@SuppressWarnings("unchecked")
 	public T attribute(String name, String value) {
-		if (attributes == null) attributes = new HashMap<String, String>();
-		attributes.put(name, value);
+		attributes().put(name, value);
 		return (T) this;
 	}
 
 	/**
-	 * @param attributes a Map containing extra element attributes to be
-	 *        rendered.
+	 * @param attributes a Map defining the element attributes to be rendered.
 	 * @see FormElement#writeAttributes(Writer)
+	 * @see #addAttributes
 	 */
 	@SuppressWarnings("unchecked")
-	public T attributes(Map attributes) {
+	public T attributes(Map<String, String> attributes) {
 		this.attributes = attributes;
 		return (T) this;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		return getClass().equals(obj.getClass()) && hashCode() == obj.hashCode();
+	}
+
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public int hashCode() {
+		StringBuilder code = new StringBuilder();
+		code.append(getClass().getName());
+		code.append(this.elementName);
+		code.append(this.id);
+		if (attributes != null && !attributes.isEmpty()) for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+			code.append(attribute.getKey());
+			code.append(attribute.getValue());
+		}
+		return code.toString().intern().hashCode();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -73,6 +100,11 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 
 	public void toString(Writer writer) throws IOException {
 		render(writer);
+	}
+
+	protected Map<String, String> attributes() {
+		if (attributes == null) attributes = new HashMap<String, String>();
+		return attributes;
 	}
 
 	/**

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?><templates><template autoinsert="true" context="gettercomment_context" deleted="true" description="Comment for getter method" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.gettercomment" name="gettercomment">/**
+ * @return Returns the ${bare_field_name}.
+ */</template></templates>
