@@ -72,6 +72,7 @@ public class BindingTest extends TestCase {
 	
 	public void testBeans() throws Exception {
 		assertEquals("property", binding.call(target, "property"));
+		assertEquals(false, binding.call(target, "boolean"));
 	}
 	
 	public void testParent() throws Exception {
@@ -154,6 +155,10 @@ public class BindingTest extends TestCase {
 		
 		public String getProperty() {
 			return "property";
+		}
+		
+		public boolean isBoolean() {
+			return false;
 		}
 		
 		public String exception() {

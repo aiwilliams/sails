@@ -36,9 +36,14 @@ public class ObjectMethods {
 	
 	protected boolean nameMatch(String methodName, Method method) {
 		if (method.isAnnotationPresent(Name.class)) return method.getAnnotation(Name.class).value().equals(methodName);
-		return method.getName().equals(methodName) || method.getName().equals(getter(methodName));
+		return method.getName().equals(methodName) || method.getName().equals(getter(methodName)) || izzer(method, methodName);
 	}
 	
+	// You know, isProperty()
+	private boolean izzer(Method method, String methodName) {
+		return method.getReturnType() == boolean.class && method.getName().equals("is" + Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1));
+	}
+
 	protected String getter(String methodName) {
 		return "get" + Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
 	}
