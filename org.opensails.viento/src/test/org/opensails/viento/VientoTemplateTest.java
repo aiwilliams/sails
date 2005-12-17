@@ -139,6 +139,11 @@ public class VientoTemplateTest extends TestCase {
 //		verifyRender("$tool.twice>block  ##comment\n", "blockblock\n");
 	}
 	
+	public void testMultilineComment() throws Exception {
+		verifyRender("stuff#*comment\n *more #comment\n *# more stuff", "stuff more stuff");
+		verifyRender("one#**#two", "onetwo");
+	}
+	
 	public void testFailure() throws Exception {
 		binding.setExceptionHandler(new ShamExceptionHandler());
 		

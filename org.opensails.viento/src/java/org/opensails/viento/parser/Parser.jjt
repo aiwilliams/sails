@@ -42,11 +42,17 @@ TOKEN_MGR_DECLS : {
 <EXPRESSION, ARGS_OR_BLOCK, BLOCK, END> SKIP : { " " | "\r" | "\t" }
 
 <DEFAULT, IN_BLOCK, IN_QUICK_BLOCK> SKIP : {
-	<("\r")? ("\n")? ([" ", "\t"])* "##"> {pushState(SingleLineComment);}
+	<("\r")? ("\n")? ([" ", "\t"])* "##"> {pushState(SINGLELINE_COMMENT);}
+|	<"#*"> {pushState(MULTILINE_COMMENT);}
 }
 
-<SingleLineComment> SKIP : {
+<SINGLELINE_COMMENT> SKIP : {
 	<(~["\r", "\n"])*> {popState();}
+}
+
+<MULTILINE_COMMENT> SKIP : {
+	<(~["*", "#"])+ | "*" | "#">
+|	<"*#"> {popState();}
 }
 
 TOKEN : {
