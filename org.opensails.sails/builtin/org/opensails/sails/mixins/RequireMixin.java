@@ -30,7 +30,7 @@ public class RequireMixin {
 
 	public void component(String identifier) {
 		IUrl script = event.resolve(UrlType.COMPONENT, identifier + "/script.js");
-		if (resourceResolver.exists(script)) script(script);
+		if (resourceResolver.exists(script)) componentScript(script);
 
 		IUrl style = event.resolve(UrlType.COMPONENT, identifier + "/style.css");
 		if (resourceResolver.exists(style)) style(style);
@@ -45,6 +45,10 @@ public class RequireMixin {
 
 	public void script(IUrl url) {
 		require.script(new Script(url));
+	}
+	
+	private void componentScript(IUrl url) {
+		require.componentScript(new Script(url));
 	}
 
 	public void script(String identifier) {
