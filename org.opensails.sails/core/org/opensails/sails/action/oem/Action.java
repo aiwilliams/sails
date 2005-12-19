@@ -1,5 +1,6 @@
 package org.opensails.sails.action.oem;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import org.opensails.sails.template.Layout;
 
 public class Action implements IAction {
 	protected static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
+	protected static final Annotation[] NO_ANNOTATIONS = new Annotation[0];
 
 	protected final Method[] actionMethods;
 	protected final IAdapterResolver adapterResolver;
@@ -84,6 +86,10 @@ public class Action implements IAction {
 
 		listener.endExecution(this);
 		return finalizeExecution(event, result);
+	}
+
+	public Annotation[] getAnnotations() {
+		return actionMethods != null && actionMethods.length > 0 ? actionMethods[0].getAnnotations() : NO_ANNOTATIONS;
 	}
 
 	public Class<?>[] getParameterTypes(int numberOfArguments) {

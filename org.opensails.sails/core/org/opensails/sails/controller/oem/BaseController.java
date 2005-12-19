@@ -34,6 +34,10 @@ public class BaseController implements IControllerImpl {
 		return event.getContainer();
 	}
 
+	public ISailsEvent getEvent() {
+		return event;
+	}
+
 	public IController getEventProcessor() {
 		return controller;
 	}
@@ -41,6 +45,11 @@ public class BaseController implements IControllerImpl {
 	public void setEventContext(ISailsEvent event, IController controller) {
 		this.event = event;
 		this.controller = controller;
+	}
+
+	public <T extends IActionResult> T setResult(T result) {
+		this.result = result;
+		return result;
 	}
 
 	/**
@@ -142,11 +151,6 @@ public class BaseController implements IControllerImpl {
 		TemplateActionResult result = getTemplateResult();
 		// TODO: Forein behavior - move into TemplateActionResult
 		result.setTemplate(String.format("%s/%s", event.getProcessorName(), template));
-		return result;
-	}
-
-	protected <T extends IActionResult> T setResult(T result) {
-		this.result = result;
 		return result;
 	}
 

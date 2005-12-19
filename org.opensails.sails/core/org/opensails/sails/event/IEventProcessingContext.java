@@ -13,14 +13,19 @@ public interface IEventProcessingContext<P extends IActionEventProcessor> {
 	IActionResult getActionResult();
 
 	/**
-	 * @return the IActionEventProcessor for this processing context
-	 */
-	P getEventProcessor();
-
-	/**
 	 * @return the container that created this
 	 */
 	ScopedContainer getContainer();
+
+	/**
+	 * @return the ISailsEvent for this processing context
+	 */
+	ISailsEvent getEvent();
+
+	/**
+	 * @return the IActionEventProcessor for this processing context
+	 */
+	P getEventProcessor();
 
 	/**
 	 * Called before the context is utilized
@@ -29,4 +34,6 @@ public interface IEventProcessingContext<P extends IActionEventProcessor> {
 	 * @param processor
 	 */
 	void setEventContext(ISailsEvent event, P processor);
+
+	<T extends IActionResult> T setResult(T result);
 }

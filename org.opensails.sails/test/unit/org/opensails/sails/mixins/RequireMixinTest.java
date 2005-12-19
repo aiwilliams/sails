@@ -31,7 +31,7 @@ public class RequireMixinTest extends TestCase {
 		String expected = "<script type=\"text/javascript\" src=\".*?/script.js\"></script>";
 		require.component("mycomponent");
 		require.component("mycomponent");
-		assertTrue(require.output().toString().matches(expected));
+		assertTrue(require.output().toString().trim().matches(expected));
 
 		require.component("home");
 		assertTrue(binding.call("home") instanceof HomeController);
