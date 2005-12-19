@@ -2,6 +2,12 @@ package org.opensails.sails;
 
 import java.io.InputStream;
 
+import org.opensails.sails.url.IUrl;
+
 public interface IResourceResolver {
-    InputStream resolve(String identifier);
+	boolean exists(IUrl applicationUrl);
+
+	boolean exists(String identifier);
+
+	InputStream resolve(String identifier);
 }

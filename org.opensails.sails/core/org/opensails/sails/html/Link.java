@@ -9,6 +9,11 @@ public class Link extends AbstractHtmlElement<Link> {
 		super(NAME);
 	}
 
+	public Link(IUrl href) {
+		this();
+		href(href);
+	}
+
 	public void href(IUrl url) {
 		attribute("href", url.render());
 	}

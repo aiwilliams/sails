@@ -15,6 +15,10 @@ public class ContextUrl extends AbstractUrl<ContextUrl> {
 		this.url = url;
 	};
 
+	public String getContextRelativePath() {
+		return url;
+	}
+
 	public ContextUrl secure() {
 		throw new SailsException("Are you sure you want to make a context relative url secure? File a bug report if you think so. We didn't at the time we wrote this. Thank you for using Sails. :)");
 	}
