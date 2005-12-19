@@ -80,5 +80,10 @@ public class TypeMixins extends ObjectMethods {
 		public Class<?> getType() {
 			return type;
 		}
+		
+		@Override
+		public String toString() {
+			return String.format("Extending [%s]s with behavior of [%s]", type, mixin.getClass());
+		}
 	}
 }
