@@ -1,10 +1,9 @@
-package org.opensails.sails.controller;
+package org.opensails.sails.annotate.oem;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
-import org.opensails.sails.controller.annotate.Indicator;
-import org.opensails.sails.controller.oem.SecurityIndicatorHandler;
+import org.opensails.sails.annotate.Indicator;
 
 @Indicator(SecurityIndicatorHandler.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })

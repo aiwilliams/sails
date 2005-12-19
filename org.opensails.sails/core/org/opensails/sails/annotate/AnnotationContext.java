@@ -1,4 +1,4 @@
-package org.opensails.sails.controller.annotate;
+package org.opensails.sails.annotate;
 
 import java.lang.annotation.Annotation;
 
