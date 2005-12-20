@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="org.opensails.hibernate" default="dist" basedir=".">
+	<property name="product.version" value="0.2.0" />
+	<property name="temp.build" location="buildtemp" />
+
+	<property name="source.core" value="src" />
+
+	<property name="temp.classes" location="${temp.build}/classes" />
+	<property name="temp.lib" location="${temp.build}/lib" />
+	<property name="product.jar.path" location="${temp.build}/dist" />
+	<property name="product.name" value="sails_hibernate" />
+	<property name="product.jar" value="${product.name}_${product.version}.jar" />
+	<property name="product.dist" location="dist" />
+
+	<path id="vendor.lib.paths">
+		<fileset dir="vendor" id="vendor.lib.jars">
+			<include name="optional/*.jar" />
+			<include name="required/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="compile.classpath">
+		<fileset dir="${temp.lib}" includes="*.jar" />
+		<path refid="vendor.lib.paths" />
+	</path>
+
+	<!--+
+	    | This can be called by dependent build scripts. It will place product and it's
+	    | dependencies into product.dist. Override the value of that when you call this.
+	    +-->
+	<target name="dist.depends" depends="dist" description="Constructs product jar and copies it and all vendor libraries into product.dist.">
+		<copy file="${product.jar.path}/${product.jar}" todir="${product.dist}" />
+		<copy todir="${product.dist}" flatten="true">
+			<fileset dir="${temp.lib}" />
+			<fileset refid="vendor.lib.jars" />
+		</copy>
+	</target>
+
+	<target name="dist" depends="build.jar" description="Compiles a jar file containing Sails' Hibernate Extensions. No vendor libraries are included.">
+	</target>
+
+	<target name="compile" depends="build.depends">
+		<javac srcdir="${source.core}" destdir="${temp.classes}" debug="on" optimize="on">
+			<classpath refid="compile.classpath" />
+			<classpath refid="vendor.lib.paths" />
+		</javac>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: build.depends
+         - - - - - - - - - - - - - - - - - -->
+	<target name="build.depends" depends="make.dirs">
+		<ant antfile="../org.opensails.sails/build.xml" target="dist.depends" inheritall="false">
+			<property name="product.dist" location="${temp.lib}" />
+		</ant>
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: make.dirs                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="make.dirs">
+		<mkdir dir="${temp.classes}" />
+		<mkdir dir="${temp.lib}" />
+		<mkdir dir="${product.dist}" />
+		<mkdir dir="${product.jar.path}" />
+	</target>
+
+	<target name="build.jar" depends="compile">
+		<jar destfile="${product.jar.path}/${product.jar}">
+			<fileset dir="${temp.classes}" includes="**/*" />
+		</jar>
+	</target>
+
+	<target name="clean" description="Delete everything that I generate, excluding whatever is in product.path.">
+		<delete dir="${temp.build}" />
+	</target>
+</project>
