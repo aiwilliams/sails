@@ -92,18 +92,18 @@ TOKEN : {
 }
 
 <ARGS_OR_BLOCK> MORE : {
-	<([" ", "\t", "\r"])* (~["(", "[", ".", ">", ";"])> {input_stream.backup(1); popState(); popState();}
-|	<([" ", "\t", "\r"])* "[" (~["["])> {input_stream.backup(1); popState(); popState();}
+	<([" ", "\t", "\r"])* (~["(", "[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
 }
 
 <ARGS_OR_BLOCK, BLOCK> TOKEN : {
 	<BEGIN_BLOCK: "[["> {pushState(IN_BLOCK);}
-|	<BEGIN_QUICK_BLOCK: ">"> {pushState(IN_QUICK_BLOCK);}
+|	<BEGIN_QUICK_BLOCK: "[>"> {pushState(IN_QUICK_BLOCK);}
 }
 
 <BLOCK> MORE : {
-	<([" ", "\t", "\r"])* (~["[", ".", ">", ";"])> {input_stream.backup(1); popState(); popState();}
-|	<([" ", "\t", "\r"])* "[" (~["["])> {input_stream.backup(1); popState(); popState();}
+	<([" ", "\t", "\r"])* (~["[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
 }
 
 <ARGS_OR_BLOCK, BLOCK, END> TOKEN : {
@@ -122,9 +122,7 @@ TOKEN : {
 	<RPAREN: ")"> {popState(); popState(); pushState(BLOCK);}
 |	<COMMA: ",">
 |	<INTEGER: (("-")? ["0"-"9"])+>
-|	<#TRUE: "true">
-|	<#FALSE: "false">
-|	<BOOLEAN: (<TRUE>|<FALSE>)>
+|	<BOOLEAN: ("true"|"false")>
 |	<NULL: "null">
 |	<OPEN_SQUOTE: "'"> {pushState(STRING_LITERAL);}
 |	<OPEN_DQUOTE: "\""> {pushState(STRING_BLOCK);}
@@ -137,6 +135,11 @@ TOKEN : {
 |	<AND: "&&">
 |	<OR: "||">
 |	<NOT: "!">
+|	<EQUALITY: "==">
+|	<GT: ">">
+|	<LT: "<">
+|	<GTE: ">=">
+|	<LTE: "<=">
 }
 
 <STRING_LITERAL> TOKEN : {
@@ -203,12 +206,33 @@ void Arguments() : {}
 
 void Expression() : {}
 {
-	LOOKAHEAD(BooleanExpression() <AND>)
+	LOOKAHEAD(LeftHandExpression() <AND>)
 	And()
-|
-	LOOKAHEAD(BooleanExpression() <OR>)
+
+|	LOOKAHEAD(LeftHandExpression() <OR>)
 	Or()
-|	Not()
+
+|	LOOKAHEAD(LeftHandExpression() <EQUALITY>)
+	Equality()
+
+|	LOOKAHEAD(LeftHandExpression() <GT>)
+	GreaterThan()
+
+|	LOOKAHEAD(LeftHandExpression() <GTE>)
+	GreaterThanOrEqual()
+
+|	LOOKAHEAD(LeftHandExpression() <LT>)
+	LessThan()
+
+|	LOOKAHEAD(LeftHandExpression() <LTE>)
+	LessThanOrEqual()
+
+|	LeftHandExpression()
+}
+
+void LeftHandExpression() : {}
+{
+	Not()
 |	Statement()
 |	Map()
 |	List()
@@ -234,21 +258,27 @@ void Boolean() : { Token token; }
 	{ jjtThis.setValue(token.image); }
 }
 
-void BooleanExpression() : {}
-{
-	Not()
-|	Statement()
-}
-
+// There's a refactoring here...
 void And() : {}
-{
-	BooleanExpression() <AND> BooleanExpression()
-}
+{ LeftHandExpression() <AND> Expression() }
 
 void Or() : {}
-{
-	BooleanExpression() <OR> BooleanExpression()
-}
+{ LeftHandExpression() <OR> Expression() }
+
+void Equality() : {}
+{ LeftHandExpression() <EQUALITY> Expression() }
+
+void GreaterThan() : {}
+{ LeftHandExpression() <GT> Expression() }
+
+void GreaterThanOrEqual() : {}
+{ LeftHandExpression() <GTE> Expression() }
+
+void LessThan() : {}
+{ LeftHandExpression() <LT> Expression() }
+
+void LessThanOrEqual() : {}
+{ LeftHandExpression() <LTE> Expression() }
 
 void Not() : {}
 {

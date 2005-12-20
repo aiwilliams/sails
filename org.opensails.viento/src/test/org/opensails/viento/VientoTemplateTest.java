@@ -115,7 +115,7 @@ public class VientoTemplateTest extends TestCase {
 	
 	public void testQuickBlock() throws Exception {
 		binding.put("tool", new Tool());
-		verifyRender("stuff$tool.twice>[block]\nstuff", "stuff[block][block]\nstuff");
+		verifyRender("stuff$tool.twice[>[block]\nstuff", "stuff[block][block]\nstuff");
 	}
 	
 	public void testTopLevelHelpers() throws Exception {
@@ -136,8 +136,8 @@ public class VientoTemplateTest extends TestCase {
 		binding.put("tool", new Tool());
 		verifyRender("$tool.twice[[block##comment\nblock]]", "block\nblockblock\nblock");
 //		verifyRender("$tool.twice[[block  ##comment\nblock]]", "block\nblockblock\nblock");
-		verifyRender("$tool.twice>block##comment\n", "blockblock\n");
-//		verifyRender("$tool.twice>block  ##comment\n", "blockblock\n");
+		verifyRender("$tool.twice[>block##comment\n", "blockblock\n");
+//		verifyRender("$tool.twice[>block  ##comment\n", "blockblock\n");
 	}
 	
 	public void testMultilineComment() throws Exception {
@@ -176,6 +176,7 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($yes || $yes)[[here]]", "here");
 		verifyRender("$if($yes || $no)[[here]]", "here");
 		verifyRender("$if($no || $no)[[here]]", "");
+		verifyRender("$if($no || $no || false || true)[[here]]", "here");
 	}
 	
 	public void testBooleanNot() throws Exception {
@@ -187,6 +188,30 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($yes && !$no)[[here]]", "here");
 	}
 	
+	public void testEqualsEquals() {
+		binding.put("one", "value");
+		binding.put("two", "value");
+		verifyRender("$if($one == $two)[[here]]", "here");
+		verifyRender("$if($one == 0)[[here]]", "");
+		verifyRender("$if($one.length == 5)[[here]]", "here");
+	}
+	
+	public void testComparisons() {
+		binding.put("i", 3);
+		verifyRender("$if($i < 4)[[here]]", "here");
+		verifyRender("$if($i < 3)[[here]]", "");
+		verifyRender("$if($i < 2)[[here]]", "");
+		verifyRender("$if($i <= 4)[[here]]", "here");
+		verifyRender("$if($i <= 3)[[here]]", "here");
+		verifyRender("$if($i <= 2)[[here]]", "");
+		
+		verifyRender("$if($i > 4)[[here]]", "");
+		verifyRender("$if($i > 3)[[here]]", "");
+		verifyRender("$if($i > 2)[[here]]", "here");
+		verifyRender("$if($i >= 4)[[here]]", "");
+		verifyRender("$if($i >= 3)[[here]]", "here");
+		verifyRender("$if($i >= 2)[[here]]", "here");
+	}
 	
 	public void testStringEscape() throws Exception {
 		verifyRender("$escape('\\'\\\\\\n\\r\\t')", "'\\\n\r\t");

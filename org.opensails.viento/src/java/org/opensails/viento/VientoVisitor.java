@@ -10,8 +10,13 @@ import org.opensails.viento.parser.ASTArguments;
 import org.opensails.viento.parser.ASTBlock;
 import org.opensails.viento.parser.ASTBody;
 import org.opensails.viento.parser.ASTBoolean;
-import org.opensails.viento.parser.ASTBooleanExpression;
+import org.opensails.viento.parser.ASTEquality;
 import org.opensails.viento.parser.ASTExpression;
+import org.opensails.viento.parser.ASTGreaterThan;
+import org.opensails.viento.parser.ASTGreaterThanOrEqual;
+import org.opensails.viento.parser.ASTLeftHandExpression;
+import org.opensails.viento.parser.ASTLessThan;
+import org.opensails.viento.parser.ASTLessThanOrEqual;
 import org.opensails.viento.parser.ASTList;
 import org.opensails.viento.parser.ASTMap;
 import org.opensails.viento.parser.ASTName;
@@ -92,7 +97,37 @@ public class VientoVisitor extends AbstractParserVisitor {
 		return new Block(binding, body);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected Object evaluate(ASTExpression expression) {
+		Node node = expression.jjtGetChild(0);
+		if (node instanceof ASTLeftHandExpression)
+			return evaluate((ASTLeftHandExpression) node);
+		if (node instanceof ASTAnd)
+			return nullOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) && nullOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
+		if (node instanceof ASTOr)
+			return nullOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) || nullOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
+		if (node instanceof ASTEquality)
+			return evaluate((ASTLeftHandExpression)node.jjtGetChild(0)).equals(evaluate((ASTExpression)node.jjtGetChild(1)));
+		if (node instanceof ASTGreaterThan)
+			return ((Comparable)evaluate((ASTLeftHandExpression)node.jjtGetChild(0))).compareTo(evaluate((ASTExpression)node.jjtGetChild(1))) > 0;
+		if (node instanceof ASTGreaterThanOrEqual)
+			return ((Comparable)evaluate((ASTLeftHandExpression)node.jjtGetChild(0))).compareTo(evaluate((ASTExpression)node.jjtGetChild(1))) >= 0;
+		if (node instanceof ASTLessThan)
+			return ((Comparable)evaluate((ASTLeftHandExpression)node.jjtGetChild(0))).compareTo(evaluate((ASTExpression)node.jjtGetChild(1))) < 0;
+		if (node instanceof ASTLessThanOrEqual)
+			return ((Comparable)evaluate((ASTLeftHandExpression)node.jjtGetChild(0))).compareTo(evaluate((ASTExpression)node.jjtGetChild(1))) <= 0;
+		return null;
+	}
+
+	protected String unescapeString(String value) {
+		return value.replace("\\'", "'").replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\\"", "\"").replace("\\$", "$");
+	}
+	
+	protected String unescape(String value) {
+		return value.replace("\\$", "$");
+	}
+	
+	protected Object evaluate(ASTLeftHandExpression expression) {
 		Node node = expression.jjtGetChild(0);
 		if (node instanceof ASTStatement)
 			return evaluate((ASTStatement) node);
@@ -110,32 +145,11 @@ public class VientoVisitor extends AbstractParserVisitor {
 			return null;
 		if (node instanceof ASTSymbol)
 			return ((ASTSymbol)node).getValue();
-		if (node instanceof ASTAnd)
-			return evaluate((ASTBooleanExpression)node.jjtGetChild(0)) && evaluate((ASTBooleanExpression)node.jjtGetChild(1));
-		if (node instanceof ASTOr)
-			return evaluate((ASTBooleanExpression)node.jjtGetChild(0)) || evaluate((ASTBooleanExpression)node.jjtGetChild(1));
 		if (node instanceof ASTNot)
 			return !nullOrFalse(evaluate((ASTStatement)node.jjtGetChild(0)));
 		if (node instanceof ASTStringBlock)
 			return unescapeString(evaluateBlock((ASTBody) node.jjtGetChild(0)).evaluate());
 		return null;
-	}
-
-	protected String unescapeString(String value) {
-		return value.replace("\\'", "'").replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\\"", "\"").replace("\\$", "$");
-	}
-	
-	protected String unescape(String value) {
-		return value.replace("\\$", "$");
-	}
-	
-	protected boolean evaluate(ASTBooleanExpression expression) {
-		Node node = expression.jjtGetChild(0);
-		if (node instanceof ASTStatement)
-			return nullOrFalse(evaluate((ASTStatement)node));
-		if (node instanceof ASTNot)
-			return !nullOrFalse(evaluate((ASTStatement)node.jjtGetChild(0)));
-		return false;
 	}
 
 	protected boolean nullOrFalse(Object object) {
