@@ -71,7 +71,7 @@ public class HtmlForm {
 					IPropertyAccessor accessor = accessor(path);
 					Class propertyTypeOnTarget = accessor.getPropertyType(model);
 					IAdapter adapter = adapter(path, propertyTypeOnTarget);
-					accessor.set(model, adapter.forModel(accessor.getPropertyType(model), formFields.valueAs(fieldName, adapter.getFieldType())));
+					accessor.set(model, adapter.forModel(propertyTypeOnTarget, formFields.valueAs(fieldName, adapter.getFieldType())));
 
 					// now that everything is transferred, validate
 					IValidationResult validationResult = validationEngine.validate(model);

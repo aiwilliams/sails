@@ -51,7 +51,9 @@ public class PrimitiveAdapter extends AbstractAdapter<Object, Object> {
     }
 
     public static class BooleanAdapter extends AbstractAdapter<Boolean, String> {
+    	final static String CHECKBOX_VALUE = "checked";
         public Boolean forModel(Class<? extends Boolean> modelType, String fromWeb) throws AdaptationException {
+        	if (CHECKBOX_VALUE.equals(fromWeb)) return true;
             return Boolean.valueOf(fromWeb);
         }
 
