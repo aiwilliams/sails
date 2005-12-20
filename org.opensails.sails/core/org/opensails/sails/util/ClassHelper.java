@@ -1,11 +1,12 @@
 package org.opensails.sails.util;
 
-import java.lang.annotation.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.lang.*;
-import org.opensails.sails.*;
+import org.apache.commons.lang.ClassUtils;
+import org.opensails.sails.SailsException;
 
 /**
  * YAGNI and YARGNI, all in one class.
@@ -19,11 +20,22 @@ import org.opensails.sails.*;
  * 
  */
 public class ClassHelper {
+	/**
+	 * @param clazz
+	 * @param name
+	 * @return the Field with name or null. Searches up class heirarchy.
+	 */
 	public static Field fieldNamed(Class clazz, String name) {
 		try {
-			return clazz.getDeclaredField(name);
+			Class lookingAt = clazz;
+			while (lookingAt != null) {
+				for (Field field : lookingAt.getDeclaredFields())
+					if (field.getName().equals(name)) return field;
+				lookingAt = lookingAt.getSuperclass();
+			}
+			throw new RuntimeException(String.format("Could not find a field named %s on %s", name, clazz));
 		} catch (Throwable t) {
-			throw new RuntimeException(String.format("Could not find a field named %s on %s", name, clazz), t);
+			throw new RuntimeException(String.format("Could not access fields on %s", clazz));
 		}
 	}
 
