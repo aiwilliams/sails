@@ -31,6 +31,7 @@ public class VientoTemplateTest extends TestCase {
 	public void testSemicolon() throws Exception {
 		binding.put("key", "value");
 		verifyRender("stuff$key;stuff", "stuffvaluestuff");
+		verifyRender("$key.length();.", "5.");
 	}
 
 	public void testMethodCall() throws Exception {

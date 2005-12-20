@@ -87,16 +87,12 @@ TOKEN : {
 	<([" ", "\t", "\r"])* (~["^", "a"-"z", "A"-"Z", "$", "!", "?", "_", "-"])> {input_stream.backup(1); popState();}
 }
 
-<ARGS_OR_BLOCK> SKIP : {
-	";" {popState(); popState();}
-}
-
 <ARGS_OR_BLOCK> TOKEN : {
 	<LPAREN: "("> {pushState(EXPRESSION);}
 }
 
 <ARGS_OR_BLOCK> MORE : {
-	<([" ", "\t", "\r"])* (~["(", "[", ".", ">"])> {input_stream.backup(1); popState(); popState();}
+	<([" ", "\t", "\r"])* (~["(", "[", ".", ">", ";"])> {input_stream.backup(1); popState(); popState();}
 |	<([" ", "\t", "\r"])* "[" (~["["])> {input_stream.backup(1); popState(); popState();}
 }
 
@@ -106,7 +102,7 @@ TOKEN : {
 }
 
 <BLOCK> MORE : {
-	<([" ", "\t", "\r"])* (~["[", ".", ">"])> {input_stream.backup(1); popState(); popState();}
+	<([" ", "\t", "\r"])* (~["[", ".", ">", ";"])> {input_stream.backup(1); popState(); popState();}
 |	<([" ", "\t", "\r"])* "[" (~["["])> {input_stream.backup(1); popState(); popState();}
 }
 
@@ -114,8 +110,12 @@ TOKEN : {
 	<DOT: "."> {popState();}
 }
 
+<ARGS_OR_BLOCK, BLOCK, END> SKIP : {
+	";" {popState(); popState();}
+}
+
 <END> MORE : {
-	<([" ", "\t", "\r"])* (~["."])> {input_stream.backup(1); popState(); popState();}
+	<([" ", "\t", "\r"])* (~[".", ";"])> {input_stream.backup(1); popState(); popState();}
 }
 
 <EXPRESSION> TOKEN : {
