@@ -10,7 +10,7 @@ import org.opensails.viento.parser.ASTArguments;
 import org.opensails.viento.parser.ASTBlock;
 import org.opensails.viento.parser.ASTBody;
 import org.opensails.viento.parser.ASTBoolean;
-import org.opensails.viento.parser.ASTEquality;
+import org.opensails.viento.parser.ASTEqual;
 import org.opensails.viento.parser.ASTExpression;
 import org.opensails.viento.parser.ASTGreaterThan;
 import org.opensails.viento.parser.ASTGreaterThanOrEqual;
@@ -21,6 +21,7 @@ import org.opensails.viento.parser.ASTList;
 import org.opensails.viento.parser.ASTMap;
 import org.opensails.viento.parser.ASTName;
 import org.opensails.viento.parser.ASTNot;
+import org.opensails.viento.parser.ASTNotEqual;
 import org.opensails.viento.parser.ASTNull;
 import org.opensails.viento.parser.ASTNumber;
 import org.opensails.viento.parser.ASTOr;
@@ -106,8 +107,10 @@ public class VientoVisitor extends AbstractParserVisitor {
 			return nullOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) && nullOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTOr)
 			return nullOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) || nullOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
-		if (node instanceof ASTEquality)
+		if (node instanceof ASTEqual)
 			return evaluate((ASTLeftHandExpression)node.jjtGetChild(0)).equals(evaluate((ASTExpression)node.jjtGetChild(1)));
+		if (node instanceof ASTNotEqual)
+			return !evaluate((ASTLeftHandExpression)node.jjtGetChild(0)).equals(evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTGreaterThan)
 			return ((Comparable)evaluate((ASTLeftHandExpression)node.jjtGetChild(0))).compareTo(evaluate((ASTExpression)node.jjtGetChild(1))) > 0;
 		if (node instanceof ASTGreaterThanOrEqual)

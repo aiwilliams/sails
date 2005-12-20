@@ -135,7 +135,8 @@ TOKEN : {
 |	<AND: "&&">
 |	<OR: "||">
 |	<NOT: "!">
-|	<EQUALITY: "==">
+|	<EQUAL: "==">
+|	<NOT_EQUAL: "!=">
 |	<GT: ">">
 |	<LT: "<">
 |	<GTE: ">=">
@@ -212,8 +213,11 @@ void Expression() : {}
 |	LOOKAHEAD(LeftHandExpression() <OR>)
 	Or()
 
-|	LOOKAHEAD(LeftHandExpression() <EQUALITY>)
-	Equality()
+|	LOOKAHEAD(LeftHandExpression() <EQUAL>)
+	Equal()
+
+|	LOOKAHEAD(LeftHandExpression() <NOT_EQUAL>)
+	NotEqual()
 
 |	LOOKAHEAD(LeftHandExpression() <GT>)
 	GreaterThan()
@@ -265,8 +269,11 @@ void And() : {}
 void Or() : {}
 { LeftHandExpression() <OR> Expression() }
 
-void Equality() : {}
-{ LeftHandExpression() <EQUALITY> Expression() }
+void Equal() : {}
+{ LeftHandExpression() <EQUAL> Expression() }
+
+void NotEqual() : {}
+{ LeftHandExpression() <NOT_EQUAL> Expression() }
 
 void GreaterThan() : {}
 { LeftHandExpression() <GT> Expression() }

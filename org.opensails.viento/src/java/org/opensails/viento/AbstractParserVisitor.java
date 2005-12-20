@@ -6,7 +6,7 @@ import org.opensails.viento.parser.ASTBlock;
 import org.opensails.viento.parser.ASTBody;
 import org.opensails.viento.parser.ASTBoolean;
 import org.opensails.viento.parser.ASTCall;
-import org.opensails.viento.parser.ASTEquality;
+import org.opensails.viento.parser.ASTEqual;
 import org.opensails.viento.parser.ASTExpression;
 import org.opensails.viento.parser.ASTGreaterThan;
 import org.opensails.viento.parser.ASTGreaterThanOrEqual;
@@ -18,6 +18,7 @@ import org.opensails.viento.parser.ASTMap;
 import org.opensails.viento.parser.ASTMapEntry;
 import org.opensails.viento.parser.ASTName;
 import org.opensails.viento.parser.ASTNot;
+import org.opensails.viento.parser.ASTNotEqual;
 import org.opensails.viento.parser.ASTNull;
 import org.opensails.viento.parser.ASTNumber;
 import org.opensails.viento.parser.ASTOr;
@@ -80,10 +81,10 @@ public class AbstractParserVisitor implements ParserVisitor {
 		return data;
 	}
 
-    public void visit(ASTEquality node) {
+    public void visit(ASTEqual node) {
     }
     
-    public Object visit(ASTEquality node, Object data) {
+    public Object visit(ASTEqual node, Object data) {
 		visit(node);
 		return data;
 	}
@@ -98,15 +99,15 @@ public class AbstractParserVisitor implements ParserVisitor {
     
     public void visit(ASTGreaterThan node) {
 	}
-	
+    
     public Object visit(ASTGreaterThan node, Object data) {
 		visit(node);
 		return data;
 	}
-
+    
     public void visit(ASTGreaterThanOrEqual node) {
 	}
-
+	
     public Object visit(ASTGreaterThanOrEqual node, Object data) {
 		visit(node);
 		return data;
@@ -119,19 +120,19 @@ public class AbstractParserVisitor implements ParserVisitor {
 		visit(node);
 		return data;
 	}
-    
+
     public void visit(ASTLessThan node) {
 	}
-    
+
     public Object visit(ASTLessThan node, Object data) {
 		visit(node);
 		return data;
 	}
-
-	public void visit(ASTLessThanOrEqual node) {
+    
+    public void visit(ASTLessThanOrEqual node) {
 	}
-
-	public Object visit(ASTLessThanOrEqual node, Object data) {
+    
+    public Object visit(ASTLessThanOrEqual node, Object data) {
 		visit(node);
 		return data;
 	}
@@ -175,6 +176,14 @@ public class AbstractParserVisitor implements ParserVisitor {
 		visit(node);
 		return data;
 	}
+
+	public void visit(ASTNotEqual node) {
+    }
+
+	public Object visit(ASTNotEqual node, Object data) {
+    	visit(node);
+    	return data;
+    }
 	
 	public void visit(ASTNull node) {
     }

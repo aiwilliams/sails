@@ -188,12 +188,16 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($yes && !$no)[[here]]", "here");
 	}
 	
-	public void testEqualsEquals() {
+	public void testEquals() {
 		binding.put("one", "value");
 		binding.put("two", "value");
 		verifyRender("$if($one == $two)[[here]]", "here");
 		verifyRender("$if($one == 0)[[here]]", "");
 		verifyRender("$if($one.length == 5)[[here]]", "here");
+
+		verifyRender("$if($one != $two)[[here]]", "");
+		verifyRender("$if($one != 0)[[here]]", "here");
+		verifyRender("$if($one.length != 5)[[here]]", "");
 	}
 	
 	public void testComparisons() {
