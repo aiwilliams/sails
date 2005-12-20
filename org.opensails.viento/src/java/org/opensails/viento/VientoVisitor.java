@@ -127,7 +127,7 @@ public class VientoVisitor extends AbstractParserVisitor {
 	}
 	
 	protected String unescape(String value) {
-		return value.replace("\\$", "$");
+		return value.replace("\\$", "$").replace("\\\\", "\\");
 	}
 	
 	protected Object evaluate(ASTLeftHandExpression expression) {

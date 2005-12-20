@@ -223,6 +223,7 @@ public class VientoTemplateTest extends TestCase {
 	
 	public void testEscaping() throws Exception {
 		verifyRender("\\$name", "$name");
+		verifyRender("\\\\\\$name", "\\$name");
 	}
 	
 	public void testPrototype() {
