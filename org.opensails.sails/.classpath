@@ -11,5 +11,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.sails.vendor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.viento"/>
 	<classpathentry output="generators/tasks" kind="src" path="generators/tasks"/>
+	<classpathentry kind="src" path="test/functional"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>

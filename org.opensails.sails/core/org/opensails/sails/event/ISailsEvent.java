@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.configuration.Configuration;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.RequestContainer;
+import org.opensails.sails.action.IActionParameterList;
 import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.url.IEventUrl;
 import org.opensails.sails.url.IUrl;
@@ -25,10 +26,9 @@ public interface ISailsEvent {
 	String getActionName();
 
 	/**
-	 * @return the Strings in the URL after the controller/action, as in [a, b]
-	 *         when controller/action/a/b
+	 * @return the parameters in the URL
 	 */
-	String[] getActionParameters();
+	IActionParameterList getActionParameters();
 
 	/**
 	 * @return the application that generated this event
@@ -41,11 +41,6 @@ public interface ISailsEvent {
 	 * @return the event container (request scoped)
 	 */
 	RequestContainer getContainer();
-
-	/**
-	 * @return the name of the IActionEventProcessor this event is bound for
-	 */
-	String getProcessorName();
 
 	IEventUrl getEventUrl();
 
@@ -77,6 +72,11 @@ public interface ISailsEvent {
 	 * @return the FileUpload for the given name, null if it's not there
 	 */
 	FileUpload getFileUpload(String name);
+
+	/**
+	 * @return the name of the IActionEventProcessor this event is bound for
+	 */
+	String getProcessorName();
 
 	HttpServletRequest getRequest();
 

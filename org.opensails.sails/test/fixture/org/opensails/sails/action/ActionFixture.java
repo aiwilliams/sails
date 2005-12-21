@@ -2,29 +2,18 @@ package org.opensails.sails.action;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.action.oem.Action;
-import org.opensails.sails.action.oem.ShamActionListener;
+import org.opensails.sails.action.oem.ActionParameterList;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.Controller;
-import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.event.oem.ShamEvent;
-import org.opensails.sails.tester.util.CollectionAssert;
 
 public class ActionFixture {
 	public static IAction adapters(String actionName, Class<? extends IControllerImpl> controllerImpl, IAdapterResolver adapterResolver) {
 		return new Action(actionName, controllerImpl, adapterResolver);
-	}
-
-	public static ShamActionListener addListener(ISailsEvent event) {
-		ShamActionListener listener = new ShamActionListener();
-		event.getContainer().register(listener);
-		return listener;
-	}
-
-	public static void assertNotificationsMade(ShamActionListener listener) {
-		CollectionAssert.containsOnlyOrdered(new String[] { "beginExecution", "endExecution" }, listener.notifications);
 	}
 
 	public static Action create() {
@@ -41,10 +30,9 @@ public class ActionFixture {
 
 	public static IActionResult execute(Action action, IControllerImpl controller, String[] unadaptedArguments) {
 		ShamEvent event = SailsEventFixture.sham();
-		ShamActionListener listener = ActionFixture.addListener(event);
-		if (controller != null) controller.setEventContext(event, new Controller(controller.getClass(), new AdapterResolver()));
-		IActionResult result = action.execute(event, controller, unadaptedArguments);
-		ActionFixture.assertNotificationsMade(listener);
+		AdapterResolver resolver = new AdapterResolver();
+		if (controller != null) controller.setEventContext(event, new Controller(controller.getClass(), resolver));
+		IActionResult result = action.execute(event, controller, new ActionParameterList(unadaptedArguments, new ContainerAdapterResolver(resolver, event.getContainer())));
 		return result;
 	}
 }

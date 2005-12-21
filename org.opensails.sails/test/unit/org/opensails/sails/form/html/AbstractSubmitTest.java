@@ -1,5 +1,6 @@
 package org.opensails.sails.form.html;
 
+import static org.opensails.sails.form.FormMeta.ACTION_PREFIX;
 import junit.framework.TestCase;
 
 import org.opensails.sails.adapter.AdaptationException;
@@ -18,7 +19,7 @@ public class AbstractSubmitTest extends TestCase {
 		});
 		AbstractSubmit submit = new AbstractSubmit("whocares", "name", adapterResolver) {};
 		submit.action("myAction", Quick.list("originalValue"));
-		assertEquals("<input name=\"" + Submit.ACTION_PREFIX + "myAction_adapted\" type=\"whocares\" value=\"\" />", submit.toString());
+		assertEquals("<input name=\"" + ACTION_PREFIX + "myAction_adapted\" type=\"whocares\" value=\"\" />", submit.toString());
 	}
 
 	public void testToString() {
@@ -35,6 +36,6 @@ public class AbstractSubmitTest extends TestCase {
 		 * controller.
 		 */
 		submit.action("myAction");
-		assertEquals("<input name=\"" + Submit.ACTION_PREFIX + "myAction\" type=\"whocares\" value=\"hehe\" />", submit.toString());
+		assertEquals("<input name=\"" + ACTION_PREFIX + "myAction\" type=\"whocares\" value=\"hehe\" />", submit.toString());
 	}
 }

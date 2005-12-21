@@ -17,6 +17,8 @@ import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.oem.ActionParameterList;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.event.ISailsEventListener;
 import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.form.FormFields;
@@ -30,10 +32,11 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected ISailsApplication application;
 	protected RequestContainer container;
 	protected FormFields fields;
+	protected ActionParameterList parameters;
 	protected final HttpServletRequest req;
 	protected final HttpServletResponse response;
-	protected OutputStream responseOutputStream;
 
+	protected OutputStream responseOutputStream;
 	protected PrintWriter responseWriter;
 	protected EventUrl url;
 
@@ -65,8 +68,9 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return url.getAction();
 	}
 
-	public String[] getActionParameters() {
-		return url.getActionParameters();
+	public ActionParameterList getActionParameters() {
+		if (parameters == null) parameters = createParameters(url.getActionParameters());
+		return parameters;
 	}
 
 	public ISailsApplication getApplication() {
@@ -81,10 +85,6 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return container;
 	}
 
-	public String getProcessorName() {
-		return url.getController();
-	}
-
 	public IEventUrl getEventUrl() {
 		return url;
 	}
@@ -92,13 +92,17 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	public String getFieldValue(String name) {
 		return fields.value(name);
 	}
-	
+
 	public String[] getFieldValues(String name) {
 		return fields.values(name);
 	}
 
 	public FileUpload getFileUpload(String name) {
 		return fields.file(name);
+	}
+
+	public String getProcessorName() {
+		return url.getController();
 	}
 
 	public HttpServletRequest getRequest() {
@@ -195,6 +199,19 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return new RequestContainer(parentContainer, this);
 	}
 
+	/**
+	 * Called once, lazily, when getActionParameters is invoked first time
+	 * 
+	 * @return the ActionParameters of this event
+	 */
+	protected ActionParameterList createParameters(String[] eventParameters) {
+		return new ActionParameterList(eventParameters, getAdapterResolver());
+	}
+
+	protected ContainerAdapterResolver getAdapterResolver() {
+		return getContainer().instance(ContainerAdapterResolver.class);
+	}
+
 	protected ISailsEventListener getBroadcaster() {
 		return application.getContainer().broadcast(ISailsEventListener.class, false);
 	}
@@ -213,9 +230,9 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	}
 
 	protected void initialize(ScopedContainer parentContainer) {
-		this.url = new EventUrl(req);
-		this.container = createContainer(parentContainer);
-		this.container.register(FormFields.class, fields);
+		url = new EventUrl(req);
+		container = createContainer(parentContainer);
+		container.register(FormFields.class, fields);
 		containerSet();
 	}
 }

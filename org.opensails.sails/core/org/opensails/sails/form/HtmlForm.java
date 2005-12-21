@@ -20,11 +20,6 @@ import org.opensails.sails.validation.IValidationEngine;
 import org.opensails.sails.validation.IValidationResult;
 
 public class HtmlForm {
-	/**
-	 * The prefix of all form meta fields.
-	 */
-	public static final String META_PREFIX = "form.meta.";
-
 	protected final IAdapterResolver adapterResolver;
 	protected final RequestContainer container;
 	protected final FormFields formFields;

@@ -7,14 +7,8 @@ import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.action.ActionFixture;
-import org.opensails.sails.action.ActionResultFixture;
 import org.opensails.sails.action.IAction;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.controller.oem.BaseController;
 import org.opensails.sails.controller.oem.ShamController;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.event.oem.SailsEventFixture;
-import org.opensails.sails.event.oem.ShamEvent;
 import org.opensails.sails.tester.util.CollectionAssert;
 
 public class ActionTest extends TestCase {
@@ -35,11 +29,6 @@ public class ActionTest extends TestCase {
 		CollectionAssert.containsOnlyOrdered(new Method[] { actionMethodTwoParams, actionMethodOneParam, actionMethodNoParams }, action.actionMethods);
 	}
 
-	public void testConstructor_NoImplementation() throws Exception {
-		Action action = ActionFixture.defaultAdapters("voidActionMultiple", null);
-		CollectionAssert.containsOnlyOrdered(new Method[] {}, action.actionMethods);
-	}
-
 	/**
 	 * It is important to maintain knowledge about the number of arguments for
 	 * each method that matches our action name. This allows the action to
@@ -50,18 +39,6 @@ public class ActionTest extends TestCase {
 		Action voidActionNoParams = ActionFixture.defaultAdapters("voidActionNoParams", ShamController.class);
 		Method voidActionNoParamsMethod = ShamController.class.getMethod("voidActionNoParams", ArrayUtils.EMPTY_CLASS_ARRAY);
 		CollectionAssert.containsOnly(voidActionNoParamsMethod, voidActionNoParams.actionMethods);
-	}
-
-	public void testExecute() throws Exception {
-		Action action = ActionFixture.defaultAdapters("voidActionMultiple", ShamController.class);
-		ShamController controller = new ShamController();
-		ActionFixture.execute(action, controller);
-		assertEquals("voidActionMultiple()", controller.actionInvoked);
-
-		try {
-			ActionFixture.execute(action, new BaseController());
-			fail("Can't execute this action against a different controller type");
-		} catch (IllegalArgumentException expected) {}
 	}
 
 	public void testExecute_AdaptersUsed() {
@@ -80,84 +57,6 @@ public class ActionTest extends TestCase {
 		ShamController controller = new ShamController();
 		ActionFixture.execute(action, controller);
 		assertNull(controller.actionInvoked);
-	}
-
-	public void testExecute_NotifiesListeners() {
-		Action action = ActionFixture.create();
-		ShamEvent event = SailsEventFixture.sham();
-		ShamActionListener listener = ActionFixture.addListener(event);
-		action.execute(event, null, null);
-		ActionFixture.assertNotificationsMade(listener);
-	}
-
-	public void testExecute_NullControllerInstance() {
-		Action action = ActionFixture.defaultAdapters("voidActionMultiple", null);
-		assertNotNull(ActionFixture.execute(action, null, new String[] { "1" }));
-	}
-
-	public void testExecute_NullInstance_NonNullImplementation() {
-		Action action = ActionFixture.defaultAdapters("don't care", ShamController.class);
-		ShamEvent event = SailsEventFixture.sham();
-		ShamActionListener listener = ActionFixture.addListener(event);
-
-		try {
-			action.execute(event, null, null);
-			fail("Should have thrown exception for null instance with non-null implementation");
-		} catch (Exception e) {
-			CollectionAssert.containsOnly(new String[] { "beginExecution" }, listener.notifications);
-		}
-	}
-
-	public void testExecute_ObtainsBroadcasterFromApplicationScope() {
-		Action action = ActionFixture.create();
-		ShamEvent event = SailsEventFixture.sham();
-		ShamActionListener listener = new ShamActionListener();
-		event.getApplication().getContainer().register(listener);
-		action.execute(event, null, null);
-		ActionFixture.assertNotificationsMade(listener);
-	}
-
-	public void testExecute_ResultDefault() {
-		Action action = ActionFixture.defaultAdapters("voidActionMultiple", ShamController.class);
-		ShamController controller = new ShamController();
-		IActionResult result = ActionFixture.execute(action, controller);
-		assertEquals(TemplateActionResult.class, result.getClass());
-	}
-
-	public void testExecute_ResultFromActionMethod() throws Exception {
-		Action action = ActionFixture.defaultAdapters("resultAction", ShamController.class);
-		ShamController controller = new ShamController();
-		IActionResult result = ActionFixture.execute(action, controller);
-		assertSame(controller.resultReturned, result);
-	}
-
-	public void testExecute_ResultInContainer() {
-		final IActionResult testResult = ActionResultFixture.template();
-		ShamController controller = new ShamController() {
-			@SuppressWarnings("unused")
-			public IActionResult someAction() {
-				return testResult;
-			}
-		};
-		ISailsEvent event = SailsEventFixture.sham();
-		// the getClass is because of the way the action caches the methods
-		Action action = ActionFixture.defaultAdapters("someAction", controller.getClass());
-		controller.setEventContext(event, null);
-		action.execute(event, controller, null);
-		assertSame("make sure it is the same one placed in the container by the action", testResult, event.getContainer().instance(IActionResult.class));
-		assertSame("not only as the interface but also as the concrete type", testResult, event.getContainer().instance(TemplateActionResult.class));
-	}
-
-	public void testExecute_WrongInstanceType() {
-		Action action = ActionFixture.defaultAdapters("don't care", ShamController.class);
-		ShamEvent event = SailsEventFixture.sham();
-		ShamActionListener listener = ActionFixture.addListener(event);
-		try {
-			action.execute(event, new BaseController(), null);
-			fail("Should have thrown exception due to wrong instance type");
-		} catch (Exception e) {
-			CollectionAssert.containsOnly(new String[] { "beginExecution" }, listener.notifications);
-		}
 	}
 
 	public void testGetParameterTypes() throws Exception {

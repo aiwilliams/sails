@@ -23,6 +23,13 @@ public class ActionUrl extends AbstractUrl<ActionUrl> {
 		this.action = action;
 	}
 
+	public void appendParameter(Object parameter) {
+		Object[] newParameters = new Object[unadaptedParameters.length + 1];
+		System.arraycopy(unadaptedParameters, 0, newParameters, 0, unadaptedParameters.length);
+		newParameters[unadaptedParameters.length] = parameter;
+		unadaptedParameters = newParameters;
+	}
+
 	public String getActionName() {
 		return action;
 	}
@@ -55,25 +62,19 @@ public class ActionUrl extends AbstractUrl<ActionUrl> {
 	public void setParameters(Object... args) {
 		this.unadaptedParameters = args;
 	}
-	
-	public void appendParameter(Object parameter) {
-		Object[] newParameters = new Object[unadaptedParameters.length + 1];
-		System.arraycopy(unadaptedParameters, 0, newParameters, 0, unadaptedParameters.length);
-		newParameters[unadaptedParameters.length] = parameter;
-		unadaptedParameters = newParameters;
-	}
 
 	// TODO: Make this more robust - like what about things adapted to String[]
+	@SuppressWarnings("unchecked")
 	protected String adapt(Object parameter) {
 		IAdapterResolver resolver = event.getContainer().instance(IAdapterResolver.class);
 		IAdapter adapter = resolver.resolve(parameter.getClass(), event.getContainer());
-		return (String) adapter.forWeb(parameter.getClass(), parameter);
+		return String.valueOf(adapter.forWeb(parameter.getClass(), parameter));
 	}
 
 	@Override
 	protected String doRender() {
-		// TODO: this is not correct, but maintains previous behavior. Change
-		// it.
+		// TODO: this is not correct, but maintains previous behavior. It should
+		// not render absolute, as controller/action is realative to the server.
 		return renderAbsoluteUrl();
 	}
 

@@ -9,9 +9,11 @@ import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.Sails;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.tester.form.TestFormFields;
@@ -31,7 +33,7 @@ public class SailsTester implements ISailsApplication {
 	// Container used when events are generated
 	protected TestRequestContainer requestContainer;
 	protected ShamHttpSession session;
-	protected Class<? extends IControllerImpl> workingController;
+	protected Class<? extends IEventProcessingContext> workingController;
 
 	/**
 	 * @see org.opensails.sails.ISailsApplicationConfigurator
@@ -108,8 +110,7 @@ public class SailsTester implements ISailsApplication {
 	 * @return the page for the given controller/action
 	 */
 	public Page get(String controller, String action, String... parameters) {
-		TestGetEvent event = createGetEvent(controller, action);
-		event.setActionParameters(parameters);
+		TestGetEvent event = createGetEvent(controller, action, parameters);
 		event.getContainer().registerAll(getRequestContainer());
 		return doGet(event);
 	}
@@ -179,8 +180,8 @@ public class SailsTester implements ISailsApplication {
 		session = null;
 	}
 
-	public Page post(Class<? extends IControllerImpl> controller, FormFields formFields) {
-		return post(Sails.controllerName(controller), formFields);
+	public Page post(Class<? extends IControllerImpl> controller, FormFields formFields, Object... parameters) {
+		return post(Sails.controllerName(controller), formFields, parameters);
 	}
 
 	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, Object... actionParameters) {
@@ -204,12 +205,12 @@ public class SailsTester implements ISailsApplication {
 	 * 
 	 * @return the index page of the current working controller
 	 */
-	public Page post(FormFields formFields) {
-		return post("index", formFields);
+	public Page post(FormFields formFields, Object... parameters) {
+		return post("index", formFields, parameters);
 	}
 
-	public Page post(String action, FormFields formFields) {
-		return post(workingController(), action, formFields);
+	public Page post(String action, FormFields formFields, Object... parameters) {
+		return post(workingController(), action, formFields, parameters);
 	}
 
 	/**
@@ -225,17 +226,30 @@ public class SailsTester implements ISailsApplication {
 	 * @param parameters
 	 * @return the page for the given controller/action
 	 */
-	public Page post(String controller, String action, FormFields formFields) {
-		TestPostEvent postEvent = createPostEvent(controller, action, formFields);
+	public Page post(String controller, String action, FormFields formFields, Object... parameters) {
+		TestPostEvent postEvent = createPostEvent(controller, action, formFields, adaptParameters(parameters, new ContainerAdapterResolver(application.getContainer().instance(IAdapterResolver.class), requestContainer)));
 		return doPost(postEvent);
 	}
 
-	public void setWorkingController(Class<? extends IControllerImpl> controller) {
+	public void setWorkingController(Class<? extends IEventProcessingContext> controller) {
 		this.workingController = controller;
 	}
 
 	public String workingController() {
 		return workingController != null ? Sails.controllerName(workingController) : "home";
+	}
+
+	protected String[] adaptParameters(Object[] parameters, ContainerAdapterResolver resolver) {
+		if (parameters != null && parameters.length > 0) {
+			String[] params = new String[parameters.length];
+			for (int i = 0; i < parameters.length; i++) {
+				Object object = parameters[i];
+				IAdapter adapter = resolver.resolve(object.getClass());
+				params[i] = String.valueOf(adapter.forWeb(object.getClass(), object));
+			}
+			return params;
+		}
+		return ArrayUtils.EMPTY_STRING_ARRAY;
 	}
 
 	protected TestGetEvent createGetEvent(String pathInfo) {
@@ -248,8 +262,8 @@ public class SailsTester implements ISailsApplication {
 		return event;
 	}
 
-	protected TestGetEvent createGetEvent(String controller, String action) {
-		return createGetEvent(controller + "/" + action);
+	protected TestGetEvent createGetEvent(String controller, String action, String... parameters) {
+		return createGetEvent(toPathInfo(controller, action, parameters));
 	}
 
 	protected TestPostEvent createPostEvent(String pathInfo, FormFields formFields) {
@@ -263,8 +277,8 @@ public class SailsTester implements ISailsApplication {
 		return event;
 	}
 
-	protected TestPostEvent createPostEvent(String controller, String action, FormFields formFields) {
-		return createPostEvent(controller + "/" + action, formFields);
+	protected TestPostEvent createPostEvent(String controller, String action, FormFields formFields, String... parameters) {
+		return createPostEvent(toPathInfo(controller, action, parameters), formFields);
 	}
 
 	/**
@@ -314,5 +328,29 @@ public class SailsTester implements ISailsApplication {
 		// TODO: Bind to lazy created session container
 		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
 		else requestContainer = new TestRequestContainer(getContainer());
+	}
+
+	protected String toParametersString(String... parameters) {
+		StringBuilder string = new StringBuilder();
+		for (String param : parameters) {
+			string.append("/");
+			string.append(param);
+		}
+		return string.toString();
+	}
+
+	/**
+	 * @param controller
+	 * @param action
+	 * @param parameters
+	 * @return
+	 */
+	private String toPathInfo(String controller, String action, String... parameters) {
+		StringBuilder pathInfo = new StringBuilder();
+		pathInfo.append(controller);
+		pathInfo.append("/");
+		pathInfo.append(action);
+		pathInfo.append(toParametersString(parameters));
+		return pathInfo.toString();
 	}
 }

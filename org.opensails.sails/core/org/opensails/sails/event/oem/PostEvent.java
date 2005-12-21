@@ -1,5 +1,7 @@
 package org.opensails.sails.event.oem;
 
+import static org.opensails.sails.form.FormMeta.ACTION_PREFIX;
+
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,7 +11,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.form.html.Submit;
+import org.opensails.sails.action.oem.ActionParameterList;
 
 public class PostEvent extends AbstractEvent {
 	protected static final Pattern XY_COORDINATE_PATTERN = Pattern.compile(".*?\\.[x|y]$");
@@ -32,19 +34,19 @@ public class PostEvent extends AbstractEvent {
 	}
 
 	@Override
-	public String[] getActionParameters() {
-		String[] submitActionParameters = findSubmitActionParameters();
-		if (submitActionParameters != null) return submitActionParameters;
-		return super.getActionParameters();
-	}
-
-	@Override
 	public IActionResult visit(IActionEventProcessor eventProcessor) {
 		return eventProcessor.process(this);
 	}
 
+	@Override
+	protected ActionParameterList createParameters(String[] eventParameters) {
+		String[] submitActionParameters = findSubmitActionParameters();
+		if (submitActionParameters == null) return super.createParameters(eventParameters);
+		return super.createParameters(submitActionParameters);
+	}
+
 	protected String findActionMeta() {
-		String[] actionMetas = getFieldNamesPrefixed(Submit.ACTION_PREFIX);
+		String[] actionMetas = getFieldNamesPrefixed(ACTION_PREFIX);
 		if (actionMetas.length < 1) return null;
 		if (actionMetas.length == 2) return XY_COORDINATE_REPLACE.matcher(actionMetas[0]).replaceFirst(StringUtils.EMPTY);
 		for (int i = 0; i < actionMetas.length; i++) {

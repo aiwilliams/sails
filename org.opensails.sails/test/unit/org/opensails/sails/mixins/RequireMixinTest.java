@@ -3,7 +3,7 @@ package org.opensails.sails.mixins;
 import junit.framework.TestCase;
 
 import org.opensails.sails.adapter.oem.AdapterResolver;
-import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.ControllerPackage;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
@@ -12,7 +12,6 @@ import org.opensails.sails.oem.ResourceResolver;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
-import org.opensails.sails.util.ComponentPackage;
 
 public class RequireMixinTest extends TestCase {
 	ControllerResolver controllerResolver;
@@ -41,7 +40,7 @@ public class RequireMixinTest extends TestCase {
 	protected void setUp() throws Exception {
 		event = SailsEventFixture.sham();
 		controllerResolver = new ControllerResolver(new AdapterResolver());
-		controllerResolver.push(new ComponentPackage<IControllerImpl>("org.opensails.sails.fixture.controllers", "Controller"));
+		controllerResolver.push(new ControllerPackage("org.opensails.sails.fixture.controllers"));
 	}
 
 	String componentRootUrl() {

@@ -8,13 +8,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
+import org.opensails.sails.action.IActionParameterList;
 import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
@@ -37,6 +36,34 @@ public class Action implements IAction {
 	}
 
 	/**
+	 * Adapts the unadaptedParameters, then invokes the action.
+	 * 
+	 * @param event
+	 * @param implementationInstance
+	 * @param parameters
+	 * 
+	 * @return the result
+	 */
+	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, IActionParameterList parameters) {
+		IActionListener listener = getActionListeners(event);
+		listener.beginExecution(this);
+		Method actionMethod = methodHavingArgCount(parameters.size());
+
+		IActionResult result = null;
+		if (actionMethod != null) {
+			Object[] actionArguments = parameters.objects(actionMethod.getParameterTypes());
+			result = executeMethod(event, implementationInstance, actionMethod, actionArguments);
+			if (result instanceof TemplateActionResult) {
+				TemplateActionResult templateResult = (TemplateActionResult) result;
+				if (!templateResult.hasLayoutBeenSet()) if (actionMethod.isAnnotationPresent(Layout.class)) templateResult.setLayout(actionMethod.getAnnotation(Layout.class).value());
+			}
+		} else result = defaultActionResult(event, implementationInstance);
+
+		listener.endExecution(this);
+		return finalizeExecution(event, result);
+	}
+
+	/**
 	 * Executes this action without adapting the parameters.
 	 * 
 	 * @param event
@@ -48,41 +75,11 @@ public class Action implements IAction {
 	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, Object[] parameters) {
 		IActionListener listener = getActionListeners(event);
 		listener.beginExecution(this);
-		ensureInstanceIsImplementation(implementationInstance);
 		Method actionMethod = methodHavingArgCount(parameters.length);
 
 		IActionResult result = null;
 		if (actionMethod == null) result = defaultActionResult(event, implementationInstance);
 		else result = executeMethod(event, implementationInstance, actionMethod, parameters);
-
-		listener.endExecution(this);
-		return finalizeExecution(event, result);
-	}
-
-	/**
-	 * Adapts the unadaptedParameters, then invokes the action.
-	 * 
-	 * @param event
-	 * @param implementationInstance
-	 * @param unadaptedParameters
-	 * 
-	 * @return the result
-	 */
-	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, String[] unadaptedParameters) {
-		IActionListener listener = getActionListeners(event);
-		listener.beginExecution(this);
-		ensureInstanceIsImplementation(implementationInstance);
-		Method actionMethod = methodHavingArgCount(unadaptedParameters == null ? 0 : unadaptedParameters.length);
-
-		IActionResult result = null;
-		if (actionMethod != null) {
-			Object[] actionArguments = adaptParameters(unadaptedParameters, actionMethod.getParameterTypes(), implementationInstance.getContainer());
-			result = executeMethod(event, implementationInstance, actionMethod, actionArguments);
-			if (result instanceof TemplateActionResult) {
-				TemplateActionResult templateResult = (TemplateActionResult) result;
-				if (!templateResult.hasLayoutBeenSet()) if (actionMethod.isAnnotationPresent(Layout.class)) templateResult.setLayout(actionMethod.getAnnotation(Layout.class).value());
-			}
-		} else result = defaultActionResult(event, implementationInstance);
 
 		listener.endExecution(this);
 		return finalizeExecution(event, result);
@@ -101,26 +98,8 @@ public class Action implements IAction {
 		return controllerImplementation + "#" + name;
 	}
 
-	protected Object[] adaptParameters(String[] unadaptedParameters, Class<?>[] targetTypes, ScopedContainer container) {
-		Object[] adaptedParameters = new Object[targetTypes.length];
-		for (int i = 0; i < targetTypes.length; i++) {
-			IAdapter adapter = adapterResolver.resolve(targetTypes[i], container);
-			Object adapted = adapter.forModel(targetTypes[i], unadaptedParameters[i]);
-			adaptedParameters[i] = adapted;
-		}
-		return adaptedParameters;
-	}
-
 	protected IActionResult defaultActionResult(ISailsEvent event, IControllerImpl implementationInstance) {
 		return new TemplateActionResult(event);
-	}
-
-	protected void ensureInstanceIsImplementation(IControllerImpl implementationInstance) {
-		if (implementationInstance == null && controllerImplementation != null) throw new NullPointerException("This action must be executed against a non null implementation of "
-				+ controllerImplementation);
-
-		if (controllerImplementation != null && !controllerImplementation.isAssignableFrom(implementationInstance.getClass())) throw new IllegalArgumentException("This action is not for "
-				+ implementationInstance.getClass());
 	}
 
 	protected IActionResult executeMethod(ISailsEvent event, IControllerImpl implementationInstance, Method actionMethod, Object[] actionArguments) {

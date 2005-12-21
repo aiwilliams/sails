@@ -20,6 +20,7 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.opensails.sails.controller.ControllerPackage;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
@@ -262,8 +263,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		ControllerResolver resolver = (ControllerResolver) container.instance(IControllerResolver.class, ControllerResolver.class);
 		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinComponentPackage(), "Component"));
 		resolver.push(new ComponentPackage<IControllerImpl>(getDefaultComponentPackage(), "Component"));
-		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinControllerPackage(), "Controller"));
-		resolver.push(new ComponentPackage<IControllerImpl>(getDefaultControllerPackage(), "Controller"));
+		resolver.push(new ControllerPackage(getBuiltinControllerPackage()));
+		resolver.push(new ControllerPackage(getDefaultControllerPackage()));
 		return resolver;
 	}
 

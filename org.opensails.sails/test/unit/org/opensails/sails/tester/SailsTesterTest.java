@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
 
 public class SailsTesterTest extends TestCase {
@@ -44,14 +43,6 @@ public class SailsTesterTest extends TestCase {
 		Page page = tester.get();
 		assertEquals(ReallyReallyIDo.class, page.container().instance(ILoveTesting.class).getClass());
 		assertEquals("Injections should stick around", ReallyReallyIDo.class, tester.getRequestContainer().instance(ILoveTesting.class).getClass());
-	}
-
-	public void testPost() throws Exception {
-		SailsTester tester = new SailsTester(UnitTestConfigurator.class);
-		FormFields formFields = new FormFields();
-		formFields.setValue("firstName", "bobby");
-		Page page = tester.post(formFields);
-		page.assertContains("you entered bobby");
 	}
 
 	public static interface ILoveTesting {}

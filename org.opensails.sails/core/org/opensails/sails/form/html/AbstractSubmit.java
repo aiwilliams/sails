@@ -1,10 +1,11 @@
 package org.opensails.sails.form.html;
 
+import static org.opensails.sails.form.FormMeta.ACTION_PREFIX;
+
 import java.util.List;
 
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
-import org.opensails.sails.form.HtmlForm;
 
 /**
  * Submits an HTML form somehow. These types have much of the same behaviour
@@ -22,8 +23,6 @@ import org.opensails.sails.form.HtmlForm;
  * action. Normally, it would point to the controller that rendered the form.
  */
 public abstract class AbstractSubmit<T extends AbstractSubmit> extends InputElement<T> {
-	public static final String ACTION_PREFIX = HtmlForm.META_PREFIX + "action.";
-
 	protected String action;
 	protected ContainerAdapterResolver adapterResolver;
 	protected List parameters;
