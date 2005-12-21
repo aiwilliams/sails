@@ -5,8 +5,6 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.opensails.sails.url.IUrl;
-
 /**
  * An HtmlGenerator maintains no state. Therefore, it is safe to pass this
  * around between elements. This is useful when one element uses another and
@@ -21,12 +19,8 @@ public class HtmlGenerator {
 		this.writer = writer;
 	}
 
-	public HtmlGenerator attribute(String name, boolean value) throws IOException {
-		return attribute(name, String.valueOf(value));
-	}
-
-	public HtmlGenerator attribute(String name, IUrl url) throws IOException {
-		return attribute(name, String.valueOf(url));
+	public HtmlGenerator attribute(String name, Object object) throws IOException {
+		return attribute(name, String.valueOf(object));
 	}
 
 	public HtmlGenerator attribute(String name, String value) throws IOException {
