@@ -7,7 +7,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.RequestContainer;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
@@ -185,19 +184,7 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, Object... actionParameters) {
-		TestPostEvent event = createPostEvent(Sails.controllerName(controller), action, formFields);
-		RequestContainer container = event.getContainer();
-		if (actionParameters != null && actionParameters.length > 0) {
-			IAdapterResolver resolver = container.instance(IAdapterResolver.class);
-			String[] params = new String[actionParameters.length];
-			for (int i = 0; i < actionParameters.length; i++) {
-				Object object = actionParameters[i];
-				IAdapter adapter = resolver.resolve(object.getClass(), container);
-				params[i] = (String) adapter.forWeb(object.getClass(), object);
-			}
-			event.setActionParameters(params);
-		}
-		return doPost(event);
+		return post(Sails.controllerName(controller), action, formFields, actionParameters);
 	}
 
 	/**

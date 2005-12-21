@@ -136,8 +136,6 @@ public class FormFields {
 
 	public Object valueAs(String fieldName, FieldType fieldType) {
 		switch (fieldType) {
-		case LONG:
-			return Long.valueOf(value(fieldName));
 		case STRING:
 			return value(fieldName);
 		case STRING_ARRAY:

@@ -5,5 +5,5 @@ package org.opensails.sails.adapter;
  * IAdapter to declare how the model state is represented in an html ui.
  */
 public enum FieldType {
-	FILE_UPLOAD, STRING, STRING_ARRAY, LONG,
+	FILE_UPLOAD, STRING, STRING_ARRAY
 }

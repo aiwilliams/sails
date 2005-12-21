@@ -2,9 +2,8 @@ package org.opensails.sails.adapter.oem;
 
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.Scope;
+import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
-import org.opensails.sails.adapter.FieldType;
-import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.persist.IObjectPersister;
 
@@ -22,7 +21,7 @@ import org.opensails.sails.persist.IObjectPersister;
  * @author Adam 'Programmer' Williams
  */
 @Scope(ApplicationScope.REQUEST)
-public class IdentifiableAdapter implements IAdapter<IIdentifiable, Long> {
+public class IdentifiableAdapter extends AbstractAdapter<IIdentifiable, String> {
 	protected final IObjectPersister persister;
 
 	public IdentifiableAdapter(IObjectPersister persister) {
@@ -30,15 +29,11 @@ public class IdentifiableAdapter implements IAdapter<IIdentifiable, Long> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public IIdentifiable forModel(Class<? extends IIdentifiable> modelType, Long fromWeb) throws AdaptationException {
-		return persister.find(modelType, fromWeb);
+	public IIdentifiable forModel(Class<? extends IIdentifiable> modelType, String fromWeb) throws AdaptationException {
+		return persister.find(modelType, Long.valueOf(fromWeb));
 	}
 
-	public Long forWeb(Class<? extends IIdentifiable> modelType, IIdentifiable fromModel) throws AdaptationException {
-		return fromModel.getId();
-	}
-
-	public FieldType getFieldType() {
-		return FieldType.LONG;
+	public String forWeb(Class<? extends IIdentifiable> modelType, IIdentifiable fromModel) throws AdaptationException {
+		return String.valueOf(fromModel.getId());
 	}
 }
