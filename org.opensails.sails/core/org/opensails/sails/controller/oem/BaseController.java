@@ -14,6 +14,7 @@ import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FileUpload;
+import org.opensails.sails.form.FormContext;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.model.IModelContext;
@@ -94,19 +95,35 @@ public class BaseController implements IControllerImpl {
 	// http://trac.opensails.org/sails/ticket/79
 	// TODO: Write tests outside of Dock
 	protected boolean formToModel(Object modelInstance) {
-		SimpleContainer container = event.getContainer().makeChildUnscoped();
-		container.register(IModelContext.class, new SingleModelContext(modelInstance));
-		HtmlForm form = container.instance(HtmlForm.class, HtmlForm.class);
-		return form.isValid();
+		FormContext formContext = event.getContainer().instance(FormContext.class, FormContext.class);
+		SimpleContainer formContainer = event.getContainer().makeChildUnscoped();
+		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
+		HtmlForm formInstance = formContainer.instance(HtmlForm.class, HtmlForm.class);
+		formContext.put(formInstance);
+		return formInstance.isValid();
 	}
 
 	protected IBinding getBinding() {
 		return getContainer().instance(IBinding.class);
 	}
 
-	protected Object getSessionAttribute(String key) {
+	/**
+	 * @param clazz the Class of the attribute
+	 * @return the value for the full name of the Class, null if not present or
+	 *         HttpSession is null
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T> T getSessionAttribute(Class<? super T> clazz) {
+		return (T) getSessionAttribute(clazz.getName());
+	}
+
+	/**
+	 * @param name
+	 * @return the value for name, null if not present or HttpSession is null
+	 */
+	protected Object getSessionAttribute(String name) {
 		HttpSession session = event.getSession(false);
-		if (session != null) return session.getAttribute(key);
+		if (session != null) return session.getAttribute(name);
 		return null;
 	}
 
@@ -119,6 +136,17 @@ public class BaseController implements IControllerImpl {
 
 	protected void layout(String templateIdentifier) {
 		getTemplateResult().setLayout(templateIdentifier);
+	}
+
+	// TODO: Don't make child - use factory see
+	// http://trac.opensails.org/sails/ticket/79
+	// TODO: Write tests outside of Dock
+	protected void modelToForm(Object modelInstance) {
+		if (modelInstance == null) return;
+		FormContext formContext = event.getContainer().instance(FormContext.class, FormContext.class);
+		SimpleContainer formContainer = event.getContainer().makeChildUnscoped();
+		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
+		formContext.put(formContainer.instance(HtmlForm.class, HtmlForm.class));
 	}
 
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
@@ -154,8 +182,40 @@ public class BaseController implements IControllerImpl {
 		return result;
 	}
 
-	protected void setSessionAttribute(String key, Object value) {
-		event.getSession(true).setAttribute(key, value);
+	/**
+	 * @param clazz full name is used as attribute name
+	 * @param value can be null
+	 * @return the existing value replaced by new value
+	 * @throws NullPointerException if name class is null
+	 */
+	protected <T> Object setSessionAttribute(Class<? super T> name, T value) {
+		return setSessionAttribute(name.getName(), value);
+	}
+
+	/**
+	 * Allows placement of <em>non-null</em> object into HttpSession.
+	 * 
+	 * @param value full name of getClass is used as attribute name
+	 * @return the existing value replaced by new value
+	 * @throws NullPointerException if value is null
+	 */
+	protected Object setSessionAttribute(Object value) {
+		return setSessionAttribute(value.getClass().getName(), value);
+	}
+
+	/**
+	 * Causes an HttpSession to be created if it doesn't already exist and sets
+	 * the provided attribute.
+	 * 
+	 * @param name
+	 * @param value can be null
+	 * @return the existing value replaced by new value
+	 */
+	protected Object setSessionAttribute(String name, Object value) {
+		HttpSession s = event.getSession(true);
+		Object existing = s.getAttribute(name);
+		s.setAttribute(name, value);
+		return existing;
 	}
 
 	protected UrlforMixin urlfor() {

@@ -2,7 +2,7 @@ package org.opensails.sails.mixins;
 
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.form.FormContext;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FormElement;
@@ -32,7 +32,7 @@ public class FormMixin {
 		this.adapterResolver = adapterResolver;
 	}
 
-	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
+	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, FormContext forms) {
 		this(event, idGenerator, adapterResolver);
 	}
 

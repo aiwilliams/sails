@@ -218,6 +218,32 @@ public class SailsTester implements ISailsApplication {
 		return doPost(postEvent);
 	}
 
+	/**
+	 * Allows placement of <em>non-null</em> object into HttpSession.
+	 * 
+	 * @param value full name of getClass is used as attribute name
+	 * @return the existing value replaced by new value
+	 * @throws NullPointerException if value is null
+	 */
+	public Object setSessionAttribute(Object value) {
+		return setSessionAttribute(value.getClass().getName(), value);
+	}
+
+	/**
+	 * Causes an HttpSession to be created if it doesn't already exist and sets
+	 * the provided attribute.
+	 * 
+	 * @param name
+	 * @param value
+	 * @return the existing value replaced by new value
+	 */
+	public Object setSessionAttribute(String name, Object value) {
+		ShamHttpSession s = getSession(true);
+		Object existing = s.getAttribute(name);
+		s.setAttribute(name, value);
+		return existing;
+	}
+
 	public void setWorkingController(Class<? extends IEventProcessingContext> controller) {
 		this.workingController = controller;
 	}
@@ -226,6 +252,7 @@ public class SailsTester implements ISailsApplication {
 		return workingController != null ? Sails.controllerName(workingController) : "home";
 	}
 
+	@SuppressWarnings("unchecked")
 	protected String[] adaptParameters(Object[] parameters, ContainerAdapterResolver resolver) {
 		if (parameters != null && parameters.length > 0) {
 			String[] params = new String[parameters.length];
