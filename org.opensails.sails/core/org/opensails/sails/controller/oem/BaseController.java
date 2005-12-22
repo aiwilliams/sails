@@ -14,12 +14,13 @@ import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FileUpload;
-import org.opensails.sails.form.FormContext;
 import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.form.IFormValueModel;
 import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.model.IModelContext;
 import org.opensails.sails.model.oem.SingleModelContext;
 import org.opensails.sails.oem.Flash;
+import org.opensails.sails.util.ClassHelper;
 import org.opensails.viento.IBinding;
 
 public class BaseController implements IControllerImpl {
@@ -63,6 +64,31 @@ public class BaseController implements IControllerImpl {
 		getBinding().put(key, object);
 	}
 
+	/**
+	 * Exposes the object as that lower-camel name of the object's class.
+	 * 
+	 * @see #exposeModel(String, Object)
+	 * @param model
+	 */
+	protected void exposeModel(Object model) {
+		if (model == null) return;
+		exposeModel(ClassHelper.getName(model.getClass()), model);
+	}
+
+	/**
+	 * Exposes the object as name for use in forms and otherwise.
+	 * <p>
+	 * Contrast this to {@link #expose(String, Object)}, which only exposes for
+	 * use in the template.
+	 * 
+	 * @param name
+	 * @param model
+	 */
+	protected void exposeModel(String name, Object model) {
+		expose(name, model);
+		getContainer().instance(IFormValueModel.class).expose(name, model);
+	}
+
 	protected String field(String name) {
 		return event.getFieldValue(name);
 	}
@@ -95,11 +121,9 @@ public class BaseController implements IControllerImpl {
 	// http://trac.opensails.org/sails/ticket/79
 	// TODO: Write tests outside of Dock
 	protected boolean formToModel(Object modelInstance) {
-		FormContext formContext = event.getContainer().instance(FormContext.class, FormContext.class);
 		SimpleContainer formContainer = event.getContainer().makeChildUnscoped();
 		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
 		HtmlForm formInstance = formContainer.instance(HtmlForm.class, HtmlForm.class);
-		formContext.put(formInstance);
 		return formInstance.isValid();
 	}
 
@@ -136,17 +160,6 @@ public class BaseController implements IControllerImpl {
 
 	protected void layout(String templateIdentifier) {
 		getTemplateResult().setLayout(templateIdentifier);
-	}
-
-	// TODO: Don't make child - use factory see
-	// http://trac.opensails.org/sails/ticket/79
-	// TODO: Write tests outside of Dock
-	protected void modelToForm(Object modelInstance) {
-		if (modelInstance == null) return;
-		FormContext formContext = event.getContainer().instance(FormContext.class, FormContext.class);
-		SimpleContainer formContainer = event.getContainer().makeChildUnscoped();
-		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
-		formContext.put(formContainer.instance(HtmlForm.class, HtmlForm.class));
 	}
 
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {

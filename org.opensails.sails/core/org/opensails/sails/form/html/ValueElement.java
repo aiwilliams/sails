@@ -24,13 +24,8 @@ public abstract class ValueElement<T extends ValueElement> extends FormElement<T
 		return value;
 	}
 
-	public T value(boolean value) {
-		this.value = Boolean.toString(value);
-		return (T) this;
-	}
-
-	public T value(String value) {
-		this.value = value;
+	public T value(Object value) {
+		this.value = String.valueOf(value);
 		return (T) this;
 	}
 }

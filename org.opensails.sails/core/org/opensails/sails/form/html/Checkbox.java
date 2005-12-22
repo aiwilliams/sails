@@ -90,7 +90,7 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	}
 
 	@Override
-	public Checkbox value(String value) {
+	public Checkbox value(Object value) {
 		return super.value(value);
 	}
 

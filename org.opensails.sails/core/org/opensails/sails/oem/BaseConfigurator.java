@@ -26,7 +26,9 @@ import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.ISailsEventConfigurator;
+import org.opensails.sails.form.FormValueModel;
 import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.IFormValueModel;
 import org.opensails.sails.form.UnderscoreIdGenerator;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
@@ -132,6 +134,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		eventContainer.register(ScopedContainer.class, eventContainer);
 		eventContainer.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
 		eventContainer.register(IBinding.class, VientoBinding.class);
+		eventContainer.register(IFormValueModel.class, FormValueModel.class);
 		eventContainer.registerInstantiationListener(IBinding.class, new InstantiationListener<IBinding>() {
 			public void instantiated(IBinding newInstance) {
 				configure(event, newInstance);

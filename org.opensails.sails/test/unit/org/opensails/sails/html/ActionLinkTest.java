@@ -12,8 +12,8 @@ public class ActionLinkTest extends TestCase {
 		ActionLink link = new ActionLink(event);
 		link.controller("controller").action("action");
 		ImageLink imageLink = link.image("myImage");
-		assertEquals("<a href=\"" + event.resolve(UrlType.CONTROLLER, "controller/action") + "\"><img src=\"" + event.resolve(UrlType.IMAGE, "myImage")
-				+ "\" alt=\"controller/action\" /></a>", imageLink.toString());
+		ImageLink expected = new ImageLink(event, link.getUrl(), event.resolve(UrlType.IMAGE, "myImage"));
+		assertEquals(expected, imageLink);
 	}
 
 	public void testToString() {

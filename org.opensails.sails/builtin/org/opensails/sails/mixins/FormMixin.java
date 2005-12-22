@@ -1,9 +1,11 @@
 package org.opensails.sails.mixins;
 
+import org.opensails.rigging.WhenNotInstantiated;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.FormContext;
 import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.IFormValueModel;
+import org.opensails.sails.form.NullFormValueModel;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FormElement;
 import org.opensails.sails.form.html.Hidden;
@@ -18,6 +20,7 @@ public class FormMixin {
 	protected final ContainerAdapterResolver adapterResolver;
 	protected final ISailsEvent event;
 	protected final IFormElementIdGenerator idGenerator;
+	protected final IFormValueModel valueModel;
 
 	/**
 	 * @param event
@@ -26,14 +29,12 @@ public class FormMixin {
 	 *        {@link org.opensails.sails.form.html.FormElement}s that accept
 	 *        and adapt parameters
 	 */
-	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver) {
+	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, @WhenNotInstantiated(NullFormValueModel.class)
+	IFormValueModel valueModel) {
 		this.event = event;
 		this.idGenerator = idGenerator;
 		this.adapterResolver = adapterResolver;
-	}
-
-	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, FormContext forms) {
-		this(event, idGenerator, adapterResolver);
+		this.valueModel = valueModel;
 	}
 
 	public Checkbox checkbox(String name) {
@@ -81,10 +82,10 @@ public class FormMixin {
 	}
 
 	public Text text(String name) {
-		return new Text(name);
+		return new Text(name).value(valueModel.value(name));
 	}
 
 	public TextArea textarea(String name) {
-		return new TextArea(name).id(idGenerator.idForName(name));
+		return new TextArea(name).id(idGenerator.idForName(name)).value(valueModel.value(name));
 	}
 }
