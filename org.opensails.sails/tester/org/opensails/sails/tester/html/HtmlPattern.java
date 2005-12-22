@@ -8,6 +8,7 @@ public class HtmlPattern {
 	public static final Pattern ATTRIBUTE_NAME = Pattern.compile("name=[\"|'](.*?)[\"|']", Pattern.CASE_INSENSITIVE);
 	public static final Pattern ATTRIBUTE_VALUE = Pattern.compile("value=[\"|'](.*?)[\"|']", Pattern.CASE_INSENSITIVE);
 	public static final Pattern LABEL = Pattern.compile("<label for=\"(.*?)\">(.*?)</label>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+	public static final Pattern BODY = Pattern.compile("<(\\w+).*?>(.*?)</\\1>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 	public static boolean matchesId(String source, String expected) {
 		Matcher matcher = HtmlPattern.ATTRIBUTE_ID.matcher(source);
@@ -24,6 +25,12 @@ public class HtmlPattern {
 	public static boolean matchesValue(String source, String expected) {
 		Matcher matcher = HtmlPattern.ATTRIBUTE_VALUE.matcher(source);
 		if (matcher.find()) return matcher.group(1).equals(expected);
+		return false;
+	}
+
+	public static boolean matchesBody(String source, String expected) {
+		Matcher matcher = HtmlPattern.BODY.matcher(source);
+		if (matcher.find()) return matcher.group(2).equals(expected);
 		return false;
 	}
 

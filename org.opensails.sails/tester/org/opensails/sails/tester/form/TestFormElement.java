@@ -45,6 +45,6 @@ public abstract class TestFormElement<T extends TestFormElement> extends TestEle
 				else throw new TestElementError(getClass(), containerSource, String.format("Found a label for %s, but value did not match. Expected [%s] but was [%s]", id, expected, matcher.group(2)));
 			}
 		}
-		throw new TestElementError(getClass(), containerSource, "Label for " + id + " does not exist");
+		throw new TestElementError(getClass(), containerSource, String.format("Label for %s does not exist", id));
 	}
 }

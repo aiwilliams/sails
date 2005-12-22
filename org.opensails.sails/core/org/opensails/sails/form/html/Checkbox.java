@@ -1,21 +1,18 @@
-/*
- * Created on May 15, 2005
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.form.html;
 
 import static org.opensails.sails.form.FormMeta.CHECKBOX_PREFIX;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import org.opensails.sails.html.HtmlConstants;
 import org.opensails.sails.html.HtmlGenerator;
+import org.opensails.sails.util.Quick;
 
 /**
  * An HTML INPUT of type CHECKBOX.
- * 
+ * <p>
  * Checkboxes can be rendered in groups of one or more by name. If there is more
  * than one with the same name, the are submitted as a String[]. If they are by
  * themselves, they likely represent a boolean state, though they may not. One
@@ -25,7 +22,7 @@ import org.opensails.sails.html.HtmlGenerator;
  * should have it's property set to false - or was never exposed at all. Of
  * course, if you are exposing every property for an object, then there is no
  * problem to solve.
- * 
+ * <p>
  * Anywho, the {@link #getBoolean()} call will cause this to render a hidden
  * 'meta' field that the {@link org.opensails.sails.form.HtmlForm} class uses
  * when binding an HTTP form post to a model. If the checkbox is bound to a
@@ -38,28 +35,41 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	public static final String CHECKED = "checked";
 
 	protected boolean checked;
+	protected List<String> checkedValues;
 	protected Hidden hiddenForBoolean;
+
+	public Checkbox(String name) {
+		this(name, null);
+	}
 
 	/**
 	 * @param name
+	 * @param checkedValues final output of checked attribute is determined by
+	 *        whether the value of this checkbox is in checkedValues.
+	 *        checkedValues can be null.
 	 */
-	public Checkbox(String name) {
+	public Checkbox(String name, String[] checkedValues) {
 		super(RENDER_LABEL_AFTER, CHECKBOX, name);
+		if (checkedValues != null) this.checkedValues = Quick.list(checkedValues);
 		value = Boolean.TRUE.toString();
 	}
 
 	/**
-	 * @param name
+	 * @see #checked(boolean)
 	 */
-	public Checkbox(String name, String value) {
-		super(RENDER_LABEL_AFTER, CHECKBOX, name);
-		this.value = value;
-	}
-
 	public Checkbox checked() {
 		return checked(true);
 	}
 
+	/**
+	 * Sets the checked attribute
+	 * <p>
+	 * This is ignored if the checkedValues is not null and has the value of
+	 * this checkbox in it
+	 * 
+	 * @param b
+	 * @return
+	 */
 	public Checkbox checked(boolean b) {
 		checked = b;
 		return this;
@@ -97,6 +107,10 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
 		super.writeAttributes(generator);
-		if (checked) generator.attribute(CHECKED, CHECKED);
+		if (isActuallyChecked()) generator.attribute(CHECKED, CHECKED);
+	}
+
+	private boolean isActuallyChecked() {
+		return checkedValues == null ? checked : checkedValues.contains(value);
 	}
 }

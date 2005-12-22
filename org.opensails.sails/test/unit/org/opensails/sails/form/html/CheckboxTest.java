@@ -23,14 +23,14 @@ public class CheckboxTest extends TestCase {
 		checkbox.getBoolean();
 		assertEquals("<input id=\"name-hello_mate\" name=\"name\" type=\"checkbox\" value=\"hello, mate\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"false\" />", checkbox.toString());
 	}
-	
+
 	public void testId() {
 		Checkbox checkbox = new Checkbox("name").id("someId");
 		assertEquals("<input id=\"someId\" name=\"name\" type=\"checkbox\" value=\"true\" />", checkbox.toString());
 	}
 
 	public void testChecked() throws Exception {
-		Checkbox checkbox = new Checkbox("name", "custom");
+		Checkbox checkbox = new Checkbox("name").value("custom");
 		checkbox.checked();
 		assertEquals("<input id=\"name-custom\" name=\"name\" type=\"checkbox\" value=\"custom\" checked=\"checked\" />", checkbox.toString());
 		checkbox.checked(false);
@@ -49,7 +49,8 @@ public class CheckboxTest extends TestCase {
 		assertEquals("<input id=\"" + id + "\" name=\"name.besure\" type=\"checkbox\" value=\"optionOne\" /><label for=\"" + id + "\">hello</label>", checkbox.toString());
 
 		checkbox = new Checkbox("name.besure").label("hello").getBoolean();
-		// TODO should this just be idForName since for boolean checkboxes the value is always true?
+		// TODO should this just be idForName since for boolean checkboxes the
+		// value is always true?
 		id = FormElement.idForNameAndValue("name.besure", "true");
 		assertEquals("<input id=\"" + id + "\" name=\"name.besure\" type=\"checkbox\" value=\"true\" /><label for=\"" + id
 				+ "\">hello</label><input name=\"form.meta.cb.name.besure\" type=\"hidden\" value=\"false\" />", checkbox.toString());

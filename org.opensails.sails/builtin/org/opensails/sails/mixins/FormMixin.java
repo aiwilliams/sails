@@ -38,7 +38,9 @@ public class FormMixin {
 	}
 
 	public Checkbox checkbox(String name) {
-		return new Checkbox(name);
+		Object object = valueModel.value(name);
+		if (object == null || object.getClass() == String[].class) return new Checkbox(name, (String[]) object);
+		else return new Checkbox(name, new String[] { (String) object });
 	}
 
 	public String end() {

@@ -11,6 +11,10 @@ public class TestSession {
 		this.sessionProvider = sessionProvider;
 	}
 
+	public void assertContains(Class name) {
+		assertContains(name.getName());
+	}
+	
 	public void assertContains(String key) {
 		assertSession();
 		Assert.assertNotNull(String.format("Expected session to contain %s but did not", key), getSession().getAttribute(key));

@@ -1,6 +1,7 @@
 package org.opensails.functional.form;
 
 public class Model {
-	protected String propertyOne = "propertyOneValue";
-	protected String propertyTwo = "propertyTwoValue";
+	protected String textProperty = "textValue";
+	protected String textareaProperty = "textareaValue";
+	protected String checkboxProperty = "checkboxValue";
 }

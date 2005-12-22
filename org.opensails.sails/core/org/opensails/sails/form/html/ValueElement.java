@@ -25,7 +25,7 @@ public abstract class ValueElement<T extends ValueElement> extends FormElement<T
 	}
 
 	public T value(Object value) {
-		this.value = String.valueOf(value);
+		this.value = value == null ? null : value.toString();
 		return (T) this;
 	}
 }
