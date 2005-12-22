@@ -32,7 +32,7 @@ public class SimpleContainerTest extends TestCase {
         assertNotNull(instance);
     }
 
-    public void testInstance_Cacheing() throws Exception {
+    public void testInstance_Caching() throws Exception {
         container.register(ShamComponent.class);
         ShamComponent instance = container.instance(ShamComponent.class);
         assertNotNull(instance);
@@ -161,6 +161,18 @@ public class SimpleContainerTest extends TestCase {
 		assertTrue(container.instance(ShamComponent.class) instanceof ShamSubclassingComponent);
 		assertSame(anotherContainer.instance(ShamStartable.class), container.instance(ShamStartable.class));
 	}
+    
+    public void testWhenNotInstantiated() {
+		container.register(ShamWhenNotInstantiated.class);
+		container.register(ShamComponent.class);
+		assertEquals(ShamSubclassingComponent.class, container.instance(ShamWhenNotInstantiated.class).dependency.getClass());
+		
+		container = new SimpleContainer();
+		container.register(ShamWhenNotInstantiated.class);
+		container.register(ShamComponent.class);
+		container.instance(ShamComponent.class);
+		assertEquals(ShamComponent.class, container.instance(ShamWhenNotInstantiated.class).dependency.getClass());
+	}
    
     public void testAllInstances() throws Exception {
 		container.register(ShamComponent.class, new ShamComponent());
@@ -264,5 +276,13 @@ public class SimpleContainerTest extends TestCase {
     	public void start() {
     		called = true;
     	}
+    }
+    
+    public static class ShamWhenNotInstantiated {
+    	public ShamComponent dependency;
+
+		public ShamWhenNotInstantiated(@WhenNotInstantiated(ShamSubclassingComponent.class) ShamComponent dependency) {
+			this.dependency = dependency;
+		}
     }
 }

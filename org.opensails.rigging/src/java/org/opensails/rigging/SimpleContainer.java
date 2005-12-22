@@ -33,7 +33,7 @@ public class SimpleContainer {
     }
 
     public <T> T instance(Class<T> key) {
-        ComponentResolver componentResolver = resolveResolver(key);
+        ComponentResolver componentResolver = resolver(key);
         if (componentResolver == null) return null;
         return (T) componentResolver.instance();
     }
@@ -81,7 +81,7 @@ public class SimpleContainer {
     		broadcast(Stoppable.class, false).stop();
     }
 
-    protected <T> ComponentResolver resolveResolver(Class<T> key) {
+    protected <T> ComponentResolver resolver(Class<T> key) {
         for (IComponentResolverResolver resolverResolver : resolverResolvers) {
             ComponentResolver resolver = resolverResolver.resolve(key, this);
             if (resolver != null) return resolver;
@@ -121,7 +121,7 @@ public class SimpleContainer {
             }
         return instances;
     }
-
+	
 	public <T> void registerInstantiationListener(Class<T> type, InstantiationListener<T> listener) {
 		instantiationListenersForType(type).add(listener);
 	}
