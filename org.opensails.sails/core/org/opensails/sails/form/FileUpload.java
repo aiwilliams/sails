@@ -1,11 +1,9 @@
 package org.opensails.sails.form;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
-import org.apache.commons.fileupload.FileItem;
-import org.opensails.sails.SailsException;
+import org.apache.commons.fileupload.*;
+import org.opensails.sails.*;
 
 public class FileUpload {
 	private final FileItem item;
@@ -16,6 +14,10 @@ public class FileUpload {
 
 	public byte[] byteContent() {
 		return item.get();
+	}
+
+	public String getFileName() {
+		return String.format("FileUpload: %s", item.getName());
 	}
 
 	public InputStream streamContent() {

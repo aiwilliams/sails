@@ -1,18 +1,13 @@
 package org.opensails.sails.form;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.lang.StringUtils;
-import org.opensails.sails.SailsException;
-import org.opensails.sails.adapter.FieldType;
+import org.apache.commons.fileupload.*;
+import org.apache.commons.lang.*;
+import org.opensails.sails.*;
+import org.opensails.sails.adapter.*;
 
 /**
  * Why? Provides:
@@ -115,6 +110,19 @@ public class FormFields {
 		return new HashMap<String, Object>(backingMap);
 	}
 
+	@Override
+	public String toString() {
+		if (isEmpty()) return "Empty form";
+		StringBuilder string = new StringBuilder();
+		for (String name : fieldNames()) {
+			string.append(name);
+			string.append(" :: ");
+			string.append(value(name));
+			string.append("\n");
+		}
+		return string.toString();
+	}
+
 	/**
 	 * Coerces the value for fieldName into a single String. If the value is
 	 * actually a String[], the String at index 0 is returned.
@@ -129,7 +137,7 @@ public class FormFields {
 			String[] values = (String[]) value;
 			if (values.length == 0) return nullValue((String) null);
 			if (values.length >= 1) value = values[0];
-		}
+		} else if (value.getClass() == FileUpload.class) value = ((FileUpload) value).getFileName();
 		if (StringUtils.isEmpty((String) value)) return nullValue((String) value);
 		return (String) value;
 	}

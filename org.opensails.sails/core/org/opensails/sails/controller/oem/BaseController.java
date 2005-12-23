@@ -1,27 +1,21 @@
 package org.opensails.sails.controller.oem;
 
-import java.util.List;
+import java.util.*;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.rigging.SimpleContainer;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.action.oem.RedirectActionResult;
-import org.opensails.sails.action.oem.StringActionResult;
-import org.opensails.sails.action.oem.TemplateActionResult;
-import org.opensails.sails.controller.IController;
-import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.FileUpload;
-import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.form.IFormValueModel;
-import org.opensails.sails.mixins.UrlforMixin;
-import org.opensails.sails.model.IModelContext;
-import org.opensails.sails.model.oem.SingleModelContext;
-import org.opensails.sails.oem.Flash;
-import org.opensails.sails.util.ClassHelper;
-import org.opensails.viento.IBinding;
+import org.opensails.rigging.*;
+import org.opensails.sails.action.*;
+import org.opensails.sails.action.oem.*;
+import org.opensails.sails.controller.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.form.*;
+import org.opensails.sails.mixins.*;
+import org.opensails.sails.model.*;
+import org.opensails.sails.model.oem.*;
+import org.opensails.sails.oem.*;
+import org.opensails.sails.util.*;
+import org.opensails.viento.*;
 
 public class BaseController implements IControllerImpl {
 	protected IController controller;
@@ -120,7 +114,8 @@ public class BaseController implements IControllerImpl {
 	// TODO: Don't make child - use factory see
 	// http://trac.opensails.org/sails/ticket/79
 	// TODO: Write tests outside of Dock
-	protected boolean formToModel(Object modelInstance) {
+	protected boolean updateModel(Object modelInstance) {
+		exposeModel(modelInstance);
 		SimpleContainer formContainer = event.getContainer().makeChildUnscoped();
 		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
 		HtmlForm formInstance = formContainer.instance(HtmlForm.class, HtmlForm.class);
@@ -168,6 +163,10 @@ public class BaseController implements IControllerImpl {
 
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action, List<?> parameters) {
 		return setResult(new RedirectActionResult(event, controller, action, parameters));
+	}
+
+	protected TemplateActionResult renderIndex() {
+		return renderTemplate("index");
 	}
 
 	/**

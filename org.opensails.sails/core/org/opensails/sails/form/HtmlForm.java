@@ -102,6 +102,6 @@ public class HtmlForm {
 	}
 
 	protected boolean isMetaField(String fieldName) {
-		return false;
+		return fieldName != null && fieldName.startsWith(FormMeta.META_PREFIX);
 	}
 }
