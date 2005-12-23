@@ -33,4 +33,10 @@ public class HtmlMixin {
 	private String string(Object o) {
 		return o == null ? "" : o.toString();
 	}
+	
+	public static String escapeNewlines(Object object) {
+		if (object == null)
+			return null;
+		return object.toString().replace("\n", "\\n").replace("\r", "\\r");
+	}
 }
