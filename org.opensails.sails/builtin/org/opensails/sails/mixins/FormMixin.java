@@ -48,7 +48,7 @@ public class FormMixin {
 	}
 
 	public FileInput file(String name) {
-		return new FileInput(name);
+		return new FileInput(name).value(valueModel.value(name));
 	}
 
 	public Hidden hidden(String name) {

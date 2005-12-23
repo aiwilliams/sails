@@ -39,9 +39,13 @@ public class FileUpload {
 			throw new SailsException(String.format("Failure obtaining encoded content on %s", item), e);
 		}
 	}
-
+	
+	public String filename() {
+		return item.getName();
+	}
+	
 	@Override
 	public String toString() {
-		return item.getName();
+		return filename();
 	}
 }
