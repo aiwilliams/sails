@@ -55,6 +55,7 @@ public class ActionLink extends AbstractLink<ActionLink> {
 			throw new SailsException("Failure converting ActionLink to ImageLink", e);
 		}
 		imageLink.alt(writer.toString());
+		imageLink.linkAttributes(attributes);
 		return imageLink;
 	}
 

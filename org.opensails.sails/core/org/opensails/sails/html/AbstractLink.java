@@ -79,6 +79,7 @@ public abstract class AbstractLink<T extends AbstractLink> extends EventDependen
 
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
+		super.writeAttributes(generator);
 		generator.attribute(HREF, hrefValue());
 	}
 }
