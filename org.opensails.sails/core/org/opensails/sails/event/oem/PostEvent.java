@@ -1,17 +1,15 @@
 package org.opensails.sails.event.oem;
 
-import static org.opensails.sails.form.FormMeta.ACTION_PREFIX;
+import java.util.regex.*;
 
-import java.util.regex.Pattern;
+import javax.servlet.http.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.*;
+import org.opensails.sails.*;
+import org.opensails.sails.action.*;
+import org.opensails.sails.action.oem.*;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.action.oem.ActionParameterList;
+import static org.opensails.sails.form.FormMeta.*;
 
 public class PostEvent extends AbstractEvent {
 	protected static final Pattern XY_COORDINATE_PATTERN = Pattern.compile(".*?\\.[x|y]$");

@@ -1,32 +1,21 @@
 package org.opensails.sails.event.oem;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang.ArrayUtils;
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.RequestContainer;
-import org.opensails.sails.SailsException;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.action.oem.ActionParameterList;
-import org.opensails.sails.adapter.ContainerAdapterResolver;
-import org.opensails.sails.event.ISailsEventListener;
-import org.opensails.sails.form.FileUpload;
-import org.opensails.sails.form.FormFields;
-import org.opensails.sails.url.EventUrl;
-import org.opensails.sails.url.IEventUrl;
-import org.opensails.sails.url.IUrl;
-import org.opensails.sails.url.IUrlResolver;
-import org.opensails.sails.url.UrlType;
+import org.apache.commons.configuration.*;
+import org.apache.commons.lang.*;
+import org.opensails.rigging.*;
+import org.opensails.sails.*;
+import org.opensails.sails.action.*;
+import org.opensails.sails.action.oem.*;
+import org.opensails.sails.adapter.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.form.*;
+import org.opensails.sails.url.*;
+import org.opensails.sails.util.*;
 
 public abstract class AbstractEvent implements ILifecycleEvent {
 	protected ISailsApplication application;
@@ -160,7 +149,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	@Override
 	public String toString() {
 		StringBuffer string = new StringBuffer();
+		string.append(ClassHelper.getName(this.getClass()));
+		string.append(" in ");
 		string.append(application.getName());
+		string.append(" Application");
 		string.append(" [");
 		string.append(getEventUrl().getActionUrl());
 		string.append("]");

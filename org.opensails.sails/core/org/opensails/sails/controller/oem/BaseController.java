@@ -66,7 +66,7 @@ public class BaseController implements IControllerImpl {
 	 */
 	protected void exposeModel(Object model) {
 		if (model == null) return;
-		exposeModel(ClassHelper.getName(model.getClass()), model);
+		exposeModel(ClassHelper.lowerCamelName(model.getClass()), model);
 	}
 
 	/**
