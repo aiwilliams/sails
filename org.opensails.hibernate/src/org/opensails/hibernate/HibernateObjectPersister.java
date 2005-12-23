@@ -1,12 +1,28 @@
 package org.opensails.hibernate;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import org.hibernate.*;
-import org.hibernate.criterion.*;
-import org.opensails.sails.persist.*;
+import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
+import org.hibernate.ObjectDeletedException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Expression;
+import org.opensails.sails.persist.IIdentifiable;
+import org.opensails.sails.persist.IObjectPersister;
+import org.opensails.sails.persist.PersistException;
 
+/**
+ * An implementation if IObjectPersister for Hibernate.
+ * <p>
+ * To use this persister, your ISailsApplicationConfigurator can subclass
+ * HibernateApplicationConfigurator, or, if you prefer, you may configure the
+ * persister youself, using the HibernateApplicationConfigurator as a model.
+ * 
+ * @author Adam 'Programmer' Williams
+ */
 public class HibernateObjectPersister implements IObjectPersister {
 	protected Session session;
 	protected HibernateSessionFactory sessionFactory;
