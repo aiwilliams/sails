@@ -12,7 +12,11 @@ import org.opensails.sails.persist.IObjectPersister;
  * An ISailsApplicationConfigurator the makes using Hibernate as the
  * IObjectPersister easy.
  * <p>
- * Just subclass this as you would BaseConfigurator.
+ * Just subclass this as you would BaseConfigurator. Note that the
+ * IObjectPersister is registered at both Application scope and Request scope.
+ * This allows application scoped objects that need an IObjectPersister to get
+ * one. Please be aware that this instance will be kept active through the life
+ * of the application, and you are responsible for calling commit.
  * 
  * @author Adam 'Programmer' Williams
  */
@@ -34,6 +38,7 @@ public abstract class HibernateApplicationConfigurator extends BaseConfigurator 
 	protected void installObjectPersister(IConfigurableSailsApplication application, ScopedContainer container) {
 		container.register(IHibernateDatabaseConfiguration.class, getDefaultDatabaseConfiguration());
 		container.register(IHibernateMappingConfiguration.class, getDefaultMappingConfiguration());
+		container.register(IObjectPersister.class, HibernateObjectPersister.class);
 		container.register(HibernateSessionFactory.class);
 	}
 }
