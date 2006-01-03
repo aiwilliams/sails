@@ -132,7 +132,7 @@ public class BaseController implements IControllerImpl {
 	 *         HttpSession is null
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> T getSessionAttribute(Class<? super T> clazz) {
+	protected <T> T getSessionAttribute(Class<T> clazz) {
 		return (T) getSessionAttribute(clazz.getName());
 	}
 

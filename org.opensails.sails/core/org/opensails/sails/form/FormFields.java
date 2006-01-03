@@ -196,12 +196,13 @@ public class FormFields {
 		return null;
 	}
 
-	private void addFieldValue(String fieldName, String string) {
+	void addFieldValue(String fieldName, String string) {
 		String[] existing = (String[]) backingMap.get(fieldName);
 		if (existing == null) existing = new String[] { string };
 		else {
 			String[] expanded = new String[existing.length + 1];
 			System.arraycopy(existing, 0, expanded, 0, existing.length);
+			expanded[existing.length] = string;
 			existing = expanded;
 		}
 		backingMap.put(fieldName, existing);

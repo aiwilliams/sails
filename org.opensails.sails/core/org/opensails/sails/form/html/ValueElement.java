@@ -25,7 +25,11 @@ public abstract class ValueElement<T extends ValueElement> extends FormElement<T
 	}
 
 	public T value(Object value) {
-		this.value = value == null ? null : value.toString();
+		// HACK: we need to be able to ask FormValueModel for a specific type (String vs. String[])
+		if (value instanceof String[])
+			this.value = ((String[])value)[0];
+		else
+			this.value = value == null ? null : value.toString();
 		return (T) this;
 	}
 }

@@ -15,6 +15,9 @@ public class CollectionAssert {
 	public static <T> void containsOnly(T expected, Collection<T> actual) {
 		containsOnly(Arrays.asList(expected), actual);
 	}
+	public static <T> void containsOnly(Collection<T> expected, T[] actual) {
+		containsOnly(expected, Arrays.asList(actual));
+	}
 
 	public static <T> void containsOnly(T expected, T[] actual) {
 		containsOnly(Arrays.asList(expected), Arrays.asList(actual));

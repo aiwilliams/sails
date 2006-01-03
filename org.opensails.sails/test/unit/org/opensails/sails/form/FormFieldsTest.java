@@ -4,6 +4,9 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.opensails.sails.tester.util.CollectionAssert;
+import org.opensails.sails.util.Quick;
+
 public class FormFieldsTest extends TestCase {
 	public void testGet_EachOfThem() throws Exception {
 		String string = "value";
@@ -26,5 +29,12 @@ public class FormFieldsTest extends TestCase {
 		FormFields map = new FormFields();
 		map.setValue("something", "else");
 		assertEquals("else", map.value("something"));
+	}
+	
+	public void testAddFieldValue() {
+		FormFields map = new FormFields();
+		map.addFieldValue("key", "one");
+		map.addFieldValue("key", "two");
+		CollectionAssert.containsOnly(Quick.list("one", "two"), map.values("key"));
 	}
 }
