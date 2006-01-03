@@ -224,6 +224,9 @@ public class VientoTemplateTest extends TestCase {
 	public void testEscaping() throws Exception {
 		verifyRender("\\$name", "$name");
 		verifyRender("\\\\\\$name", "\\$name");
+		
+		binding.put("key", "value");
+		verifyRender("\\\\$key", "\\value");
 	}
 	
 	public void testPrototype() {
