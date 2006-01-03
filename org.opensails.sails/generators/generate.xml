@@ -58,8 +58,15 @@
 		<!-- Create Windoze batch file -->
 		<viento tofile="${generator.working.dir}/${application.name}.bat" file="${generator.root.dir}/windoze.bat" />
 		
-		<!-- Create Windoze batch file -->
+		<!-- Create Unix batch file -->
 		<viento tofile="${generator.working.dir}/${application.name}.sh" file="${generator.root.dir}/unix.sh" />
+
+		<!-- Create Eclipse Project Stucture files -->
+		<viento tofile="${generator.working.dir}/.project" file="${generator.root.dir}/.project" />
+		<viento tofile="${generator.working.dir}/.classpath" file="${generator.root.dir}/.classpath" />
+
+		<!-- Create readme.html file -->
+		<viento tofile="${generator.working.dir}/readme.html" file="${generator.root.dir}/readme.html" />
 	</target>
 
 
@@ -101,6 +108,7 @@
 		<mkdir dir="${web.inf.dir}/classes" />
 		<mkdir dir="${web.inf.dir}/lib" />
 		<mkdir dir="${web.inf.dir}/views" />
+		<mkdir dir="${web.inf.dir}/views/home" />
 
 		<viento tofile="${web.inf.dir}/web.xml" file="${generator.root.dir}/web.xml" />
 	</target>
