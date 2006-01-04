@@ -25,6 +25,7 @@ public class BuiltinsTest extends TestCase {
 //        verifyRender("$if($notThere)[[here]]", "");
         binding.put("notThere", null);
         verifyRender("$if($notThere)[[here]]", "");
+        verifyRender("$if(!$notThere)[[here]]", "here");
         verifyRender("$if($notThere == null)[[here]]", "here");
 
         // just for fun
