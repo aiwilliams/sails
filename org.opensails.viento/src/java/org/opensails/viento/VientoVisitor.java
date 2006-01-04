@@ -108,9 +108,9 @@ public class VientoVisitor extends AbstractParserVisitor {
 		if (node instanceof ASTOr)
 			return nullOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) || nullOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTEqual)
-			return evaluate((ASTLeftHandExpression)node.jjtGetChild(0)).equals(evaluate((ASTExpression)node.jjtGetChild(1)));
+			return safeEquals(evaluate((ASTLeftHandExpression)node.jjtGetChild(0)), evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTNotEqual)
-			return !evaluate((ASTLeftHandExpression)node.jjtGetChild(0)).equals(evaluate((ASTExpression)node.jjtGetChild(1)));
+			return !safeEquals(evaluate((ASTLeftHandExpression)node.jjtGetChild(0)), evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTGreaterThan)
 			return ((Comparable)evaluate((ASTLeftHandExpression)node.jjtGetChild(0))).compareTo(evaluate((ASTExpression)node.jjtGetChild(1))) > 0;
 		if (node instanceof ASTGreaterThanOrEqual)
@@ -124,6 +124,10 @@ public class VientoVisitor extends AbstractParserVisitor {
 
 	protected String unescapeString(String value) {
 		return value.replace("\\'", "'").replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\t", "\t").replace("\\\"", "\"").replace("\\$", "$");
+	}
+	
+	protected boolean safeEquals(Object one, Object two) {
+		return one == null ? two == null : one.equals(two);
 	}
 	
 	protected String unescape(String value) {

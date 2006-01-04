@@ -9,10 +9,9 @@ public class Statics {
 	public CallableMethod find(TopLevelMethodKey key) {
 		if (key.argClasses.length > 0)
 			return null;
-		Object object = map.get(key.methodName);
-		if (object == null)
+		if (!map.containsKey(key.methodName))
 			return null;
-		return new ObjectReference(object);
+		return new ObjectReference(map.get(key.methodName));
 	}
 
 	public Object get(String key) {

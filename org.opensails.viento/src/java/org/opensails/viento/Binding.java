@@ -125,7 +125,9 @@ public class Binding implements IBinding {
 		if (result == null) {
 			if (isSilent)
 				return "";
-			return resolutionFailed(key, target, args);
+			// Can't just blow up
+			// TODO: implement UnresolvedReference
+//			return resolutionFailed(key, target, args);
 		}
 		return result;
 	}
