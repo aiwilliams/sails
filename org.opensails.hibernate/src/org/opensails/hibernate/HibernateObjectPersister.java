@@ -10,6 +10,7 @@ import org.hibernate.ObjectDeletedException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
+import org.opensails.rigging.Disposable;
 import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.persist.PersistException;
@@ -23,7 +24,7 @@ import org.opensails.sails.persist.PersistException;
  * 
  * @author Adam 'Programmer' Williams
  */
-public class HibernateObjectPersister implements IObjectPersister {
+public class HibernateObjectPersister implements IObjectPersister, Disposable {
 	protected Session session;
 	protected HibernateSessionFactory sessionFactory;
 	protected Transaction transaction;
@@ -73,8 +74,7 @@ public class HibernateObjectPersister implements IObjectPersister {
 	}
 
 	public void dispose() {
-		if (session != null)
-			session.close();
+		closeSession();
 	}
 
 	@SuppressWarnings("unchecked")
