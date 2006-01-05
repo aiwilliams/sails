@@ -89,6 +89,10 @@ public class Page {
 			Assert.fail(String.format("Page did not render successfully\n%s", message));
 		}
 	}
+	
+	public void assertResponseHeader(String headerName, String expected) throws AssertionFailedError {
+		Assert.assertEquals(expected, response.getHeader(headerName));
+	}
 
 	public void assertTemplate(String expected) {
 		TemplateActionResult result = container().instance(TemplateActionResult.class);
