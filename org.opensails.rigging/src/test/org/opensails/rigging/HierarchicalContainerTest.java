@@ -2,6 +2,9 @@ package org.opensails.rigging;
 
 import java.util.Arrays;
 
+import org.opensails.rigging.SimpleContainerTest.IShoelace;
+import org.opensails.rigging.SimpleContainerTest.Shoelace;
+
 import junit.framework.TestCase;
 
 public class HierarchicalContainerTest extends TestCase {
@@ -63,5 +66,16 @@ public class HierarchicalContainerTest extends TestCase {
 		assertEquals(1, parent.allInstances(false).size());
 		assertEquals(2, parent.allInstances(true).size());
 		assertEquals(2, parent.allInstances(false).size());
+	}
+    
+    
+    public void testBroadcast_ThreadSafety() throws Exception {
+		child.register(Shoelace.class);
+		child.registerInstantiationListener(Shoelace.class, new InstantiationListener<Shoelace>() {
+			public void instantiated(Shoelace newInstance) {
+				parent.makeChild();
+			}
+		});
+		parent.broadcast(IShoelace.class, true).untie();
 	}
 }

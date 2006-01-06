@@ -76,7 +76,7 @@ public class HierarchicalContainer extends SimpleContainer {
 	@Override
 	public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
 		Collection<T> instances = super.allInstances(type, shouldInstantiate);
-		for (HierarchicalContainer child : children)
+		for (HierarchicalContainer child : new ArrayList<HierarchicalContainer>(children))
 			instances.addAll(child.allInstances(type, shouldInstantiate));
 		return instances;
 	}
