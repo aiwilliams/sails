@@ -4,8 +4,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.template.IMixinResolver;
-import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.sails.template.*;
 import org.opensails.viento.IBinding;
 
 public class TemplateActionResultProcessor implements IActionResultProcessor<TemplateActionResult> {
@@ -28,11 +27,19 @@ public class TemplateActionResultProcessor implements IActionResultProcessor<Tem
 		binding.mixin(resolver);
 
 		StringBuilder content = new StringBuilder();
-		renderer.render(result.getIdentifier(), binding, content);
+		try {
+			renderer.render(result.getIdentifier(), binding, content);
+		} catch (Exception e) {
+			throw new TemplateRenderFailedException(result.getIdentifier(), e);
+		}
 		if (result.hasLayout()) {
 			binding.put("contentForLayout", content);
 			content = new StringBuilder();
-			renderer.render(result.getLayout(), binding, content);
+			try {
+				renderer.render(result.getLayout(), binding, content);
+			} catch (Exception e) {
+				throw new TemplateRenderFailedException(result.getLayout(), e);
+			}
 		}
 		result.write(content.toString());
 	}
