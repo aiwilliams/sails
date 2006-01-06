@@ -49,6 +49,10 @@ public class SimpleNode implements Node {
   public Object jjtAccept(ParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
+  
+  public Node[] getChildren() {
+	  return children;
+  }
 
   /** Accept the visitor. **/
   public Object childrenAccept(ParserVisitor visitor, Object data) {

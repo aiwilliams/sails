@@ -160,7 +160,7 @@ public class VientoVisitor extends AbstractParserVisitor {
 	}
 
 	protected boolean nullOrFalse(Object object) {
-		return object != null && object != Boolean.FALSE;
+		return object != null && !object.equals(false);
 	}
 
 	protected Object evaluate(ASTList node) {

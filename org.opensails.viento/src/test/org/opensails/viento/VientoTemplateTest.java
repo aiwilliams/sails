@@ -186,6 +186,9 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if(!$yes)[[here]]", "");
 		
 		verifyRender("$if($yes && !$no)[[here]]", "here");
+		
+		binding.put("key", "value");
+		verifyRender("$if(!$key.startsWith('asdf'))[[here]]", "here");
 	}
 	
 	public void testEquals() {

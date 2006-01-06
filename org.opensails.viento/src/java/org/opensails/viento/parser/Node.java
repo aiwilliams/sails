@@ -31,6 +31,9 @@ public interface Node {
 
   /** Return the number of children the node has. */
   public int jjtGetNumChildren();
+  
+  /** Created for debugging */
+  Node[] getChildren();
 
   /** Accept the visitor. **/
   public Object jjtAccept(ParserVisitor visitor, Object data);
