@@ -8,9 +8,8 @@ import javax.servlet.http.*;
 import junit.framework.*;
 
 import org.opensails.sails.*;
-import org.opensails.sails.action.oem.TemplateActionResult;
-import org.opensails.sails.controller.oem.*;
-import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.action.oem.*;
+import org.opensails.sails.event.*;
 import org.opensails.sails.form.*;
 import org.opensails.sails.http.*;
 import org.opensails.sails.oem.*;
@@ -76,18 +75,19 @@ public class Page {
 	}
 
 	public void assertRenders() throws AssertionFailedError {
-		try {
+//		try {
 			source();
-		} catch (Throwable notExpected) {
-			StringBuilder message = new StringBuilder();
-			Throwable cause = notExpected;
-			do {
-				message.append(cause);
-				cause = cause.getCause();
-				if (cause != null) message.append(" caused by\n");
-			} while (cause != null);
-			Assert.fail(String.format("Page did not render successfully\n%s", message));
-		}
+//		} catch (Throwable notExpected) {
+//			throw notExpected;
+//			StringBuilder message = new StringBuilder();
+//			Throwable cause = notExpected;
+//			do {
+//				message.append(cause);
+//				cause = cause.getCause();
+//				if (cause != null) message.append(" caused by\n");
+//			} while (cause != null);
+//			Assert.fail(String.format("Page did not render successfully\n%s", message));
+//		}
 	}
 	
 	public void assertResponseHeader(String headerName, String expected) throws AssertionFailedError {

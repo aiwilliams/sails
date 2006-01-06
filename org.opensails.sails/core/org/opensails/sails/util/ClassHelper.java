@@ -2,8 +2,7 @@ package org.opensails.sails.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
@@ -47,6 +46,20 @@ public class ClassHelper {
 		return annotatedFields.toArray(new Field[annotatedFields.size()]);
 	}
 
+	public static Field[] fieldsUniquelyAnnotated(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+		Field[] declaredFields = clazz.getDeclaredFields();
+		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
+		Set<Annotation> annotations = new HashSet<Annotation>(declaredFields.length);
+		for (Field field : declaredFields) {
+			Annotation annotation = field.getAnnotation(annotationClass);
+			if (field.isAnnotationPresent(annotationClass) && !annotations.contains(annotation)) {
+				annotations.add(annotation);
+				annotatedFields.add(field);
+			}
+		}
+		return annotatedFields.toArray(new Field[annotatedFields.size()]);
+	}
+	
 	public static Field[] fieldsNamed(Class clazz, String... names) {
 		List<Field> fields = new ArrayList<Field>();
 		for (String name : names)
