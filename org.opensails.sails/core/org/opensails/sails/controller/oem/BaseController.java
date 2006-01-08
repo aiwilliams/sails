@@ -1,5 +1,7 @@
 package org.opensails.sails.controller.oem;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -8,6 +10,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.rigging.SimpleContainer;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.FileSendActionResult;
+import org.opensails.sails.action.oem.InputStreamActionResult;
 import org.opensails.sails.action.oem.RedirectActionResult;
 import org.opensails.sails.action.oem.StringActionResult;
 import org.opensails.sails.action.oem.TemplateActionResult;
@@ -188,6 +191,14 @@ public class BaseController implements IControllerImpl {
 		// TODO: Foreign behavior - move into TemplateActionResult
 		result.setTemplate(String.format("%s/%s", event.getProcessorName(), template));
 		return result;
+	}
+
+	protected InputStreamActionResult sendData(InputStream stream) {
+		return setResult(new InputStreamActionResult(event, stream));
+	}
+
+	protected FileSendActionResult sendFile(File file) {
+		return setResult(new FileSendActionResult(event, file));
 	}
 
 	protected FileSendActionResult sendFile(String path) {

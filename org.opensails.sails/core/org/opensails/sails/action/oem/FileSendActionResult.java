@@ -20,14 +20,18 @@ public class FileSendActionResult extends InputStreamActionResult {
 
 	protected ContentLength length;
 
+	public FileSendActionResult(ISailsEvent event, File file) {
+		super(event);
+		this.file = file;
+		if (!file.exists() || !file.canRead()) throw new IllegalArgumentException(String.format("File does not exist or cannot be read [%s]", file.getAbsolutePath()));
+	}
+
 	public FileSendActionResult(ISailsEvent event, InputStream stream) {
 		super(event, stream);
 	}
 
 	public FileSendActionResult(ISailsEvent event, String path) {
-		super(event);
-		this.file = new File(path);
-		if (!file.exists() || !file.canRead()) throw new IllegalArgumentException(String.format("File does not exist or cannot be read [%s]", path));
+		this(event, new File(path));
 	}
 
 	public void setDisposition(ContentDisposition disposition) {
