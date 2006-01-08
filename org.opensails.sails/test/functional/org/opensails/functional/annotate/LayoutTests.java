@@ -25,8 +25,14 @@ public class LayoutTests extends TestCase {
 
 		page = tester.get("four");
 		page.assertLayout("classSuperLayout");
-		
+
 		page = tester.get("five");
 		page.assertLayout("renderTemplateLayout");
+
+		page = tester.get("six");
+		page.assertLayout(null);
+
+		page = tester.get("seven");
+		page.assertLayout(null);
 	}
 }

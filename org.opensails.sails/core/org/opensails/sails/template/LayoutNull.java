@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import org.opensails.sails.annotate.Behavior;
 
 /**
- * Used on IControllerImpl implementations to declare their layouts.
+ * Used on IControllerImpl implementations to declare no layout.
  * <p>
  * It can be used on the class or on individual methods. The method declaration
  * supercedes those defined on the class.
@@ -18,6 +18,4 @@ import org.opensails.sails.annotate.Behavior;
 @Behavior(behavior = LayoutHandler.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Layout {
-	String value();
-}
+public @interface LayoutNull {}

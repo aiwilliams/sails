@@ -1,22 +1,30 @@
 package org.opensails.sails.template;
 
+import java.lang.annotation.Annotation;
+
 import org.opensails.sails.action.oem.ActionInvokation;
 import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.annotate.BehaviorInstance;
 import org.opensails.sails.annotate.oem.BehaviorHandlerAdapter;
 
-public class LayoutHandler extends BehaviorHandlerAdapter<Layout> {
-	protected BehaviorInstance<Layout> layout;
+public class LayoutHandler extends BehaviorHandlerAdapter {
+	protected BehaviorInstance<?> layout;
 
-	public boolean add(BehaviorInstance<Layout> instance) {
+	@SuppressWarnings("unchecked")
+	public boolean add(BehaviorInstance instance) {
 		if (layout == null || layout.getElementType().compareTo(instance.getElementType()) > 0) layout = instance;
 		return false;
 	}
 
 	@Override
 	public boolean beforeAction(ActionInvokation invokation) {
+		String finalLayout = null;
+		Class<? extends Annotation> type = layout.getAnnotation().annotationType();
+		if (type == Layout.class) finalLayout = ((Layout) layout.getAnnotation()).value();
+		else if (type != LayoutNull.class) throw new IllegalArgumentException(String.format("%s only understands the layout annotations %s, %s", LayoutHandler.class, Layout.class, LayoutNull.class));
+
 		TemplateActionResult actionResult = new TemplateActionResult(invokation.event);
-		actionResult.setLayout(layout.getAnnotation().value());
+		actionResult.setLayout(finalLayout);
 		invokation.setResult(actionResult);
 		return true;
 	}
