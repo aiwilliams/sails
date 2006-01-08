@@ -53,7 +53,7 @@ public class Page {
 	}
 
 	public void assertContentType(ContentType expected) throws AssertionFailedError {
-		Assert.assertEquals(expected.toHttpValue(), response.getContentType());
+		Assert.assertEquals(expected.value(), response.getContentType());
 	}
 
 	public void assertExcludes(String exactString) {

@@ -10,7 +10,7 @@ import org.opensails.sails.http.ContentType;
 public class TemplateActionResultTest extends TestCase {
 	public void testInitialize() throws Exception {
 		TemplateActionResult result = new TemplateActionResult(SailsEventFixture.actionGet());
-		assertEquals(ContentType.TEXT_HTML.toHttpValue(), result.getEvent().getResponse().getContentType());
+		assertEquals(ContentType.TEXT_HTML.value(), result.getEvent().getResponse().getContentType());
 	}
 
 	public void testSetTemplate() throws Exception {

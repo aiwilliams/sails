@@ -1,21 +1,28 @@
 package org.opensails.sails.controller.oem;
 
-import java.util.*;
+import java.util.List;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpSession;
 
-import org.opensails.rigging.*;
-import org.opensails.sails.action.*;
-import org.opensails.sails.action.oem.*;
-import org.opensails.sails.controller.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.form.*;
-import org.opensails.sails.mixins.*;
-import org.opensails.sails.model.*;
-import org.opensails.sails.model.oem.*;
-import org.opensails.sails.oem.*;
-import org.opensails.sails.util.*;
-import org.opensails.viento.*;
+import org.opensails.rigging.ScopedContainer;
+import org.opensails.rigging.SimpleContainer;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.oem.FileSendActionResult;
+import org.opensails.sails.action.oem.RedirectActionResult;
+import org.opensails.sails.action.oem.StringActionResult;
+import org.opensails.sails.action.oem.TemplateActionResult;
+import org.opensails.sails.controller.IController;
+import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.form.FileUpload;
+import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.form.IFormValueModel;
+import org.opensails.sails.mixins.UrlforMixin;
+import org.opensails.sails.model.IModelContext;
+import org.opensails.sails.model.oem.SingleModelContext;
+import org.opensails.sails.oem.Flash;
+import org.opensails.sails.util.ClassHelper;
+import org.opensails.viento.IBinding;
 
 public class BaseController implements IControllerImpl {
 	protected IController controller;
@@ -111,17 +118,6 @@ public class BaseController implements IControllerImpl {
 		getContainer().instance(Flash.class).put(key, value);
 	}
 
-	// TODO: Don't make child - use factory see
-	// http://trac.opensails.org/sails/ticket/79
-	// TODO: Write tests outside of Dock
-	protected boolean updateModel(Object modelInstance) {
-		exposeModel(modelInstance);
-		SimpleContainer formContainer = event.getContainer().makeChildUnscoped();
-		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
-		HtmlForm formInstance = formContainer.instance(HtmlForm.class, HtmlForm.class);
-		return formInstance.isValid();
-	}
-
 	protected IBinding getBinding() {
 		return getContainer().instance(IBinding.class);
 	}
@@ -194,6 +190,10 @@ public class BaseController implements IControllerImpl {
 		return result;
 	}
 
+	protected FileSendActionResult sendFile(String path) {
+		return setResult(new FileSendActionResult(event, path));
+	}
+
 	/**
 	 * @param clazz full name is used as attribute name
 	 * @param value can be null
@@ -228,6 +228,17 @@ public class BaseController implements IControllerImpl {
 		Object existing = s.getAttribute(name);
 		s.setAttribute(name, value);
 		return existing;
+	}
+
+	// TODO: Don't make child - use factory see
+	// http://trac.opensails.org/sails/ticket/79
+	// TODO: Write tests outside of Dock
+	protected boolean updateModel(Object modelInstance) {
+		exposeModel(modelInstance);
+		SimpleContainer formContainer = event.getContainer().makeChildUnscoped();
+		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
+		HtmlForm formInstance = formContainer.instance(HtmlForm.class, HtmlForm.class);
+		return formInstance.isValid();
 	}
 
 	protected UrlforMixin urlfor() {

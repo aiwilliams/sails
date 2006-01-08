@@ -93,7 +93,7 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 	}
 
 	public String getContentType() {
-		return headers.get(ContentType.HEADER_KEY);
+		return headers.get(ContentType.HEADER_NAME);
 	}
 
 	public String getHeader(String name) {
@@ -196,7 +196,7 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 	public void setContentLength(int len) {}
 
 	public void setContentType(String type) {
-		setHeader(ContentType.HEADER_KEY, type);
+		setHeader(ContentType.HEADER_NAME, type);
 	}
 
 	public void setDateHeader(String name, long date) {}

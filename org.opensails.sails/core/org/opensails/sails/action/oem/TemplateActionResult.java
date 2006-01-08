@@ -56,12 +56,12 @@ public class TemplateActionResult extends AbstractActionResult {
 	}
 
 	protected void initialize(ISailsEvent event, String identifier) {
-		initializeContentType(event);
+		initializeHeaders(event);
 		initializeIdentifier(event, identifier);
 	}
 
-	protected void initializeContentType(ISailsEvent event) {
-		event.getResponse().setContentType(ContentType.TEXT_HTML.toHttpValue());
+	protected void initializeHeaders(ISailsEvent event) {
+		event.getResponse().setContentType(ContentType.TEXT_HTML.value());
 	}
 
 	protected void initializeIdentifier(ISailsEvent event, String identifier) {

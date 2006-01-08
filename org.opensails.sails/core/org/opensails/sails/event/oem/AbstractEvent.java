@@ -1,21 +1,33 @@
 package org.opensails.sails.event.oem;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.configuration.*;
-import org.apache.commons.lang.*;
-import org.opensails.rigging.*;
-import org.opensails.sails.*;
-import org.opensails.sails.action.*;
-import org.opensails.sails.action.oem.*;
-import org.opensails.sails.adapter.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.form.*;
-import org.opensails.sails.url.*;
-import org.opensails.sails.util.*;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.ArrayUtils;
+import org.opensails.rigging.ScopedContainer;
+import org.opensails.sails.ISailsApplication;
+import org.opensails.sails.RequestContainer;
+import org.opensails.sails.SailsException;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.oem.ActionParameterList;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.event.ISailsEventListener;
+import org.opensails.sails.form.FileUpload;
+import org.opensails.sails.form.FormFields;
+import org.opensails.sails.url.EventUrl;
+import org.opensails.sails.url.IEventUrl;
+import org.opensails.sails.url.IUrl;
+import org.opensails.sails.url.IUrlResolver;
+import org.opensails.sails.url.UrlType;
+import org.opensails.sails.util.ClassHelper;
 
 public abstract class AbstractEvent implements ILifecycleEvent {
 	protected ISailsApplication application;
@@ -102,11 +114,6 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return response;
 	}
 
-	/**
-	 * @return the OutputStream of the response
-	 * @throws IllegalStateException if this gets called AFTER
-	 *         #getResponseWriter()
-	 */
 	public OutputStream getResponseOutputStream() {
 		if (responseOutputStream == null) {
 			try {
@@ -118,10 +125,6 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return responseOutputStream;
 	}
 
-	/**
-	 * @return a PrintWriter from the response
-	 * @throws IllegalStateException if an output stream was obtained first
-	 */
 	public PrintWriter getResponseWriter() {
 		if (responseWriter == null) {
 			try {

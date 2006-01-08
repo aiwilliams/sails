@@ -1,22 +1,11 @@
 package org.opensails.sails.http;
 
-public class ContentType {
-	public static final String HEADER_KEY = "Content-Type";
-
+public class ContentType extends HttpHeader {
+	public static final ContentType APP_OCTET_STREAM = new ContentType("application/octet-stream");
+	public static final String HEADER_NAME = "Content-Type";
 	public static final ContentType TEXT_HTML = new ContentType("text/html");
 
-	protected String httpContentType;
-
-	public ContentType(String httpContentType) {
-		this.httpContentType = httpContentType;
-	}
-
-	public String toHttpValue() {
-		return httpContentType;
-	}
-
-	@Override
-	public String toString() {
-		return toHttpValue();
+	public ContentType(String value) {
+		super(HEADER_NAME, value);
 	}
 }

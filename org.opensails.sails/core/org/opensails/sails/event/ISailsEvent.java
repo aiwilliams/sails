@@ -1,5 +1,8 @@
 package org.opensails.sails.event;
 
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -81,6 +84,19 @@ public interface ISailsEvent {
 	HttpServletRequest getRequest();
 
 	HttpServletResponse getResponse();
+
+	/**
+	 * @return the OutputStream of the response
+	 * @throws IllegalStateException if this gets called AFTER
+	 *         #getResponseWriter()
+	 */
+	OutputStream getResponseOutputStream();
+
+	/**
+	 * @return a PrintWriter from the response
+	 * @throws IllegalStateException if an output stream was obtained first
+	 */
+	PrintWriter getResponseWriter();
 
 	HttpSession getSession(boolean create);
 

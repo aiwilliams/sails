@@ -9,6 +9,6 @@ import org.opensails.sails.http.ContentType;
 public class PartialActionResultTest extends TestCase {
 	public void testInitialize() throws Exception {
 		PartialActionResult result = new PartialActionResult(SailsEventFixture.actionGet());
-		assertEquals(ContentType.TEXT_HTML.toHttpValue(), result.getEvent().getResponse().getContentType());
+		assertEquals(ContentType.TEXT_HTML.value(), result.getEvent().getResponse().getContentType());
 	}
 }

@@ -4,6 +4,7 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.http.HttpHeader;
 
 public abstract class AbstractActionResult implements IActionResult {
 	protected final ISailsEvent event;
@@ -22,5 +23,9 @@ public abstract class AbstractActionResult implements IActionResult {
 
 	public ISailsEvent getEvent() {
 		return event;
+	}
+
+	public void setHeader(HttpHeader header) {
+		event.getResponse().setHeader(header.name(), header.value());
 	}
 }
