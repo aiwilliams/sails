@@ -5,11 +5,4 @@ package org.opensails.sails.action;
  * 
  * @author aiwilliams
  */
-public interface IAction {
-	/**
-	 * @param numberOfArguments
-	 * @return a Class[] representing the types of the arguments for the action
-	 *         that requires the specified numberOfArguments
-	 */
-	Class<?>[] getParameterTypes(int numberOfArguments);
-}
+public interface IAction {}

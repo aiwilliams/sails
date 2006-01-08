@@ -1,24 +1,28 @@
 package org.opensails.sails.tester;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Collection;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
 
-import junit.framework.*;
+import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
-import org.opensails.sails.*;
-import org.opensails.sails.action.oem.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.form.*;
-import org.opensails.sails.http.*;
-import org.opensails.sails.oem.*;
-import org.opensails.sails.tester.form.*;
-import org.opensails.sails.tester.html.*;
-import org.opensails.sails.tester.oem.*;
-import org.opensails.sails.tester.servletapi.*;
-import org.opensails.sails.tester.util.*;
-import org.opensails.sails.util.*;
+import org.opensails.sails.RequestContainer;
+import org.opensails.sails.SailsException;
+import org.opensails.sails.action.oem.TemplateActionResult;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.http.ContentType;
+import org.opensails.sails.oem.Flash;
+import org.opensails.sails.tester.form.Form;
+import org.opensails.sails.tester.html.FieldSet;
+import org.opensails.sails.tester.oem.TestingBinding;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.tester.util.CollectionAssert;
+import org.opensails.sails.util.RegexHelper;
 
 public class Page {
 	protected final ISailsEvent event;
@@ -60,10 +64,9 @@ public class Page {
 		TemplateActionResult result = container().instance(TemplateActionResult.class);
 		if (result == null) {
 			if (expected != null) throw new AssertionFailedError("A template was not rendered");
-			else return; // not template, layout expected to be null, so no
-			// problem
+			else return; // !template, layout == null
 		}
-		Assert.assertEquals("Layout was not rendered as expected", expected, result.getLayout());
+		Assert.assertEquals("Layout was not rendered ", expected, result.getLayout());
 	}
 
 	public void assertMatches(String regex) {
@@ -74,20 +77,28 @@ public class Page {
 		assertPageExpectation(message + " Expected " + url() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
 	}
 
-	public void assertRenders() throws AssertionFailedError {
-//		try {
+	/**
+	 * @throws AssertionFailedError if the page does render successfully
+	 */
+	public void assertRenderFails() throws AssertionFailedError {
+		assertRenderFails("Expected render to fail");
+	}
+
+	/**
+	 * @param message
+	 * @throws AssertionFailedError if the page does render successfully
+	 */
+	public void assertRenderFails(String message) throws AssertionFailedError {
+		boolean rendered = false;
+		try {
 			source();
-//		} catch (Throwable notExpected) {
-//			throw notExpected;
-//			StringBuilder message = new StringBuilder();
-//			Throwable cause = notExpected;
-//			do {
-//				message.append(cause);
-//				cause = cause.getCause();
-//				if (cause != null) message.append(" caused by\n");
-//			} while (cause != null);
-//			Assert.fail(String.format("Page did not render successfully\n%s", message));
-//		}
+			rendered = true;
+		} catch (Throwable expected) {}
+		if (rendered) Assert.fail(message);
+	}
+
+	public void assertRenders() throws AssertionFailedError {
+		source();
 	}
 	
 	public void assertResponseHeader(String headerName, String expected) throws AssertionFailedError {

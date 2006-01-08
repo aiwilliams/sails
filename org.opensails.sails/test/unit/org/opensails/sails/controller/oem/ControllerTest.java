@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.oem.ExceptionEvent;
 import org.opensails.sails.event.oem.GetEvent;
@@ -48,23 +47,6 @@ public class ControllerTest extends TestCase {
 		assertSame(event.getContainer(), controllerImpl.getContainer());
 	}
 
-	public void testProcess_LayoutAnnotations() throws Exception {
-		Controller controller = ControllerFixture.defaultAdapters(ShamControllerLayouts.class);
-		assertEquals("classLayout", processAsTemplate(controller, "classLayout").getLayout());
-		assertEquals("actionLayout", processAsTemplate(controller, "actionLayout").getLayout());
-		assertEquals("methodLayout", processAsTemplate(controller, "methodLayout").getLayout());
-		assertEquals(null, processAsTemplate(controller, "layoutNoneMethod").getLayout());
-		// Make sure non-TemplateActionResults don't blow up
-		process(controller, "notTemplateResult");
-
-		controller = ControllerFixture.defaultAdapters(ShamControllerLayoutsSubclass.class);
-		// A subclass does not inherit layouts for now, only because it is the
-		// simplest thing
-		// If we decide we want that, we need to make sure it is clearly defined
-		// behavior
-		assertEquals(null, processAsTemplate(controller, "actionLayout").getLayout());
-	}
-
 	public void testProcess_NoControllerImpl() throws Exception {
 		Controller controller = ControllerFixture.create();
 		GetEvent event = SailsEventFixture.actionGet();
@@ -74,9 +56,5 @@ public class ControllerTest extends TestCase {
 
 	IActionResult process(Controller controller, String actionName) {
 		return controller.process(SailsEventFixture.actionGet(controller.getImplementation(), actionName));
-	}
-
-	TemplateActionResult processAsTemplate(Controller controller, String actionName) {
-		return (TemplateActionResult) controller.process(SailsEventFixture.actionGet(controller.getImplementation(), actionName));
 	}
 }

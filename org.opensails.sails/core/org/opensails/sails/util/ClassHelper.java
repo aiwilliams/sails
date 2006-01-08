@@ -2,7 +2,13 @@ package org.opensails.sails.util;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
@@ -15,10 +21,34 @@ import org.opensails.sails.SailsException;
  * more methods it doesn't and 2) if we decide to get rid of that, the code will
  * be bound to this.
  * 
- * @author aiwilliams
- * 
+ * @author Adam 'Programmer' Williams
  */
 public class ClassHelper {
+	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
+
+	/**
+	 * @param clazz
+	 * @param name
+	 * @return an array of Methods with name, in order of least arguments to
+	 *         most, or empty array if clazz is null or there are no methods
+	 *         having name
+	 */
+	public static Method[] declaredMethodsNamed(Class<?> clazz, String name) {
+		if (clazz == null) return EMPTY_METHOD_ARRAY;
+
+		List<Method> matches = new ArrayList<Method>();
+		Method[] declaredMethods = clazz.getDeclaredMethods();
+		for (int i = 0; i < declaredMethods.length; i++) {
+			if (declaredMethods[i].getName().equals(name)) matches.add(declaredMethods[i]);
+		}
+		Collections.sort(matches, new Comparator<Method>() {
+			public int compare(Method o1, Method o2) {
+				return o2.getParameterTypes().length - o1.getParameterTypes().length;
+			}
+		});
+		return matches.toArray(new Method[matches.size()]);
+	}
+
 	/**
 	 * @param clazz
 	 * @param name
@@ -46,6 +76,13 @@ public class ClassHelper {
 		return annotatedFields.toArray(new Field[annotatedFields.size()]);
 	}
 
+	public static Field[] fieldsNamed(Class clazz, String... names) {
+		List<Field> fields = new ArrayList<Field>();
+		for (String name : names)
+			fields.add(fieldNamed(clazz, name));
+		return fields.toArray(new Field[fields.size()]);
+	}
+
 	public static Field[] fieldsUniquelyAnnotated(Class<?> clazz, Class<? extends Annotation> annotationClass) {
 		Field[] declaredFields = clazz.getDeclaredFields();
 		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
@@ -58,13 +95,6 @@ public class ClassHelper {
 			}
 		}
 		return annotatedFields.toArray(new Field[annotatedFields.size()]);
-	}
-	
-	public static Field[] fieldsNamed(Class clazz, String... names) {
-		List<Field> fields = new ArrayList<Field>();
-		for (String name : names)
-			fields.add(fieldNamed(clazz, name));
-		return fields.toArray(new Field[fields.size()]);
 	}
 
 	public static String getName(Class clazz) {
@@ -101,6 +131,29 @@ public class ClassHelper {
 
 	public static String lowerCamelName(Object instance) {
 		return lowerCamelName(instance.getClass());
+	}
+
+	/**
+	 * @param clazz
+	 * @param name
+	 * @return an array of public Methods with name, in order of least arguments
+	 *         to most, or empty array if clazz is null or there are no methods
+	 *         having name
+	 */
+	public static Method[] methodsNamedInHeirarchy(Class<?> clazz, String name) {
+		if (clazz == null) return EMPTY_METHOD_ARRAY;
+
+		List<Method> matches = new ArrayList<Method>();
+		Method[] methods = clazz.getMethods();
+		for (int i = 0; i < methods.length; i++) {
+			if (methods[i].getName().equals(name)) matches.add(methods[i]);
+		}
+		Collections.sort(matches, new Comparator<Method>() {
+			public int compare(Method o1, Method o2) {
+				return o2.getParameterTypes().length - o1.getParameterTypes().length;
+			}
+		});
+		return matches.toArray(new Method[matches.size()]);
 	}
 
 	public static String upperCamel(String string) {

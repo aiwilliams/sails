@@ -9,7 +9,6 @@ import org.opensails.viento.IBinding;
 public class TemplateActionResult extends AbstractActionResult {
 	static final Pattern CONTROLLER_ACTION_PATTERN = Pattern.compile("^(.*?)/(.*?)?");
 
-	protected boolean hasLayoutBeenSet;
 	protected String identifier;
 	protected String layoutIdentifier;
 
@@ -39,12 +38,7 @@ public class TemplateActionResult extends AbstractActionResult {
 		return layoutIdentifier != null;
 	}
 
-	public boolean hasLayoutBeenSet() {
-		return hasLayoutBeenSet;
-	}
-
 	public void setLayout(String templateIdentifier) {
-		hasLayoutBeenSet = true;
 		layoutIdentifier = templateIdentifier;
 	}
 

@@ -1,14 +1,8 @@
-package org.opensails.sails.controller.oem;
+package org.opensails.functional.controllers;
 
 import org.opensails.sails.template.Layout;
 
-@Layout("classLayout")
-public class ShamControllerLayouts extends ShamController {
-	@Layout("actionLayout")
-	public void actionLayout() {}
-
-	public void classLayout() {}
-
+public class LayoutTestController extends LayoutSuperController {
 	@Layout("actionLayout")
 	public void layoutNoneMethod() {
 		layout(null);
@@ -22,4 +16,11 @@ public class ShamControllerLayouts extends ShamController {
 	public void notTemplateResult() {
 		renderString("so the result isnt template");
 	}
+
+	@Override
+	@Layout("oneLayout")
+	public void one() {}
+
+	@Override
+	public void two() {}
 }

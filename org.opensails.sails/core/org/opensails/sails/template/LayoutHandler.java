@@ -1,23 +1,23 @@
 package org.opensails.sails.template;
 
+import org.opensails.sails.action.oem.ActionInvokation;
 import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.annotate.BehaviorInstance;
-import org.opensails.sails.annotate.IBehaviorHandler;
-import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.event.oem.IActionEventProcessor;
+import org.opensails.sails.annotate.oem.BehaviorHandlerAdapter;
 
-public class LayoutHandler implements IBehaviorHandler<Layout> {
+public class LayoutHandler extends BehaviorHandlerAdapter<Layout> {
 	protected BehaviorInstance<Layout> layout;
 
-	public void add(BehaviorInstance<Layout> instance) {
+	public boolean add(BehaviorInstance<Layout> instance) {
 		if (layout == null || layout.getElementType().compareTo(instance.getElementType()) > 0) layout = instance;
+		return false;
 	}
 
-	public void afterAction(IEventProcessingContext<? extends IActionEventProcessor> context) {}
-
-	public void beforeAction(IEventProcessingContext<? extends IActionEventProcessor> context) {
-		TemplateActionResult actionResult = new TemplateActionResult(context.getEvent());
+	@Override
+	public boolean beforeAction(ActionInvokation invokation) {
+		TemplateActionResult actionResult = new TemplateActionResult(invokation.event);
 		actionResult.setLayout(layout.getAnnotation().value());
-		context.setResult(actionResult);
+		invokation.setResult(actionResult);
+		return true;
 	}
 }

@@ -1,27 +1,36 @@
 package org.opensails.sails.action.oem;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.opensails.sails.RequestContainer;
-import org.opensails.sails.SailsException;
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
-import org.opensails.sails.action.IActionParameterList;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.annotate.Behavior;
+import org.opensails.sails.annotate.BehaviorInstance;
+import org.opensails.sails.annotate.IBehaviorHandler;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.template.Layout;
+import org.opensails.sails.util.ClassHelper;
 
+/**
+ * An Action as seen by the Sails framework.
+ * <p>
+ * Actions are designed to be cacheable. The should not maintain references to
+ * anything related to a specific event. They must remain thread-safe.
+ * 
+ * @author Adam 'Programmer' Williams
+ */
 public class Action implements IAction {
-	protected static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
-	protected static final Annotation[] NO_ANNOTATIONS = new Annotation[0];
+	protected static final BehaviorInstance[] EMPTY_BEHAVIOR_INSTANCES = new BehaviorInstance[0];
 
 	protected final Method[] actionMethods;
 	protected final IAdapterResolver adapterResolver;
@@ -32,65 +41,18 @@ public class Action implements IAction {
 		this.name = name;
 		this.controllerImplementation = controllerImplementation;
 		this.adapterResolver = adapterResolver;
-		this.actionMethods = findMethods(name);
+		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(controllerImplementation, name);
 	}
 
-	/**
-	 * Adapts the unadaptedParameters, then invokes the action.
-	 * 
-	 * @param event
-	 * @param implementationInstance
-	 * @param parameters
-	 * 
-	 * @return the result
-	 */
-	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, IActionParameterList parameters) {
-		IActionListener listener = getActionListeners(event);
-		listener.beginExecution(this);
-		Method actionMethod = methodHavingArgCount(parameters.size());
-
-		IActionResult result = null;
-		if (actionMethod != null) {
-			Object[] actionArguments = parameters.objects(actionMethod.getParameterTypes());
-			result = executeMethod(event, implementationInstance, actionMethod, actionArguments);
-			if (result instanceof TemplateActionResult) {
-				TemplateActionResult templateResult = (TemplateActionResult) result;
-				if (!templateResult.hasLayoutBeenSet()) if (actionMethod.isAnnotationPresent(Layout.class)) templateResult.setLayout(actionMethod.getAnnotation(Layout.class).value());
-			}
-		} else result = defaultActionResult(event, implementationInstance);
-
-		listener.endExecution(this);
-		return finalizeExecution(event, result);
-	}
-
-	/**
-	 * Executes this action without adapting the parameters.
-	 * 
-	 * @param event
-	 * @param implementationInstance
-	 * 
-	 * @param parameters, which will not be adapted
-	 * @return the result
-	 */
-	public IActionResult execute(ISailsEvent event, IControllerImpl implementationInstance, Object[] parameters) {
-		IActionListener listener = getActionListeners(event);
-		listener.beginExecution(this);
-		Method actionMethod = methodHavingArgCount(parameters.length);
-
-		IActionResult result = null;
-		if (actionMethod == null) result = defaultActionResult(event, implementationInstance);
-		else result = executeMethod(event, implementationInstance, actionMethod, parameters);
-
-		listener.endExecution(this);
-		return finalizeExecution(event, result);
-	}
-
-	public Annotation[] getAnnotations() {
-		return actionMethods != null && actionMethods.length > 0 ? actionMethods[0].getAnnotations() : NO_ANNOTATIONS;
-	}
-
-	public Class<?>[] getParameterTypes(int numberOfArguments) {
-		return methodHavingArgCount(numberOfArguments).getParameterTypes();
+	public IActionResult execute(ActionInvokation invokation) {
+		beginExecution(invokation);
+		beforeBehaviors(invokation);
+		invokation.invoke();
+		afterBehaviors(invokation);
+		if (!invokation.hasResult()) setDefaultResult(invokation);
+		registerResult(invokation);
+		endExecution(invokation);
+		return invokation.result;
 	}
 
 	@Override
@@ -98,48 +60,96 @@ public class Action implements IAction {
 		return controllerImplementation + "#" + name;
 	}
 
-	protected IActionResult defaultActionResult(ISailsEvent event, IControllerImpl implementationInstance) {
+	private BehaviorInstance[] allBehaviors(ActionInvokation invokation) {
+		if (!invokation.hasContext()) return EMPTY_BEHAVIOR_INSTANCES;
+
+		List<BehaviorInstance> instances = new ArrayList<BehaviorInstance>();
+
+		if (invokation.hasCode()) collectBehaviorsWhenActionCode(instances, invokation);
+		else collectBehaviorsWhenNoActionCode(instances, invokation);
+		return instances.toArray(new BehaviorInstance[instances.size()]);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void collectActionBehaviors(List<BehaviorInstance> instances, Method method) {
+		for (Annotation annotation : method.getAnnotations())
+			if (annotation.annotationType().isAnnotationPresent(Behavior.class)) instances.add(new BehaviorInstance(annotation, ElementType.METHOD));
+	}
+
+	private void collectBehaviorsWhenActionCode(List<BehaviorInstance> instances, ActionInvokation invokation) {
+		Set<Class<?>> processedControllers = new HashSet<Class<?>>();
+		Method action = invokation.code;
+		do {
+			collectActionBehaviors(instances, action);
+			Class<?> controller = action.getDeclaringClass();
+			if (!processedControllers.contains(controller)) collectControllerBehaviors(instances, controller);
+			processedControllers.add(controller);
+
+			Method overriddenAction = overriddenAction(controller, action);
+			if (overriddenAction != null) {
+				action = overriddenAction;
+			} else {
+				action = null;
+			}
+		} while (action != null);
+	}
+
+	private void collectBehaviorsWhenNoActionCode(List<BehaviorInstance> instances, ActionInvokation invokation) {
+		Class controller = invokation.getContextClass();
+		do {
+			collectControllerBehaviors(instances, controller);
+			controller = controller.getSuperclass();
+		} while (controller != Object.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void collectControllerBehaviors(List<BehaviorInstance> instances, Class type) {
+		for (Annotation annotation : type.getAnnotations())
+			if (annotation.annotationType().isAnnotationPresent(Behavior.class)) instances.add(new BehaviorInstance(annotation, ElementType.TYPE));
+	}
+
+	@SuppressWarnings("unchecked")
+	private void initializeHandlers(ActionInvokation invokation) {
+		Set<IBehaviorHandler> satisfiedHandlers = new LinkedHashSet<IBehaviorHandler>();
+		BehaviorInstance[] behaviors = allBehaviors(invokation);
+		for (BehaviorInstance behavior : behaviors) {
+			IBehaviorHandler<?> handler = invokation.getHandler(behavior);
+			if (!satisfiedHandlers.contains(handler) && !handler.add(behavior)) satisfiedHandlers.add(handler);
+		}
+	}
+
+	private Method overriddenAction(Class controller, Method action) {
+		Class<?> controllerSuperclass = controller.getSuperclass();
+		if (controllerSuperclass == Object.class) return null;
+		try {
+			return controllerSuperclass.getMethod(action.getName(), action.getParameterTypes());
+		} catch (Exception possibleAndIgnored) {
+			return null;
+		}
+	}
+
+	protected void afterBehaviors(ActionInvokation invokation) {
+		for (IBehaviorHandler handler : invokation.getHandlers())
+			handler.afterAction(invokation);
+	}
+
+	protected void beforeBehaviors(ActionInvokation invokation) {
+		for (IBehaviorHandler handler : invokation.getHandlers())
+			handler.beforeAction(invokation);
+	}
+
+	protected void beginExecution(ActionInvokation invokation) {
+		getActionListeners(invokation.event).beginExecution(this);
+		invokation.code = methodHavingArgCount(invokation.parameters.size());
+		initializeHandlers(invokation);
+	}
+
+	protected IActionResult defaultActionResult(ISailsEvent event) {
 		return new TemplateActionResult(event);
 	}
 
-	protected IActionResult executeMethod(ISailsEvent event, IControllerImpl implementationInstance, Method actionMethod, Object[] actionArguments) {
-		try {
-			Object result = actionMethod.invoke(implementationInstance, actionArguments);
-			if (result != null && result instanceof IActionResult) return (IActionResult) result;
-			IActionResult resultFromController = implementationInstance.getActionResult();
-			if (resultFromController != null) return resultFromController;
-			return defaultActionResult(event, implementationInstance);
-		} catch (IllegalArgumentException e) {
-			// TODO: Handle illegal argument when invoking action method
-			throw new ParameterMismatchException(event, actionMethod, actionArguments);
-		} catch (IllegalAccessException e) {
-			throw new SailsException("Action methods on an ActionMethodController must be public.", e);
-		} catch (InvocationTargetException e) {
-			throw new SailsException("An exception [" + e.getCause().getClass() + "] occurred in the action " + actionMethod, e.getCause());
-		}
-	}
-
-	protected IActionResult finalizeExecution(ISailsEvent event, IActionResult result) {
-		RequestContainer container = event.getContainer();
-		container.register(IActionResult.class, result);
-		container.register(result);
-		return result;
-	}
-
-	protected Method[] findMethods(String name) {
-		if (controllerImplementation == null) return EMPTY_METHOD_ARRAY;
-
-		List<Method> matches = new ArrayList<Method>();
-		Method[] declaredMethods = controllerImplementation.getDeclaredMethods();
-		for (int i = 0; i < declaredMethods.length; i++) {
-			if (declaredMethods[i].getName().equals(name)) matches.add(declaredMethods[i]);
-		}
-		Collections.sort(matches, new Comparator<Method>() {
-			public int compare(Method o1, Method o2) {
-				return o2.getParameterTypes().length - o1.getParameterTypes().length;
-			}
-		});
-		return matches.toArray(new Method[matches.size()]);
+	protected void endExecution(ActionInvokation invokation) {
+		getActionListeners(invokation.event).endExecution(this);
 	}
 
 	protected IActionListener getActionListeners(ISailsEvent event) {
@@ -150,5 +160,15 @@ public class Action implements IAction {
 		for (Method method : actionMethods)
 			if (method.getParameterTypes().length <= i) return method;
 		return null;
+	}
+
+	protected void registerResult(ActionInvokation invokation) {
+		RequestContainer container = invokation.getContainer();
+		container.register(IActionResult.class, invokation.result);
+		container.register(invokation.result);
+	}
+
+	protected void setDefaultResult(ActionInvokation invokation) {
+		invokation.result = defaultActionResult(invokation.event);
 	}
 }

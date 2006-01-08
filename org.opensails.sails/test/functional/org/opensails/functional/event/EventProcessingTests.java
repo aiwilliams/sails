@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.functional.SailsFunctionalTester;
 import org.opensails.functional.controllers.EventTestController;
+import org.opensails.functional.controllers.EventTestSubclassController;
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
 import org.opensails.sails.form.FormFields;
@@ -37,6 +38,14 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		assertHeardActionEvents();
 	}
 
+	public void testGet_ActionsInSuperclass() {
+		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestSubclassController.class);
+		registerAsActionListener(tester);
+		Page page = tester.get("simpleGet");
+		page.assertTemplate("eventTestSubclass/simpleGet");
+		assertHeardActionEvents();
+	}
+
 	public void testGet_NoCodeBehind() {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
 		Page page = tester.get("noCodeBehind");
@@ -55,6 +64,9 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		page.assertTemplate("eventTest/parameterGet");
 		page.assertContains("true");
 		page.assertContains("two");
+
+		page = tester.get("parameterGet");
+		page.assertRenderFails("Arguments weren't exposed: zero parameter event for parameterized action, code doesn't get executed");
 	}
 
 	public void testPost() {

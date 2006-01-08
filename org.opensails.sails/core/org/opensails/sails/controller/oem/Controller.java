@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.Action;
+import org.opensails.sails.action.oem.ActionInvokation;
 import org.opensails.sails.action.oem.AdaptedParameterList;
-import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
@@ -15,7 +15,6 @@ import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.ExceptionEvent;
 import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.PostEvent;
-import org.opensails.sails.template.Layout;
 
 public class Controller implements IController {
 	protected final Map<String, Action> actions;
@@ -33,11 +32,6 @@ public class Controller implements IController {
 		return createInstanceOrNull(event);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.opensails.sails.controller.oem.IControllerMeta#getAction(java.lang.String)
-	 */
 	public Action getAction(String name) {
 		Action action = actions.get(name);
 		if (action == null) {
@@ -47,11 +41,6 @@ public class Controller implements IController {
 		return action;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.opensails.sails.controller.oem.IControllerMeta#getImplementation()
-	 */
 	public Class<? extends IControllerImpl> getImplementation() {
 		return controllerImplementation;
 	}
@@ -63,7 +52,7 @@ public class Controller implements IController {
 	public IActionResult process(ExceptionEvent event) {
 		IControllerImpl controller = createInstance(event);
 		Action action = getAction(event.getActionName());
-		return action.execute(event, controller, new AdaptedParameterList(event));
+		return action.execute(new ActionInvokation(event, new AdaptedParameterList(event), controller));
 	}
 
 	public IActionResult process(GetEvent event) {
@@ -73,21 +62,11 @@ public class Controller implements IController {
 	public IActionResult process(ISailsEvent event) {
 		IControllerImpl controller = createInstanceOrNull(event);
 		Action action = getAction(event.getActionName());
-		IActionResult actionResult = action.execute(event, controller, event.getActionParameters());
-		if (actionResult instanceof TemplateActionResult && !((TemplateActionResult) actionResult).hasLayoutBeenSet() && controller != null
-				&& controller.getClass().isAnnotationPresent(Layout.class)) {
-			Layout layout = controller.getClass().getAnnotation(Layout.class);
-			((TemplateActionResult) actionResult).setLayout(layout.value());
-		}
-		return actionResult;
+		return action.execute(new ActionInvokation(event, event.getActionParameters(), controller));
 	}
 
 	public IActionResult process(PostEvent event) {
 		return process((ISailsEvent) event);
-	}
-
-	protected IControllerImpl createInstance(ISailsEvent event, Class<? extends IControllerImpl> controllerImpl) {
-		return event.getContainer().create(controllerImplementation, event);
 	}
 
 	private IControllerImpl createInstanceOrNull(ISailsEvent event) {
@@ -95,5 +74,9 @@ public class Controller implements IController {
 		IControllerImpl instance = createInstance(event, controllerImplementation);
 		instance.setEventContext(event, this);
 		return instance;
+	}
+
+	protected IControllerImpl createInstance(ISailsEvent event, Class<? extends IControllerImpl> controllerImpl) {
+		return event.getContainer().create(controllerImplementation, event);
 	}
 }
