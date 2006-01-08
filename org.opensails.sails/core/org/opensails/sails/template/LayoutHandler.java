@@ -21,7 +21,7 @@ public class LayoutHandler extends BehaviorHandlerAdapter {
 		String finalLayout = null;
 		Class<? extends Annotation> type = layout.getAnnotation().annotationType();
 		if (type == Layout.class) finalLayout = ((Layout) layout.getAnnotation()).value();
-		else if (type != LayoutNull.class) throw new IllegalArgumentException(String.format("%s only understands the layout annotations %s, %s", LayoutHandler.class, Layout.class, LayoutNull.class));
+		else if (type != NoLayout.class) throw new IllegalArgumentException(String.format("%s only understands the layout annotations %s, %s", LayoutHandler.class, Layout.class, NoLayout.class));
 
 		TemplateActionResult actionResult = new TemplateActionResult(invokation.event);
 		actionResult.setLayout(finalLayout);

@@ -1,7 +1,7 @@
 package org.opensails.functional.controllers;
 
 import org.opensails.sails.template.Layout;
-import org.opensails.sails.template.LayoutNull;
+import org.opensails.sails.template.NoLayout;
 
 public class LayoutTestController extends LayoutSuperController {
 	@Layout("actionLayout")
@@ -22,7 +22,7 @@ public class LayoutTestController extends LayoutSuperController {
 	@Layout("oneLayout")
 	public void one() {}
 
-	@LayoutNull
+	@NoLayout
 	public void seven() {}
 
 	public void six() {

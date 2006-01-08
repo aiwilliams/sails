@@ -18,4 +18,4 @@ import org.opensails.sails.annotate.Behavior;
 @Behavior(behavior = LayoutHandler.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LayoutNull {}
+public @interface NoLayout {}
