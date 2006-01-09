@@ -1,19 +1,28 @@
 package org.opensails.sails.form;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.*;
-import org.apache.commons.lang.*;
-import org.opensails.sails.*;
-import org.opensails.sails.adapter.*;
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.SailsException;
+import org.opensails.sails.adapter.FieldType;
 
 /**
+ * Encapsulates the values of successful controls from a form submission. See
+ * http://www.w3.org/TR/html4/interact/forms.html#submit-format to gain further
+ * insight into the inconsistencies of the HTML specification.
+ * <p>
  * Why? Provides:
  * <ul>
  * <li>a way for objects that are created within a dependancy injection
- * container to declare their need for the form fields of the current post event</li>
+ * container to declare their need for the form fields of the current event</li>
  * <li>ability to remove fields - the HttpServletRequest won't allow that</li>
  * <li>a unified interface to reading values from different enctype (like
  * multipart forms)</li>
@@ -22,6 +31,23 @@ import org.opensails.sails.adapter.*;
  * @see org.opensails.sails.form.HtmlForm
  */
 public class FormFields {
+	/**
+	 * The value to use when a field has a null or empty String.
+	 * <p>
+	 * If you desire #value() to return something other than null, like an empty
+	 * String, for non-extant or blank values, set this to your liking.
+	 */
+	public static final String NULL_OR_BLANK_STRING_VALUE = null;
+
+	/**
+	 * The value to use when a field has a null or empty String[].
+	 * <p>
+	 * If you desire #values() to return something other than null, like an
+	 * empty String[], for non-extant or zero-length values, set this to your
+	 * liking.
+	 */
+	public static final String[] NULL_OR_EMPTY_STRING_ARRAY_VALUE = null;
+
 	public static FormFields quick(Object... objects) {
 		if (objects.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -135,10 +161,10 @@ public class FormFields {
 		if (value == null) return null;
 		if (value.getClass().isArray()) {
 			String[] values = (String[]) value;
-			if (values.length == 0) return nullValue((String) null);
+			if (values.length == 0) return NULL_OR_BLANK_STRING_VALUE;
 			if (values.length >= 1) value = values[0];
 		} else if (value.getClass() == FileUpload.class) value = ((FileUpload) value).getFileName();
-		if (StringUtils.isEmpty((String) value)) return nullValue((String) value);
+		if (StringUtils.isEmpty((String) value)) return NULL_OR_BLANK_STRING_VALUE;
 		return (String) value;
 	}
 
@@ -169,31 +195,9 @@ public class FormFields {
 		String[] values = null;
 		if (value.getClass().isArray()) {
 			values = (String[]) value;
-			if (values.length == 0) return nullValue((String[]) null);
+			if (values.length == 0) return NULL_OR_EMPTY_STRING_ARRAY_VALUE;
 		} else values = new String[] { (String) value };
 		return values;
-	}
-
-	/**
-	 * If you desire to return something other than null, like an empty String,
-	 * for non-extant or blank values, override this.
-	 * 
-	 * @param nullOrBlankString
-	 * @return the value to use when the field has a null or empty String
-	 */
-	protected String nullValue(String nullOrBlankString) {
-		return null;
-	}
-
-	/**
-	 * If you desire to return something other than null, like an empty
-	 * String[], for non-extant or zero-length values, override this.
-	 * 
-	 * @param nullOrZeroLengthStringArray
-	 * @return the value to use when the field has a null or empty String
-	 */
-	protected String[] nullValue(String[] nullOrZeroLengthStringArray) {
-		return null;
 	}
 
 	void addFieldValue(String fieldName, String string) {
