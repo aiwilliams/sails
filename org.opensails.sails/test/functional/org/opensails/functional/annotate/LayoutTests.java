@@ -13,6 +13,12 @@ public class LayoutTests extends TestCase {
 		Page page = tester.get("one");
 		page.assertLayout("classSuperLayout");
 
+		// Test that NoLayout and Layout handler used is same instance
+		for (int i = 0; i < 20; i++) {
+			page = tester.get("eight");
+			page.assertLayout(null);
+		}
+
 		tester = new SailsFunctionalTester(LayoutTestController.class);
 		page = tester.get("one");
 		page.assertLayout("oneLayout");

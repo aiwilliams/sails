@@ -32,13 +32,13 @@ public class ActionInvokation {
 	public IActionResult result;
 
 	protected final IEventProcessingContext context;
-	protected final Map<BehaviorInstance, IBehaviorHandler> handlers;
+	protected final Map<Class<? extends IBehaviorHandler>, IBehaviorHandler> handlers;
 
 	public ActionInvokation(ISailsEvent event, IActionParameterList parameters, IEventProcessingContext context) {
 		this.event = event;
 		this.context = context;
 		this.parameters = parameters;
-		this.handlers = new LinkedHashMap<BehaviorInstance, IBehaviorHandler>();
+		this.handlers = new LinkedHashMap<Class<? extends IBehaviorHandler>, IBehaviorHandler>();
 	}
 
 	public RequestContainer getContainer() {
@@ -53,12 +53,18 @@ public class ActionInvokation {
 		return context.getClass();
 	}
 
+	/**
+	 * @param behavior
+	 * @return the active handler for the behavior. This will be the same
+	 *         instance where the behavior answers equals() to instances that
+	 *         have been handled before.
+	 */
 	@SuppressWarnings("unchecked")
 	public IBehaviorHandler<?> getHandler(BehaviorInstance behavior) {
-		IBehaviorHandler handler = handlers.get(behavior);
+		IBehaviorHandler handler = handlers.get(behavior.getBehaviorHandlerClass());
 		if (handler == null) {
 			handler = (IBehaviorHandler) ClassHelper.instantiate(behavior.getBehaviorHandlerClass());
-			handlers.put(behavior, handler);
+			handlers.put(behavior.getBehaviorHandlerClass(), handler);
 		}
 		return handler;
 	}
