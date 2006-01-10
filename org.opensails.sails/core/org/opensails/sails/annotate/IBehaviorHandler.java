@@ -2,7 +2,7 @@ package org.opensails.sails.annotate;
 
 import java.lang.annotation.Annotation;
 
-import org.opensails.sails.action.oem.ActionInvokation;
+import org.opensails.sails.action.oem.ActionInvocation;
 
 /**
  * Defines the actual code behind a Behavior declaration. These are created and
@@ -36,7 +36,7 @@ public interface IBehaviorHandler<B extends Annotation> {
 	 * 
 	 * @param invokation on which the action has completed
 	 */
-	void afterAction(ActionInvokation invokation);
+	void afterAction(ActionInvocation invocation);
 
 	/**
 	 * Called immediately before an action gets invoked.
@@ -44,5 +44,5 @@ public interface IBehaviorHandler<B extends Annotation> {
 	 * @param invokation
 	 * @return false if the action code should not be executed
 	 */
-	boolean beforeAction(ActionInvokation invokation);
+	boolean beforeAction(ActionInvocation invocation);
 }

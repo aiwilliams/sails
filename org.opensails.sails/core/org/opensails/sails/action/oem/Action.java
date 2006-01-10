@@ -44,15 +44,15 @@ public class Action implements IAction {
 		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(controllerImplementation, name);
 	}
 
-	public IActionResult execute(ActionInvokation invokation) {
-		beginExecution(invokation);
-		beforeBehaviors(invokation);
-		invokation.invoke();
-		afterBehaviors(invokation);
-		if (!invokation.hasResult()) setDefaultResult(invokation);
-		registerResult(invokation);
-		endExecution(invokation);
-		return invokation.result;
+	public IActionResult execute(ActionInvocation invocation) {
+		beginExecution(invocation);
+		beforeBehaviors(invocation);
+		invocation.invoke();
+		afterBehaviors(invocation);
+		if (!invocation.hasResult()) setDefaultResult(invocation);
+		registerResult(invocation);
+		endExecution(invocation);
+		return invocation.result;
 	}
 
 	@Override
@@ -60,13 +60,13 @@ public class Action implements IAction {
 		return controllerImplementation + "#" + name;
 	}
 
-	private BehaviorInstance[] allBehaviors(ActionInvokation invokation) {
-		if (!invokation.hasContext()) return EMPTY_BEHAVIOR_INSTANCES;
+	private BehaviorInstance[] allBehaviors(ActionInvocation invocation) {
+		if (!invocation.hasContext()) return EMPTY_BEHAVIOR_INSTANCES;
 
 		List<BehaviorInstance> instances = new ArrayList<BehaviorInstance>();
 
-		if (invokation.hasCode()) collectBehaviorsWhenActionCode(instances, invokation);
-		else collectBehaviorsWhenNoActionCode(instances, invokation);
+		if (invocation.hasCode()) collectBehaviorsWhenActionCode(instances, invocation);
+		else collectBehaviorsWhenNoActionCode(instances, invocation);
 		return instances.toArray(new BehaviorInstance[instances.size()]);
 	}
 
@@ -76,9 +76,9 @@ public class Action implements IAction {
 			if (annotation.annotationType().isAnnotationPresent(Behavior.class)) instances.add(new BehaviorInstance(annotation, ElementType.METHOD));
 	}
 
-	private void collectBehaviorsWhenActionCode(List<BehaviorInstance> instances, ActionInvokation invokation) {
+	private void collectBehaviorsWhenActionCode(List<BehaviorInstance> instances, ActionInvocation invocation) {
 		Set<Class<?>> processedControllers = new HashSet<Class<?>>();
-		Method action = invokation.code;
+		Method action = invocation.code;
 		do {
 			collectActionBehaviors(instances, action);
 			Class<?> controller = action.getDeclaringClass();
@@ -94,8 +94,8 @@ public class Action implements IAction {
 		} while (action != null);
 	}
 
-	private void collectBehaviorsWhenNoActionCode(List<BehaviorInstance> instances, ActionInvokation invokation) {
-		Class controller = invokation.getContextClass();
+	private void collectBehaviorsWhenNoActionCode(List<BehaviorInstance> instances, ActionInvocation invocation) {
+		Class controller = invocation.getContextClass();
 		do {
 			collectControllerBehaviors(instances, controller);
 			controller = controller.getSuperclass();
@@ -109,11 +109,11 @@ public class Action implements IAction {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initializeHandlers(ActionInvokation invokation) {
+	private void initializeHandlers(ActionInvocation invocation) {
 		Set<IBehaviorHandler> satisfiedHandlers = new LinkedHashSet<IBehaviorHandler>();
-		BehaviorInstance[] behaviors = allBehaviors(invokation);
+		BehaviorInstance[] behaviors = allBehaviors(invocation);
 		for (BehaviorInstance behavior : behaviors) {
-			IBehaviorHandler<?> handler = invokation.getHandler(behavior);
+			IBehaviorHandler<?> handler = invocation.getHandler(behavior);
 			if (!satisfiedHandlers.contains(handler) && !handler.add(behavior)) satisfiedHandlers.add(handler);
 		}
 	}
@@ -128,28 +128,28 @@ public class Action implements IAction {
 		}
 	}
 
-	protected void afterBehaviors(ActionInvokation invokation) {
-		for (IBehaviorHandler handler : invokation.getHandlers())
-			handler.afterAction(invokation);
+	protected void afterBehaviors(ActionInvocation invocation) {
+		for (IBehaviorHandler handler : invocation.getHandlers())
+			handler.afterAction(invocation);
 	}
 
-	protected void beforeBehaviors(ActionInvokation invokation) {
-		for (IBehaviorHandler handler : invokation.getHandlers())
-			handler.beforeAction(invokation);
+	protected void beforeBehaviors(ActionInvocation invocation) {
+		for (IBehaviorHandler handler : invocation.getHandlers())
+			handler.beforeAction(invocation);
 	}
 
-	protected void beginExecution(ActionInvokation invokation) {
-		getActionListeners(invokation.event).beginExecution(this);
-		invokation.code = methodHavingArgCount(invokation.parameters.size());
-		initializeHandlers(invokation);
+	protected void beginExecution(ActionInvocation invocation) {
+		getActionListeners(invocation.event).beginExecution(this);
+		invocation.code = methodHavingArgCount(invocation.parameters.size());
+		initializeHandlers(invocation);
 	}
 
 	protected IActionResult defaultActionResult(ISailsEvent event) {
 		return new TemplateActionResult(event);
 	}
 
-	protected void endExecution(ActionInvokation invokation) {
-		getActionListeners(invokation.event).endExecution(this);
+	protected void endExecution(ActionInvocation invocation) {
+		getActionListeners(invocation.event).endExecution(this);
 	}
 
 	protected IActionListener getActionListeners(ISailsEvent event) {
@@ -162,13 +162,13 @@ public class Action implements IAction {
 		return null;
 	}
 
-	protected void registerResult(ActionInvokation invokation) {
-		RequestContainer container = invokation.getContainer();
-		container.register(IActionResult.class, invokation.result);
-		container.register(invokation.result);
+	protected void registerResult(ActionInvocation invocation) {
+		RequestContainer container = invocation.getContainer();
+		container.register(IActionResult.class, invocation.result);
+		container.register(invocation.result);
 	}
 
-	protected void setDefaultResult(ActionInvokation invokation) {
-		invokation.result = defaultActionResult(invokation.event);
+	protected void setDefaultResult(ActionInvocation invocation) {
+		invocation.result = defaultActionResult(invocation.event);
 	}
 }

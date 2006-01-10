@@ -18,14 +18,14 @@ import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.util.ClassHelper;
 
 /**
- * State related to an Action invokation.
+ * State related to an Action invocation.
  * <p>
- * An ActionInvokation cannot be re-used. It is purposefully designed to not
+ * An ActionInvocation cannot be re-used. It is purposefully designed to not
  * know how to obtain it's code or context (controller/component).
  * 
  * @author Adam 'Programmer' Williams
  */
-public class ActionInvokation {
+public class ActionInvocation {
 	public Method code;
 	public final ISailsEvent event;
 	public final IActionParameterList parameters;
@@ -34,7 +34,7 @@ public class ActionInvokation {
 	protected final IEventProcessingContext context;
 	protected final Map<Class<? extends IBehaviorHandler>, IBehaviorHandler> handlers;
 
-	public ActionInvokation(ISailsEvent event, IActionParameterList parameters, IEventProcessingContext context) {
+	public ActionInvocation(ISailsEvent event, IActionParameterList parameters, IEventProcessingContext context) {
 		this.event = event;
 		this.context = context;
 		this.parameters = parameters;

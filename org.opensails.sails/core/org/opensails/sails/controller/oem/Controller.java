@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.Action;
-import org.opensails.sails.action.oem.ActionInvokation;
+import org.opensails.sails.action.oem.ActionInvocation;
 import org.opensails.sails.action.oem.AdaptedParameterList;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IController;
@@ -52,7 +52,7 @@ public class Controller implements IController {
 	public IActionResult process(ExceptionEvent event) {
 		IControllerImpl controller = createInstance(event);
 		Action action = getAction(event.getActionName());
-		return action.execute(new ActionInvokation(event, new AdaptedParameterList(event), controller));
+		return action.execute(new ActionInvocation(event, new AdaptedParameterList(event), controller));
 	}
 
 	public IActionResult process(GetEvent event) {
@@ -62,7 +62,7 @@ public class Controller implements IController {
 	public IActionResult process(ISailsEvent event) {
 		IControllerImpl controller = createInstanceOrNull(event);
 		Action action = getAction(event.getActionName());
-		return action.execute(new ActionInvokation(event, event.getActionParameters(), controller));
+		return action.execute(new ActionInvocation(event, event.getActionParameters(), controller));
 	}
 
 	public IActionResult process(PostEvent event) {
