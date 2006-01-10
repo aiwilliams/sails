@@ -26,7 +26,7 @@ public class HibernateSessionFactory implements Disposable {
 		return getSessionFactory().openSession();
 	}
 
-	protected SessionFactory getSessionFactory() {
+	protected synchronized SessionFactory getSessionFactory() {
 		if (sessionFactory == null)
 			sessionFactory = configuration.buildSessionFactory();
 		return sessionFactory;
