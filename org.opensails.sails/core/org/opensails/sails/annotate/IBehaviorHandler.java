@@ -34,14 +34,14 @@ public interface IBehaviorHandler<B extends Annotation> {
 	/**
 	 * Called immediately after an action has been invoked
 	 * 
-	 * @param invokation on which the action has completed
+	 * @param invocation on which the action has completed
 	 */
 	void afterAction(ActionInvocation invocation);
 
 	/**
 	 * Called immediately before an action gets invoked.
 	 * 
-	 * @param invokation
+	 * @param invocation
 	 * @return false if the action code should not be executed
 	 */
 	boolean beforeAction(ActionInvocation invocation);
