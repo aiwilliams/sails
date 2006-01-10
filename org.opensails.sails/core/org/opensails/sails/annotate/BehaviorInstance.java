@@ -23,7 +23,7 @@ public class BehaviorInstance<B extends Annotation> {
 		return annotation;
 	}
 
-	public Class<? extends IBehaviorHandler<B>> getBehaviorHandlerClass() {
+	public Class<? extends IBehaviorHandler> getBehaviorHandlerClass() {
 		return behaviorAnnotation.behavior();
 	}
 
