@@ -4,9 +4,7 @@ import org.opensails.sails.action.IActionParameterList;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 
-/**
- * The parameters of an ISailsEvent action.
- * 
+/*
  * @author Adam 'Programmer' Williams
  */
 public class ActionParameterList implements IActionParameterList {
@@ -34,5 +32,13 @@ public class ActionParameterList implements IActionParameterList {
 
 	public int size() {
 		return urlParameters.length;
+	}
+
+	public String stringAt(int index) throws IndexOutOfBoundsException {
+		return urlParameters[index];
+	}
+
+	public String[] strings() {
+		return urlParameters;
 	}
 }

@@ -24,7 +24,7 @@ import org.opensails.sails.util.ClassHelper;
 /**
  * An Action as seen by the Sails framework.
  * <p>
- * Actions are designed to be cacheable. The should not maintain references to
+ * Actions are designed to be cacheable. They should not maintain references to
  * anything related to a specific event. They must remain thread-safe.
  * 
  * @author Adam 'Programmer' Williams
@@ -122,7 +122,7 @@ public class Action implements IAction {
 		Class<?> controllerSuperclass = controller.getSuperclass();
 		if (controllerSuperclass == Object.class) return null;
 		try {
-			return controllerSuperclass.getMethod(action.getName(), action.getParameterTypes());
+			return controllerSuperclass.getMethod(action.getName(), (Class[]) action.getParameterTypes());
 		} catch (Exception possibleAndIgnored) {
 			return null;
 		}

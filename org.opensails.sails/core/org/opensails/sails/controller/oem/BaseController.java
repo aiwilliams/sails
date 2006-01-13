@@ -156,6 +156,37 @@ public class BaseController implements IControllerImpl {
 		getTemplateResult().setLayout(templateIdentifier);
 	}
 
+	/**
+	 * @param index
+	 * @return the value of the action parameter at index
+	 * @see #params()
+	 */
+	protected String param(int index) {
+		return event.getActionParameters().stringAt(index);
+	}
+
+	/**
+	 * Provides access to the raw action parameters.
+	 * <p>
+	 * You may obtain these this way if you like, but the best way is to declare
+	 * them in your action method signature, like so:
+	 * 
+	 * <pre>
+	 * public void myActionMethod(String one, String two, String etc) {}
+	 * </pre>
+	 * 
+	 * Of course, you can declare those as any type for which there is an
+	 * IAdapterAvailable, including all primitives and primitive arrays.
+	 * Remember, action parameters are not url parameters: they are the 'slash
+	 * values' after the controller/action. Url query parameters are named, and
+	 * therefore available as {@link #field(String) fields}.
+	 * 
+	 * @return the action parameters before typecasting
+	 */
+	protected String[] params() {
+		return event.getActionParameters().strings();
+	}
+
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
 		return setResult(new RedirectActionResult(event, controller, action));
 	}
