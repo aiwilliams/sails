@@ -9,7 +9,7 @@ DotjerkysIdeal.prototype = {
 		if (this.anotherProperty == "text")
 			Element.hide(this.text);
 		else
-			Element.hide(this.container));
+			Element.hide(this.container);
 		
 		this._doSomething('really really interesting');
 	},

@@ -1,13 +1,13 @@
 package org.opensails.dock.components;
 
-public class DotjerkysIdealComponent /* extends BaseComponent*/ {
-	/*@Exposed @NotRemembered*/ String requiredProperty;
-	/*@Exposed @Remembered*/ String anotherProperty;
+public class DotjerkysIdealComponent /*extends BaseComponent*/ {
+	String requiredProperty;
+	/*@Remembered*/ String anotherProperty = "default";
 	Object complex;
 	
 	public DotjerkysIdealComponent(String id, String requiredProperty) {
-		this.requiredProperty = requiredProperty;
 //		super(id);
+		this.requiredProperty = requiredProperty;
 	}
 	
 //	@Override
@@ -17,7 +17,7 @@ public class DotjerkysIdealComponent /* extends BaseComponent*/ {
 	}
 	
 	/*@Callback*/ void doSomething(String somethingInteresting) {
-		// assert id != null;
+//		assert id != null;
 		assert anotherProperty != null;
 		assert requiredProperty == null;
 		assert somethingInteresting.equals("really really interesting");
