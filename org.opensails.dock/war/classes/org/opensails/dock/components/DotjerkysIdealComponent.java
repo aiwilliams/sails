@@ -14,9 +14,8 @@ public class DotjerkysIdealComponent /*extends BaseComponent*/ {
 		this.persister = persister;
 	}
 	
-//	@Override
 	public void create(String id, String requiredProperty) {
-//		super.create(id);
+//		create(id);
 		this.requiredProperty = requiredProperty;
 	}
 	
