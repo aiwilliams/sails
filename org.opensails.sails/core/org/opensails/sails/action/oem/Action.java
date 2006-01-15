@@ -55,6 +55,10 @@ public class Action implements IAction {
 		return invocation.result;
 	}
 
+	public String getName() {
+		return name;
+	}
+
 	@Override
 	public String toString() {
 		return controllerImplementation + "#" + name;

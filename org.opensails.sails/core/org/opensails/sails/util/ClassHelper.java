@@ -117,7 +117,7 @@ public class ClassHelper {
 		try {
 			return clazz.newInstance();
 		} catch (InstantiationException e) {
-			throw new SailsException("Could not instantiate. Does it have a default constructor?", e);
+			throw new SailsException(String.format("Could not instantiate a %s. Does it have a default constructor?", clazz), e);
 		} catch (IllegalAccessException e) {
 			throw new SailsException("Could not instantiate. Know anything about access?", e);
 		}

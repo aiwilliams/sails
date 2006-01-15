@@ -10,6 +10,6 @@ public class FilterTests extends TestCase {
 	public void testBasic() throws Exception {
 		SailsFunctionalTester tester = new SailsFunctionalTester(FilterTestController.class);
 		Page page = tester.get("filteredBefore");
-		page.assertContains("ExampleFilter#beforeAction");
+		page.assertMatches("Class filters come before method filters", "ExampleFilter#beforeAction.*?FilterTestController#beforeMethod");
 	}
 }

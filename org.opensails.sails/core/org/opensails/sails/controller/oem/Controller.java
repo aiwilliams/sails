@@ -52,7 +52,7 @@ public class Controller implements IController {
 	public IActionResult process(ExceptionEvent event) {
 		IControllerImpl controller = createInstance(event);
 		Action action = getAction(event.getActionName());
-		return action.execute(new ActionInvocation(event, new AdaptedParameterList(event), controller));
+		return action.execute(new ActionInvocation(event, action, new AdaptedParameterList(event), controller));
 	}
 
 	public IActionResult process(GetEvent event) {
@@ -62,7 +62,7 @@ public class Controller implements IController {
 	public IActionResult process(ISailsEvent event) {
 		IControllerImpl controller = createInstanceOrNull(event);
 		Action action = getAction(event.getActionName());
-		return action.execute(new ActionInvocation(event, event.getActionParameters(), controller));
+		return action.execute(new ActionInvocation(event, action, event.getActionParameters(), controller));
 	}
 
 	public IActionResult process(PostEvent event) {

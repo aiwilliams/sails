@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionParameterList;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.annotate.BehaviorInstance;
@@ -31,14 +32,24 @@ public class ActionInvocation {
 	public final IActionParameterList parameters;
 	public IActionResult result;
 
+	protected final IAction action;
 	protected final IEventProcessingContext context;
 	protected final Map<Class<? extends IBehaviorHandler>, IBehaviorHandler> handlers;
 
-	public ActionInvocation(ISailsEvent event, IActionParameterList parameters, IEventProcessingContext context) {
+	public ActionInvocation(ISailsEvent event, IAction action, IActionParameterList parameters, IEventProcessingContext context) {
 		this.event = event;
+		this.action = action;
 		this.context = context;
 		this.parameters = parameters;
 		this.handlers = new LinkedHashMap<Class<? extends IBehaviorHandler>, IBehaviorHandler>();
+	}
+
+	public IAction getAction() {
+		return action;
+	}
+
+	public String getActionName() {
+		return action.getName();
 	}
 
 	public RequestContainer getContainer() {

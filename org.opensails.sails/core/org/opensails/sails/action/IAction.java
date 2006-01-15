@@ -5,4 +5,6 @@ package org.opensails.sails.action;
  * 
  * @author aiwilliams
  */
-public interface IAction {}
+public interface IAction {
+	String getName();
+}
