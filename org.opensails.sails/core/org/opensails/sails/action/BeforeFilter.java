@@ -10,7 +10,6 @@ import org.opensails.sails.annotate.Behavior;
 import org.opensails.sails.annotate.filter.ActionFilterHandler;
 import org.opensails.sails.annotate.filter.BeforeFilterBuilder;
 import org.opensails.sails.annotate.filter.FilterBuilder;
-import org.opensails.sails.event.IEventProcessingContext;
 
 /**
  * Allows an IEventProcessingContext to declare that a filter should be invoked
@@ -35,7 +34,7 @@ import org.opensails.sails.event.IEventProcessingContext;
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BeforeFilter {
-	Class<? extends IActionFilter<IEventProcessingContext<?>>> filter() default IActionFilter.class;
+	Class<? extends IActionFilter> filter() default IActionFilter.class;
 
 	String method() default "";
 
