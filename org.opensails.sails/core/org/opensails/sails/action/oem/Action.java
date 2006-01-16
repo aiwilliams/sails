@@ -46,8 +46,8 @@ public class Action implements IAction {
 
 	public IActionResult execute(ActionInvocation invocation) {
 		beginExecution(invocation);
-		beforeBehaviors(invocation);
-		invocation.invoke();
+		if (beforeBehaviors(invocation)) invocation.invoke();
+		else invocation.result = invocation.getContext().getActionResult();
 		afterBehaviors(invocation);
 		if (!invocation.hasResult()) setDefaultResult(invocation);
 		registerResult(invocation);
@@ -137,9 +137,10 @@ public class Action implements IAction {
 			handler.afterAction(invocation);
 	}
 
-	protected void beforeBehaviors(ActionInvocation invocation) {
+	protected boolean beforeBehaviors(ActionInvocation invocation) {
 		for (IBehaviorHandler handler : invocation.getHandlers())
-			handler.beforeAction(invocation);
+			if (!handler.beforeAction(invocation)) return false;
+		return true;
 	}
 
 	protected void beginExecution(ActionInvocation invocation) {

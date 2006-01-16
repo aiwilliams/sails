@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 public @interface ActionMethods {
 	String[] except() default "";
 
-	String[] methods();
+	String[] methods() default "";
 
 	String[] only() default "";
 }

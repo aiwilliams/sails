@@ -8,11 +8,12 @@ import java.lang.annotation.Target;
 
 import org.opensails.sails.annotate.Behavior;
 import org.opensails.sails.annotate.filter.ActionFilterHandler;
-import org.opensails.sails.annotate.filter.BeforeFiltersBuilder;
+import org.opensails.sails.annotate.filter.BeforeFilterBuilder;
 import org.opensails.sails.annotate.filter.FilterBuilder;
+import org.opensails.sails.event.IEventProcessingContext;
 
 /**
- * Allows an IEventProcessingContext to declare that filters should be invoked
+ * Allows an IEventProcessingContext to declare that a filter should be invoked
  * before an action is executed.
  * <p>
  * Filters, method or other, will be invoked in the order that they are
@@ -21,20 +22,24 @@ import org.opensails.sails.annotate.filter.FilterBuilder;
  * redirect, whatever - just remember that returning false will prevent the
  * action code from being invoked.
  * <p>
- * When {@link #actions()} are used, ActionFilterHandler will use the same
- * instances in both the before and after events. You can capture state, if you
+ * When {@link #filter()} is used, ActionFilterHandler will use the same
+ * instance in both the before and after events. You can capture state, if you
  * like, in the beforeAction and it will be available in the afterAction.
  * 
- * @see BeforeFilter
+ * @see BeforeFilters
  * @author Adam 'Programmer' Williams
  */
 @Documented
 @Behavior(behavior = ActionFilterHandler.class)
-@FilterBuilder(BeforeFiltersBuilder.class)
+@FilterBuilder(BeforeFilterBuilder.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BeforeFilters {
-	ActionFilters[] actions() default @ActionFilters;
+public @interface BeforeFilter {
+	Class<? extends IActionFilter<IEventProcessingContext<?>>> filter() default IActionFilter.class;
 
-	ActionMethods[] methods() default @ActionMethods;
+	String method() default "";
+
+	String[] except() default "";
+
+	String[] only() default "";
 }

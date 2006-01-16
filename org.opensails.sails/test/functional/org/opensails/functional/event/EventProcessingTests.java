@@ -10,6 +10,7 @@ import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.FormMeta;
+import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.Page;
 
 public class EventProcessingTests extends TestCase implements IActionListener {
@@ -35,7 +36,14 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		registerAsActionListener(tester);
 		Page page = tester.get("simpleGet");
 		page.assertTemplate("eventTest/simpleGet");
+		page.assertContentType(ContentType.TEXT_HTML);
 		assertHeardActionEvents();
+	}
+
+	public void testGet_DifferentTemplateRendered() {
+		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
+		Page page = tester.get("differentTemplate");
+		page.assertContains("rendered different/template");
 	}
 
 	public void testGet_ActionsInSuperclass() {

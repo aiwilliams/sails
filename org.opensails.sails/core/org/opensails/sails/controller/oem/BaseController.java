@@ -211,16 +211,16 @@ public class BaseController implements IControllerImpl {
 	}
 
 	/**
-	 * Renders the named template. Uses the Controller of the currentEvent in
-	 * the templateIdentifier.
+	 * Renders the identified template.
+	 * <p>
+	 * You can use two forms: "action" only, or "controller/action".
 	 * 
 	 * @param template
 	 * @return the TemplateActionResult for template
 	 */
 	protected TemplateActionResult renderTemplate(String template) {
 		TemplateActionResult result = getTemplateResult();
-		// TODO: Foreign behavior - move into TemplateActionResult
-		result.setTemplate(String.format("%s/%s", event.getProcessorName(), template));
+		result.setTemplate(template);
 		return result;
 	}
 

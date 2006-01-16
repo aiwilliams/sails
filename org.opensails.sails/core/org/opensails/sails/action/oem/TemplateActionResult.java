@@ -42,8 +42,11 @@ public class TemplateActionResult extends AbstractActionResult {
 		layoutIdentifier = templateIdentifier;
 	}
 
+	/**
+	 * @param templateIdentifier in the form of "action" or "controller/action"
+	 */
 	public void setTemplate(String templateIdentifier) {
-		this.identifier = templateIdentifier;
+		initializeIdentifier(event, templateIdentifier);
 	}
 
 	@Override
@@ -65,7 +68,7 @@ public class TemplateActionResult extends AbstractActionResult {
 	}
 
 	protected void initializeIdentifier(ISailsEvent event, String identifier) {
-		if (CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) setTemplate(identifier);
-		setTemplate(String.format("%s/%s", event.getProcessorName(), identifier));
+		if (CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) this.identifier = identifier;
+		else this.identifier = String.format("%s/%s", event.getProcessorName(), identifier);
 	}
 }

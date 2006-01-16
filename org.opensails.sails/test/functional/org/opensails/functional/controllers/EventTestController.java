@@ -9,6 +9,10 @@ public class EventTestController extends BaseController {
 		return new StringActionResult(event, "string rendered");
 	}
 
+	public void differentTemplate() {
+		renderTemplate("different/template");
+	}
+
 	public void parameterGet(boolean one, String two) {
 		expose("argOne", one);
 		expose("argTwo", two);

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 public @interface ActionFilters {
 	String[] except() default "";
 
-	Class<? extends IActionFilter>[] filters();
+	Class<? extends IActionFilter>[] filters() default IActionFilter.class;
 
 	String[] only() default "";
 }
