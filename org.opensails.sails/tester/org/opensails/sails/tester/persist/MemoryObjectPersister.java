@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.*;
 import org.opensails.sails.persist.*;
 import org.opensails.sails.util.*;
 
-public class MemoryObjectPersister implements IShamObjectPersister {
+public class MemoryObjectPersister implements IShamDataMapper {
 	protected Collection<IIdentifiable> destroyedInTransaction;
 	protected PersistException exceptionOnSave;
 	protected FieldAccessor idFieldAccessor;

@@ -5,16 +5,16 @@ import org.opensails.sails.Scope;
 import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.persist.IIdentifiable;
-import org.opensails.sails.persist.IObjectPersister;
+import org.opensails.sails.persist.IDataMapper;
 
 /**
  * The IAdapter for anything that implements
  * {@link org.opensails.sails.persist.IIdentifiable}. If you are using
- * {@link org.opensails.sails.persist.IObjectPersister}, you get forModel and
+ * {@link org.opensails.sails.persist.IDataMapper}, you get forModel and
  * forWeb forFree.
  * 
  * These adapters are created within the scope of a request so that they work
- * with the IObjectPersister from that scope. This has to do with the way most
+ * with the IDataMapper from that scope. This has to do with the way most
  * persistence implementations have some sort of session, transaction, or unit
  * of work model.
  * 
@@ -22,15 +22,15 @@ import org.opensails.sails.persist.IObjectPersister;
  */
 @Scope(ApplicationScope.REQUEST)
 public class IdentifiableAdapter extends AbstractAdapter<IIdentifiable, String> {
-	protected final IObjectPersister persister;
+	protected final IDataMapper mapper;
 
-	public IdentifiableAdapter(IObjectPersister persister) {
-		this.persister = persister;
+	public IdentifiableAdapter(IDataMapper mapper) {
+		this.mapper = mapper;
 	}
 
 	@SuppressWarnings("unchecked")
 	public IIdentifiable forModel(Class<? extends IIdentifiable> modelType, String fromWeb) throws AdaptationException {
-		return persister.find(modelType, Long.valueOf(fromWeb));
+		return mapper.find(modelType, Long.valueOf(fromWeb));
 	}
 
 	public String forWeb(Class<? extends IIdentifiable> modelType, IIdentifiable fromModel) throws AdaptationException {

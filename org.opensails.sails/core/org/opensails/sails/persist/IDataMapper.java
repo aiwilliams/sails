@@ -2,7 +2,7 @@ package org.opensails.sails.persist;
 
 import java.util.*;
 
-public interface IObjectPersister {
+public interface IDataMapper {
 	<T extends IIdentifiable> Collection<T> all(Class<T> objectType) throws PersistException;
 
 	/**
