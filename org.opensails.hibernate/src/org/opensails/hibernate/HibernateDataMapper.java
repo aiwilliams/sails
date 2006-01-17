@@ -12,24 +12,24 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Expression;
 import org.opensails.rigging.Disposable;
 import org.opensails.sails.persist.IIdentifiable;
-import org.opensails.sails.persist.IObjectPersister;
+import org.opensails.sails.persist.IDataMapper;
 import org.opensails.sails.persist.PersistException;
 
 /**
- * An implementation if IObjectPersister for Hibernate.
+ * An implementation if IDataMapper for Hibernate.
  * <p>
- * To use this persister, your ISailsApplicationConfigurator can subclass
+ * To use this mapper, your ISailsApplicationConfigurator can subclass
  * HibernateApplicationConfigurator, or, if you prefer, you may configure the
- * persister youself, using the HibernateApplicationConfigurator as a model.
+ * mapper youself, using the HibernateApplicationConfigurator as a model.
  * 
  * @author Adam 'Programmer' Williams
  */
-public class HibernateObjectPersister implements IObjectPersister, Disposable {
+public class HibernateDataMapper implements IDataMapper, Disposable {
 	protected Session session;
 	protected HibernateSessionFactory sessionFactory;
 	protected Transaction transaction;
 
-	public HibernateObjectPersister(HibernateSessionFactory sessionFactory) {
+	public HibernateDataMapper(HibernateSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 

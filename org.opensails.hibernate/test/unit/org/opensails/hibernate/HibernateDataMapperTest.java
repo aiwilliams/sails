@@ -1,12 +1,15 @@
 package org.opensails.hibernate;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
-import org.apache.commons.lang.*;
-import org.hibernate.*;
-import org.opensails.sails.tester.util.*;
+import org.apache.commons.lang.ArrayUtils;
+import org.hibernate.FlushMode;
+import org.hibernate.PropertyValueException;
+import org.hibernate.Session;
+import org.hibernate.UnresolvableObjectException;
+import org.opensails.sails.tester.util.CollectionAssert;
 
-public class HibernateObjectPersisterTest extends TestCase {
+public class HibernateDataMapperTest extends TestCase {
 	protected static HibernateTester hibernateTester;
 	static {
 		hibernateTester = HibernateTester.basicInMemory();
@@ -21,44 +24,44 @@ public class HibernateObjectPersisterTest extends TestCase {
 		});
 	}
 
-	protected HibernateObjectPersister persister;
+	protected HibernateDataMapper mapper;
 
 	public void testAll() {
 		Sailboat asset1 = new Sailboat();
 		Sailboat asset2 = new Sailboat();
-		persister.save(asset1);
-		persister.save(asset2);
-		CollectionAssert.containsOnly(new Sailboat[] { asset1, asset2 }, persister.all(Sailboat.class));
-		assertTrue(persister.all(Harbor.class).isEmpty());
+		mapper.save(asset1);
+		mapper.save(asset2);
+		CollectionAssert.containsOnly(new Sailboat[] { asset1, asset2 }, mapper.all(Sailboat.class));
+		assertTrue(mapper.all(Harbor.class).isEmpty());
 	}
 
 	public void testCommit() throws Exception {
 		// should not throw an exception if there is no transaction
-		persister.commit();
-		persister.beginTransaction();
+		mapper.commit();
+		mapper.beginTransaction();
 		// should not throw an exception if there is nothing to commit
-		persister.commit();
+		mapper.commit();
 		// should not throw an exception if a second commit occurs
-		persister.commit();
+		mapper.commit();
 	}
 
 	public void testDestroy_InTransaction() throws Exception {
-		persister.getSession().setFlushMode(FlushMode.AUTO);
-		assertTrue(persister.all(Sailboat.class).isEmpty());
+		mapper.getSession().setFlushMode(FlushMode.AUTO);
+		assertTrue(mapper.all(Sailboat.class).isEmpty());
 		Sailboat oldSailboat = new Sailboat();
-		persister.save(oldSailboat);
+		mapper.save(oldSailboat);
 
-		persister.beginTransaction();
-		persister.destroy(oldSailboat);
-		assertNull(persister.find(Sailboat.class, oldSailboat.getId()));
-		HibernateObjectPersister newPersister = new HibernateObjectPersister(hibernateTester.getSessionFactory());
+		mapper.beginTransaction();
+		mapper.destroy(oldSailboat);
+		assertNull(mapper.find(Sailboat.class, oldSailboat.getId()));
+		HibernateDataMapper newPersister = new HibernateDataMapper(hibernateTester.getSessionFactory());
 		assertEquals(oldSailboat, newPersister.find(Sailboat.class, oldSailboat.getId()));
 		CollectionAssert.containsOnly(new Sailboat[] { oldSailboat }, newPersister.all(Sailboat.class));
 		// NOTE: This only works in auto FlushMode
-		assertTrue(persister.all(Sailboat.class).isEmpty());
-		persister.commit();
+		assertTrue(mapper.all(Sailboat.class).isEmpty());
+		mapper.commit();
 
-		assertNull(persister.find(Sailboat.class, oldSailboat.getId()));
+		assertNull(mapper.find(Sailboat.class, oldSailboat.getId()));
 		Sailboat staleboat = newPersister.find(Sailboat.class, oldSailboat.getId());
 		try {
 			newPersister.getSession().refresh(staleboat);
@@ -68,17 +71,17 @@ public class HibernateObjectPersisterTest extends TestCase {
 		// NOTE: This deleted object doesn't seem to be saved, even though
 		// Hibernate doesn't throw an exception
 		newPersister.save(staleboat);
-		assertTrue(persister.all(Sailboat.class).isEmpty());
+		assertTrue(mapper.all(Sailboat.class).isEmpty());
 		assertTrue(newPersister.all(Sailboat.class).isEmpty());
 	}
 
 	public void testDestroy_NoTransaction() throws Exception {
 		Sailboat oldSailboat = new Sailboat();
-		persister.save(oldSailboat);
-		persister.destroy(oldSailboat);
-		HibernateObjectPersister newPersister = new HibernateObjectPersister(hibernateTester.getSessionFactory());
-		assertNull(persister.find(Sailboat.class, oldSailboat.getId()));
-		assertTrue(persister.all(Sailboat.class).isEmpty());
+		mapper.save(oldSailboat);
+		mapper.destroy(oldSailboat);
+		HibernateDataMapper newPersister = new HibernateDataMapper(hibernateTester.getSessionFactory());
+		assertNull(mapper.find(Sailboat.class, oldSailboat.getId()));
+		assertTrue(mapper.all(Sailboat.class).isEmpty());
 		assertNull(newPersister.find(Sailboat.class, oldSailboat.getId()));
 		assertTrue(newPersister.all(Sailboat.class).isEmpty());
 	}
@@ -87,26 +90,26 @@ public class HibernateObjectPersisterTest extends TestCase {
 		Sailboat santaMarie = new Sailboat("one");
 		Sailboat nina = new Sailboat("two");
 		Sailboat pinta = new Sailboat("one");
-		persister.save(santaMarie);
-		persister.save(pinta);
-		persister.save(nina);
-		assertEquals(nina, persister.find(Sailboat.class, "name", "two"));
+		mapper.save(santaMarie);
+		mapper.save(pinta);
+		mapper.save(nina);
+		assertEquals(nina, mapper.find(Sailboat.class, "name", "two"));
 		try {
-			persister.find(Sailboat.class, "name", "one");
+			mapper.find(Sailboat.class, "name", "one");
 			fail("There is more than one that matches");
 		} catch (Exception e) {
 		}
 
 		// verify we can query by NULL?
 		Harbor harbor = new Harbor();
-		persister.save(harbor);
+		mapper.save(harbor);
 		santaMarie.setHarbor(harbor);
 		nina.setHarbor(harbor);
-		persister.save(santaMarie);
-		persister.save(nina);
-		assertEquals(pinta, persister.find(Sailboat.class, "harbor", null));
+		mapper.save(santaMarie);
+		mapper.save(nina);
+		assertEquals(pinta, mapper.find(Sailboat.class, "harbor", null));
 
-		assertNull(persister.find(Sailboat.class, "name", "dummy"));
+		assertNull(mapper.find(Sailboat.class, "name", "dummy"));
 	}
 
 	public void testFind_Unique_MultipleAttributes() throws Exception {
@@ -114,58 +117,58 @@ public class HibernateObjectPersisterTest extends TestCase {
 		Harbor harbor = new Harbor();
 		blackPearl.setHarbor(harbor);
 
-		persister.save(harbor);
-		persister.save(blackPearl);
+		mapper.save(harbor);
+		mapper.save(blackPearl);
 
-		Sailboat loadedBoat = persister.find(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { harbor, "black pearl" });
+		Sailboat loadedBoat = mapper.find(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { harbor, "black pearl" });
 		assertEquals(blackPearl, loadedBoat);
-		loadedBoat = persister.find(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { blackPearl, "pinta" });
+		loadedBoat = mapper.find(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { blackPearl, "pinta" });
 		assertNull(loadedBoat);
 	}
 
 	public void testFindAll_MultipleAttributes() throws Exception {
 		Harbor harbor1 = new Harbor();
-		persister.save(harbor1);
+		mapper.save(harbor1);
 
 		Sailboat boat1 = new Sailboat("standardName");
 		Sailboat boat2 = new Sailboat("standardName");
 		Sailboat boat3 = new Sailboat("differentName");
 		boat1.setHarbor(harbor1);
 		boat2.setHarbor(harbor1);
-		persister.save(boat1);
-		persister.save(boat2);
-		persister.save(boat3);
+		mapper.save(boat1);
+		mapper.save(boat2);
+		mapper.save(boat3);
 
-		CollectionAssert.containsOnly(new Sailboat[] { boat1, boat2 }, persister.findAll(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { harbor1, "standardName" }));
-		CollectionAssert.containsOnly(new Sailboat[] { boat3 }, persister.findAll(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { null, "differentName" }));
+		CollectionAssert.containsOnly(new Sailboat[] { boat1, boat2 }, mapper.findAll(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { harbor1, "standardName" }));
+		CollectionAssert.containsOnly(new Sailboat[] { boat3 }, mapper.findAll(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { null, "differentName" }));
 
 		Harbor emptyHarbor = new Harbor();
-		persister.save(emptyHarbor);
-		assertTrue(persister.findAll(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { emptyHarbor, "differentName" }).isEmpty());
+		mapper.save(emptyHarbor);
+		assertTrue(mapper.findAll(Sailboat.class, new String[] { "harbor", "name" }, new Object[] { emptyHarbor, "differentName" }).isEmpty());
 	}
 
 	public void testFindAll_SingleAttribute() throws Exception {
 		Sailboat asset1 = new Sailboat("standardName");
 		Sailboat asset2 = new Sailboat("standardName");
 		Sailboat asset3 = new Sailboat("differentName");
-		persister.save(asset1);
-		persister.save(asset2);
-		persister.save(asset3);
-		CollectionAssert.containsOnly(new Sailboat[] { asset1, asset2 }, persister.findAll(Sailboat.class, "name", "standardName"));
-		CollectionAssert.containsOnly(new Sailboat[] { asset3 }, persister.findAll(Sailboat.class, "name", "differentName"));
-		assertTrue(persister.findAll(Sailboat.class, "name", "unusedName").isEmpty());
+		mapper.save(asset1);
+		mapper.save(asset2);
+		mapper.save(asset3);
+		CollectionAssert.containsOnly(new Sailboat[] { asset1, asset2 }, mapper.findAll(Sailboat.class, "name", "standardName"));
+		CollectionAssert.containsOnly(new Sailboat[] { asset3 }, mapper.findAll(Sailboat.class, "name", "differentName"));
+		assertTrue(mapper.findAll(Sailboat.class, "name", "unusedName").isEmpty());
 	}
 
 	public void testReload() {
 		Sailboat sailboat = new Sailboat();
-		persister.save(sailboat);
-		Sailboat reloaded = persister.reload(sailboat);
+		mapper.save(sailboat);
+		Sailboat reloaded = mapper.reload(sailboat);
 		assertNotNull(reloaded);
 		assertNotSame(sailboat, reloaded);
 
-		persister.destroy(reloaded);
+		mapper.destroy(reloaded);
 		try {
-			persister.reload(reloaded);
+			mapper.reload(reloaded);
 			fail("Reloading a non-persisted entity should fail. Use find if the instance might not be persisted.");
 		} catch (Throwable expected) {
 		}
@@ -173,28 +176,28 @@ public class HibernateObjectPersisterTest extends TestCase {
 
 	// GREENBAR!
 	public void testSave_InTransaction() {
-		persister.beginTransaction();
-		assertTrue("sanity", persister.all(Sailboat.class).isEmpty());
+		mapper.beginTransaction();
+		assertTrue("sanity", mapper.all(Sailboat.class).isEmpty());
 
 		Sailboat asset = new Sailboat("Fred");
 		assertEquals(0, asset.getId().longValue());
 
-		persister.save(asset);
+		mapper.save(asset);
 		Long firstId = asset.getId();
 		assertNotNull(firstId);
-		persister.save(asset);
+		mapper.save(asset);
 		assertEquals("Saving same object twice in same transaction should not be a problem", firstId, asset.getId());
 
-		assertEquals("With FlushMode.COMMIT or anything, get by id works because session has identity map", asset, persister.find(Sailboat.class, firstId));
-		persister.getSession().evict(asset);
-		assertFalse("With FlushMode.COMMIT, queries DON'T return 'stale' data, and no-one knows why", persister.all(Sailboat.class).isEmpty());
+		assertEquals("With FlushMode.COMMIT or anything, get by id works because session has identity map", asset, mapper.find(Sailboat.class, firstId));
+		mapper.getSession().evict(asset);
+		assertFalse("With FlushMode.COMMIT, queries DON'T return 'stale' data, and no-one knows why", mapper.all(Sailboat.class).isEmpty());
 
-		HibernateObjectPersister newPersister = new HibernateObjectPersister(hibernateTester.getSessionFactory());
+		HibernateDataMapper newPersister = new HibernateDataMapper(hibernateTester.getSessionFactory());
 		assertNotNull("New session CAN find objects uncommitted in other sessions, and no-one knows why", newPersister.find(Sailboat.class, asset.getId()));
 
-		persister.commit();
+		mapper.commit();
 		// Ensure query now returns committed data
-		CollectionAssert.containsOnly(new Sailboat[] { asset }, persister.all(Sailboat.class));
+		CollectionAssert.containsOnly(new Sailboat[] { asset }, mapper.all(Sailboat.class));
 		assertEquals(asset, newPersister.find(Sailboat.class, asset.getId()));
 	}
 
@@ -202,16 +205,16 @@ public class HibernateObjectPersisterTest extends TestCase {
 		Sailboat good = new Sailboat("Good Devotion");
 		Sailboat bad = new Sailboat(null);
 
-		persister.beginTransaction();
+		mapper.beginTransaction();
 		try {
-			persister.save(good);
-			persister.save(bad);
+			mapper.save(good);
+			mapper.save(bad);
 		} catch (PropertyValueException expected) {
-			assertNull("The registry should close the session and transaction, therefore, gets from new session return null", persister.find(Sailboat.class, good.getId()));
+			assertNull("The registry should close the session and transaction, therefore, gets from new session return null", mapper.find(Sailboat.class, good.getId()));
 			assertNotNull("The bad still got an id", bad.getId());
 		}
 		try {
-			persister.commit();
+			mapper.commit();
 		} catch (Throwable e) {
 			fail("Should not fail commit even if there is no transaction");
 		}
@@ -220,39 +223,39 @@ public class HibernateObjectPersisterTest extends TestCase {
 	public void testSave_NoTransaction() {
 		Sailboat asset = new Sailboat("Fred");
 		assertEquals(0, asset.getId().longValue());
-		persister.save(asset);
+		mapper.save(asset);
 		assertNotNull(asset.getId());
-		assertEquals(asset, persister.find(asset.getClass(), asset.getId()));
+		assertEquals(asset, mapper.find(asset.getClass(), asset.getId()));
 
-		persister.save(asset);
+		mapper.save(asset);
 		Long firstId = asset.getId();
 		assertNotNull(asset.getId());
 
 		// make sure if we save it twice we are only getting one object
-		persister.save(asset);
+		mapper.save(asset);
 		Long secondId = asset.getId();
 		assertNotNull(asset.getId());
 		assertEquals(firstId, secondId);
 
-		assertEquals(asset, persister.find(Sailboat.class, firstId));
-		assertEquals(asset, persister.find(Sailboat.class, secondId));
+		assertEquals(asset, mapper.find(Sailboat.class, firstId));
+		assertEquals(asset, mapper.find(Sailboat.class, secondId));
 
-		CollectionAssert.containsOnly(new Sailboat[] { asset }, persister.all(Sailboat.class));
+		CollectionAssert.containsOnly(new Sailboat[] { asset }, mapper.all(Sailboat.class));
 
-		HibernateObjectPersister newPersister = new HibernateObjectPersister(hibernateTester.getSessionFactory());
+		HibernateDataMapper newPersister = new HibernateDataMapper(hibernateTester.getSessionFactory());
 		assertEquals(asset, newPersister.find(Sailboat.class, asset.getId()));
 
 		// Create an object that isn't "whole"
 		Sailboat troubledAsset = new Sailboat(null);
 		try {
-			persister.save(troubledAsset);
+			mapper.save(troubledAsset);
 			fail("Should throw exception");
 		} catch (PropertyValueException e) {
 		}
 		troubledAsset.setName("Something");
-		persister.save(troubledAsset);
-		persister.closeSession();
-		assertEquals(troubledAsset, persister.find(troubledAsset.getClass(), troubledAsset.getId()));
+		mapper.save(troubledAsset);
+		mapper.closeSession();
+		assertEquals(troubledAsset, mapper.find(troubledAsset.getClass(), troubledAsset.getId()));
 		assertNotNull(troubledAsset.getId());
 
 		assertEquals(troubledAsset, newPersister.find(troubledAsset.getClass(), troubledAsset.getId()));
@@ -262,66 +265,66 @@ public class HibernateObjectPersisterTest extends TestCase {
 		Sailboat asset = new Sailboat("Fred");
 		assertEquals(0, asset.getId().longValue());
 
-		persister.save(asset);
+		mapper.save(asset);
 		Long firstId = asset.getId();
 		assertNotNull(firstId);
 
 		// make sure if we save it twice we are only getting one object
-		persister.save(asset);
+		mapper.save(asset);
 		Long secondId = asset.getId();
 		assertNotNull(secondId);
 
 		assertEquals(firstId, secondId);
-		assertEquals(asset, persister.find(asset.getClass(), firstId));
-		CollectionAssert.containsOnly(new Sailboat[] { asset }, persister.all(Sailboat.class));
+		assertEquals(asset, mapper.find(asset.getClass(), firstId));
+		CollectionAssert.containsOnly(new Sailboat[] { asset }, mapper.all(Sailboat.class));
 	}
 
 	public void testSave_TwoThreadsModifyingCollectionAtSameTime() throws Exception {
 		Sailboat sailboatOne = new Sailboat("firstBoat");
 		Sailboat sailboatTwo = new Sailboat("secondBoat");
-		persister.save(sailboatOne);
-		persister.save(sailboatTwo);
+		mapper.save(sailboatOne);
+		mapper.save(sailboatTwo);
 		Harbor harbor = new Harbor();
 		harbor.addSailboat(sailboatOne);
 		harbor.addSailboat(sailboatTwo);
-		persister.save(harbor);
+		mapper.save(harbor);
 
-		HibernateObjectPersister persisterOne = new HibernateObjectPersister(hibernateTester.getSessionFactory());
-		HibernateObjectPersister persisterTwo = new HibernateObjectPersister(hibernateTester.getSessionFactory());
-		Harbor harborFromPersisterOne = persisterOne.find(Harbor.class, harbor.getId());
-		Harbor harborFromPersisterTwo = persisterTwo.find(Harbor.class, harbor.getId());
+		HibernateDataMapper mapperOne = new HibernateDataMapper(hibernateTester.getSessionFactory());
+		HibernateDataMapper mapperTwo = new HibernateDataMapper(hibernateTester.getSessionFactory());
+		Harbor harborFromPersisterOne = mapperOne.find(Harbor.class, harbor.getId());
+		Harbor harborFromPersisterTwo = mapperTwo.find(Harbor.class, harbor.getId());
 
 		Sailboat sailboatThree = new Sailboat("thirdBoat");
 		Sailboat sailboatFour = new Sailboat("fourthBoat");
-		persisterOne.save(sailboatThree);
-		persisterTwo.save(sailboatFour);
+		mapperOne.save(sailboatThree);
+		mapperTwo.save(sailboatFour);
 		harborFromPersisterOne.addSailboat(sailboatThree);
 		harborFromPersisterTwo.addSailboat(sailboatFour);
-		persisterOne.save(harborFromPersisterOne);
-		persisterTwo.save(harborFromPersisterTwo);
+		mapperOne.save(harborFromPersisterOne);
+		mapperTwo.save(harborFromPersisterTwo);
 
-		HibernateObjectPersister newPersister = new HibernateObjectPersister(hibernateTester.getSessionFactory());
+		HibernateDataMapper newPersister = new HibernateDataMapper(hibernateTester.getSessionFactory());
 		CollectionAssert.containsOnly(new Sailboat[] { sailboatOne, sailboatTwo, sailboatThree, sailboatFour }, newPersister.find(Harbor.class, harbor.getId()).getSailboats());
 
-		persisterOne.getSession().clear();
-		CollectionAssert.containsOnly(new Sailboat[] { sailboatOne, sailboatTwo, sailboatThree, sailboatFour }, persisterOne.find(Harbor.class, harbor.getId()).getSailboats());
+		mapperOne.getSession().clear();
+		CollectionAssert.containsOnly(new Sailboat[] { sailboatOne, sailboatTwo, sailboatThree, sailboatFour }, mapperOne.find(Harbor.class, harbor.getId()).getSailboats());
 
-		assertTrue(persisterTwo.getSession().contains(sailboatFour));
-		persisterTwo.getSession().evict(harborFromPersisterTwo);
-		assertFalse(persisterTwo.getSession().contains(harborFromPersisterTwo));
-		assertTrue("Harbors don't cascade", persisterTwo.getSession().contains(sailboatFour));
-		persisterTwo.getSession().close();
-		persisterOne.getSession().close();
+		assertTrue(mapperTwo.getSession().contains(sailboatFour));
+		mapperTwo.getSession().evict(harborFromPersisterTwo);
+		assertFalse(mapperTwo.getSession().contains(harborFromPersisterTwo));
+		assertTrue("Harbors don't cascade", mapperTwo.getSession().contains(sailboatFour));
+		mapperTwo.getSession().close();
+		mapperOne.getSession().close();
 
 		try {
-			persisterTwo.getSession().refresh(harborFromPersisterTwo.getSailboats());
+			mapperTwo.getSession().refresh(harborFromPersisterTwo.getSailboats());
 			fail("Unfortunately, Hibernate can't refresh a collection, only its container.  If you see this, this fact has changed");
 		} catch (Exception e) {
 		}
 
-		persisterTwo.getSession().refresh(harborFromPersisterTwo);
+		mapperTwo.getSession().refresh(harborFromPersisterTwo);
 		CollectionAssert.containsOnly(new Sailboat[] { sailboatOne, sailboatTwo, sailboatThree, sailboatFour }, harborFromPersisterTwo.getSailboats());
-		CollectionAssert.containsOnly(new Sailboat[] { sailboatOne, sailboatTwo, sailboatThree, sailboatFour }, persisterTwo.find(Harbor.class, harbor.getId()).getSailboats());
+		CollectionAssert.containsOnly(new Sailboat[] { sailboatOne, sailboatTwo, sailboatThree, sailboatFour }, mapperTwo.find(Harbor.class, harbor.getId()).getSailboats());
 	}
 
 	protected void deleteAllHarbors() {
@@ -342,6 +345,6 @@ public class HibernateObjectPersisterTest extends TestCase {
 	protected void setUp() throws Exception {
 		deleteAllSailboats();
 		deleteAllHarbors();
-		persister = new HibernateObjectPersister(hibernateTester.getSessionFactory());
+		mapper = new HibernateDataMapper(hibernateTester.getSessionFactory());
 	}
 }

@@ -6,15 +6,15 @@ import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.BaseConfigurator;
-import org.opensails.sails.persist.IObjectPersister;
+import org.opensails.sails.persist.IDataMapper;
 
 /**
  * An ISailsApplicationConfigurator the makes using Hibernate as the
- * IObjectPersister easy.
+ * IDataMapper easy.
  * <p>
  * Just subclass this as you would BaseConfigurator. Note that the
- * IObjectPersister is registered at both Application scope and Request scope.
- * This allows application scoped objects that need an IObjectPersister to get
+ * IDataMapper is registered at both Application scope and Request scope.
+ * This allows application scoped objects that need an IDataMapper to get
  * one. Please be aware that this instance will be kept active through the life
  * of the application, and you are responsible for calling commit.
  * 
@@ -27,7 +27,7 @@ public abstract class HibernateApplicationConfigurator extends BaseConfigurator 
 
 	public void configure(ISailsEvent event, RequestContainer eventContainer) {
 		super.configure(event, eventContainer);
-		eventContainer.register(IObjectPersister.class, HibernateObjectPersister.class);
+		eventContainer.register(IDataMapper.class, HibernateDataMapper.class);
 		eventContainer.register(Session.class, new SessionResolver(eventContainer));
 	}
 
@@ -38,7 +38,7 @@ public abstract class HibernateApplicationConfigurator extends BaseConfigurator 
 	protected void installObjectPersister(IConfigurableSailsApplication application, ScopedContainer container) {
 		container.register(IHibernateDatabaseConfiguration.class, getDefaultDatabaseConfiguration());
 		container.register(IHibernateMappingConfiguration.class, getDefaultMappingConfiguration());
-		container.register(IObjectPersister.class, HibernateObjectPersister.class);
+		container.register(IDataMapper.class, HibernateDataMapper.class);
 		container.register(HibernateSessionFactory.class);
 	}
 }

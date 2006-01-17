@@ -7,11 +7,11 @@ import org.opensails.sails.RequestContainer;
 /**
  * A Rigging ComponentResolver for Hibernate Sessions.
  * <p>
- * If you are using the HibernateObjectPersister and want access to the
+ * If you are using the HibernateDataMapper and want access to the
  * Hibernate Session in any of your Rigging managed objects, you must register
  * this resolver.
  * 
- * @see org.opensails.hibernate.HibernateObjectPersister
+ * @see org.opensails.hibernate.HibernateDataMapper
  * @author Adam 'Programmer' Williams
  */
 public class SessionResolver implements ComponentResolver {
