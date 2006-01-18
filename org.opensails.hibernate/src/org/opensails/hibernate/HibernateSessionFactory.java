@@ -1,8 +1,10 @@
 package org.opensails.hibernate;
 
-import org.hibernate.*;
-import org.hibernate.cfg.*;
-import org.opensails.rigging.*;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
+import org.hibernate.cfg.AnnotationConfiguration;
+import org.opensails.rigging.Disposable;
 
 public class HibernateSessionFactory implements Disposable {
 	protected AnnotationConfiguration configuration;
@@ -24,6 +26,10 @@ public class HibernateSessionFactory implements Disposable {
 
 	public Session openSession() {
 		return getSessionFactory().openSession();
+	}
+
+	public StatelessSession openStatelessSession() {
+		return getSessionFactory().openStatelessSession();
 	}
 
 	protected synchronized SessionFactory getSessionFactory() {
