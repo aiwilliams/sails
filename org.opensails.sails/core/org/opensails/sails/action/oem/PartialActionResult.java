@@ -12,7 +12,7 @@ public class PartialActionResult extends TemplateActionResult {
 	}
 
 	@Override
-	protected void initializeIdentifier(ISailsEvent event, String identifier) {
-		this.identifier = String.format("%s/_%s", event.getProcessorName(), identifier);
+	protected String parseIdentifier(ISailsEvent event, String identifier) {
+		return identifier == null ? null : String.format("%s/_%s", event.getProcessorName(), identifier);
 	}
 }

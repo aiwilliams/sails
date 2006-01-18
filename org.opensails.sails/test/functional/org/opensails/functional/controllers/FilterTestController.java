@@ -8,8 +8,10 @@ import org.opensails.sails.action.ActionMethods;
 import org.opensails.sails.action.BeforeFilter;
 import org.opensails.sails.action.BeforeFilters;
 import org.opensails.sails.controller.oem.BaseController;
+import org.opensails.sails.template.Layout;
 
 @BeforeFilters(actions = @ActionFilters(filters = ExampleFilter.class, except = "filteredExcluded"), methods = @ActionMethods(methods = "onlyFilter", only = "filteredOnly"))
+@Layout("layoutAnnotation")
 public class FilterTestController extends BaseController {
 	public List<Object> filterContributions = new ArrayList<Object>();
 
@@ -34,6 +36,7 @@ public class FilterTestController extends BaseController {
 
 	protected void beforeMethod() {
 		filterContributions.add("FilterTestController#beforeMethod");
+		layout("layoutInBeforeMethod");
 	}
 
 	protected void onlyFilter() {

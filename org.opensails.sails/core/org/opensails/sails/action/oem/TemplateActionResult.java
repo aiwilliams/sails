@@ -39,14 +39,14 @@ public class TemplateActionResult extends AbstractActionResult {
 	}
 
 	public void setLayout(String templateIdentifier) {
-		layoutIdentifier = templateIdentifier;
+		layoutIdentifier = parseIdentifier(event, templateIdentifier);
 	}
 
 	/**
 	 * @param templateIdentifier in the form of "action" or "controller/action"
 	 */
 	public void setTemplate(String templateIdentifier) {
-		initializeIdentifier(event, templateIdentifier);
+		this.identifier = parseIdentifier(event, templateIdentifier);
 	}
 
 	@Override
@@ -60,15 +60,16 @@ public class TemplateActionResult extends AbstractActionResult {
 
 	protected void initialize(ISailsEvent event, String identifier) {
 		initializeHeaders(event);
-		initializeIdentifier(event, identifier);
+		this.identifier = parseIdentifier(event, identifier);
 	}
 
 	protected void initializeHeaders(ISailsEvent event) {
 		event.getResponse().setContentType(ContentType.TEXT_HTML.value());
 	}
 
-	protected void initializeIdentifier(ISailsEvent event, String identifier) {
-		if (CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) this.identifier = identifier;
-		else this.identifier = String.format("%s/%s", event.getProcessorName(), identifier);
+	protected String parseIdentifier(ISailsEvent event, String identifier) {
+		if (identifier == null) return null;
+		if (CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
+		else return String.format("%s/%s", event.getProcessorName(), identifier);
 	}
 }

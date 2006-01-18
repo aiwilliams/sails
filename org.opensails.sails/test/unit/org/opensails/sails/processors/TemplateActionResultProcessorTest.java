@@ -40,7 +40,7 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		actionResult.setLayout("layout");
 		processor.process(actionResult);
 		assertTrue(shamTemplateRenderer.renderIExpectCalled);
-		CollectionAssert.containsOnlyOrdered(new String[] { "sham/action", "layout" }, shamTemplateRenderer.templatesRendered);
+		CollectionAssert.containsOnlyOrdered(new String[] { "sham/action", "sham/layout" }, shamTemplateRenderer.templatesRendered);
 		assertTrue(mixins.contains(controllerImpl));
 		assertTrue(mixins.contains(mixinResolver));
 	}

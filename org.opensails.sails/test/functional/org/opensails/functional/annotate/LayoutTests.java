@@ -11,7 +11,7 @@ public class LayoutTests extends TestCase {
 	public void testBasic() throws Exception {
 		SailsFunctionalTester tester = new SailsFunctionalTester(LayoutSuperController.class);
 		Page page = tester.get("one");
-		page.assertLayout("classSuperLayout");
+		page.assertLayout("layoutSuper/classSuperLayout");
 
 		// Test that NoLayout and Layout handler used is same instance
 		for (int i = 0; i < 20; i++) {
@@ -21,19 +21,19 @@ public class LayoutTests extends TestCase {
 
 		tester = new SailsFunctionalTester(LayoutTestController.class);
 		page = tester.get("one");
-		page.assertLayout("oneLayout");
+		page.assertLayout("layoutTest/oneLayout");
 
 		page = tester.get("two");
-		page.assertLayout("twoSuperLayout");
+		page.assertLayout("layoutTest/twoSuperLayout");
 
 		page = tester.get("three");
-		page.assertLayout("classSuperLayout");
+		page.assertLayout("layoutTest/classSuperLayout");
 
 		page = tester.get("four");
-		page.assertLayout("classSuperLayout");
+		page.assertLayout("layoutTest/classSuperLayout");
 
 		page = tester.get("five");
-		page.assertLayout("renderTemplateLayout");
+		page.assertLayout("layoutTest/renderTemplateLayout");
 
 		page = tester.get("six");
 		page.assertLayout(null);

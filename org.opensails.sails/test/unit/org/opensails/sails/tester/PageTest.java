@@ -37,7 +37,7 @@ public class PageTest extends TestCase {
 		templateActionResult.setLayout("the layout");
 		event.getContainer().register(templateActionResult);
 		Page page = new Page(event);
-		page.assertLayout("the layout");
+		page.assertLayout("home/the layout");
 		try {
 			page.assertLayout("not it");
 			throw new RuntimeException("Not the layout that was rendered");
