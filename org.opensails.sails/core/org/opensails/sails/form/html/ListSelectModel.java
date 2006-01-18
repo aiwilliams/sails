@@ -16,7 +16,7 @@ import java.util.List;
 public class ListSelectModel implements SelectModel {
 	protected List<Object> list;
 
-	public ListSelectModel(List<Object> list) {
+	public ListSelectModel(List<?> list) {
 		if (list == null) list = new ArrayList<Object>(0);
 		this.list = new ArrayList<Object>(list);
 	}
