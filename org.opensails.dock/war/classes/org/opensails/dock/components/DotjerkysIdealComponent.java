@@ -1,37 +1,37 @@
 package org.opensails.dock.components;
 
-import org.opensails.sails.persist.IObjectPersister;
+import org.opensails.sails.persist.IDataMapper;
 
-public class DotjerkysIdealComponent /*extends BaseComponent*/ {
-	private final IObjectPersister persister;
-	
+public class DotjerkysIdealComponent /* extends BaseComponent */{
+	private final IDataMapper persister;
+
 	String requiredProperty;
-//	@Remembered
+	// @Remembered
 	String anotherProperty = "default";
 	Object complex;
-	
-	public DotjerkysIdealComponent(IObjectPersister persister) {
-		this.persister = persister;
+
+	public DotjerkysIdealComponent(IDataMapper mapper) {
+		this.persister = mapper;
 	}
-	
+
 	public void create(String id, String requiredProperty) {
-//		create(id);
+		// create(id);
 		this.requiredProperty = requiredProperty;
 	}
-	
-//	@Override
+
+	// @Override
 	public void exposition() {
-//		super.exposition();
-//		expose("complex", someTransform(complex));
+	// super.exposition();
+	// expose("complex", someTransform(complex));
 	}
-	
-//	@Callback
+
+	// @Callback
 	void doSomething(String somethingInteresting) {
-//		assert id != null;
+		// assert id != null;
 		assert anotherProperty != null;
 		assert requiredProperty == null;
 		assert somethingInteresting.equals("really really interesting");
 		persister.commit();
-//		renderString("very good");
+		// renderString("very good");
 	}
 }
