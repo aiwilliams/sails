@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="core"/>
+	<classpathentry kind="src" path="generators/src"/>
 	<classpathentry kind="src" path="builtin/views"/>
 	<classpathentry excluding="views/" kind="src" path="builtin"/>
 	<classpathentry kind="src" path="test/unit"/>
@@ -10,7 +11,8 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.rigging"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.sails.vendor"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.viento"/>
-	<classpathentry output="generators/tasks" kind="src" path="generators/tasks"/>
 	<classpathentry kind="src" path="test/functional"/>
+	<classpathentry kind="src" path="test/generators"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.ezfile"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>
