@@ -19,7 +19,7 @@
 	<property name="viento.classpath" value="viento.jar" />
 
 	<path id="classpath.ant.tasks">
-		<pathelement location="${generator.root.dir}/tasks" />
+		<pathelement location="tools/eclipse/classes" />
 		<pathelement location="${viento.classpath}" />
 	</path>
 
