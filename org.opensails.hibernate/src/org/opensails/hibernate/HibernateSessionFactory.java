@@ -1,5 +1,6 @@
 package org.opensails.hibernate;
 
+import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
@@ -26,6 +27,10 @@ public class HibernateSessionFactory implements Disposable {
 
 	public Session openSession() {
 		return getSessionFactory().openSession();
+	}
+
+	public Session openSession(Interceptor interceptor) {
+		return getSessionFactory().openSession(interceptor);
 	}
 
 	public StatelessSession openStatelessSession() {
