@@ -9,6 +9,7 @@ public class ProjectGenerator {
 	public class Application {
 		String name;
 		Context context;
+		String rootPackage;
 
 		public Application(String name) {
 			this.name = name;
@@ -23,12 +24,20 @@ public class ProjectGenerator {
 			return context;
 		}
 
+		public String getControllersPackagePath() {
+			return "/src/" + rootPackage.replace('.', '/') + "/controllers";
+		}
+
 		public String getName() {
 			return name;
 		}
 
 		public String getViewsPath() {
 			return "/app/views";
+		}
+
+		public String getMixinsPackagePath() {
+			return "/src/" + rootPackage.replace('.', '/') + "/mixins";
 		}
 	}
 
@@ -38,22 +47,32 @@ public class ProjectGenerator {
 		}
 	}
 
-	private final String projectName;
+	private String projectName;
+	private Application application;
 
-	public ProjectGenerator(String projectName) {
-		this.projectName = projectName;
+	public ProjectGenerator() {
+		application = new Application(projectName);
 	}
 
 	public void generate(EzFileSystem workspace, IGeneratorContext context) {
-		Application application = new Application(projectName);
 		Binding binding = new Binding();
 		binding.put("application", application);
 
 		workspace.mkdir(projectName + application.getViewsPath());
 		workspace.mkdir(projectName + "/app/styles");
 		workspace.mkdir(projectName + "/app/scripts");
+		workspace.mkdir(projectName + application.getControllersPackagePath());
+		workspace.mkdir(projectName + application.getMixinsPackagePath());
 
 		EzFile file = workspace.file(projectName + "/app/WEB-INF/web.xml");
 		file.save(context.render("web.xml", binding));
+	}
+
+	public void setProjectName(String name) {
+		projectName = name;
+	}
+
+	public void setRootPackage(String fragmentDotSeparated) {
+		application.rootPackage = fragmentDotSeparated;
 	}
 }
