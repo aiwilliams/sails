@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.opensails.ezfile.EzDir;
 import org.opensails.ezfile.EzFile;
 import org.opensails.ezfile.EzFileSystem;
+import org.opensails.ezfile.EzPath;
 
 public class MemoryEzFileSystem implements EzFileSystem {
 	protected final Map<String, MemoryEzFileImpl> fileSystemImpl = new HashMap<String, MemoryEzFileImpl>();
@@ -22,12 +23,12 @@ public class MemoryEzFileSystem implements EzFileSystem {
 		workingDir = "/";
 	}
 
-	public EzDir dir(String path) {
-		return new MemoryEzFile(this, absolutePath(path)).asDir();
+	public EzDir dir(String... pathNodes) {
+		return new MemoryEzFile(this, absolutePath(EzPath.join(pathNodes))).asDir();
 	}
 
-	public EzFile file(String path) {
-		return new MemoryEzFile(this, absolutePath(path));
+	public EzFile file(String... pathNodes) {
+		return new MemoryEzFile(this, absolutePath(EzPath.join(pathNodes)));
 	}
 
 	public List<EzFile> ls(String path) {
@@ -39,8 +40,8 @@ public class MemoryEzFileSystem implements EzFileSystem {
 		return files;
 	}
 
-	public EzDir mkdir(String path) {
-		path = absolutePath(path);
+	public EzDir mkdir(String... pathNodes) {
+		String path = absolutePath(EzPath.join(workingDir, EzPath.join(pathNodes)));
 		MemoryEzFileImpl dirImpl = fileImpl(path);
 		dirImpl.exists = true;
 		dirImpl.isDirectory = true;
@@ -49,8 +50,11 @@ public class MemoryEzFileSystem implements EzFileSystem {
 		return shamEzDir;
 	}
 
-	public void workingDirectory(String dir) {
-		this.workingDir = dir;
+	public EzDir cd(String... pathNodes) {
+		String path = EzPath.join(pathNodes);
+		if (EzPath.isRelative(path)) workingDir = EzPath.join(workingDir, path);
+		else workingDir = path;
+		return dir(workingDir);
 	}
 
 	protected MemoryEzFileImpl fileImpl(String path) {

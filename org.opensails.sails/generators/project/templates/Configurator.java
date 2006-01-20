@@ -1,4 +1,4 @@
-package $application.rootpackage;;
+package $application.rootPackage;;
 
 import org.opensails.sails.oem.BaseConfigurator;
 

@@ -1,7 +1,8 @@
-package org.opensails.generators;
+package org.opensails.generators.oem;
 
 import org.opensails.ezfile.EzFile;
 import org.opensails.ezfile.EzFileSystem;
+import org.opensails.generators.IGeneratorContext;
 import org.opensails.viento.Binding;
 import org.opensails.viento.VientoTemplate;
 

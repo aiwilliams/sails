@@ -14,8 +14,8 @@ public class RealEzFile implements EzFile {
 		this.file = file;
 	}
 
-	public RealEzFile(String fileName) {
-		this(new File(fileName));
+	public RealEzFile(String... pathNodes) {
+		this(new File(EzPath.join(pathNodes)));
 	}
 
 	/**

@@ -5,10 +5,10 @@ import java.util.List;
 import org.opensails.ezfile.EzDir;
 import org.opensails.ezfile.EzDirectoryWalker;
 import org.opensails.ezfile.EzFile;
+import org.opensails.ezfile.EzPath;
 
 public class MemoryEzDir implements EzDir {
 	protected MemoryEzFileSystem fs;
-
 	protected String path;
 
 	public MemoryEzDir(MemoryEzFileSystem fs, String path) {
@@ -17,7 +17,6 @@ public class MemoryEzDir implements EzDir {
 	}
 
 	public EzDir asDir() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -25,8 +24,8 @@ public class MemoryEzDir implements EzDir {
 		return fs.fileImpl(path).exists;
 	}
 
-	public EzFile file(String fileName) {
-		return fs.file(path + "/" + fileName);
+	public EzFile file(String... pathNodes) {
+		return fs.file(EzPath.join(path, EzPath.join(pathNodes)));
 	}
 
 	public String getPath() {
@@ -37,8 +36,8 @@ public class MemoryEzDir implements EzDir {
 		return true;
 	}
 
-	public EzDir mkdir(String relativePathNoLeadingSlash) {
-		return fs.mkdir(path + "/" + relativePathNoLeadingSlash);
+	public EzDir mkdir(String... pathNodes) {
+		return fs.mkdir(EzPath.join(path, EzPath.join(pathNodes)));
 	}
 
 	public void mkdirs() {
@@ -56,6 +55,12 @@ public class MemoryEzDir implements EzDir {
 		return new MemoryEzDir(fs, parentPath());
 	}
 
+	private String parentPath() {
+		if ("/".equals(path)) return null;
+		if (path.lastIndexOf("/") == 0) return "/";
+		return path.substring(0, path.lastIndexOf("/"));
+	}
+
 	public void recurse(EzDirectoryWalker walker) {
 		List<EzFile> files = fs.ls(path);
 		for (EzFile file : files) {
@@ -70,8 +75,8 @@ public class MemoryEzDir implements EzDir {
 		throw new UnsupportedOperationException("Cannot save directory");
 	}
 
-	public EzDir subdir(String relativePathNoLeadingSlash) {
-		return fs.file(path + "/" + relativePathNoLeadingSlash).asDir();
+	public EzDir subdir(String... pathNodes) {
+		return fs.file(EzPath.join(path, EzPath.join(pathNodes))).asDir();
 	}
 
 	public String text() {
@@ -79,19 +84,12 @@ public class MemoryEzDir implements EzDir {
 	}
 
 	public void touch() {
-	// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
-	public EzFile touch(String fileName) {
-		EzFile file = fs.file(path + "/" + fileName);
+	public EzFile touch(String... pathNodes) {
+		EzFile file = fs.file(EzPath.join(path, EzPath.join(pathNodes)));
 		file.touch();
 		return file;
-	}
-
-	private String parentPath() {
-		if ("/".equals(path)) return null;
-		if (path.lastIndexOf("/") == 0) return "/";
-		return path.substring(0, path.lastIndexOf("/"));
 	}
 }

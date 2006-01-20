@@ -19,8 +19,7 @@ public class MemoryEzFileSystemTests extends TestCase {
 		try {
 			ezFile.save("sometext");
 			fail("Cannot save text to a directory!");
-		} catch (IllegalStateException e) {
-		}
+		} catch (IllegalStateException e) {}
 
 		ezDir.mkdir("c");
 		EzFile newDir = fs.file("/a/b/c");
@@ -35,14 +34,23 @@ public class MemoryEzFileSystemTests extends TestCase {
 		try {
 			file.asDir();
 			fail("Can't become a dir once written to");
-		} catch (IllegalStateException e) {
-		}
+		} catch (IllegalStateException e) {}
 
 		file = fs.file("y");
 		assertEquals("/y", file.getPath());
 		EzDir converted = file.asDir();
 		assertFalse(converted.exists());
 		assertTrue(fs.fileImpl("y").isDirectory);
+	}
+
+	public void testSave() throws Exception {
+		MemoryEzFileSystem fs = new MemoryEzFileSystem();
+		EzFile file = fs.file("a/b/c/text.txt");
+		assertFalse(file.exists());
+		assertFalse(fs.file("a").exists());
+
+		file.save("test");
+		assertTrue(fs.file("a").exists());
 	}
 
 	public void testFileImpls() throws Exception {
@@ -81,7 +89,7 @@ public class MemoryEzFileSystemTests extends TestCase {
 		assertFalse(nb.isDirectory);
 		assertEquals("text", nb.text);
 
-		fs.workingDirectory("/a");
+		fs.cd("/a");
 		assertSame(b, fs.fileImpl("/a/b"));
 		assertSame(b, fs.fileImpl("b"));
 		assertSame(root, fs.fileImpl("/"));

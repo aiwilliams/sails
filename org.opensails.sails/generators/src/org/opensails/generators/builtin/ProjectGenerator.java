@@ -1,78 +1,61 @@
 package org.opensails.generators.builtin;
 
-import org.opensails.ezfile.EzFile;
-import org.opensails.ezfile.EzFileSystem;
+import org.opensails.ezfile.EzPath;
+import org.opensails.generators.IGenerator;
 import org.opensails.generators.IGeneratorContext;
+import org.opensails.generators.IGeneratorTarget;
 import org.opensails.viento.Binding;
 
-public class ProjectGenerator {
-	public class Application {
-		String name;
-		Context context;
-		String rootPackage;
+public class ProjectGenerator implements IGenerator {
+	public String projectName;
+	public String rootPackage;
 
-		public Application(String name) {
-			this.name = name;
-			this.context = new Context();
-		}
+	public ProjectGenerator() {}
 
-		public String getConfiguratorClass() {
-			return "junk";
-		}
-
-		public Context getContext() {
-			return context;
-		}
-
-		public String getControllersPackagePath() {
-			return "/src/" + rootPackage.replace('.', '/') + "/controllers";
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public String getViewsPath() {
-			return "/app/views";
-		}
-
-		public String getMixinsPackagePath() {
-			return "/src/" + rootPackage.replace('.', '/') + "/mixins";
-		}
-	}
-
-	public class Context {
-		public String getPath() {
-			return "app";
-		}
-	}
-
-	private String projectName;
-	private Application application;
-
-	public ProjectGenerator() {
-		application = new Application(projectName);
-	}
-
-	public void generate(EzFileSystem workspace, IGeneratorContext context) {
+	public void execute(IGeneratorTarget target, IGeneratorContext context) {
 		Binding binding = new Binding();
-		binding.put("application", application);
+		binding.put("application", this);
 
-		workspace.mkdir(projectName + application.getViewsPath());
-		workspace.mkdir(projectName + "/app/styles");
-		workspace.mkdir(projectName + "/app/scripts");
-		workspace.mkdir(projectName + application.getControllersPackagePath());
-		workspace.mkdir(projectName + application.getMixinsPackagePath());
+		target.cd(projectName);
+		target.mkdir(getViewsPath());
+		target.mkdir(getStylesPath());
+		target.mkdir(getScriptsPath());
+		target.mkdir(getControllersPackagePath());
+		target.mkdir(getMixinsPackagePath());
 
-		EzFile file = workspace.file(projectName + "/app/WEB-INF/web.xml");
-		file.save(context.render("web.xml", binding));
+		target.save(context.render("web.xml", binding), "app/WEB-INF/web.xml");
+		target.save(context.render("Configurator.java", binding), getRootPackagePath(), "Configurator.java");
 	}
 
-	public void setProjectName(String name) {
-		projectName = name;
+	public String getConfiguratorClass() {
+		return rootPackage + ".Configurator";
 	}
 
-	public void setRootPackage(String fragmentDotSeparated) {
-		application.rootPackage = fragmentDotSeparated;
+	public String getContextPath() {
+		return "app";
+	}
+
+	public String getControllersPackagePath() {
+		return EzPath.join(getRootPackagePath(), "controllers");
+	}
+
+	public String getMixinsPackagePath() {
+		return EzPath.join(getRootPackagePath(), "mixins");
+	}
+
+	public String getRootPackagePath() {
+		return EzPath.join("src", rootPackage.replace('.', '/'));
+	}
+
+	public String getScriptsPath() {
+		return "app/scripts";
+	}
+
+	public String getStylesPath() {
+		return "app/styles";
+	}
+
+	public String getViewsPath() {
+		return "app/views";
 	}
 }

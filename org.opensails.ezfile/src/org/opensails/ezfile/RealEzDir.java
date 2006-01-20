@@ -10,8 +10,8 @@ public class RealEzDir implements EzDir {
 		file = dir;
 	}
 
-	public RealEzDir(String fileName) {
-		this(new File(fileName));
+	public RealEzDir(String... pathNodes) {
+		this(new File(EzPath.join(pathNodes)));
 	}
 
 	public EzDir asDir() {
@@ -22,7 +22,7 @@ public class RealEzDir implements EzDir {
 		return file.exists();
 	}
 
-	public EzFile file(String fileName) {
+	public EzFile file(String... pathNodes) {
 		return null;
 	}
 
@@ -34,7 +34,7 @@ public class RealEzDir implements EzDir {
 		return file.isDirectory();
 	}
 
-	public EzDir mkdir(String relativePathNoLeadingSlash) {
+	public EzDir mkdir(String... pathNodes) {
 		return null;
 	}
 
@@ -57,7 +57,7 @@ public class RealEzDir implements EzDir {
 
 	public void save(String text) {}
 
-	public EzDir subdir(String relativePathNoLeadingSlash) {
+	public EzDir subdir(String... pathNodes) {
 		return null;
 	}
 
@@ -67,7 +67,7 @@ public class RealEzDir implements EzDir {
 
 	public void touch() {}
 
-	public EzFile touch(String fileName) {
+	public EzFile touch(String... pathNodes) {
 		return null;
 	}
 }

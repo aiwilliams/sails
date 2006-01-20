@@ -2,18 +2,23 @@ package org.opensails.ezfile.memory;
 
 import org.opensails.ezfile.EzDir;
 import org.opensails.ezfile.EzFile;
+import org.opensails.ezfile.EzPath;
 
 public class MemoryEzFile implements EzFile {
 	protected MemoryEzFileSystem fs;
 	protected String path;
 
 	public MemoryEzFile() {
-		this(new MemoryEzFileSystem(), "undefined");
+		this("undefined");
 	}
 
-	public MemoryEzFile(MemoryEzFileSystem fs, String path) {
+	public MemoryEzFile(String... pathNodes) {
+		this(new MemoryEzFileSystem(), pathNodes);
+	}
+
+	public MemoryEzFile(MemoryEzFileSystem fs, String... pathNodes) {
 		this.fs = fs;
-		this.path = path;
+		this.path = EzPath.join(pathNodes);
 	}
 
 	public EzDir asDir() {
@@ -53,6 +58,7 @@ public class MemoryEzFile implements EzFile {
 
 	public void save(String text) {
 		if (fs.fileImpl(path).isDirectory) throw new IllegalStateException("Cannot save text to a directory");
+		mkdirs();
 		fs.fileImpl(path).save(text);
 	}
 
@@ -62,5 +68,10 @@ public class MemoryEzFile implements EzFile {
 
 	public void touch() {
 		fs.fileImpl(path).exists = true;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("File [%s]", path);
 	}
 }
