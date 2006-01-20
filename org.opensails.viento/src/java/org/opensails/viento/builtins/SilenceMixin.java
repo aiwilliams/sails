@@ -43,19 +43,19 @@ public class SilenceMixin {
 			return "";
 		}
 
-		public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args) {
+		public Object resolutionFailed(TargetedMethodKey key, Object target, Object[] args, int line, int offset) {
 			return somethingFailed();
 		}
 
-		public Object resolutionFailed(TopLevelMethodKey key, Object[] args) {
+		public Object resolutionFailed(TopLevelMethodKey key, Object[] args, int line, int offset) {
 			return somethingFailed();
 		}
 
-		public Object resolutionFailed(Throwable exception, TopLevelMethodKey key, Object[] args) {
+		public Object resolutionFailed(Throwable exception, TopLevelMethodKey key, Object[] args, int line, int offset) {
 			return somethingFailed();
 		}
 
-		public Object resolutionFailed(Throwable exception, TargetedMethodKey key, Object target, Object[] args) {
+		public Object resolutionFailed(Throwable exception, TargetedMethodKey key, Object target, Object[] args, int line, int offset) {
 			return somethingFailed();
 		}
 	}

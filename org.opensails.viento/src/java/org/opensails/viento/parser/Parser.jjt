@@ -182,9 +182,9 @@ void Text() : { Token token; }
 	{ jjtThis.setContents(token.image); }
 }
 
-void Statement() : {}
+void Statement() : {Token dollar;}
 {
-	<DOLLAR>
+	dollar = <DOLLAR> { jjtThis.dollarToken(dollar); }
 	Call()
 	(<DOT> Call())*
 }

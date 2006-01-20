@@ -3,17 +3,21 @@
 package org.opensails.viento.parser;
 
 public class ASTStatement extends SimpleNode {
-  public ASTStatement(int id) {
-    super(id);
-  }
+	public ASTStatement(int id) {
+		super(id);
+	}
 
-  public ASTStatement(Parser p, int id) {
-    super(p, id);
-  }
+	public ASTStatement(Parser p, int id) {
+		super(p, id);
+	}
+	
+	public void dollarToken(Token dollar) {
+		beginLine = dollar.beginLine;
+		beginColumn = dollar.beginColumn;
+	}
 
-
-  /** Accept the visitor. **/
-  public Object jjtAccept(ParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+	/** Accept the visitor. * */
+	public Object jjtAccept(ParserVisitor visitor, Object data) {
+		return visitor.visit(this, data);
+	}
 }

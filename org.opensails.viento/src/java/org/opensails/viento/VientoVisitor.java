@@ -62,11 +62,11 @@ public class VientoVisitor extends AbstractParserVisitor {
 	}
 
 	protected Object tryStatement(ASTStatement node, Node call, String name, boolean isSilent) {
-		Object object = binding.call(name, getArguments(call), isSilent);
+		Object object = binding.call(name, getArguments(call), isSilent, node.beginLine, node.beginColumn);
 		for (int i = 1; i < node.jjtGetNumChildren(); i++) {
 			call = node.jjtGetChild(i);
 			name = ((ASTName) call.jjtGetChild(0)).getText();
-			object = binding.call(object, name, getArguments(call), isSilent);
+			object = binding.call(object, name, getArguments(call), isSilent, node.beginLine, node.beginColumn);
 		}
 		return object;
 	}

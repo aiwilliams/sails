@@ -36,12 +36,12 @@ public class Binding implements IBinding {
 	}
 
 	public Object call(Object target, String methodName, Object[] args) {
-		return call(target, methodName, args, false);
+		return call(target, methodName, args, false, 0, 0);
 	}
 
-	public Object call(Object target, String methodName, Object[] args, boolean isSilent) {
+	public Object call(Object target, String methodName, Object[] args, boolean isSilent, int line, int offset) {
 		TargetedMethodKey key = new TargetedMethodKey(target.getClass(), methodName, getClasses(args));
-		return call(findMethod(key), key, target, args, isSilent);
+		return call(findMethod(key), key, target, args, isSilent, line, offset);
 	}
 	
 	protected Class[] getClasses(Object[] args) {
@@ -98,19 +98,19 @@ public class Binding implements IBinding {
 	}
 
 	public Object call(String methodName, Object[] args) {
-		return call(methodName, args, false);
+		return call(methodName, args, false, 0, 0);
 	}
 	
-	public Object call(String methodName, Object[] args, boolean isSilent) {
+	public Object call(String methodName, Object[] args, boolean isSilent, int line, int offset) {
 		TopLevelMethodKey key = new TopLevelMethodKey(methodName, getClasses(args));
-		return call(findMethod(key), key, null, args, isSilent);
+		return call(findMethod(key), key, null, args, isSilent, line, offset);
 	}
 	
-	public Object call(CallableMethod method, MethodKey key, Object target, Object[] args, boolean isSilent) {
+	public Object call(CallableMethod method, MethodKey key, Object target, Object[] args, boolean isSilent, int line, int offset) {
 		if (method == null) {
 			if (isSilent)
 				return "";
-			return resolutionFailed(key, target, args);
+			return resolutionFailed(key, target, args, line, offset);
 		}
 //		cache.put(key, method);
 		Object result = null;
@@ -119,7 +119,7 @@ public class Binding implements IBinding {
 		} catch (Throwable t) {
 			if (isSilent)
 				return "";
-			return resolutionFailed(t, key, target, args);
+			return resolutionFailed(t, key, target, args, line, offset);
 		}
 		
 		if (result == null) {
@@ -127,21 +127,21 @@ public class Binding implements IBinding {
 				return "";
 			// Can't just blow up
 			// TODO: implement UnresolvedReference
-//			return resolutionFailed(key, target, args);
+//			return resolutionFailed(key, target, args, line, offset);
 		}
 		return result;
 	}
 
-	protected Object resolutionFailed(MethodKey key, Object target, Object[] args) {
+	protected Object resolutionFailed(MethodKey key, Object target, Object[] args, int line, int offset) {
 		if (key instanceof TargetedMethodKey)
-			return exceptionHandler.resolutionFailed((TargetedMethodKey)key, target, args);
-		return exceptionHandler.resolutionFailed((TopLevelMethodKey)key, args);
+			return exceptionHandler.resolutionFailed((TargetedMethodKey)key, target, args, line, offset);
+		return exceptionHandler.resolutionFailed((TopLevelMethodKey)key, args, line, offset);
 	}
 
-	protected Object resolutionFailed(Throwable exception, MethodKey key, Object target, Object[] args) {
+	protected Object resolutionFailed(Throwable exception, MethodKey key, Object target, Object[] args, int line, int offset) {
 		if (key instanceof TargetedMethodKey)
-			return exceptionHandler.resolutionFailed(exception, (TargetedMethodKey)key, target, args);
-		return exceptionHandler.resolutionFailed(exception, (TopLevelMethodKey)key, args);
+			return exceptionHandler.resolutionFailed(exception, (TargetedMethodKey)key, target, args, line, offset);
+		return exceptionHandler.resolutionFailed(exception, (TopLevelMethodKey)key, args, line, offset);
 	}
 
 	public void mixin(Class<?> target, Object mixin) {

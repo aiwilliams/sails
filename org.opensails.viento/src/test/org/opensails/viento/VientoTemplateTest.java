@@ -154,6 +154,24 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$key.notHere", "here");
 	}
 	
+	public void testLineNumbers() throws Exception {
+		try {
+			verifyRender("line1\r\nline2$breaks\nline3", "");
+		} catch (ResolutionFailedException e) {
+			assertTrue(e.getMessage().contains("Line: 2, Offset: 6"));
+		}
+		try {
+			verifyRender("abc$breaks", "");
+		} catch (ResolutionFailedException e) {
+			assertTrue(e.getMessage().contains("Line: 1, Offset: 4"));
+		}
+		try {
+			verifyRender("$breaks", "");
+		} catch (ResolutionFailedException e) {
+			assertTrue(e.getMessage().contains("Line: 1, Offset: 1"));
+		}
+	}
+	
 	public void testSilence() throws Exception {
 		verifyRender("$!notHere", "");
 		

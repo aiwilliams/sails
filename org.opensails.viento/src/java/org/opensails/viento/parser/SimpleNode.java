@@ -7,6 +7,10 @@ public class SimpleNode implements Node {
   protected Node[] children;
   protected int id;
   protected Parser parser;
+  
+  // TODO
+  public int beginLine;
+  public int beginColumn;
 
   public SimpleNode(int i) {
     id = i;
