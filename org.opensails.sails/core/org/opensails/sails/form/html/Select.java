@@ -7,6 +7,8 @@ package org.opensails.sails.form.html;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import org.opensails.sails.html.HtmlConstants;
@@ -55,6 +57,11 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 
 	public Select label(String text) {
 		label = new Label(this).text(text);
+		return this;
+	}
+
+	public Select model(Collection<String> model) {
+		selectModel = new ListSelectModel(new ArrayList<String>(model));
 		return this;
 	}
 
