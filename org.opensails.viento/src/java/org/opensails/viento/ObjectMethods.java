@@ -35,7 +35,9 @@ public class ObjectMethods {
 	}
 	
 	protected boolean nameMatch(String methodName, Method method) {
-		if (method.isAnnotationPresent(Name.class)) return method.getAnnotation(Name.class).value().equals(methodName);
+		if (method.isAnnotationPresent(Name.class))
+			for (String name : method.getAnnotation(Name.class).value())
+				if (name.equals(methodName)) return true;
 		return method.getName().equals(methodName) || method.getName().equals(getter(methodName)) || izzer(method, methodName);
 	}
 	

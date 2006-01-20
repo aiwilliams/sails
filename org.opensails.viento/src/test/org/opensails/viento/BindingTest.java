@@ -113,6 +113,11 @@ public class BindingTest extends TestCase {
 		assertEquals("string", binding.call(target, "polymorphism", new Object[] {new String()}));
 	}
 	
+	public void testMultipleNames() throws Exception {
+		assertEquals("aliased", binding.call(target, "first"));
+		assertEquals("aliased", binding.call(target, "second"));
+	}
+	
 	class ShamMethodMissing implements MethodMissing {
 		public Object methodMissing(String methodName, Object[] args) {
 			return new Object[] {"methodMissing", args};
@@ -141,6 +146,11 @@ public class BindingTest extends TestCase {
 		@Name("$")
 		public String dollar() {
 			return "$";
+		}
+		
+		@Name({"first", "second"})
+		public String aliased() {
+			return "aliased";
 		}
 		
 		public String mixin(String target) {
