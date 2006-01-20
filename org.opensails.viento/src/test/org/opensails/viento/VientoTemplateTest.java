@@ -180,6 +180,11 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$!tool.yesno(true)", "yes");
 	}
 	
+	public void testNumbersInIdentifiers() throws Exception {
+		binding.put("tool", new Tool());
+		verifyRender("$tool.numbers123", "here");
+	}
+	
 	public void testSlashR() throws Exception {
 		binding.put("key", "value");
 		verifyRender("$key\r\nasdf", "value\r\nasdf");
@@ -268,6 +273,10 @@ public class VientoTemplateTest extends TestCase {
 
 		public String timesTwo(int i) {
 			return String.valueOf(i * 2);
+		}
+		
+		public String numbers123() {
+			return "here";
 		}
 
 		public String takesList(List list) {

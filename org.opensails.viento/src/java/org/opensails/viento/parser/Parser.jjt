@@ -80,11 +80,11 @@ TOKEN : {
 }
 
 <STATEMENT> TOKEN : {
-	<NAME: (["a"-"z", "A"-"Z", "$", "!", "?", "_", "-"])+ > {pushState(ARGS_OR_BLOCK);}
+	<NAME: (["a"-"z", "A"-"Z", "!", "$", "?", "_"])(["a"-"z", "A"-"Z", "!", "?", "_", "-", "0"-"9"])* > {pushState(ARGS_OR_BLOCK);}
 }
 
 <STATEMENT> MORE : {
-	<([" ", "\t", "\r"])* (~["^", "a"-"z", "A"-"Z", "$", "!", "?", "_", "-"])> {input_stream.backup(1); popState();}
+	<([" ", "\t", "\r"])* (~["a"-"z", "A"-"Z", "$", "!", "?", "_", "-", "0"-"9"])> {input_stream.backup(1); popState();}
 }
 
 <ARGS_OR_BLOCK> TOKEN : {
