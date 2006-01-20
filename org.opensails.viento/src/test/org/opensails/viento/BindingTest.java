@@ -118,6 +118,10 @@ public class BindingTest extends TestCase {
 		assertEquals("aliased", binding.call(target, "second"));
 	}
 	
+	public void testPublicFields() throws Exception {
+		assertEquals("field", binding.call(target, "field"));
+	}
+	
 	class ShamMethodMissing implements MethodMissing {
 		public Object methodMissing(String methodName, Object[] args) {
 			return new Object[] {"methodMissing", args};
@@ -131,6 +135,7 @@ public class BindingTest extends TestCase {
 	}
 	
 	class ShamObject {
+		public String field = "field";
 		public String one() {
 			return "one";
 		}
