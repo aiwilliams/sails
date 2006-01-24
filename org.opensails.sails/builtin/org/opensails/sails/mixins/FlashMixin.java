@@ -14,7 +14,8 @@ public class FlashMixin implements IMixinMethod {
 	}
 
 	public Object invoke(Object... args) {
-		if (args == null || args.length == 0) return null;
-		return flash.get(args[0]);
+		if (args == null || args.length == 0) return "";
+		Object value = flash.get(args[0]);
+		return value == null ? "" : value;
 	}
 }

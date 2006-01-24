@@ -10,8 +10,9 @@ public class FlashMixinTest extends TestCase {
 		flash.put("a", "aa");
 
 		FlashMixin mixin = new FlashMixin(flash);
-		assertNull(mixin.invoke());
-		assertNull(mixin.invoke(new Object[] {}));
+		assertEquals("", mixin.invoke());
+		assertEquals("", mixin.invoke(new Object[] {}));
 		assertEquals("aa", mixin.invoke(new Object[] { "a" }));
+		assertEquals("", mixin.invoke(new Object[] {"b"}));
 	}
 }
