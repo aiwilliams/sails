@@ -17,4 +17,8 @@ public class ShamExceptionHandler implements ExceptionHandler {
 	public Object resolutionFailed(Throwable exception, TargetedMethodKey key, Object target, Object[] args, int line, int offset) {
 		return "here";
 	}
+
+	public Object nullTarget(String methodName, Object[] args, int line, int offset) {
+		return "here";
+	}
 }

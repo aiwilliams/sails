@@ -40,6 +40,8 @@ public class Binding implements IBinding {
 	}
 
 	public Object call(Object target, String methodName, Object[] args, boolean isSilent, int line, int offset) {
+		if (target == null)
+			return exceptionHandler.nullTarget(methodName, args, line, offset);
 		TargetedMethodKey key = new TargetedMethodKey(target.getClass(), methodName, getClasses(args));
 		return call(findMethod(key), key, target, args, isSilent, line, offset);
 	}
