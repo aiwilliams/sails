@@ -15,9 +15,9 @@ public class HibernateTester implements IDataMapper {
 
 	protected HibernateSessionFactory sessionFactory;
 
-	private IHibernateDatabaseConfiguration databaseConfiguration;
-	private IHibernateMappingConfiguration mappingConfiguration;
-	private HibernateDataMapper mapper;
+	protected IHibernateDatabaseConfiguration databaseConfiguration;
+	protected IHibernateMappingConfiguration mappingConfiguration;
+	protected HibernateDataMapper mapper;
 
 	public HibernateTester() {
 		databaseConfiguration = new InMemoryDatabaseConfiguration();
