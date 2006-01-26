@@ -55,6 +55,7 @@
 	<target name="sails.compile" depends="build.depends">
 		<javac srcdir="${source.core}:${source.builtin}:${source.tester}" destdir="${temp.classes}" debug="on" optimize="on">
 			<classpath refid="compile.classpath" />
+			<exclude name="**/generator/**"/>
 		</javac>
 
 		<copy todir="${temp.classes}">
