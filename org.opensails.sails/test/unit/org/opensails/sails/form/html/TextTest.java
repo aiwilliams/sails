@@ -11,9 +11,12 @@ public class TextTest extends TestCase {
     public void testToString() {
         Text text = new Text("name");
         assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"\" />", text.toString());
-
-        text.value("hellomate");
+        
+        text = new Text("name").value("hellomate");
         assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"hellomate\" />", text.toString());
+
+        text.value("hellomateagain");
+        assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"hellomateagain\" />", text.toString());
         
         text = new Text("name", "id");
         assertEquals("<input id=\"id\" name=\"name\" type=\"text\" value=\"\" />", text.toString());

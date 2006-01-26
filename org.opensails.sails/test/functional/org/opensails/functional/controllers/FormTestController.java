@@ -11,6 +11,16 @@ public class FormTestController extends BaseController {
 		renderTemplate("renderModel");
 	}
 
+	public void referenceToMissingProperty() {
+		exposeModel("model", new Object());
+		renderTemplate("renderModel");
+	}
+
+	public void postThenRender() {
+		updateModel(new Model());
+		renderTemplate("renderModel");
+	}
+
 	public void implicitExpose() {
 		exposeModel(new Model());
 		renderTemplate("renderModel");

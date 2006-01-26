@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.html.AbstractHtmlElement;
 
 /**
  * Submits an HTML form somehow. These types have much of the same behaviour
@@ -67,5 +68,10 @@ public abstract class AbstractSubmit<T extends AbstractSubmit> extends InputElem
 			}
 			return name.toString();
 		} else return super.getName();
+	}
+
+	@Override
+	protected String guessId() {
+		return AbstractHtmlElement.idForName(super.getName());
 	}
 }

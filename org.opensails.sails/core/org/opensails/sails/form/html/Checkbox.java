@@ -104,6 +104,16 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 		return super.value(value);
 	}
 
+	/**
+	 * Generates the id using the name and value, as there may be multiple
+	 * checkboxes on the page with the same name. This gives them a unique
+	 * identifier within the document.
+	 */
+	@Override
+	protected String guessId() {
+		return FormElement.idForNameAndValue(getName(), getValue());
+	}
+
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
 		super.writeAttributes(generator);

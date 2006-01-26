@@ -5,10 +5,10 @@ import junit.framework.TestCase;
 public class SubmitLinkTest extends TestCase {
     public void testToString() {
         SubmitLink submitLink = new SubmitLink("name", "formName");
-        assertEquals("<a name=\"name\" href=\"javascript:document.forms['formName'].submit()\"></a>", submitLink.toString());
+        assertEquals("<a id=\"name\" name=\"name\" href=\"javascript:document.forms['formName'].submit()\"></a>", submitLink.toString());
 
         submitLink.text("hello");
-        assertEquals("<a name=\"name\" href=\"javascript:document.forms['formName'].submit()\">hello</a>", submitLink.toString());
+        assertEquals("<a id=\"name\" name=\"name\" href=\"javascript:document.forms['formName'].submit()\">hello</a>", submitLink.toString());
     }
 
     public void testCtorWithNull() throws Exception {

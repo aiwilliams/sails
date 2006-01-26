@@ -3,8 +3,6 @@ package org.opensails.sails.form.html;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.commons.lang.StringUtils;
-
 public abstract class LabelableInputElement<T extends LabelableInputElement> extends InputElement<T> implements Labelable<T> {
 	protected static final boolean RENDER_LABEL_AFTER = false;
 	protected static final boolean RENDER_LABEL_BEFORE = true;
@@ -29,12 +27,6 @@ public abstract class LabelableInputElement<T extends LabelableInputElement> ext
 	public LabelableInputElement(boolean labelBefore, String typeValue, String name, String id) {
 		super(typeValue, name, id);
 		this.labelBefore = labelBefore;
-	}
-
-	@Override
-	public String getId() {
-		if (StringUtils.isBlank(id)) id = FormElement.idForNameAndValue(getName(), getValue());
-		return id;
 	}
 
 	@SuppressWarnings("unchecked")
