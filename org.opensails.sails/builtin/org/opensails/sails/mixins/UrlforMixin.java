@@ -5,13 +5,12 @@
  */
 package org.opensails.sails.mixins;
 
-import java.awt.event.ActionEvent;
-import java.util.List;
+import java.awt.event.*;
+import java.util.*;
 
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.url.ActionUrl;
-import org.opensails.sails.url.IUrl;
-import org.opensails.sails.url.UrlType;
+import org.opensails.sails.event.*;
+import org.opensails.sails.url.*;
+import org.opensails.sails.util.*;
 
 /**
  * Builds application-relative urls.
@@ -52,6 +51,18 @@ public class UrlforMixin {
 	}
 
 	/**
+	 * Uses the controller of the current event.
+	 * 
+	 * This should not be used to obtain a URL for use in a redirect.
+	 * 
+	 * @param action
+	 * @param parameters an Object[] of parameters to use with the action
+	 */
+	public ActionUrl action(String action, Object... parameters) {
+		return action(event.getProcessorName(), action, Quick.list(parameters));
+	}
+
+	/**
 	 * This should not be used to obtain a URL for use in a redirect.
 	 * 
 	 * @param controller
@@ -70,6 +81,10 @@ public class UrlforMixin {
 		ActionUrl url = action(controller, action);
 		url.setParameters(parameters);
 		return url;
+	}
+
+	public ActionUrl action(String controller, String action, Object... parameters) {
+		return action(controller, action, Quick.list(parameters));
 	}
 
 	public UrlForBuiltin builtin() {
