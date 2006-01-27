@@ -3,6 +3,7 @@ package org.opensails.viento;
 import java.util.Collection;
 import java.util.Map;
 
+import org.opensails.viento.builtins.DoMixin;
 import org.opensails.viento.builtins.EscapeMixin;
 import org.opensails.viento.builtins.IfMixin;
 import org.opensails.viento.builtins.LoopMixin;
@@ -44,6 +45,10 @@ public class Binding implements IBinding {
 			return exceptionHandler.nullTarget(methodName, args, line, offset);
 		TargetedMethodKey key = new TargetedMethodKey(target.getClass(), methodName, getClasses(args));
 		return call(findMethod(key), key, target, args, isSilent, line, offset);
+	}
+	
+	public boolean canResolve(String name) {
+		return statics.find(new TopLevelMethodKey(name, new Class[0])) != null;
 	}
 	
 	protected Class[] getClasses(Object[] args) {
@@ -191,6 +196,7 @@ public class Binding implements IBinding {
 		mixin(new EscapeMixin());
 		mixin(new SilenceMixin());
 		mixin(new WithMixin());
+		mixin(new DoMixin());
 		mixin(new SetMixin(this));
 		mixin(Collection.class, new LoopMixin());
 		mixin(Object[].class, new LoopMixin());

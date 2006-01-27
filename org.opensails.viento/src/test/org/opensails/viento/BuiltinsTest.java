@@ -55,6 +55,12 @@ public class BuiltinsTest extends TestCase {
         verifyRender("$set(list, [one, two])$list.before[[before ]].each(each)[[$each]].delimiter[[, ]].after[[ after]]", "before one, two after");
         verifyRender("$set(list, [one, two])$list.before[[before ]].each(each)[[$each]].delimiter(', ').after[[ after]]", "before one, two after");
 
+        verifyRender("$default(newlist, [one])$newlist.each(each)[[$each]]", "one");
+        verifyRender("$set(anotherlist, [])$default(anotherlist, [one])$anotherlist.each(each)[[$each]]", "");
+
+        verifyRender("$list.add('asdf')", "true");
+        verifyRender("$do [> $list.add('asdf')", "");
+
         binding.put("array", new String[] { "one", "two", "three" });
         verifyRender("$array.each(item)[[<h1>$item</h1>]]", "<h1>one</h1><h1>two</h1><h1>three</h1>");
     }

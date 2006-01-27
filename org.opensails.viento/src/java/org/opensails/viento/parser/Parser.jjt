@@ -327,7 +327,7 @@ void MapEntry() : {}
 
 void Block() : {}
 {
-	(<BEGIN_BLOCK>|<BEGIN_QUICK_BLOCK>) Body() (<END_BLOCK>|<END_QUICK_BLOCK>)
+	(<BEGIN_BLOCK>|<BEGIN_QUICK_BLOCK>) Body() (<END_BLOCK>|<END_QUICK_BLOCK>|<EOF>)
 }
 
 void StringBlock() : {}
