@@ -1,7 +1,9 @@
 package org.opensails.sails.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +27,15 @@ import org.opensails.sails.SailsException;
  */
 public class ClassHelper {
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
+
+	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
+		if (argTypes.length != parameterTypes.length) return false;
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (!parameterTypes[i].isAssignableFrom(argTypes[i])) return false;
+		}
+		return true;
+	}
 
 	/**
 	 * @param clazz
@@ -97,6 +108,14 @@ public class ClassHelper {
 		return annotatedFields.toArray(new Field[annotatedFields.size()]);
 	}
 
+	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
+		Constructor[] constructors = clazz.getConstructors();
+		for (Constructor<T> constructor : constructors) {
+			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
+		}
+		throw new SailsException("Could not find a constructor accepting " + argTypes);
+	}
+
 	public static String getName(Class clazz) {
 		return ClassUtils.getShortClassName(clazz);
 	}
@@ -113,13 +132,22 @@ public class ClassHelper {
 		return getPackage(clazz).replaceAll("\\.", "/");
 	}
 
-	public static <T> T instantiate(Class<? extends T> clazz) {
+	public static <T> T instantiate(Class<? extends T> clazz, Object... args) {
 		try {
-			return clazz.newInstance();
+			Class[] argTypes = new Class[args.length];
+			for (int i = 0; i < args.length; i++)
+				argTypes[i] = args[i].getClass();
+			return findConstructor(clazz, argTypes).newInstance(args);
 		} catch (InstantiationException e) {
-			throw new SailsException(String.format("Could not instantiate a %s. Does it have a default constructor?", clazz), e);
+			throw new SailsException(String.format("Could not instantiate a %s. No constructor matching argument types?", clazz), e);
 		} catch (IllegalAccessException e) {
 			throw new SailsException("Could not instantiate. Know anything about access?", e);
+		} catch (IllegalArgumentException e) {
+			throw new SailsException("Could not instantiate. The arguments were illegal.", e);
+		} catch (SecurityException e) {
+			throw new SailsException("Could not instantiate. Know anything about security?", e);
+		} catch (InvocationTargetException e) {
+			throw new SailsException("Could not instantiate. The constructor threw and exception.", e);
 		}
 	}
 

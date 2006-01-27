@@ -14,6 +14,16 @@ public class Quick {
     }
 
     @SuppressWarnings("unchecked")
+    public static <KV> Map<KV, KV> map(Class<KV> keyValueType, Object... objects) {
+        if (objects.length % 2 != 0)
+            throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
+        Map<KV, KV> map = new HashMap<KV, KV>();
+        for (int i=0; i<objects.length; i+=2)
+            map.put((KV)objects[i], (KV)objects[i+1]);
+        return map;
+    }
+
+    @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> map(Object... objects) {
         if (objects.length % 2 != 0)
             throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
