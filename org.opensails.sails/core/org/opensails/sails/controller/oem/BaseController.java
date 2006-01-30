@@ -284,6 +284,6 @@ public class BaseController implements IControllerImpl {
 	}
 
 	protected UrlforMixin urlfor() {
-		return getContainer().instance(UrlforMixin.class);
+		return getContainer().instance(UrlforMixin.class, UrlforMixin.class);
 	}
 }
