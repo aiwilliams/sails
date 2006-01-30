@@ -25,7 +25,7 @@ public class AT_PrevaylorPersisterTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		classpath = "lib/prevayler-2.02.006.jar;bin;../org.opensails.sails/tools/eclipse/classes";
+		classpath = "lib/prevayler-2.02.006.jar" + File.pathSeparator + "bin" + File.pathSeparator + "../org.opensails.sails/tools/eclipse/classes";
 		destroyPrevalence();
 	}
 
@@ -83,7 +83,7 @@ public class AT_PrevaylorPersisterTest extends TestCase {
 
 		Process process = Runtime.getRuntime().exec(command.toString());
 		process.waitFor();
-		
+
 		String errorString = inputStreamToString(process.getErrorStream());
 		if (errorString.length() != 0)
 			throw new RuntimeException("Error in child process:\n" + errorString);

@@ -10,8 +10,6 @@ import org.prevayler.PrevaylerFactory;
 
 public class PrevaylerPersisterTest extends TestCase {
 
-	protected IdentifiableObjectPrevalentSystem prevalantSystem;
-
 	protected Prevayler prevayler;
 
 	protected IDataMapper dataMapper;
@@ -19,7 +17,7 @@ public class PrevaylerPersisterTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		prevalantSystem = new IdentifiableObjectPrevalentSystem();
+		IdentifiableObjectPrevalentSystem prevalantSystem = new IdentifiableObjectPrevalentSystem();
 		prevayler = PrevaylerFactory.createTransientPrevayler(prevalantSystem);
 		dataMapper = new PrevaylerPersister(prevayler);
 	}
