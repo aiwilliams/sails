@@ -83,6 +83,11 @@ public class AT_PrevaylorPersisterTest extends TestCase {
 
 		Process process = Runtime.getRuntime().exec(command.toString());
 		process.waitFor();
+		
+		String errorString = inputStreamToString(process.getErrorStream());
+		if (errorString.length() != 0)
+			throw new RuntimeException("Error in child process:\n" + errorString);
+
 		return process;
 	}
 
