@@ -1,8 +1,9 @@
 package org.opensails.dock.components;
 
+import org.opensails.sails.component.oem.BaseComponent;
 import org.opensails.sails.persist.IDataMapper;
 
-public class DotjerkysIdealComponent /* extends BaseComponent */{
+public class DotjerkysIdealComponent extends BaseComponent {
 	private final IDataMapper persister;
 
 	String requiredProperty;
@@ -14,15 +15,9 @@ public class DotjerkysIdealComponent /* extends BaseComponent */{
 		this.persister = mapper;
 	}
 
-	public void create(String id, String requiredProperty) {
+	public void initialize(String id, String requiredProperty) {
 		// create(id);
 		this.requiredProperty = requiredProperty;
-	}
-
-	// @Override
-	public void exposition() {
-	// super.exposition();
-	// expose("complex", someTransform(complex));
 	}
 
 	// @Callback
