@@ -1,11 +1,7 @@
-/*
- * Created on Mar 2, 2005
- * 
- * (c) 2005 Adam Williams
- */
-
 package org.opensails.sails;
 
+import org.opensails.sails.component.IComponentImpl;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.util.ClassHelper;
 
@@ -24,12 +20,20 @@ public class Sails {
 	public static final String DEFAULT_CONTEXT_ROOT_DIRECTORY = "war";
 
 	/**
+	 * Converts a Component implementation class into a String that could be the
+	 * Component's name.
+	 */
+	public static final String componentName(Class<? extends IComponentImpl> componentClass) {
+		return ClassHelper.lowerCamelName(componentClass).replaceFirst("Component$", "");
+	}
+
+	/**
 	 * Converts a Controller implementation class into a String that could be
 	 * the Controller's name.
 	 * 
 	 * @see #controllerName(Controller) to avoid getClass() calls
 	 */
-	public static final String controllerName(Class controllerClass) {
+	public static final String controllerName(Class<? extends IControllerImpl> controllerClass) {
 		return ClassHelper.lowerCamelName(controllerClass).replaceFirst("Controller$", "");
 	}
 
@@ -38,7 +42,7 @@ public class Sails {
 	 * 
 	 * @see #controllerName(Class)
 	 */
-	public static final String controllerName(Controller instance) {
+	public static final String controllerName(IControllerImpl instance) {
 		return controllerName(instance.getClass());
 	}
 

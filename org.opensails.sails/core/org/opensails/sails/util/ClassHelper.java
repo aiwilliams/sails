@@ -28,13 +28,16 @@ import org.opensails.sails.SailsException;
 public class ClassHelper {
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
-	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
-		if (argTypes.length != parameterTypes.length) return false;
-
-		for (int i = 0; i < parameterTypes.length; i++) {
-			if (!parameterTypes[i].isAssignableFrom(argTypes[i])) return false;
+	public static Object callMethod(Object instance, String methodName, Object... args) {
+		try {
+			return findMethod(instance.getClass(), methodName, argTypes(args)).invoke(instance, args);
+		} catch (IllegalArgumentException e) {
+			throw new SailsException("Could not instantiate. The arguments were illegal.", e);
+		} catch (IllegalAccessException e) {
+			throw new SailsException("Could not instantiate. Know anything about access?", e);
+		} catch (InvocationTargetException e) {
+			throw new SailsException("Could not instantiate. The constructor threw and exception.", e);
 		}
-		return true;
 	}
 
 	/**
@@ -108,14 +111,6 @@ public class ClassHelper {
 		return annotatedFields.toArray(new Field[annotatedFields.size()]);
 	}
 
-	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
-		Constructor[] constructors = clazz.getConstructors();
-		for (Constructor<T> constructor : constructors) {
-			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
-		}
-		throw new SailsException("Could not find a constructor accepting " + argTypes);
-	}
-
 	public static String getName(Class clazz) {
 		return ClassUtils.getShortClassName(clazz);
 	}
@@ -134,10 +129,7 @@ public class ClassHelper {
 
 	public static <T> T instantiate(Class<? extends T> clazz, Object... args) {
 		try {
-			Class[] argTypes = new Class[args.length];
-			for (int i = 0; i < args.length; i++)
-				argTypes[i] = args[i].getClass();
-			return findConstructor(clazz, argTypes).newInstance(args);
+			return findConstructor(clazz, argTypes(args)).newInstance(args);
 		} catch (InstantiationException e) {
 			throw new SailsException(String.format("Could not instantiate a %s. No constructor matching argument types?", clazz), e);
 		} catch (IllegalAccessException e) {
@@ -149,6 +141,23 @@ public class ClassHelper {
 		} catch (InvocationTargetException e) {
 			throw new SailsException("Could not instantiate. The constructor threw and exception.", e);
 		}
+	}
+
+	/**
+	 * @param clazz
+	 * @param interfaze
+	 * @return the interface that clazz implements where that inteface is a
+	 *         descendent of interfaze
+	 */
+	@SuppressWarnings("unchecked")
+	public static Class interfaceExtending(Class clazz, Class interfaze) {
+		Class current = clazz;
+		do {
+			for (Class i : current.getInterfaces())
+				if (interfaze.isAssignableFrom(i)) return i;
+			current = current.getSuperclass();
+		} while (current != Object.class);
+		throw new IllegalArgumentException(String.format("The class does not implement an interface that extends %s", interfaze));
 	}
 
 	public static String lowerCamelName(Class clazz) {
@@ -187,5 +196,37 @@ public class ClassHelper {
 	public static String upperCamel(String string) {
 		char upper = Character.toUpperCase(string.charAt(0));
 		return upper + string.substring(1);
+	}
+
+	private static Class[] argTypes(Object... args) {
+		Class[] argTypes = new Class[args.length];
+		for (int i = 0; i < args.length; i++)
+			argTypes[i] = args[i].getClass();
+		return argTypes;
+	}
+
+	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
+		if (argTypes.length != parameterTypes.length) return false;
+
+		for (int i = 0; i < parameterTypes.length; i++) {
+			if (!parameterTypes[i].isAssignableFrom(argTypes[i])) return false;
+		}
+		return true;
+	}
+
+	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
+		Constructor[] constructors = clazz.getConstructors();
+		for (Constructor<T> constructor : constructors) {
+			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
+		}
+		throw new SailsException("Could not find a constructor accepting " + argTypes);
+	}
+
+	private static Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
+		Method[] methods = clazz.getMethods();
+		for (Method method : methods) {
+			if (method.getName().equals(name) && argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
+		}
+		throw new SailsException("Could not find a constructor accepting " + argTypes);
 	}
 }

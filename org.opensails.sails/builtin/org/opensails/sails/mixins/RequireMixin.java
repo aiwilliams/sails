@@ -3,8 +3,8 @@ package org.opensails.sails.mixins;
 import java.util.List;
 
 import org.opensails.sails.IResourceResolver;
-import org.opensails.sails.controller.IController;
-import org.opensails.sails.controller.IControllerResolver;
+import org.opensails.sails.component.IComponent;
+import org.opensails.sails.component.IComponentResolver;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.html.Script;
 import org.opensails.sails.html.Style;
@@ -16,16 +16,16 @@ import org.opensails.viento.IBinding;
 
 public class RequireMixin {
 	private final IBinding binding;
-	private final IControllerResolver controllerResolver;
+	private final IComponentResolver componentResolver;
 	private final ISailsEvent event;
 	private final Require require = new Require();
 	private final IResourceResolver resourceResolver;
 
-	public RequireMixin(ISailsEvent event, IResourceResolver resourceResolver, IBinding binding, IControllerResolver controllerResolver) {
+	public RequireMixin(ISailsEvent event, IResourceResolver resourceResolver, IBinding binding, IComponentResolver componentResolver) {
 		this.event = event;
 		this.resourceResolver = resourceResolver;
 		this.binding = binding;
-		this.controllerResolver = controllerResolver;
+		this.componentResolver = componentResolver;
 	}
 
 	public void component(String identifier) {
@@ -35,8 +35,8 @@ public class RequireMixin {
 		IUrl style = event.resolve(UrlType.COMPONENT, identifier + "/style.css");
 		if (resourceResolver.exists(style)) style(style);
 
-		IController component = controllerResolver.resolve(identifier);
-		if (component.hasImplementation()) binding.put(identifier, component.createInstance(event));
+		IComponent component = componentResolver.resolve(identifier);
+		binding.put(identifier, component.createFactory(event));
 	}
 
 	public RequireOutput output() {
@@ -45,10 +45,6 @@ public class RequireMixin {
 
 	public void script(IUrl url) {
 		require.script(new Script(url));
-	}
-	
-	private void componentScript(IUrl url) {
-		require.componentScript(new Script(url));
 	}
 
 	public void script(String identifier) {
@@ -71,5 +67,9 @@ public class RequireMixin {
 	@Override
 	public String toString() {
 		return output().toString();
+	}
+
+	private void componentScript(IUrl url) {
+		require.componentScript(new Script(url));
 	}
 }

@@ -1,6 +1,6 @@
 package org.opensails.functional;
 
-import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.tester.SailsTester;
 
 public class SailsFunctionalTester extends SailsTester {
@@ -8,8 +8,8 @@ public class SailsFunctionalTester extends SailsTester {
 		super(FunctionalTestConfigurator.class);
 	}
 
-	public SailsFunctionalTester(Class<? extends IEventProcessingContext> contextClass) {
+	public SailsFunctionalTester(Class<? extends IControllerImpl> controllerClass) {
 		this();
-		setWorkingController(contextClass);
+		setWorkingController(controllerClass);
 	}
 }

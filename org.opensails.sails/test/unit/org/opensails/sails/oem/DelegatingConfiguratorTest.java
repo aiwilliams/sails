@@ -12,6 +12,7 @@ import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.action.oem.ActionResultProcessorResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.opensails.sails.component.oem.ComponentResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.template.MixinResolver;
@@ -64,6 +65,11 @@ public class DelegatingConfiguratorTest extends TestCase {
 		@Override
 		public void configure(AdapterResolver adapterResolver) {
 			setMethodInvoked(findMethod(new Class[] { AdapterResolver.class }));
+		}
+
+		@Override
+		public void configure(ComponentResolver componentResolver) {
+			setMethodInvoked(findMethod(new Class[] { ComponentResolver.class }));
 		}
 
 		@Override
@@ -217,6 +223,12 @@ public class DelegatingConfiguratorTest extends TestCase {
 
 		@Override
 		protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ScopedContainer container) {
+			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ScopedContainer.class }));
+			return null;
+		}
+
+		@Override
+		protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ScopedContainer.class }));
 			return null;
 		}

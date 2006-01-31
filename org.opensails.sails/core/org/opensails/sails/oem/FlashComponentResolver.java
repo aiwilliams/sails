@@ -1,6 +1,7 @@
 package org.opensails.sails.oem;
 
 import org.opensails.rigging.ComponentResolver;
+import org.opensails.rigging.SimpleContainer;
 import org.opensails.sails.event.ISailsEvent;
 
 public class FlashComponentResolver implements ComponentResolver {
@@ -11,9 +12,12 @@ public class FlashComponentResolver implements ComponentResolver {
 		this.event = event;
 	}
 
+	public ComponentResolver cloneFor(SimpleContainer container) {
+		throw new UnsupportedOperationException();
+	}
+
 	public Object instance() {
-		if (flash == null)
-			flash = Flash.load(event.getRequest(), event.getSession(false));
+		if (flash == null) flash = Flash.load(event.getRequest(), event.getSession(false));
 		return flash;
 	}
 

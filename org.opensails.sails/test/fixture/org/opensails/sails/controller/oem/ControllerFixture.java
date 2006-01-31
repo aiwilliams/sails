@@ -17,10 +17,10 @@ public class ControllerFixture {
 		return new Controller(controllerImpl, new AdapterResolver());
 	}
 
-	public static Controller defaultAdapters(final IControllerImpl controllerImpl) {
+	public static <I extends IControllerImpl> Controller defaultAdapters(final I controllerImpl) {
 		return new Controller(controllerImpl.getClass(), new AdapterResolver()) {
 			@Override
-			protected IControllerImpl createInstance(ISailsEvent event, Class<? extends IControllerImpl> impl) {
+			protected I createInstance(ISailsEvent event, Class impl) {
 				return controllerImpl;
 			}
 		};

@@ -10,5 +10,5 @@ package org.opensails.sails;
  * @see org.opensails.sails.Scope
  */
 public enum ApplicationScope {
-	REQUEST, SERVLET, SERVLET_CONTEXT, SESSION, VIRTUAL_MACHINE
+	VIRTUAL_MACHINE, SERVLET_CONTEXT, SERVLET, SESSION, REQUEST, COMPONENT, 
 }

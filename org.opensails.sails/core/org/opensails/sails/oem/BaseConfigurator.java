@@ -20,8 +20,10 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.opensails.sails.component.IComponentImpl;
+import org.opensails.sails.component.IComponentResolver;
+import org.opensails.sails.component.oem.ComponentResolver;
 import org.opensails.sails.controller.ControllerPackage;
-import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.ISailsEvent;
@@ -78,6 +80,17 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	 * @param controllerResolver
 	 */
 	public void configure(ControllerResolver controllerResolver) {}
+	
+	/**
+	 * Subclasses override this to add custom IComponentImpl class resolution.
+	 * 
+	 * Called after the ComponentResolver has been installed into the
+	 * application. All {@link org.opensails.sails.util.IClassResolver}s
+	 * configured by this method will be consulted before the defaults.
+	 * 
+	 * @param componentResolver
+	 */
+	public void configure(ComponentResolver componentResolver) {}
 
 	public void configure(IConfigurableSailsApplication application) {
 		installConfigurator(application);
@@ -102,6 +115,9 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 		ControllerResolver controllerResolver = installControllerResolver(application, container);
 		configure(controllerResolver);
+		
+		ComponentResolver componentResolver = installComponentResolver(application, container);
+		configure(componentResolver);
 
 		installUrlResolverResolver(application, container);
 		installDispatcher(application, container);
@@ -264,10 +280,24 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 	 */
 	protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		ControllerResolver resolver = (ControllerResolver) container.instance(IControllerResolver.class, ControllerResolver.class);
-		resolver.push(new ComponentPackage<IControllerImpl>(getBuiltinComponentPackage(), "Component"));
-		resolver.push(new ComponentPackage<IControllerImpl>(getDefaultComponentPackage(), "Component"));
 		resolver.push(new ControllerPackage(getBuiltinControllerPackage()));
 		resolver.push(new ControllerPackage(getDefaultControllerPackage()));
+		return resolver;
+	}
+	
+	/**
+	 * Installs an
+	 * {@link org.opensails.sails.component.IComponentResolver} into the
+	 * application and configures the default component class resolvers.
+	 * 
+	 * @param application
+	 * @param container
+	 * @return the installed resolver
+	 */
+	protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ScopedContainer container) {
+		ComponentResolver resolver = (ComponentResolver) container.instance(IComponentResolver.class, ComponentResolver.class);
+		resolver.push(new ComponentPackage<IComponentImpl>(getBuiltinComponentPackage(), "Component"));
+		resolver.push(new ComponentPackage<IComponentImpl>(getDefaultComponentPackage(), "Component"));
 		return resolver;
 	}
 

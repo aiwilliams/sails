@@ -12,7 +12,6 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.tester.form.TestFormFields;
@@ -32,7 +31,7 @@ public class SailsTester implements ISailsApplication {
 	// Container used when events are generated
 	protected TestRequestContainer requestContainer;
 	protected ShamHttpSession session;
-	protected Class<? extends IEventProcessingContext> workingController;
+	protected Class<? extends IControllerImpl> workingController;
 
 	/**
 	 * @see org.opensails.sails.ISailsApplicationConfigurator
@@ -244,12 +243,27 @@ public class SailsTester implements ISailsApplication {
 		return existing;
 	}
 
-	public void setWorkingController(Class<? extends IEventProcessingContext> controller) {
+	public void setWorkingController(Class<? extends IControllerImpl> controller) {
 		this.workingController = controller;
 	}
 
 	public String workingController() {
 		return workingController != null ? Sails.controllerName(workingController) : "home";
+	}
+
+	/**
+	 * @param controller
+	 * @param action
+	 * @param parameters
+	 * @return
+	 */
+	private String toPathInfo(String controller, String action, String... parameters) {
+		StringBuilder pathInfo = new StringBuilder();
+		pathInfo.append(controller);
+		pathInfo.append("/");
+		pathInfo.append(action);
+		pathInfo.append(toParametersString(parameters));
+		return pathInfo.toString();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -351,20 +365,5 @@ public class SailsTester implements ISailsApplication {
 			string.append(param);
 		}
 		return string.toString();
-	}
-
-	/**
-	 * @param controller
-	 * @param action
-	 * @param parameters
-	 * @return
-	 */
-	private String toPathInfo(String controller, String action, String... parameters) {
-		StringBuilder pathInfo = new StringBuilder();
-		pathInfo.append(controller);
-		pathInfo.append("/");
-		pathInfo.append(action);
-		pathInfo.append(toParametersString(parameters));
-		return pathInfo.toString();
 	}
 }

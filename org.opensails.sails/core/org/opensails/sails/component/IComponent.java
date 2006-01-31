@@ -1,6 +1,7 @@
 package org.opensails.sails.component;
 
 import org.opensails.sails.action.IAction;
+import org.opensails.sails.component.oem.ComponentFactory;
 import org.opensails.sails.controller.NoImplementationException;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.IActionEventProcessor;
@@ -23,6 +24,8 @@ import org.opensails.sails.event.oem.IActionEventProcessor;
  * @author Adam 'Programmer' Williams
  */
 public interface IComponent extends IActionEventProcessor {
+	ComponentFactory createFactory(ISailsEvent event);
+
 	/**
 	 * @param event
 	 * @see #hasImplementation()

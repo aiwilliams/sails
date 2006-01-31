@@ -1,16 +1,18 @@
 package org.opensails.sails.oem;
 
-import org.apache.commons.configuration.*;
-import org.opensails.rigging.*;
-import org.opensails.sails.*;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.opensails.rigging.ScopedContainer;
+import org.opensails.sails.IConfigurableSailsApplication;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.action.oem.ActionResultProcessorResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.opensails.sails.component.oem.ComponentResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.template.*;
-import org.opensails.sails.url.*;
-import org.opensails.sails.util.*;
-import org.opensails.viento.*;
+import org.opensails.sails.template.MixinResolver;
+import org.opensails.sails.url.UrlResolver;
+import org.opensails.sails.util.ClassHelper;
+import org.opensails.viento.IBinding;
 
 public class DelegatingConfigurator extends BaseConfigurator {
 	protected BaseConfigurator delegate;
@@ -27,6 +29,11 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	@Override
 	public void configure(AdapterResolver adapterResolver) {
 		delegate.configure(adapterResolver);
+	}
+
+	@Override
+	public void configure(ComponentResolver componentResolver) {
+		delegate.configure(componentResolver);
 	}
 
 	@Override
@@ -139,6 +146,11 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	@Override
 	protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ScopedContainer container) {
 		return delegate.installAdapterResolver(application, container);
+	}
+
+	@Override
+	protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ScopedContainer container) {
+		return delegate.installComponentResolver(application, container);
 	}
 
 	@Override

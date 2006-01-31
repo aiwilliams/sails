@@ -17,8 +17,9 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.annotate.Behavior;
 import org.opensails.sails.annotate.BehaviorInstance;
 import org.opensails.sails.annotate.IBehaviorHandler;
-import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.event.oem.IActionEventProcessor;
 import org.opensails.sails.util.ClassHelper;
 
 /**
@@ -34,14 +35,14 @@ public class Action implements IAction {
 
 	protected final Method[] actionMethods;
 	protected final IAdapterResolver adapterResolver;
-	protected final Class<? extends IControllerImpl> controllerImplementation;
+	protected final Class<? extends IEventProcessingContext<? extends IActionEventProcessor>> processor;
 	protected final String name;
 
-	public Action(String name, Class<? extends IControllerImpl> controllerImplementation, IAdapterResolver adapterResolver) {
+	public Action(String name, Class<? extends IEventProcessingContext<? extends IActionEventProcessor>> processor, IAdapterResolver adapterResolver) {
 		this.name = name;
-		this.controllerImplementation = controllerImplementation;
+		this.processor = processor;
 		this.adapterResolver = adapterResolver;
-		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(controllerImplementation, name);
+		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(processor, name);
 	}
 
 	public IActionResult execute(ActionInvocation invocation) {
@@ -61,7 +62,7 @@ public class Action implements IAction {
 
 	@Override
 	public String toString() {
-		return controllerImplementation + "#" + name;
+		return processor + "#" + name;
 	}
 
 	private BehaviorInstance[] allBehaviors(ActionInvocation invocation) {

@@ -1,6 +1,7 @@
 package org.opensails.generators.builtin;
 
 import org.opensails.ezfile.EzPath;
+import org.opensails.sails.oem.SailsDefaultsConfiguration;
 
 public class DefaultProjectDescriptor {
 	protected String rootPackage;
@@ -8,6 +9,14 @@ public class DefaultProjectDescriptor {
 
 	public DefaultProjectDescriptor(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public String getAdaptersPackagePath() {
+		return EzPath.join(getRootPackagePath(), "adapters");
+	}
+
+	public String getComponentsPackagePath() {
+		return EzPath.join(getRootPackagePath(), "components");
 	}
 
 	public String getConfiguratorClass() {
@@ -22,8 +31,16 @@ public class DefaultProjectDescriptor {
 		return EzPath.join(getRootPackagePath(), "controllers");
 	}
 
+	public String getImagesPath() {
+		return EzPath.join(getContextPath(), SailsDefaultsConfiguration.IMAGES);
+	}
+
 	public String getMixinsPackagePath() {
 		return EzPath.join(getRootPackagePath(), "mixins");
+	}
+
+	public String getProjectName() {
+		return projectName;
 	}
 
 	public String getRootPackage() {
@@ -35,15 +52,15 @@ public class DefaultProjectDescriptor {
 	}
 
 	public String getScriptsPath() {
-		return "app/scripts";
+		return EzPath.join(getContextPath(), SailsDefaultsConfiguration.SCRIPTS);
 	}
 
 	public String getStylesPath() {
-		return "app/styles";
+		return EzPath.join(getContextPath(), SailsDefaultsConfiguration.STYLES);
 	}
 
 	public String getViewsPath() {
-		return "app/views";
+		return EzPath.join(getContextPath(), "views");
 	}
 
 	public void setRootPackage(String dotSeparated) {

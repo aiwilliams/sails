@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
+import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.action.oem.TemplateActionResult;
@@ -40,7 +41,10 @@ public class Page {
 	}
 
 	public void assertContains(String message, String exactString) throws AssertionFailedError {
-		assertPageExpectation(message + " Expected " + url() + " to contain <" + exactString + ">", contains(exactString));
+		String finalMessage = "Expected " + url() + " to contain <" + exactString + ">";
+		if (!StringUtils.isBlank(message)) finalMessage = message + " ";
+		finalMessage = "\n" + finalMessage;
+		assertPageExpectation(message, contains(exactString));
 	}
 
 	public void assertContainsInOrder(String... strings) {
@@ -100,7 +104,7 @@ public class Page {
 	public void assertRenders() throws AssertionFailedError {
 		source();
 	}
-	
+
 	public void assertResponseHeader(String headerName, String expected) throws AssertionFailedError {
 		Assert.assertEquals(expected, response.getHeader(headerName));
 	}
@@ -175,7 +179,7 @@ public class Page {
 			writer.write(source());
 			writer.write("\n^^^^^^^^^^^^^^^^^^^ end response to ");
 			writer.write(event.getEventUrl().getActionUrl());
-			writer.write(" ^^^^^^^^^^^^^^^^^^^");
+			writer.write(" ^^^^^^^^^^^^^^^^^^^\n\n");
 			writer.flush();
 		} catch (IOException e) {
 			throw new SailsException("Unable to view source of page", e);
@@ -191,11 +195,11 @@ public class Page {
 			OutputStreamWriter stringWriter = new OutputStreamWriter(System.err);
 			try {
 				stringWriter.write(message);
-				stringWriter.write(" See source below:\n\n");
+				stringWriter.write(" See source below:\n");
+				viewSource(stringWriter);
 			} catch (Exception e) {
 				throw new SailsException("Couldn't write to System.err");
 			}
-			viewSource(stringWriter);
 			Assert.fail(message);
 		}
 	}
