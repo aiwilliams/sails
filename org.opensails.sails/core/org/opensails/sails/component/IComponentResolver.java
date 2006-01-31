@@ -1,5 +1,6 @@
 package org.opensails.sails.component;
 
+import org.opensails.sails.event.*;
 
 /**
  * Used by a Sails application to resolve IController instances. When an
@@ -8,8 +9,8 @@ package org.opensails.sails.component;
  * @see org.opensails.sails.ISailsApplicationConfigurator
  * @see org.opensails.sails.oem.BaseConfigurator
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
-public interface IComponentResolver {
+public interface IComponentResolver extends INamespacedProcessorResolver<IComponent> {
 	IComponent resolve(String componentIdentifier);
 }

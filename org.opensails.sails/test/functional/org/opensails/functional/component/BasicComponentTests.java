@@ -1,10 +1,11 @@
 package org.opensails.functional.component;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.opensails.functional.SailsFunctionalTester;
-import org.opensails.sails.tester.Page;
+import org.apache.commons.lang.*;
+import org.opensails.functional.*;
+import org.opensails.functional.components.*;
+import org.opensails.sails.tester.*;
 
 public class BasicComponentTests extends TestCase {
 	public void testBasic() throws Exception {
@@ -15,5 +16,8 @@ public class BasicComponentTests extends TestCase {
 		page.assertContains("hello from controller");
 		page.assertContains("both from component");
 		page.assertContains("hello from component");
+
+		page = t.get(BasicComponent.class, "someCallback");
+		page.assertContains("yes, callbackMade");
 	}
 }

@@ -1,10 +1,9 @@
 package org.opensails.sails.action.oem;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.http.HttpHeader;
+import org.opensails.rigging.*;
+import org.opensails.sails.action.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.http.*;
 
 public abstract class AbstractActionResult implements IActionResult {
 	protected final ISailsEvent event;
@@ -17,8 +16,8 @@ public abstract class AbstractActionResult implements IActionResult {
 		return event.getContainer();
 	}
 
-	public IControllerImpl getController() {
-		return event.getContainer().instance(IControllerImpl.class);
+	public IEventProcessingContext getProcessingContext() {
+		return event.getContainer().instance(IEventProcessingContext.class);
 	}
 
 	public ISailsEvent getEvent() {

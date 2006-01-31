@@ -15,10 +15,10 @@ import org.opensails.sails.event.ISailsEvent;
 public class AbstractActionEventProcessor<C extends IEventProcessingContext> implements IActionEventProcessor {
 	protected final Map<String, Action> actions;
 	protected final IAdapterResolver adapterResolver;
-	protected final Class<C> controllerImplementation;
+	protected final Class<C> processingContext;
 
 	public AbstractActionEventProcessor(Class<C> controller, IAdapterResolver adapterResolver) {
-		this.controllerImplementation = controller;
+		this.processingContext = controller;
 		this.adapterResolver = adapterResolver;
 		this.actions = new HashMap<String, Action>();
 	}
@@ -31,18 +31,18 @@ public class AbstractActionEventProcessor<C extends IEventProcessingContext> imp
 	public Action getAction(String name) {
 		Action action = actions.get(name);
 		if (action == null) {
-			action = new Action(name, controllerImplementation, adapterResolver);
+			action = new Action(name, processingContext, adapterResolver);
 			actions.put(name, action);
 		}
 		return action;
 	}
 
 	public Class<C> getImplementation() {
-		return controllerImplementation;
+		return processingContext;
 	}
 
 	public boolean hasImplementation() {
-		return controllerImplementation != null;
+		return processingContext != null;
 	}
 
 	public IActionResult process(ExceptionEvent event) {
@@ -65,14 +65,14 @@ public class AbstractActionEventProcessor<C extends IEventProcessingContext> imp
 		return process((ISailsEvent) event);
 	}
 
-	protected C createInstance(ISailsEvent event, Class<C> controllerImpl) {
-		return event.getContainer().create(controllerImpl, event);
+	protected C createInstance(ISailsEvent event, Class<C> contextImpl) {
+		return event.getContainer().create(contextImpl, event);
 	}
 
 	@SuppressWarnings("unchecked")
 	protected C createInstanceOrNull(ISailsEvent event) {
 		if (!hasImplementation()) return null;
-		C instance = createInstance(event, controllerImplementation);
+		C instance = createInstance(event, processingContext);
 		instance.setEventContext(event, this);
 		return instance;
 	}

@@ -1,17 +1,12 @@
 package org.opensails.sails.component.oem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.component.IComponent;
-import org.opensails.sails.component.IComponentImpl;
-import org.opensails.sails.component.IComponentResolver;
-import org.opensails.sails.template.ITemplateRenderer;
-import org.opensails.sails.util.IClassResolver;
-import org.opensails.viento.IBinding;
+import org.opensails.sails.adapter.*;
+import org.opensails.sails.component.*;
+import org.opensails.sails.template.*;
+import org.opensails.sails.util.*;
+import org.opensails.viento.*;
 
 public class ComponentResolver implements IComponentResolver {
 	protected final IAdapterResolver adapterResolver;
@@ -43,5 +38,9 @@ public class ComponentResolver implements IComponentResolver {
 			cache.put(identifier, component = new Component(implementation, adapterResolver, renderer));
 		}
 		return component;
+	}
+
+	public boolean resolvesNamespace(String namespace) {
+		return "Component".equals(namespace);
 	}
 }

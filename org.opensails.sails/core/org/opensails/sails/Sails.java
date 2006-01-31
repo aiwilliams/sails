@@ -1,9 +1,10 @@
 package org.opensails.sails;
 
-import org.opensails.sails.component.IComponentImpl;
-import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.controller.oem.Controller;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.sails.component.*;
+import org.opensails.sails.controller.*;
+import org.opensails.sails.controller.oem.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.util.*;
 
 /*
  * Don't let this become a dumping ground. Methods should be domain specific.
@@ -44,6 +45,13 @@ public class Sails {
 	 */
 	public static final String controllerName(IControllerImpl instance) {
 		return controllerName(instance.getClass());
+	}
+
+	@SuppressWarnings("unchecked")
+	public static String eventContextName(Class<? extends IEventProcessingContext> processor) {
+		if (IControllerImpl.class.isAssignableFrom(processor)) return controllerName((Class<? extends IControllerImpl>) processor);
+		if (IComponentImpl.class.isAssignableFrom(processor)) return "component_" + componentName((Class<? extends IComponentImpl>) processor);
+		throw new SailsException("I have no idea what you are asking me to do");
 	}
 
 	/**

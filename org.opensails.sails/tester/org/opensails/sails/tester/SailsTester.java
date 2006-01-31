@@ -1,26 +1,19 @@
 package org.opensails.sails.tester;
 
-import java.io.File;
+import java.io.*;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang.ArrayUtils;
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ApplicationScope;
-import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.Sails;
-import org.opensails.sails.adapter.ContainerAdapterResolver;
-import org.opensails.sails.adapter.IAdapter;
-import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.form.FormFields;
-import org.opensails.sails.oem.BaseConfigurator;
-import org.opensails.sails.tester.form.TestFormFields;
-import org.opensails.sails.tester.oem.TestingHttpServletResponse;
-import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.tester.servletapi.ShamHttpSession;
-import org.opensails.sails.tester.servletapi.ShamServletConfig;
-import org.opensails.sails.tester.servletapi.ShamServletContext;
-import org.opensails.sails.util.ClassInstanceAccessor;
+import org.apache.commons.configuration.*;
+import org.apache.commons.lang.*;
+import org.opensails.rigging.*;
+import org.opensails.sails.*;
+import org.opensails.sails.adapter.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.form.*;
+import org.opensails.sails.oem.*;
+import org.opensails.sails.tester.form.*;
+import org.opensails.sails.tester.oem.*;
+import org.opensails.sails.tester.servletapi.*;
+import org.opensails.sails.util.*;
 
 /**
  * Think of this as being a browser. Through it you request pages, and it
@@ -31,7 +24,7 @@ public class SailsTester implements ISailsApplication {
 	// Container used when events are generated
 	protected TestRequestContainer requestContainer;
 	protected ShamHttpSession session;
-	protected Class<? extends IControllerImpl> workingController;
+	protected Class<? extends IEventProcessingContext> workingContext;
 
 	/**
 	 * @see org.opensails.sails.ISailsApplicationConfigurator
@@ -61,8 +54,8 @@ public class SailsTester implements ISailsApplication {
 	 * @param controller the controller, which becomes the working controller
 	 * @return the default page for the given controller
 	 */
-	public Page get(Class<? extends IControllerImpl> controller) {
-		this.workingController = controller;
+	public Page get(Class<? extends IEventProcessingContext> controller) {
+		this.workingContext = controller;
 		return get();
 	}
 
@@ -74,13 +67,13 @@ public class SailsTester implements ISailsApplication {
 	 * @param parameters
 	 * @return the page for the given controller/action
 	 */
-	public Page get(Class<? extends IControllerImpl> controller, String action, String... parameters) {
-		this.workingController = controller;
+	public Page get(Class<? extends IEventProcessingContext> controller, String action, String... parameters) {
+		this.workingContext = controller;
 		return get(action, parameters);
 	}
 
 	public Page get(String action) {
-		return get(workingController(), action, ArrayUtils.EMPTY_STRING_ARRAY);
+		return get(workingContext(), action, ArrayUtils.EMPTY_STRING_ARRAY);
 	}
 
 	/**
@@ -91,7 +84,7 @@ public class SailsTester implements ISailsApplication {
 	 * @return the page for &lt;workingController&gt;/action
 	 */
 	public Page get(String action, String... parameters) {
-		return get(workingController(), action, parameters);
+		return get(workingContext(), action, parameters);
 	}
 
 	/**
@@ -178,12 +171,12 @@ public class SailsTester implements ISailsApplication {
 		session = null;
 	}
 
-	public Page post(Class<? extends IControllerImpl> controller, FormFields formFields, Object... parameters) {
-		return post(Sails.controllerName(controller), formFields, parameters);
+	public Page post(Class<? extends IEventProcessingContext> context, FormFields formFields, Object... parameters) {
+		return post(Sails.eventContextName(context), formFields, parameters);
 	}
 
-	public Page post(Class<? extends IControllerImpl> controller, String action, FormFields formFields, Object... actionParameters) {
-		return post(Sails.controllerName(controller), action, formFields, actionParameters);
+	public Page post(Class<? extends IEventProcessingContext> context, String action, FormFields formFields, Object... actionParameters) {
+		return post(Sails.eventContextName(context), action, formFields, actionParameters);
 	}
 
 	/**
@@ -196,7 +189,7 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	public Page post(String action, FormFields formFields, Object... parameters) {
-		return post(workingController(), action, formFields, parameters);
+		return post(workingContext(), action, formFields, parameters);
 	}
 
 	/**
@@ -243,27 +236,12 @@ public class SailsTester implements ISailsApplication {
 		return existing;
 	}
 
-	public void setWorkingController(Class<? extends IControllerImpl> controller) {
-		this.workingController = controller;
+	public void setWorkingContext(Class<? extends IEventProcessingContext> controller) {
+		this.workingContext = controller;
 	}
 
-	public String workingController() {
-		return workingController != null ? Sails.controllerName(workingController) : "home";
-	}
-
-	/**
-	 * @param controller
-	 * @param action
-	 * @param parameters
-	 * @return
-	 */
-	private String toPathInfo(String controller, String action, String... parameters) {
-		StringBuilder pathInfo = new StringBuilder();
-		pathInfo.append(controller);
-		pathInfo.append("/");
-		pathInfo.append(action);
-		pathInfo.append(toParametersString(parameters));
-		return pathInfo.toString();
+	public String workingContext() {
+		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -365,5 +343,20 @@ public class SailsTester implements ISailsApplication {
 			string.append(param);
 		}
 		return string.toString();
+	}
+
+	/**
+	 * @param controller
+	 * @param action
+	 * @param parameters
+	 * @return
+	 */
+	private String toPathInfo(String controller, String action, String... parameters) {
+		StringBuilder pathInfo = new StringBuilder();
+		pathInfo.append(controller);
+		pathInfo.append("/");
+		pathInfo.append(action);
+		pathInfo.append(toParametersString(parameters));
+		return pathInfo.toString();
 	}
 }

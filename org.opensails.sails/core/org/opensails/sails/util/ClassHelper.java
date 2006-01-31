@@ -227,6 +227,6 @@ public class ClassHelper {
 		for (Method method : methods) {
 			if (method.getName().equals(name) && argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
 		}
-		throw new SailsException("Could not find a constructor accepting " + argTypes);
+		throw new SailsException("Could not find a method accepting " + argTypes);
 	}
 }

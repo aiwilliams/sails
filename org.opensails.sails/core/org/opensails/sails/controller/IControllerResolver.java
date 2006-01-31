@@ -1,5 +1,6 @@
 package org.opensails.sails.controller;
 
+import org.opensails.sails.event.*;
 
 /**
  * Used by a Sails application to resolve IController instances. When an
@@ -10,6 +11,6 @@ package org.opensails.sails.controller;
  * 
  * @author Adam 'Programmer' Williams
  */
-public interface IControllerResolver {
+public interface IControllerResolver extends INamespacedProcessorResolver<IController> {
 	IController resolve(String controllerIdentifier);
 }

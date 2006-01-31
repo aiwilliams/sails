@@ -1,15 +1,10 @@
 package org.opensails.sails.controller.oem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.controller.IController;
-import org.opensails.sails.controller.IControllerImpl;
-import org.opensails.sails.controller.IControllerResolver;
-import org.opensails.sails.util.IClassResolver;
+import org.opensails.sails.adapter.*;
+import org.opensails.sails.controller.*;
+import org.opensails.sails.util.*;
 
 public class ControllerResolver implements IControllerResolver {
 	protected final IAdapterResolver adapterResolver;
@@ -39,5 +34,9 @@ public class ControllerResolver implements IControllerResolver {
 			controllerCache.put(controllerIdentifier, controller = new Controller(controllerImplementation, adapterResolver));
 		}
 		return controller;
+	}
+
+	public boolean resolvesNamespace(String namespace) {
+		return "Controller".equals(namespace);
 	}
 }

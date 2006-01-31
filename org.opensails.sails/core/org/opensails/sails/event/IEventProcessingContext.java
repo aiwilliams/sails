@@ -36,4 +36,10 @@ public interface IEventProcessingContext<P extends IActionEventProcessor> {
 	void setEventContext(ISailsEvent event, P processor);
 
 	<T extends IActionResult> T setResult(T result);
+
+	/**
+	 * @param identifier
+	 * @return the path to the template to render for this identifier.
+	 */
+	String getTemplatePath(String identifier);
 }

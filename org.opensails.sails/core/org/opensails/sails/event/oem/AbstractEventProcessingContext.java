@@ -1,28 +1,20 @@
 package org.opensails.sails.event.oem;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.rigging.SimpleContainer;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.action.oem.FileSendActionResult;
-import org.opensails.sails.action.oem.InputStreamActionResult;
-import org.opensails.sails.action.oem.StringActionResult;
-import org.opensails.sails.action.oem.TemplateActionResult;
-import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.FileUpload;
-import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.form.IFormValueModel;
-import org.opensails.sails.mixins.UrlforMixin;
-import org.opensails.sails.model.IModelContext;
-import org.opensails.sails.model.oem.SingleModelContext;
-import org.opensails.sails.oem.Flash;
-import org.opensails.sails.util.ClassHelper;
-import org.opensails.viento.IBinding;
+import org.opensails.rigging.*;
+import org.opensails.sails.action.*;
+import org.opensails.sails.action.oem.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.form.*;
+import org.opensails.sails.mixins.*;
+import org.opensails.sails.model.*;
+import org.opensails.sails.model.oem.*;
+import org.opensails.sails.oem.*;
+import org.opensails.sails.util.*;
+import org.opensails.viento.*;
 
 public abstract class AbstractEventProcessingContext<P extends IActionEventProcessor> implements IEventProcessingContext<P> {
 	protected P processor;
@@ -36,13 +28,18 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	public ScopedContainer getContainer() {
 		return event.getContainer();
 	}
-
+	
 	public ISailsEvent getEvent() {
 		return event;
 	}
 
 	public P getEventProcessor() {
 		return processor;
+	}
+
+	public String getTemplatePath(String identifier) {
+		if (TemplateActionResult.CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
+		else return String.format("%s/%s", event.getProcessorName(), identifier);
 	}
 
 	public void setEventContext(ISailsEvent event, P processor) {

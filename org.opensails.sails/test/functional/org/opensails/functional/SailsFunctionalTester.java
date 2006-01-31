@@ -10,6 +10,6 @@ public class SailsFunctionalTester extends SailsTester {
 
 	public SailsFunctionalTester(Class<? extends IControllerImpl> controllerClass) {
 		this();
-		setWorkingController(controllerClass);
+		setWorkingContext(controllerClass);
 	}
 }

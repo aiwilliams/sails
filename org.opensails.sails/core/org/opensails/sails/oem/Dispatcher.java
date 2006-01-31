@@ -1,28 +1,21 @@
 package org.opensails.sails.oem;
 
-import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.action.IActionResultProcessor;
-import org.opensails.sails.action.IActionResultProcessorResolver;
-import org.opensails.sails.controller.IController;
-import org.opensails.sails.controller.IControllerResolver;
-import org.opensails.sails.event.ISailsEventConfigurator;
-import org.opensails.sails.event.oem.ExceptionEvent;
-import org.opensails.sails.event.oem.GetEvent;
-import org.opensails.sails.event.oem.ILifecycleEvent;
-import org.opensails.sails.event.oem.PostEvent;
+import org.opensails.sails.*;
+import org.opensails.sails.action.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.event.oem.*;
 
 public class Dispatcher {
 	protected final ISailsApplication application;
-	protected final IControllerResolver controllerResolver;
+	protected final IActionEventProcessorResolver eventProcessorResolver;
 	protected final ISailsEventConfigurator eventConfigurator;
-	protected final IActionResultProcessorResolver processorResolver;
+	protected final IActionResultProcessorResolver resultProcessorResolver;
 
-	public Dispatcher(ISailsApplication application, ISailsEventConfigurator configurator, IControllerResolver controllerResolver, IActionResultProcessorResolver processorResolver) {
+	public Dispatcher(ISailsApplication application, ISailsEventConfigurator configurator, IActionEventProcessorResolver eventProcessorResolver, IActionResultProcessorResolver resultProcessorResolver) {
 		this.application = application;
 		this.eventConfigurator = configurator;
-		this.controllerResolver = controllerResolver;
-		this.processorResolver = processorResolver;
+		this.eventProcessorResolver = eventProcessorResolver;
+		this.resultProcessorResolver = resultProcessorResolver;
 	}
 
 	public void dispatch(ExceptionEvent event) {
@@ -64,10 +57,9 @@ public class Dispatcher {
 
 	@SuppressWarnings("unchecked")
 	protected void process(ILifecycleEvent event) {
-		IController controller = controllerResolver.resolve(event.getProcessorName());
+		IActionEventProcessor eventProcessor = eventProcessorResolver.resolve(event.getProcessorName());
 		// delegate to event so that it calls most specific process
-		IActionResult result = event.visit(controller);
-		IActionResultProcessor processor = processorResolver.resolve(result);
-		processor.process(result);
+		IActionResult result = event.visit(eventProcessor);
+		resultProcessorResolver.resolve(result).process(result);
 	}
 }

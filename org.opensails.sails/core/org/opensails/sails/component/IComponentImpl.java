@@ -1,8 +1,8 @@
 package org.opensails.sails.component;
 
-import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.template.ITemplateRenderer;
-import org.opensails.viento.IBinding;
+import org.opensails.sails.event.*;
+import org.opensails.sails.template.*;
+import org.opensails.viento.*;
 
 /**
  * A component implementation.
@@ -31,17 +31,13 @@ import org.opensails.viento.IBinding;
  * @author aiwilliams
  */
 public interface IComponentImpl extends IEventProcessingContext<IComponent> {
+	/*
+	 * Called getComponentName() to avoid collisions with component properties.
+	 */
 	/**
 	 * @return the name of the component
 	 */
-	String getName();
-
-	/**
-	 * Called on toString() from the template.
-	 * 
-	 * @return the output of the component
-	 */
-	String render();
+	String getComponentName();
 
 	/**
 	 * Called after creation, after

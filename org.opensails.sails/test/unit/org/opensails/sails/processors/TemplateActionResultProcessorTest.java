@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.ShamController;
+import org.opensails.sails.event.*;
 import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.template.IMixinResolver;
@@ -32,6 +33,8 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		TemplateActionResultProcessor processor = new TemplateActionResultProcessor(shamTemplateRenderer);
 		GetEvent actionGet = SailsEventFixture.actionGet(ShamController.class, "action");
 		ShamController controllerImpl = new ShamController();
+		controllerImpl.setEventContext(actionGet, null);
+		actionGet.getContainer().register(IEventProcessingContext.class, controllerImpl);
 		actionGet.getContainer().register(IControllerImpl.class, controllerImpl);
 		actionGet.getContainer().register(IBinding.class, new ShamTemplateBinding());
 		mixinResolver = new ShamMixinResolver();

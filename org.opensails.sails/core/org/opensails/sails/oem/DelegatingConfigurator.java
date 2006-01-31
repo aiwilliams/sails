@@ -1,18 +1,17 @@
 package org.opensails.sails.oem;
 
-import org.apache.commons.configuration.CompositeConfiguration;
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.IConfigurableSailsApplication;
-import org.opensails.sails.RequestContainer;
-import org.opensails.sails.action.oem.ActionResultProcessorResolver;
-import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.apache.commons.configuration.*;
+import org.opensails.rigging.*;
+import org.opensails.sails.*;
+import org.opensails.sails.action.oem.*;
+import org.opensails.sails.adapter.oem.*;
 import org.opensails.sails.component.oem.ComponentResolver;
-import org.opensails.sails.controller.oem.ControllerResolver;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.template.MixinResolver;
-import org.opensails.sails.url.UrlResolver;
-import org.opensails.sails.util.ClassHelper;
-import org.opensails.viento.IBinding;
+import org.opensails.sails.controller.oem.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.template.*;
+import org.opensails.sails.url.*;
+import org.opensails.sails.util.*;
+import org.opensails.viento.*;
 
 public class DelegatingConfigurator extends BaseConfigurator {
 	protected BaseConfigurator delegate;
@@ -176,6 +175,11 @@ public class DelegatingConfigurator extends BaseConfigurator {
 	@Override
 	protected Dispatcher installDispatcher(IConfigurableSailsApplication application, ScopedContainer container) {
 		return delegate.installDispatcher(application, container);
+	}
+
+	@Override
+	protected EventProcessorResolver installEventProcessorResolver(IConfigurableSailsApplication application, ScopedContainer container) {
+		return delegate.installEventProcessorResolver(application, container);
 	}
 
 	@Override

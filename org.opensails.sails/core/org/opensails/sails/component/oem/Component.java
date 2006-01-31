@@ -21,11 +21,6 @@ public class Component<I extends IComponentImpl> extends AbstractActionEventProc
 	}
 
 	@Override
-	protected I createInstance(ISailsEvent event, Class<I> componentImpl) {
-		return event.getContainer().instance(componentImpl, componentImpl);
-	}
-
-	@Override
 	protected I createInstanceOrNull(ISailsEvent event) {
 		if (!hasImplementation()) return null;
 		I instance = super.createInstanceOrNull(event);

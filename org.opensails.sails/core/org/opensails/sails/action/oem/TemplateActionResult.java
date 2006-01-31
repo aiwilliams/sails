@@ -1,14 +1,14 @@
 package org.opensails.sails.action.oem;
 
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.http.ContentType;
-import org.opensails.viento.IBinding;
+import org.opensails.sails.event.*;
+import org.opensails.sails.http.*;
+import org.opensails.viento.*;
 
 public class TemplateActionResult extends AbstractActionResult {
-	static final Pattern CONTROLLER_ACTION_PATTERN = Pattern.compile("^(.*?)/(.*?)?");
-
+	public static final Pattern CONTROLLER_ACTION_PATTERN = Pattern.compile("^(.*?)/(.*?)?");
+	
 	protected String identifier;
 	protected String layoutIdentifier;
 
@@ -69,6 +69,9 @@ public class TemplateActionResult extends AbstractActionResult {
 
 	protected String parseIdentifier(ISailsEvent event, String identifier) {
 		if (identifier == null) return null;
+		IEventProcessingContext processingContext = event.getContainer().instance(IEventProcessingContext.class);
+		if (processingContext != null) return processingContext.getTemplatePath(identifier);
+		
 		if (CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
 		else return String.format("%s/%s", event.getProcessorName(), identifier);
 	}
