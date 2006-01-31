@@ -2,14 +2,15 @@ package org.opensails.hibernate;
 
 import org.hibernate.Session;
 import org.opensails.rigging.ComponentResolver;
+import org.opensails.rigging.SimpleContainer;
 import org.opensails.sails.RequestContainer;
 
 /**
  * A Rigging ComponentResolver for Hibernate Sessions.
  * <p>
- * If you are using the HibernateDataMapper and want access to the
- * Hibernate Session in any of your Rigging managed objects, you must register
- * this resolver.
+ * If you are using the HibernateDataMapper and want access to the Hibernate
+ * Session in any of your Rigging managed objects, you must register this
+ * resolver.
  * 
  * @see org.opensails.hibernate.HibernateDataMapper
  * @author Adam 'Programmer' Williams
@@ -22,9 +23,12 @@ public class SessionResolver implements ComponentResolver {
 		this.eventContainer = eventContainer;
 	}
 
+	public ComponentResolver cloneFor(SimpleContainer container) {
+		throw new UnsupportedOperationException();
+	}
+
 	public Object instance() {
-		if (session == null)
-			session = eventContainer.instance(HibernateSessionFactory.class).openSession();
+		if (session == null) session = eventContainer.instance(HibernateSessionFactory.class).openSession();
 		return session;
 	}
 
