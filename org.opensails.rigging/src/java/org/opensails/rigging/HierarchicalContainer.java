@@ -22,17 +22,12 @@ public class HierarchicalContainer extends SimpleContainer {
 		children.add(child);
 	}
 
-	/**
-	 * @return child
-	 */
-	public HierarchicalContainer makeChild() {
-		HierarchicalContainer child = new HierarchicalContainer(this);
-		children.add(child);
-		return child;
-	}
-
-	public HierarchicalContainer getParent() {
-		return parent;
+	@Override
+	public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
+		Collection<T> instances = super.allInstances(type, shouldInstantiate);
+		for (HierarchicalContainer child : new ArrayList<HierarchicalContainer>(children))
+			instances.addAll(child.allInstances(type, shouldInstantiate));
+		return instances;
 	}
 
 	/**
@@ -55,29 +50,48 @@ public class HierarchicalContainer extends SimpleContainer {
 		return super.contains(key);
 	}
 
+	public HierarchicalContainer getParent() {
+		return parent;
+	}
+
 	@Override
 	public <T> T instance(Class<T> key) {
-		if (containsLocally(key))
-			return super.instance(key);
-		if (parent == null)
-			return null;
+		if (containsLocally(key)) return super.instance(key);
+		if (parent == null) return null;
 		return parent.instance(key);
+	}
+
+	/**
+	 * @return child
+	 */
+	public HierarchicalContainer makeChild() {
+		HierarchicalContainer child = new HierarchicalContainer(this);
+		children.add(child);
+		return child;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void makeLocal(Class key) {
+		ComponentResolver resolver = resolverInHeirarchy(key);
+		if (resolver != null) register(key, resolver.cloneFor(this));
 	}
 
 	public void removeChild(HierarchicalContainer child) {
 		children.remove(child);
 		child.orphan();
 	}
-	
+
 	protected void orphan() {
 		parent = null;
 	}
-	
-	@Override
-	public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
-		Collection<T> instances = super.allInstances(type, shouldInstantiate);
-		for (HierarchicalContainer child : new ArrayList<HierarchicalContainer>(children))
-			instances.addAll(child.allInstances(type, shouldInstantiate));
-		return instances;
+
+	protected <T> ComponentResolver resolverInHeirarchy(Class<T> key) {
+		ComponentResolver resolver = null;
+		HierarchicalContainer container = this;
+		while (resolver == null && container != null) {
+			resolver = container.resolver(key);
+			container = container.getParent();
+		}
+		return resolver;
 	}
 }

@@ -1,17 +1,37 @@
 package org.opensails.rigging;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.opensails.rigging.SimpleContainerTest.IShoelace;
 import org.opensails.rigging.SimpleContainerTest.Shoelace;
-
-import junit.framework.TestCase;
 
 public class HierarchicalContainerTest extends TestCase {
 	HierarchicalContainer parent = new HierarchicalContainer();
 	HierarchicalContainer child = parent.makeChild();
 	
-	public void testChild() throws Exception {
+	public void testAllInstances() throws Exception {
+		child.register(ShamComponent.class, new ShamComponent());
+		parent.register(ShamSubclassingComponent.class);
+		assertEquals(1, parent.allInstances(false).size());
+		assertEquals(2, parent.allInstances(true).size());
+		assertEquals(2, parent.allInstances(false).size());
+	}
+
+	public void testBroadcast_ThreadSafety() throws Exception {
+		child.register(Shoelace.class);
+		child.registerInstantiationListener(Shoelace.class, new InstantiationListener<Shoelace>() {
+			public void instantiated(Shoelace newInstance) {
+				parent.makeChild();
+			}
+		});
+		parent.broadcast(IShoelace.class, true).untie();
+	}
+
+    public void testChild() throws Exception {
 		assertSame(parent, child.getParent());
 
 		parent.register(ShamComponent.class);
@@ -37,45 +57,37 @@ public class HierarchicalContainerTest extends TestCase {
             assertTrue(Arrays.equals(new Class<?>[] {ShamComponent.class}, expected.getMinimumDependencies()));
         }
     }
-
-    public void testInstance_WithDefaultImplementation_DontOverrideParent() throws Exception {
+	
+	public void testInstance_WithDefaultImplementation_DontOverrideParent() throws Exception {
         parent.register(ShamComponent.class);
         assertTrue(child.contains(ShamComponent.class));
         assertFalse(child.containsLocally(ShamComponent.class));
         assertNotNull(child.instance(ShamComponent.class, ShamComponent.class));
         assertFalse(child.containsLocally(ShamComponent.class));
     }
+	
+    public void testMakeLocal() throws Exception {
+		parent.register(List.class, ArrayList.class);
+		List parentInstance = parent.instance(List.class);
+		
+		child.makeLocal(List.class);
+		List childInstance = child.instance(List.class);
+		
+		assertNotSame(parentInstance, childInstance);
+	}
+    
 
 	public void testParent() throws Exception {
 		assertNull("Shouldn't throw exception", parent.instance(String.class));
 		child.register(ShamComponent.class);
 		assertNull(parent.instance(ShamComponent.class));
 	}
-	
-	public void testRemoveChild() throws Exception {
+
+    public void testRemoveChild() throws Exception {
 		parent.register(ShamComponent.class);
 		
 		parent.removeChild(child);
 		assertNull(child.getParent());
 		assertNull(child.instance(ShamComponent.class));
-	}
-	
-    public void testAllInstances() throws Exception {
-		child.register(ShamComponent.class, new ShamComponent());
-		parent.register(ShamSubclassingComponent.class);
-		assertEquals(1, parent.allInstances(false).size());
-		assertEquals(2, parent.allInstances(true).size());
-		assertEquals(2, parent.allInstances(false).size());
-	}
-    
-    
-    public void testBroadcast_ThreadSafety() throws Exception {
-		child.register(Shoelace.class);
-		child.registerInstantiationListener(Shoelace.class, new InstantiationListener<Shoelace>() {
-			public void instantiated(Shoelace newInstance) {
-				parent.makeChild();
-			}
-		});
-		parent.broadcast(IShoelace.class, true).untie();
 	}
 }

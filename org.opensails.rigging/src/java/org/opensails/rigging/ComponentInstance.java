@@ -6,7 +6,11 @@ public class ComponentInstance implements ComponentResolver {
 	public ComponentInstance(Object instance) {
 		this.instance = instance;
 	}
-	
+
+	public ComponentResolver cloneFor(SimpleContainer container) {
+		return new ComponentInstance(instance);
+	}
+
 	public Object instance() {
 		return instance;
 	}
