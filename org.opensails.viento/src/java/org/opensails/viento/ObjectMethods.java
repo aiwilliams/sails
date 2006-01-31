@@ -23,7 +23,7 @@ public class ObjectMethods {
 		return null;
 	}
 
-	private Field findField(Class targetClass, String methodName) {
+	protected Field findField(Class targetClass, String methodName) {
 		try {
 			return targetClass.getField(methodName);
 		} catch (Exception e) {

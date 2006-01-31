@@ -1,6 +1,6 @@
 package org.opensails.viento;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +12,13 @@ public class TopLevelMixins extends ObjectMethods {
 			Method method = findAppropriateMethod(mixin.getClass(), key.methodName, key.argClasses);
 			if (method != null)
 				return new TopLevelMixin(method, mixin);
+			
+			if (key.argClasses.length == 0) {
+				Field field = findField(mixin.getClass(), key.methodName);
+				if (field != null)
+					return new TopLevelField(field, mixin);
+			}
+			
 			method = findMethodMissing(mixin.getClass());
 			if (method != null)
 				return new TopLevelMethodMissing(method, key.methodName, mixin);
@@ -31,6 +38,19 @@ public class TopLevelMixins extends ObjectMethods {
 			this.mixin = mixin;
 		}
 
+		public Object call(Object target, Object[] args) {
+			return super.call(mixin, args);
+		}
+	}
+	
+	public class TopLevelField extends ObjectField {
+		private final Object mixin;
+		
+		public TopLevelField(Field field, Object mixin) {
+			super(field);
+			this.mixin = mixin;
+		}
+		
 		public Object call(Object target, Object[] args) {
 			return super.call(mixin, args);
 		}

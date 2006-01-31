@@ -126,6 +126,8 @@ public class BindingTest extends TestCase {
 	
 	public void testPublicFields() throws Exception {
 		assertEquals("field", binding.call(target, "field"));
+    binding.mixin(target);
+    assertEquals("field", binding.call("field"));
 	}
 	
 	class ShamMethodMissing implements MethodMissing {
