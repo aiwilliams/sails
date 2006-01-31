@@ -37,7 +37,6 @@ public class ObjectMethods {
 		Method[] methods = type.getMethods();
 		for (Method method : methods)
 			if (nameMatch(methodName, method)
-					&& method.getParameterTypes().length == args.length
 					&& typesMatch(method.getParameterTypes(), args, theMethod))
 				theMethod = method;
 		if (type.getSuperclass() != null && theMethod == null)
@@ -79,6 +78,12 @@ public class ObjectMethods {
 
 	protected boolean typesMatch(Class<?>[] parameterTypes, Class[] args,
 			Method theMethod) {
+		// Allow varargs when there's nothing else
+		// No, there's no way to tell for sure if it's varargs.
+		if (ReflectionHelper.isOnlyOneArray(parameterTypes))
+			return true;
+		if (parameterTypes.length != args.length)
+			return false;
 		for (int i = 0; i < parameterTypes.length; i++)
 			if (!typesMatch(parameterTypes[i], args[i])
 					|| (theMethod != null && parameterTypes[i]

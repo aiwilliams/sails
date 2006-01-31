@@ -23,6 +23,12 @@ public class BindingTest extends TestCase {
 		assertEquals("one", binding.call(target, "one"));
 	}
 	
+	public void testVarargs() throws Exception {
+		assertEquals(0, binding.call(target, "varargs"));
+		assertEquals(1, binding.call(target, "varargs", new Object[] {"one"}));
+		assertEquals(2, binding.call(target, "varargs", new Object[] {"one", "two"}));
+	}
+	
 	public void testCall_SuperClassMethod() throws Exception {
 		assertEquals("one", binding.call(new ShamSubclass(), "one"));
 	}
@@ -136,6 +142,11 @@ public class BindingTest extends TestCase {
 	
 	class ShamObject {
 		public String field = "field";
+		
+		public int varargs(Object...args) {
+			return args.length;
+		}
+		
 		public String one() {
 			return "one";
 		}

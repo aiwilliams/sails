@@ -11,6 +11,8 @@ public class ObjectMethod implements CallableMethod {
 
 	public Object call(Object target, Object[] args) {
 		try {
+			if (ReflectionHelper.isOnlyOneArray(method.getParameterTypes()))
+				args = new Object[] {args};
 			Object result = method.invoke(target, args);
 			if (method.getReturnType() == Void.TYPE) return "";
 			return result;
