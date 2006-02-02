@@ -105,10 +105,10 @@
 		<mkdir dir="${application.war.dir}/images" />
 		<mkdir dir="${application.war.dir}/scripts" />
 		<mkdir dir="${application.war.dir}/styles" />
+		<mkdir dir="${application.war.dir}/views" />
+		<mkdir dir="${application.war.dir}/views/home" />
 		<mkdir dir="${web.inf.dir}/classes" />
 		<mkdir dir="${web.inf.dir}/lib" />
-		<mkdir dir="${web.inf.dir}/views" />
-		<mkdir dir="${web.inf.dir}/views/home" />
 
 		<viento tofile="${web.inf.dir}/web.xml" file="${generator.root.dir}/web.xml" />
 	</target>

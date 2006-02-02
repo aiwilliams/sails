@@ -27,6 +27,10 @@
 			<param-name>org.opensails.sails.ISailsApplicationConfigurator</param-name>
 			<param-value>$application.configuratorClass</param-value>
 		</init-param>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>false</param-value>
+        </init-param>
 		<load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -37,6 +41,24 @@
 		<servlet-name>$application.projectName</servlet-name>
 		<url-pattern>/$application.contextPath/*</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+		<servlet-name>Common</servlet-name>
+		<servlet-class>org.opensails.sails.oem.CommonServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+		<servlet-name>Common</servlet-name>
+		<url-pattern>/common/*</url-pattern>
+    </servlet-mapping>
+
+	<!-- Protect viento scripts -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Viento Templates</web-resource-name>
+			<url-pattern>*.vto</url-pattern>
+		</web-resource-collection>
+		<auth-constraint/> <!-- necessary -->
+	</security-constraint>
 
     <servlet>
 		<servlet-name>Common</servlet-name>
