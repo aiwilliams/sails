@@ -29,7 +29,7 @@ public abstract class HibernateApplicationConfigurator extends BaseConfigurator 
 	public void configure(ISailsEvent event, RequestContainer eventContainer) {
 		super.configure(event, eventContainer);
 		eventContainer.register(IDataMapper.class, HibernateDataMapper.class);
-		eventContainer.register(Session.class, new SessionResolver(eventContainer));
+		eventContainer.registerResolver(Session.class, new SessionResolver(eventContainer));
 	}
 
 	protected abstract Class<? extends IHibernateDatabaseConfiguration> getDefaultDatabaseConfiguration();
