@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/commons-codec.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-collections.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-configuration.jar"/>
+	<classpathentry exported="true" sourcepath="src/commons-codec_src.zip" kind="lib" path="lib/commons-codec.jar"/>
+	<classpathentry exported="true" sourcepath="src/commons-collections_src.zip" kind="lib" path="lib/commons-collections.jar"/>
+	<classpathentry exported="true" sourcepath="src/commons-configuration_src.zip" kind="lib" path="lib/commons-configuration.jar"/>
 	<classpathentry exported="true" sourcepath="src/commons-lang_src.zip" kind="lib" path="lib/commons-lang.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry exported="true" sourcepath="src/commons-logging_src.zip" kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry exported="true" sourcepath="src/org.mortbay.jetty_src.zip" kind="lib" path="lib/javax.servlet.jar"/>
 	<classpathentry exported="true" sourcepath="src/org.mortbay.jetty_src.zip" kind="lib" path="lib/org.mortbay.jetty.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.mortbay.jmx.jar"/>
