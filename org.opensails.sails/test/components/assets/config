@@ -1,0 +1,2 @@
+$require.script('/somethingInApp.js')
+$require.script('scripts/testing.js')
