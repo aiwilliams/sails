@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails"/>
 	<classpathentry kind="src" path="test/unit"/>
 	<classpathentry kind="lib" path="vendor/optional/jdbc2_0-stdext.jar"/>
 	<classpathentry kind="lib" path="vendor/required/antlr-2.7.6rc1.jar"/>
@@ -14,5 +13,6 @@
 	<classpathentry exported="true" sourcepath="vendor/src/hibernate-annotations.zip" kind="lib" path="vendor/required/hibernate-annotations.jar"/>
 	<classpathentry sourcepath="vendor/src/hsqldb_1_8_0_2.zip" kind="lib" path="vendor/optional/hsqldb.jar"/>
 	<classpathentry kind="lib" path="vendor/optional/ehcache-1.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>
