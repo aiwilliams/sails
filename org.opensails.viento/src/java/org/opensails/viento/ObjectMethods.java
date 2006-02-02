@@ -11,11 +11,11 @@ public class ObjectMethods {
 		if (method != null)
 			return new ObjectMethod(method);
 
-		if (key.argClasses.length == 0) {
-			Field field = findField(key.targetClass, key.methodName);
-			if (field != null)
-				return new ObjectField(field);
-		}
+		Field field = findField(key.targetClass, key.methodName);
+		if (field != null && key.argClasses.length == 0)
+			return new ObjectField(field);
+		if (field != null && key.argClasses.length == 1 && field.getType().isAssignableFrom(key.argClasses[0]))
+			return new FieldSetter(field);
 
 		method = findMethodMissing(key.targetClass);
 		if (method != null)
@@ -133,6 +133,23 @@ public class ObjectMethods {
 		public Object call(Object target, Object[] args) {
 			try {
 				return field.get(target);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
+	public class FieldSetter implements CallableMethod {
+		private final Field field;
+		
+		public FieldSetter(Field field) {
+			this.field = field;
+		}
+		
+		public Object call(Object target, Object[] args) {
+			try {
+				field.set(target, args[0]);
+				return target;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
