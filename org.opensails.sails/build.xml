@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.opensails.sails" default="sails" basedir=".">
-	<property name="sails.version" value="0.2.1a" />
+	<property name="sails.version" value="0.2.1b" />
 	<property name="temp.build" location="buildtemp" />
 
 	<property name="source.builtin" value="builtin" />
