@@ -3,10 +3,7 @@
 	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="src" path="war/classes"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails"/>
 	<classpathentry sourcepath="ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip" kind="var" path="JUNIT_HOME/junit.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.rigging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails.vendor"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.viento"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>
