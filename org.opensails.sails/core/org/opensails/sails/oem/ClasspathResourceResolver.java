@@ -33,11 +33,18 @@ public class ClasspathResourceResolver implements IResourceResolver {
 		return resolve(identifier) != null;
 	}
 
+	public InputStream resolve(String identifier) {
+		return getClass().getClassLoader().getResourceAsStream(moutPointRelative(identifier));
+	}
+
 	/**
 	 * @param identifier relative to mountPoint i.e. 'controllers/builtin'.
 	 */
-	public InputStream resolve(String identifier) {
-		if (mountPoint != null) identifier = String.format("%s/%s", mountPoint, identifier);
-		return getClass().getClassLoader().getResourceAsStream(identifier);
+	protected String moutPointRelative(String identifier) {
+		if (mountPoint != null) {
+			if (identifier.startsWith("/")) return String.format("%s%s", mountPoint, identifier);
+			return String.format("%s/%s", mountPoint, identifier);
+		}
+		return identifier;
 	}
 }
