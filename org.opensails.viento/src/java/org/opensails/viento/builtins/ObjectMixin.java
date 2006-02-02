@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PropertiesMixin {
+import org.opensails.viento.Name;
+
+public class ObjectMixin {
 
 	public List<Property> properties(Object target) {
 		List<Property> properties = new ArrayList<Property>();
@@ -13,6 +15,11 @@ public class PropertiesMixin {
 			if (method.getParameterTypes().length == 0 && method.getReturnType() != Void.TYPE && method.getName().startsWith("get") && !method.getName().equals("getClass"))
 				properties.add(new Property(target, method));
 		return properties;
+	}
+	
+	@Name("?")
+	public Object silence(Object object) {
+		return object;
 	}
 	
 	public class Property {

@@ -20,13 +20,11 @@ public class BuiltinsTest extends TestCase {
         verifyRender("$if(true)[[here]].elseif(true)[[there]].else[[nowhere]]", "here");
 
         verifyRender("$if('asdf')[[here]]", "here");
-        verifyRender("$if(null)[[here]]", "");
         
-//        verifyRender("$if($notThere)[[here]]", "");
+        verifyRender("$if($notThere)[[here]]", "");
         binding.put("notThere", null);
         verifyRender("$if($notThere)[[here]]", "");
         verifyRender("$if(!$notThere)[[here]]", "here");
-        verifyRender("$if($notThere == null)[[here]]", "here");
 
         // just for fun
         verifyRender("$set(joe)[[here]]$if(true, $joe)", "here");
@@ -65,7 +63,7 @@ public class BuiltinsTest extends TestCase {
         verifyRender("$array.each(item)[[<h1>$item</h1>]]", "<h1>one</h1><h1>two</h1><h1>three</h1>");
     }
     
-    public void testSilence() throws Exception {
+    public void testSilentBlock() throws Exception {
         verifyRender("$![[asdf$notHere]]", "");
 
         binding.put("key", "value");
@@ -76,6 +74,16 @@ public class BuiltinsTest extends TestCase {
         binding.setExceptionHandler(new ShamExceptionHandler());
         verifyRender("$![[$notHere]]", "");
     }
+    
+    public void testSilence() throws Exception {
+		verifyRender("$notThere.?", "");
+		binding.put("key", "value");
+		verifyRender("$key.?", "value");
+		verifyRender("$key.?.length", "5");
+		verifyRender("$key.length.?", "5");
+		verifyRender("$notThere.?.length", "");
+		verifyRender("$notThere.length.?", "");
+	}
     
     public void testSet() throws Exception {
     	verifyRender("$set(string, 'string')$string", "string");

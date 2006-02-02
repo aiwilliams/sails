@@ -11,16 +11,24 @@ public class BindingTest extends TestCase {
 	ShamObject target = new ShamObject();
 
 	public void testCall_Simple() throws Exception {
-		try {
-			binding.call("key");
-			fail("Should throw exception");
-		} catch (ResolutionFailedException e) {
-		}
+		assertUnresolvable(binding.call("key"));
 		
 		binding.put("key", target);
 		assertSame(target, binding.call("key"));
 		
 		assertEquals("one", binding.call(target, "one"));
+	}
+	
+	private void assertUnresolvable(Object object) {
+		assertTrue(object instanceof UnresolvableObject);
+	}
+	
+	public void testUnresolvableObjectPassedAsNull() throws Exception {
+		assertTrue((Boolean) binding.call(target, "isNull", new Object[] {binding.call("notThere")}));
+	}
+	
+	public void testRenderIfNull() throws Exception {
+		assertEquals("asdf", binding.call(target, "returnsNull"));
 	}
 	
 	public void testVarargs() throws Exception {
@@ -38,11 +46,7 @@ public class BindingTest extends TestCase {
 		assertEquals("three", binding.call(target, "three", new Object[] {new Integer(3)}));
 		
 		assertEquals("two", binding.call(target, "two", new Object[] {null}));
-		try {
-			assertEquals("three", binding.call(target, "three", new Object[] {null}));
-			fail("Cannot pass null to a primitive type.");
-		} catch (ResolutionFailedException expected) {
-		}
+		assertUnresolvable(binding.call(target, "three", new Object[] {null}));
 	}
 	
 	public void testTopLevelMixin() throws Exception {
@@ -82,7 +86,6 @@ public class BindingTest extends TestCase {
 	}
 	
 	public void testParent() throws Exception {
-		binding.setExceptionHandler(new ShamExceptionHandler());
 		Binding child = new Binding(binding);
 		binding.put("one", new ShamObject());
 		assertNotNull(child.call("one"));
@@ -90,12 +93,12 @@ public class BindingTest extends TestCase {
 		child.put("one", "overrides");
 		assertEquals("overrides", child.call("one"));
 		
-		assertEquals("here", child.call("notHere"));
+		assertUnresolvable(child.call("notHere"));
 	}
 	
 	public void testException() throws Exception {
 		binding.setExceptionHandler(new ShamExceptionHandler());
-		assertEquals("here", binding.call(new ShamObject(), "exception"));
+		assertEquals("here", binding.call(new ShamObject(), "exception").toString());
 	}
 	
 	public void testMethodMissing() throws Exception {
@@ -182,6 +185,15 @@ public class BindingTest extends TestCase {
 			if (target.endsWith(suffix))
 				return target.substring(0, target.length() - suffix.length());
 			return target;
+		}
+		
+		public boolean isNull(Object object) {
+			return object == null;
+		}
+		
+		@RenderIfNull("asdf")
+		public Object returnsNull() {
+			return null;
 		}
 		
 		public String getProperty() {

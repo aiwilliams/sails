@@ -7,7 +7,7 @@ import org.opensails.viento.builtins.DoMixin;
 import org.opensails.viento.builtins.EscapeMixin;
 import org.opensails.viento.builtins.IfMixin;
 import org.opensails.viento.builtins.LoopMixin;
-import org.opensails.viento.builtins.PropertiesMixin;
+import org.opensails.viento.builtins.ObjectMixin;
 import org.opensails.viento.builtins.SetMixin;
 import org.opensails.viento.builtins.SilenceMixin;
 
@@ -40,8 +40,6 @@ public class Binding implements IBinding {
 	}
 
 	public Object call(Object target, String methodName, Object[] args, boolean isSilent, int line, int offset) {
-		if (target == null)
-			return exceptionHandler.nullTarget(methodName, args, line, offset);
 		TargetedMethodKey key = new TargetedMethodKey(target.getClass(), methodName, getClasses(args));
 		return call(findMethod(key), key, target, args, isSilent, line, offset);
 	}
@@ -85,10 +83,10 @@ public class Binding implements IBinding {
 //		CallableMethod method = cache.find(key);
 //		if (method != null)
 //			return method;
-		CallableMethod method = typeMixins.find(key);
+		CallableMethod method = methods.find(key);
 		if (method != null)
 			return method;
-		method = methods.find(key);
+		method = typeMixins.find(key);
 		if (method != null)
 			return method;
 //		method = methodMissing.find(key);
@@ -116,7 +114,7 @@ public class Binding implements IBinding {
 		if (method == null) {
 			if (isSilent)
 				return "";
-			return resolutionFailed(key, target, args, line, offset);
+			return new UnresolvableObject(exceptionHandler, null, key, target, args, line, offset, false);
 		}
 //		cache.put(key, method);
 		Object result = null;
@@ -125,29 +123,15 @@ public class Binding implements IBinding {
 		} catch (Throwable t) {
 			if (isSilent)
 				return "";
-			return resolutionFailed(t, key, target, args, line, offset);
+			return new UnresolvableObject(exceptionHandler, t, key, target, args, line, offset, false);
 		}
 		
 		if (result == null) {
 			if (isSilent)
 				return "";
-			// Can't just blow up
-			// TODO: implement UnresolvedReference
-//			return resolutionFailed(key, target, args, line, offset);
+			return new UnresolvableObject(exceptionHandler, null, key, target, args, line, offset, true);
 		}
 		return result;
-	}
-
-	protected Object resolutionFailed(MethodKey key, Object target, Object[] args, int line, int offset) {
-		if (key instanceof TargetedMethodKey)
-			return exceptionHandler.resolutionFailed((TargetedMethodKey)key, target, args, line, offset);
-		return exceptionHandler.resolutionFailed((TopLevelMethodKey)key, args, line, offset);
-	}
-
-	protected Object resolutionFailed(Throwable exception, MethodKey key, Object target, Object[] args, int line, int offset) {
-		if (key instanceof TargetedMethodKey)
-			return exceptionHandler.resolutionFailed(exception, (TargetedMethodKey)key, target, args, line, offset);
-		return exceptionHandler.resolutionFailed(exception, (TopLevelMethodKey)key, args, line, offset);
 	}
 
 	public void mixin(Class<?> target, Object mixin) {
@@ -198,6 +182,6 @@ public class Binding implements IBinding {
 		mixin(new SetMixin(this));
 		mixin(Collection.class, new LoopMixin());
 		mixin(Object[].class, new LoopMixin());
-		mixin(Object.class, new PropertiesMixin());
+		mixin(Object.class, new ObjectMixin());
 	}
 }

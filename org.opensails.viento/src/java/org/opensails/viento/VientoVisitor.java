@@ -104,9 +104,9 @@ public class VientoVisitor extends AbstractParserVisitor {
 		if (node instanceof ASTLeftHandExpression)
 			return evaluate((ASTLeftHandExpression) node);
 		if (node instanceof ASTAnd)
-			return nullOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) && nullOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
+			return unresolvedOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) && unresolvedOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTOr)
-			return nullOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) || nullOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
+			return unresolvedOrFalse(evaluate((ASTLeftHandExpression)node.jjtGetChild(0))) || unresolvedOrFalse(evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTEqual)
 			return safeEquals(evaluate((ASTLeftHandExpression)node.jjtGetChild(0)), evaluate((ASTExpression)node.jjtGetChild(1)));
 		if (node instanceof ASTNotEqual)
@@ -153,14 +153,14 @@ public class VientoVisitor extends AbstractParserVisitor {
 		if (node instanceof ASTSymbol)
 			return ((ASTSymbol)node).getValue();
 		if (node instanceof ASTNot)
-			return !nullOrFalse(evaluate((ASTStatement)node.jjtGetChild(0)));
+			return !unresolvedOrFalse(evaluate((ASTStatement)node.jjtGetChild(0)));
 		if (node instanceof ASTStringBlock)
 			return unescapeString(evaluateBlock((ASTBody) node.jjtGetChild(0)).evaluate());
 		return null;
 	}
 
-	protected boolean nullOrFalse(Object object) {
-		return object != null && !object.equals(false);
+	protected boolean unresolvedOrFalse(Object object) {
+		return !(object instanceof UnresolvableObject) && !object.equals(false);
 	}
 
 	protected Object evaluate(ASTList node) {
