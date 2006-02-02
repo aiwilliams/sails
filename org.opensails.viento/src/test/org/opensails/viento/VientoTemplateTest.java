@@ -244,7 +244,7 @@ public class VientoTemplateTest extends TestCase {
 	}
 	
 	public void testStringEscape() throws Exception {
-		verifyRender("$escape('\\'\\\\\\n\\r\\t')", "'\\\n\r\t");
+		verifyRender("$set(:key, '\\'\\\\\\n\\r\\t')$key", "'\\\n\r\t");
 	}
 	
 	public void testEscaping() throws Exception {

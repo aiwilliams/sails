@@ -77,23 +77,12 @@ public class BuiltinsTest extends TestCase {
         verifyRender("$![[$notHere]]", "");
     }
     
-    public void testWith() throws Exception {
-    	binding.put("string", "string");
-		verifyRender("$with($string)[[$length]]", "6");
-	}
-    
     public void testSet() throws Exception {
     	verifyRender("$set(string, 'string')$string", "string");
     	// Blocks just work. I love this stuff.
     	verifyRender("$set(name, 'Fred')$set(greeting)[[Welcome $name;!]]$greeting", "Welcome Fred!");
     }
 
-    public void testEscape() throws Exception {
-        verifyRender("$$", "$");
-        verifyRender("$escape(']]')", "]]");
-        verifyRender("$escape('##')", "##");
-    }
-    
     public void testProperties() throws Exception {
 		binding.put("bean", new Bean());
 		verifyRender("$bean.properties.each(property)[[<p>$property.name: $property.value</p>]]", "<p>one: 1</p><p>two: 2</p>");

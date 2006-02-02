@@ -10,7 +10,6 @@ import org.opensails.viento.builtins.LoopMixin;
 import org.opensails.viento.builtins.PropertiesMixin;
 import org.opensails.viento.builtins.SetMixin;
 import org.opensails.viento.builtins.SilenceMixin;
-import org.opensails.viento.builtins.WithMixin;
 
 public class Binding implements IBinding {
 	protected ExceptionHandler exceptionHandler;
@@ -195,7 +194,6 @@ public class Binding implements IBinding {
 		mixin(new IfMixin());
 		mixin(new EscapeMixin());
 		mixin(new SilenceMixin());
-		mixin(new WithMixin());
 		mixin(new DoMixin());
 		mixin(new SetMixin(this));
 		mixin(Collection.class, new LoopMixin());
