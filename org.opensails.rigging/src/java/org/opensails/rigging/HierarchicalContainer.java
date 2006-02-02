@@ -73,7 +73,7 @@ public class HierarchicalContainer extends SimpleContainer {
 	@SuppressWarnings("unchecked")
 	public void makeLocal(Class key) {
 		ComponentResolver resolver = resolverInHeirarchy(key);
-		if (resolver != null) register(key, resolver.cloneFor(this));
+		if (resolver != null) registerResolver(key, resolver.cloneFor(this));
 	}
 
 	public void removeChild(HierarchicalContainer child) {

@@ -122,7 +122,7 @@ public class SimpleContainerTest extends TestCase {
 
     public void testRegister_ComponentResolver() throws Exception {
         final ShamComponent component = new ShamComponent();
-        container.register(ShamComponent.class, new ComponentResolver() {
+        container.registerResolver(ShamComponent.class, new ComponentResolver() {
             public ComponentResolver cloneFor(SimpleContainer container) {
 				return null;
 			}

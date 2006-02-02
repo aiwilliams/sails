@@ -47,20 +47,20 @@ public class SimpleContainer {
         resolverResolvers.add(0, resolver);
     }
 
-    public void register(Class<?> implementation) {
+    public <T> void register(Class<T> implementation) {
         register(implementation, implementation);
     }
 
-    public void register(Class<?> key, ComponentResolver resolver) {
+    public <T> void registerResolver(Class<T> key, ComponentResolver resolver) {
         mapResolverResolver.put(key, resolver);
     }
 
-    public <T> void register(Class<? extends T> key, Class<? extends T> implementation) {
-        register(key, new ComponentImplementation(implementation, this));
+    public <T> void register(Class<T> key, Class<? extends T> implementation) {
+        registerResolver(key, new ComponentImplementation(implementation, this));
     }
 
     public <T> void register(Class<? super T> key, T instance) {
-        register(key, new ComponentInstance(instance));
+        registerResolver(key, new ComponentInstance(instance));
     }
 
     public <T> void register(T instance) {
