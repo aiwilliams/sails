@@ -1,26 +1,15 @@
 package org.opensails.sails.action.oem;
 
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+import java.util.*;
 
-import org.opensails.sails.RequestContainer;
-import org.opensails.sails.action.IAction;
-import org.opensails.sails.action.IActionListener;
-import org.opensails.sails.action.IActionResult;
-import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.annotate.Behavior;
-import org.opensails.sails.annotate.BehaviorInstance;
-import org.opensails.sails.annotate.IBehaviorHandler;
-import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.event.oem.IActionEventProcessor;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.sails.*;
+import org.opensails.sails.action.*;
+import org.opensails.sails.adapter.*;
+import org.opensails.sails.annotate.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.util.*;
 
 /**
  * An Action as seen by the Sails framework.
@@ -35,10 +24,10 @@ public class Action implements IAction {
 
 	protected final Method[] actionMethods;
 	protected final IAdapterResolver adapterResolver;
-	protected final Class<? extends IEventProcessingContext<? extends IActionEventProcessor>> processor;
+	protected final Class<? extends IEventProcessingContext> processor;
 	protected final String name;
 
-	public Action(String name, Class<? extends IEventProcessingContext<? extends IActionEventProcessor>> processor, IAdapterResolver adapterResolver) {
+	public Action(String name, Class<? extends IEventProcessingContext> processor, IAdapterResolver adapterResolver) {
 		this.name = name;
 		this.processor = processor;
 		this.adapterResolver = adapterResolver;

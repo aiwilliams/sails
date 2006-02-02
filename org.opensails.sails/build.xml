@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.opensails.sails" default="sails" basedir=".">
-	<property name="sails.version" value="0.2.0" />
+	<property name="sails.version" value="0.2.1" />
 	<property name="temp.build" location="buildtemp" />
 
 	<property name="source.builtin" value="builtin" />
@@ -19,13 +19,13 @@
 		<fileset dir="${vendor.lib}" includes="*.jar" />
 	</path>
 
-	<target name="dist" depends="build.jar" description="Constructs a zip file that is a running Sails application.">
+	<target name="dist" depends="clean, build.jar" description="Constructs a zip file that is a running Sails application.">
 		<property name="application.name" value="sailsapp" />
 		<ant antfile="generators/generate.xml" target="new.project.with.libraries">
 			<property name="viento.classpath" value="../org.opensails.viento/tools/eclipse/classes" />
 			<property name="generator.target.dir" location="${temp.build}" />
-			<property name="sails.dependencies" value="${temp.lib}"/>
-			<property name="sails.product.jar" location="${product.jar.path}/${product.jar}"/>
+			<property name="sails.dependencies" value="${temp.lib}" />
+			<property name="sails.product.jar" location="${product.jar.path}/${product.jar}" />
 		</ant>
 		<zip destfile="${product.dist}/sails_${sails.version}.zip" update="false">
 			<fileset dir="${temp.build}" includes="${application.name}/**" />
@@ -55,7 +55,7 @@
 	<target name="sails.compile" depends="build.depends">
 		<javac srcdir="${source.core}:${source.builtin}:${source.tester}" destdir="${temp.classes}" debug="on" optimize="on">
 			<classpath refid="compile.classpath" />
-			<exclude name="**/generator/**"/>
+			<exclude name="**/generator/**" />
 		</javac>
 
 		<copy todir="${temp.classes}">
@@ -94,6 +94,8 @@
 
 	<target name="clean" description="Delete everything that I generate, excluding whatever is in product.path.">
 		<delete dir="${temp.build}" />
+		<ant antfile="../org.opensails.rigging/build.xml" inheritall="false" target="clean" />
+		<ant antfile="../org.opensails.viento/build.xml" inheritall="false" target="clean" />
 	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - 

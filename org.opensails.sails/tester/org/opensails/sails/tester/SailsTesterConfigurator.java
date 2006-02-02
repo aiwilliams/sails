@@ -41,8 +41,8 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 
 		// Expose the same instance as two types
 		ComponentImplementation bindingComponent = new ComponentImplementation(TestingBinding.class, eventContainer);
-		eventContainer.register(IBinding.class, bindingComponent);
-		eventContainer.register(TestingBinding.class, bindingComponent);
+		eventContainer.registerResolver(IBinding.class, bindingComponent);
+		eventContainer.registerResolver(TestingBinding.class, bindingComponent);
 	}
 
 	@Override
