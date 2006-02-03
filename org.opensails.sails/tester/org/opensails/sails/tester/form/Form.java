@@ -36,6 +36,10 @@ public class Form {
 	public String getSource() {
 		return source;
 	}
+	
+	public Password password(String named) {
+		return new Password(getSource(), named);
+	}
 
 	public Radio radio(String named) {
 		return new Radio(getSource(), named);

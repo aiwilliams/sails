@@ -71,4 +71,12 @@ public class PageTest extends TestCase {
 		event.getContainer().register(HtmlForm.class, HtmlFormFixture.create());
 		assertNotNull(page.form());
 	}
+
+	public void testRedirectUrl() throws Exception {
+		ShamEvent event = SailsEventFixture.sham();
+		event.getResponse().sendRedirect("some location");
+		Page page = new Page(event);
+		page.redirectUrl().assertMatches("some location");
+	}
+
 }

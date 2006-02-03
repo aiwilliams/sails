@@ -157,7 +157,7 @@ public class Page {
 	}
 
 	public TestRedirectUrl redirectUrl() {
-		return null;
+		return new TestRedirectUrl(response);
 	}
 
 	/**

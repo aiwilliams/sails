@@ -10,6 +10,7 @@ import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FormElement;
 import org.opensails.sails.form.html.Hidden;
 import org.opensails.sails.form.html.Label;
+import org.opensails.sails.form.html.Password;
 import org.opensails.sails.form.html.Radio;
 import org.opensails.sails.form.html.Select;
 import org.opensails.sails.form.html.Submit;
@@ -65,6 +66,11 @@ public class FormMixin {
 
 	public Radio radio(String name) {
 		return new Radio(name, name);
+	}
+
+	public Password password(String name) {
+		// It's probably a security error to return the value in the response.
+		return new Password(name); // .value(valueModel.value(name));
 	}
 
 	public Select select(String name) {
