@@ -36,7 +36,7 @@ public class UnresolvableObject implements MethodMissing {
 		// ugly.
 		if (wasNull)
 			return String.valueOf(exceptionHandler.nullTarget(((TopLevelMethodKey) key).methodName, args, line, offset));
-		if (exception != null) {
+		if (exception == null) {
 			if (key instanceof TargetedMethodKey)
 				return String.valueOf(exceptionHandler.resolutionFailed((TargetedMethodKey) key, target, args, line, offset));
 			return String.valueOf(exceptionHandler.resolutionFailed((TopLevelMethodKey) key, args, line, offset));
