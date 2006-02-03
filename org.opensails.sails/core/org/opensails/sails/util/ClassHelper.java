@@ -201,16 +201,16 @@ public class ClassHelper {
 	private static Class[] argTypes(Object... args) {
 		Class[] argTypes = new Class[args.length];
 		for (int i = 0; i < args.length; i++)
-			argTypes[i] = args[i].getClass();
+			argTypes[i] = args[i] == null ? null : args[i].getClass();
 		return argTypes;
 	}
 
 	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
 		if (argTypes.length != parameterTypes.length) return false;
 
-		for (int i = 0; i < parameterTypes.length; i++) {
-			if (!parameterTypes[i].isAssignableFrom(argTypes[i])) return false;
-		}
+		for (int i = 0; i < parameterTypes.length; i++)
+			if (!((argTypes[i] == null && Object.class.isAssignableFrom(parameterTypes[i]))
+			 || (argTypes[i] != null && parameterTypes[i].isAssignableFrom(argTypes[i])))) return false;
 		return true;
 	}
 

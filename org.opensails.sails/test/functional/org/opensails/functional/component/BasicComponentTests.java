@@ -30,4 +30,11 @@ public class BasicComponentTests extends TestCase {
 		page = t.get(BasicComponent.class, "someCallback");
 		page.assertContains("yes, callbackMade");
 	}
+	
+	public void testNullPassedToInitialize() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		Page page = t.get("componentTest", "null", ArrayUtils.EMPTY_STRING_ARRAY);
+		page.assertRenders();
+		page.assertContains("here");
+	}
 }
