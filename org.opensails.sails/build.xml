@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.opensails.sails" default="sails" basedir=".">
-	<property name="sails.version" value="0.2.1b" />
-	<property name="temp.build" location="buildtemp" />
+	<path id="classpath.ant.tasks">
+		<pathelement location="tools/eclipse/classes" />
+	</path>
+	<taskdef name="buildstamp" classpathref="classpath.ant.tasks" classname="org.opensails.ant.BuildStampTask" />
 
+	<property name="temp.build" location="buildtemp" />
 	<property name="source.builtin" value="builtin" />
 	<property name="source.core" value="core" />
 	<property name="source.tester" value="tester" />
-
 	<property name="temp.classes" location="${temp.build}/classes" />
 	<property name="temp.lib" location="${temp.build}/lib" />
 	<property name="vendor.lib" location="../org.opensails.sails.vendor/lib" />
 	<property name="product.jar.path" location="${temp.build}/dist" />
 	<property name="product.jar" value="sails_${sails.version}.jar" />
-	<property name="product.dist" location="dist" />
 
 	<path id="compile.classpath">
 		<fileset dir="${temp.lib}" includes="*.jar" />
 		<fileset dir="${vendor.lib}" includes="*.jar" />
 	</path>
 
+	<target name="dist.nightly" description="Creates a nightly build by manual trigger, placing it in org.opensails.build.nightly">
+		<antcall target="dist">
+			<param name="sails.version" value="nightly" />
+			<param name="product.dist" value="../org.opensails.build.nightly" />
+		</antcall>
+		<buildstamp file="../org.opensails.build.nightly/build.stamp" />
+	</target>
+
 	<target name="dist" depends="clean, build.jar" description="Constructs a zip file that is a running Sails application.">
 		<property name="application.name" value="sailsapp" />
+		<property name="sails.version" value="0.2.1b" />
+		<property name="product.dist" location="dist" />
+		<propertyset refid="init.properties" />
 		<ant antfile="generators/generate.xml" target="new.project.with.libraries">
 			<property name="viento.classpath" value="../org.opensails.viento/tools/eclipse/classes" />
 			<property name="generator.target.dir" location="${temp.build}" />
@@ -102,6 +114,9 @@
           target: Perform an svn update. Primarily used by cruisecontrol.
          - - - - - - - - - - - - - - - - - -->
 	<target name="svn.update">
+		<exec executable="svn" dir="../org.opensails.build.nightly">
+			<arg line="svn update" />
+		</exec>
 		<exec executable="svn" dir="../org.opensails.hibernate">
 			<arg line="svn update" />
 		</exec>
