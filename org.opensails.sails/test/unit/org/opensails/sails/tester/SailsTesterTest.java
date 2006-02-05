@@ -6,6 +6,7 @@ import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.tester.controllers.TesterController;
 
 public class SailsTesterTest extends TestCase {
 	/**
@@ -43,6 +44,12 @@ public class SailsTesterTest extends TestCase {
 		Page page = tester.get();
 		assertEquals(ReallyReallyIDo.class, page.container().instance(ILoveTesting.class).getClass());
 		assertEquals("Injections should stick around", ReallyReallyIDo.class, tester.getRequestContainer().instance(ILoveTesting.class).getClass());
+	}
+
+	public void testRedirect() {
+		SailsTester tester = new SailsTester(ShamConfigurator.class);
+		Page page = tester.get(TesterController.class, "redirect");
+		page.redirectUrl().assertMatches("tester/otherAction");
 	}
 
 	public static interface ILoveTesting {}

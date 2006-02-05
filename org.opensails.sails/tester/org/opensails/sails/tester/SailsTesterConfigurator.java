@@ -9,6 +9,7 @@ import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.IActionResultProcessorResolver;
 import org.opensails.sails.action.oem.ActionResultProcessorResolver;
+import org.opensails.sails.action.oem.RedirectActionResult;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
@@ -62,7 +63,9 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 
 			@Override
 			public IActionResultProcessor resolve(IActionResult result) {
-				return new LazyActionResultProcessor(delegatesResolver.resolve(result));
+				IActionResultProcessor processor = delegatesResolver.resolve(result);
+				if (result instanceof RedirectActionResult) return processor;
+				return new LazyActionResultProcessor(processor);
 			}
 		};
 		container.register(IActionResultProcessorResolver.class, interceptingResolver);
