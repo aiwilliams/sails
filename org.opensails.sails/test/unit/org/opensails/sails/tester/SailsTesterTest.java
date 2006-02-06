@@ -1,12 +1,12 @@
 package org.opensails.sails.tester;
 
-import junit.framework.TestCase;
+import junit.framework.*;
 
-import org.opensails.sails.ApplicationScope;
-import org.opensails.sails.RequestContainer;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.oem.BaseConfigurator;
-import org.opensails.sails.tester.controllers.TesterController;
+import org.opensails.sails.*;
+import org.opensails.sails.event.*;
+import org.opensails.sails.oem.*;
+import org.opensails.sails.tester.components.*;
+import org.opensails.sails.tester.controllers.*;
 
 public class SailsTesterTest extends TestCase {
 	/**
@@ -16,6 +16,24 @@ public class SailsTesterTest extends TestCase {
 		SailsTester tester = SailsTesterFixture.create();
 		assertNotNull(tester.getConfiguration());
 		assertNotNull(tester.getContainer());
+	}
+
+	public void testExceptions() {
+		SailsTester tester = new SailsTester(ShamConfigurator.class);
+		try {
+			tester.get(TesterController.class, "exception");
+			fail("Tester should allow controller exceptions to come through. This significantly eases development.");
+		} catch (SailsException expected) {}
+		try {
+			tester.get(TesterComponent.class, "exception");
+			fail("Tester should allow component exceptions to come through. This significantly eases development.");
+		} catch (SailsException expected) {
+			/*
+			 * This works because any ExceptionEvent is processed by the current
+			 * 'error' controller. Would it be nice to offer the offending
+			 * IEventProcessingContext a chance to handle the failure?
+			 */
+		}
 	}
 
 	public void testGet() throws Exception {

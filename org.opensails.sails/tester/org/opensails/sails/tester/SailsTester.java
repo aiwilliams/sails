@@ -51,24 +51,24 @@ public class SailsTester implements ISailsApplication {
 	/**
 	 * Performs an HTTP GET request
 	 * 
-	 * @param controller the controller, which becomes the working controller
+	 * @param context becomes the working context
 	 * @return the default page for the given controller
 	 */
-	public Page get(Class<? extends IEventProcessingContext> controller) {
-		this.workingContext = controller;
+	public Page get(Class<? extends IEventProcessingContext> context) {
+		this.workingContext = context;
 		return get();
 	}
 
 	/**
 	 * Performs an HTTP GET request
 	 * 
-	 * @param controller the controller, which becomes the working controller
+	 * @param context becomes the working context
 	 * @param action
 	 * @param parameters
-	 * @return the page for the given controller/action
+	 * @return the page for the given context/action
 	 */
-	public Page get(Class<? extends IEventProcessingContext> controller, String action, String... parameters) {
-		this.workingContext = controller;
+	public Page get(Class<? extends IEventProcessingContext> context, String action, String... parameters) {
+		this.workingContext = context;
 		return get(action, parameters);
 	}
 
@@ -78,10 +78,14 @@ public class SailsTester implements ISailsApplication {
 
 	/**
 	 * Performs an HTTP GET request
+	 * <p>
+	 * Sails supports a form of namespacing for IEventProcessingContext. If no
+	 * namespace is declared, the controller namespace is assumed.
 	 * 
-	 * @param action on current working controller
+	 * @see Sails#eventContextName(Class)
+	 * @param action on current working context
 	 * @param parameters
-	 * @return the page for &lt;workingController&gt;/action
+	 * @return the page for &lt;workingContext&gt;/action
 	 */
 	public Page get(String action, String... parameters) {
 		return get(workingContext(), action, parameters);
@@ -89,19 +93,19 @@ public class SailsTester implements ISailsApplication {
 
 	/**
 	 * Performs an HTTP GET request
-	 * 
+	 * <p>
 	 * This is the 'fundamental' get method. It will not alter the working
-	 * controller. The other get methods, which take an IControllerImpl class,
-	 * are what should be used unless there is no controller class for the
+	 * context. The other get methods, which take an {@link IEventProcessingContext} class,
+	 * are what should be used unless there is no context class for the
 	 * action you would like to get.
 	 * 
-	 * @param controller the controller name
+	 * @param context the context identifier
 	 * @param action
 	 * @param parameters
-	 * @return the page for the given controller/action
+	 * @return the page for the given context/action
 	 */
-	public Page get(String controller, String action, String... parameters) {
-		TestGetEvent event = createGetEvent(controller, action, parameters);
+	public Page get(String context, String action, String... parameters) {
+		TestGetEvent event = createGetEvent(context, action, parameters);
 		event.getContainer().registerAll(getRequestContainer());
 		return doGet(event);
 	}
@@ -194,19 +198,19 @@ public class SailsTester implements ISailsApplication {
 
 	/**
 	 * Performs an HTTP POST request
-	 * 
+	 * <p>
 	 * This is the 'fundamental' post method. It will not alter the working
-	 * controller. The other post methods, which take an IControllerImpl class,
-	 * are what should be used unless there is no controller class for the
+	 * context. The other post methods, which take an {@link IEventProcessingContext} class,
+	 * are what should be used unless there is no context class for the
 	 * action you would like to get.
 	 * 
-	 * @param controller the controller name
+	 * @param context the context identifier
 	 * @param action
 	 * @param parameters
-	 * @return the page for the given controller/action
+	 * @return the page for the given context/action
 	 */
-	public Page post(String controller, String action, FormFields formFields, Object... parameters) {
-		TestPostEvent postEvent = createPostEvent(controller, action, formFields, adaptParameters(parameters, new ContainerAdapterResolver(application.getContainer().instance(IAdapterResolver.class), requestContainer)));
+	public Page post(String context, String action, FormFields formFields, Object... parameters) {
+		TestPostEvent postEvent = createPostEvent(context, action, formFields, adaptParameters(parameters, new ContainerAdapterResolver(application.getContainer().instance(IAdapterResolver.class), requestContainer)));
 		return doPost(postEvent);
 	}
 
@@ -236,8 +240,8 @@ public class SailsTester implements ISailsApplication {
 		return existing;
 	}
 
-	public void setWorkingContext(Class<? extends IEventProcessingContext> controller) {
-		this.workingContext = controller;
+	public void setWorkingContext(Class<? extends IEventProcessingContext> context) {
+		this.workingContext = context;
 	}
 
 	public String workingContext() {
@@ -268,8 +272,8 @@ public class SailsTester implements ISailsApplication {
 		return event;
 	}
 
-	protected TestGetEvent createGetEvent(String controller, String action, String... parameters) {
-		return createGetEvent(toPathInfo(controller, action, parameters));
+	protected TestGetEvent createGetEvent(String context, String action, String... parameters) {
+		return createGetEvent(toPathInfo(context, action, parameters));
 	}
 
 	protected TestPostEvent createPostEvent(String pathInfo, FormFields formFields) {
@@ -283,8 +287,8 @@ public class SailsTester implements ISailsApplication {
 		return event;
 	}
 
-	protected TestPostEvent createPostEvent(String controller, String action, FormFields formFields, String... parameters) {
-		return createPostEvent(toPathInfo(controller, action, parameters), formFields);
+	protected TestPostEvent createPostEvent(String context, String action, FormFields formFields, String... parameters) {
+		return createPostEvent(toPathInfo(context, action, parameters), formFields);
 	}
 
 	/**
@@ -346,14 +350,14 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	/**
-	 * @param controller
+	 * @param context
 	 * @param action
 	 * @param parameters
 	 * @return
 	 */
-	private String toPathInfo(String controller, String action, String... parameters) {
+	private String toPathInfo(String context, String action, String... parameters) {
 		StringBuilder pathInfo = new StringBuilder();
-		pathInfo.append(controller);
+		pathInfo.append(context);
 		pathInfo.append("/");
 		pathInfo.append(action);
 		pathInfo.append(toParametersString(parameters));
