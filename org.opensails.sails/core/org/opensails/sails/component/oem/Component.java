@@ -1,5 +1,6 @@
 package org.opensails.sails.component.oem;
 
+import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
@@ -16,15 +17,20 @@ public class Component<I extends IComponentImpl> extends AbstractActionEventProc
 		this.renderer = renderer;
 	}
 
-	public ComponentFactory createFactory(ISailsEvent event) {
-		return new ComponentFactory(this, event);
-	}
-
 	@Override
 	protected I createInstanceOrNull(ISailsEvent event) {
 		if (!hasImplementation()) return null;
-		I instance = super.createInstanceOrNull(event);
+		I instance = isActingAsEventProcessor(event) ? event.getContainer().create(processingContext, event) : event.getContainer().instance(processingContext, processingContext);
+		instance.setEventContext(event, this);
 		instance.setTemplateRenderer(renderer);
 		return instance;
+	}
+
+	protected boolean isActingAsEventProcessor(ISailsEvent event) {
+		return event.getProcessorName().equals("component_" + Sails.componentName(this.processingContext));
+	}
+
+	public ComponentFactory createFactory(ISailsEvent event) {
+		return new ComponentFactory(this, event);
 	}
 }

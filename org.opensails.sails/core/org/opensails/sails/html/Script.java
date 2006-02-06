@@ -10,8 +10,7 @@ import org.opensails.sails.url.IUrl;
 public class Script extends AbstractHtmlElement<Script> implements IInlineContentElement<Script> {
 	public static final String NAME = "script";
 
-	private IInlineContent inlineContent;
-
+	protected IInlineContent inlineContent;
 	protected IUrl src;
 
 	public Script() {

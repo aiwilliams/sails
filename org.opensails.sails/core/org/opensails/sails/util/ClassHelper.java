@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
 
@@ -27,6 +28,37 @@ import org.opensails.sails.SailsException;
  */
 public class ClassHelper {
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
+
+	private static Class[] argTypes(Object... args) {
+		Class[] argTypes = new Class[args.length];
+		for (int i = 0; i < args.length; i++)
+			argTypes[i] = args[i] == null ? null : args[i].getClass();
+		return argTypes;
+	}
+
+	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
+		if (argTypes.length != parameterTypes.length) return false;
+
+		for (int i = 0; i < parameterTypes.length; i++)
+			if (!((argTypes[i] == null && Object.class.isAssignableFrom(parameterTypes[i])) || (argTypes[i] != null && parameterTypes[i].isAssignableFrom(argTypes[i])))) return false;
+		return true;
+	}
+
+	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
+		Constructor[] constructors = clazz.getConstructors();
+		for (Constructor<T> constructor : constructors) {
+			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
+		}
+		throw new SailsException("Could not find a constructor accepting " + argTypes);
+	}
+
+	private static Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
+		Method[] methods = clazz.getMethods();
+		for (Method method : methods) {
+			if (method.getName().equals(name) && argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
+		}
+		throw new SailsException(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
+	}
 
 	public static Object callMethod(Object instance, String methodName, Object... args) {
 		try {
@@ -196,37 +228,5 @@ public class ClassHelper {
 	public static String upperCamel(String string) {
 		char upper = Character.toUpperCase(string.charAt(0));
 		return upper + string.substring(1);
-	}
-
-	private static Class[] argTypes(Object... args) {
-		Class[] argTypes = new Class[args.length];
-		for (int i = 0; i < args.length; i++)
-			argTypes[i] = args[i] == null ? null : args[i].getClass();
-		return argTypes;
-	}
-
-	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
-		if (argTypes.length != parameterTypes.length) return false;
-
-		for (int i = 0; i < parameterTypes.length; i++)
-			if (!((argTypes[i] == null && Object.class.isAssignableFrom(parameterTypes[i]))
-			 || (argTypes[i] != null && parameterTypes[i].isAssignableFrom(argTypes[i])))) return false;
-		return true;
-	}
-
-	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
-		Constructor[] constructors = clazz.getConstructors();
-		for (Constructor<T> constructor : constructors) {
-			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
-		}
-		throw new SailsException("Could not find a constructor accepting " + argTypes);
-	}
-
-	private static Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
-		Method[] methods = clazz.getMethods();
-		for (Method method : methods) {
-			if (method.getName().equals(name) && argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
-		}
-		throw new SailsException("Could not find a method accepting " + argTypes);
 	}
 }

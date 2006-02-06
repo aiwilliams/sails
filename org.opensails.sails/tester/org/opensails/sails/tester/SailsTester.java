@@ -309,12 +309,12 @@ public class SailsTester implements ISailsApplication {
 		};
 	}
 
-	protected Page doGet(TestGetEvent getEvent) {
+	public Page doGet(TestGetEvent getEvent) {
 		prepareForNextRequest();
 		return application.get(getEvent);
 	}
 
-	protected Page doPost(TestPostEvent postEvent) {
+	public Page doPost(TestPostEvent postEvent) {
 		prepareForNextRequest();
 		return application.post(postEvent);
 	}
@@ -330,8 +330,12 @@ public class SailsTester implements ISailsApplication {
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
 		this.application = new TestableSailsApplication();
 		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
-		this.application.configure(new SailsTesterConfigurator(configuratorClass));
+		this.application.configure(instrumentedConfigurator(configuratorClass));
 		prepareForNextRequest();
+	}
+
+	protected SailsTesterConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
+		return new SailsTesterConfigurator(configuratorClass);
 	}
 
 	protected void prepareForNextRequest() {

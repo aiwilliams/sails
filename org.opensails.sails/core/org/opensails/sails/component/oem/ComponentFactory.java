@@ -1,5 +1,6 @@
 package org.opensails.sails.component.oem;
 
+import org.opensails.sails.component.ComponentInitializationException;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.event.ISailsEvent;
@@ -24,8 +25,11 @@ public class ComponentFactory {
 	@Name("new")
 	public IComponentImpl create(Object... args) {
 		IComponentImpl impl = component.createInstance(event);
-		// TODO: Provide more information on failure
-		ClassHelper.callMethod(impl, "initialize", args);
+		try {
+			ClassHelper.callMethod(impl, "initialize", args);
+		} catch (Throwable e) {
+			throw new ComponentInitializationException(event, component, args, e);
+		}
 		return impl;
 	}
 }

@@ -3,8 +3,13 @@ package org.opensails.functional.component;
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.opensails.component.tester.SailsComponentTester;
+import org.opensails.component.tester.TestComponent;
+import org.opensails.functional.FunctionalTestConfigurator;
 import org.opensails.functional.SailsFunctionalTester;
+import org.opensails.functional.components.AnotherComponent;
 import org.opensails.functional.components.BasicComponent;
+import org.opensails.sails.component.ComponentInitializationException;
 import org.opensails.sails.tester.Page;
 
 public class BasicComponentTests extends TestCase {
@@ -30,11 +35,19 @@ public class BasicComponentTests extends TestCase {
 		page = t.get(BasicComponent.class, "someCallback");
 		page.assertContains("yes, callbackMade");
 	}
-	
+
+	public void testNew_WrongArguments() throws Exception {
+		SailsComponentTester t = new SailsComponentTester(FunctionalTestConfigurator.class);
+		TestComponent<BasicComponent> c = t.component(BasicComponent.class);
+		try {
+			c.render();
+			fail("Should complain");
+		} catch (ComponentInitializationException expected) {}
+	}
+
 	public void testNullPassedToInitialize() throws Exception {
-		SailsFunctionalTester t = new SailsFunctionalTester();
-		Page page = t.get("componentTest", "null", ArrayUtils.EMPTY_STRING_ARRAY);
-		page.assertRenders();
-		page.assertContains("here");
+		SailsComponentTester t = new SailsComponentTester(FunctionalTestConfigurator.class);
+		TestComponent<AnotherComponent> c = t.component(AnotherComponent.class);
+		c.initialize(new Object[] { null });
 	}
 }
