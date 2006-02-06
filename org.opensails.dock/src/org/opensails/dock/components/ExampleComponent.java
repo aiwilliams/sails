@@ -3,7 +3,7 @@ package org.opensails.dock.components;
 import org.opensails.sails.component.oem.BaseComponent;
 import org.opensails.sails.persist.IObjectPersister;
 
-public class DotjerkysIdealComponent extends BaseComponent {
+public class ExampleComponent extends BaseComponent {
 	private final IObjectPersister persister;
 
 	String requiredProperty;
@@ -11,7 +11,7 @@ public class DotjerkysIdealComponent extends BaseComponent {
 	String anotherProperty = "default";
 	Object complex;
 
-	public DotjerkysIdealComponent(IObjectPersister persister) {
+	public ExampleComponent(IObjectPersister persister) {
 		this.persister = persister;
 	}
 
