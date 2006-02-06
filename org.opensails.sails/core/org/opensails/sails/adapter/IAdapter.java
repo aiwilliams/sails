@@ -8,7 +8,7 @@ import org.opensails.sails.adapter.oem.PrimitiveAdapter;
  * These are used by various clients to deal the way of the web: everything is a
  * String. These do not generate HTML.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IAdapter<M, W> {
 	IAdapter PRIMITIVE_ADAPTER = new PrimitiveAdapter();

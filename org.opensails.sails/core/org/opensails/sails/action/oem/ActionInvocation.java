@@ -24,7 +24,7 @@ import org.opensails.sails.util.ClassHelper;
  * An ActionInvocation cannot be re-used. It is purposefully designed to not
  * know how to obtain it's code or context (controller/component).
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class ActionInvocation {
 	public Method code;

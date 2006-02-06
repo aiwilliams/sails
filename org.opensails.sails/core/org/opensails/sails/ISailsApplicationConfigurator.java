@@ -19,7 +19,7 @@ package org.opensails.sails;
  * 
  * @see org.opensails.sails.oem.BaseConfigurator
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface ISailsApplicationConfigurator {
 	/**

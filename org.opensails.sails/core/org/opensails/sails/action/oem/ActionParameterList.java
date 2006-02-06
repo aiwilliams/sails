@@ -5,7 +5,7 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 
 /*
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class ActionParameterList implements IActionParameterList {
 	private Object[] adaptedParameters;

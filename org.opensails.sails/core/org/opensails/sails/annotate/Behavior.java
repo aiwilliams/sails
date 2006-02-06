@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
  * Indicates to Sails that a particular behavior exists for an action or all
  * actions on a controller.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

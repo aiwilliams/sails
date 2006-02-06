@@ -6,7 +6,7 @@ import org.opensails.viento.Block;
 /**
  * Provides inline content by way of a Viento Block.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class BlockInlineContent implements IInlineContent {
 	private final Block block;

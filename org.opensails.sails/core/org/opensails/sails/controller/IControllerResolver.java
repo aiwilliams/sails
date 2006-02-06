@@ -9,7 +9,7 @@ import org.opensails.sails.event.*;
  * @see org.opensails.sails.ISailsApplicationConfigurator
  * @see org.opensails.sails.oem.BaseConfigurator
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IControllerResolver extends INamespacedProcessorResolver<IController> {
 	IController resolve(String controllerIdentifier);

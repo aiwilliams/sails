@@ -11,7 +11,7 @@ import org.opensails.sails.action.oem.ActionInvocation;
  * There is only one instance per request, across annotations that reference the
  * handler type.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IBehaviorHandler<B extends Annotation> {
 	/**

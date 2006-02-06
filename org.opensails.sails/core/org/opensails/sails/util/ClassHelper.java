@@ -23,7 +23,7 @@ import org.opensails.sails.SailsException;
  * more methods it doesn't and 2) if we decide to get rid of that, the code will
  * be bound to this.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class ClassHelper {
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];

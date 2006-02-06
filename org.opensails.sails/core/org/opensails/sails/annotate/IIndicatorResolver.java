@@ -3,7 +3,7 @@ package org.opensails.sails.annotate;
 /**
  * Given an IndicatorContext, resolves the final Indicator for an action.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IIndicatorResolver {
 	/**

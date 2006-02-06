@@ -21,12 +21,12 @@ import org.opensails.sails.event.oem.ExceptionEvent;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.DelegatingConfigurator;
 import org.opensails.sails.oem.Dispatcher;
-import org.opensails.sails.persist.IDataMapper;
+import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.oem.ErrorController;
 import org.opensails.sails.tester.oem.LazyActionResultProcessor;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.oem.TestingDispatcher;
-import org.opensails.sails.tester.persist.IShamDataMapper;
+import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.persist.MemoryObjectPersister;
 import org.opensails.sails.util.IClassResolver;
 import org.opensails.viento.IBinding;
@@ -110,9 +110,9 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 
 	@Override
 	protected void installObjectPersister(IConfigurableSailsApplication application, ScopedContainer container) {
-		IShamDataMapper mapper = new MemoryObjectPersister();
-		container.register(IDataMapper.class, mapper);
-		container.register(IShamDataMapper.class, mapper);
+		IShamObjectPersister persister = new MemoryObjectPersister();
+		container.register(IObjectPersister.class, persister);
+		container.register(IShamObjectPersister.class, persister);
 		super.installObjectPersister(application, container);
 	}
 }

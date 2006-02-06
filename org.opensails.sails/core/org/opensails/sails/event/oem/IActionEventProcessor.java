@@ -6,7 +6,7 @@ import org.opensails.sails.event.ISailsEvent;
 /**
  * Anything that can process an incoming ISailsEvent.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IActionEventProcessor {
 	public IActionResult process(ExceptionEvent event);

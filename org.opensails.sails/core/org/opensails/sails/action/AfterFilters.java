@@ -21,7 +21,7 @@ import org.opensails.sails.annotate.filter.ActionFilterHandler;
  * instances in both the before and after events. You can capture state, if you
  * like, in the beforeAction and it will be available in the afterAction.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 @Documented
 @Behavior(behavior = ActionFilterHandler.class)

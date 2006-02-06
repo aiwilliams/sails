@@ -17,7 +17,7 @@ import org.opensails.sails.util.*;
  * Actions are designed to be cacheable. They should not maintain references to
  * anything related to a specific event. They must remain thread-safe.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class Action implements IAction {
 	protected static final BehaviorInstance[] EMPTY_BEHAVIOR_INSTANCES = new BehaviorInstance[0];

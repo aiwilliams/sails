@@ -19,7 +19,7 @@ import org.opensails.sails.event.oem.IActionEventProcessor;
  * IControllerImpl instances: every request causes one to be created.
  * 
  * @see org.opensails.sails.controller.IControllerImpl
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IController extends IActionEventProcessor {
 	/**

@@ -9,7 +9,7 @@ import org.opensails.rigging.ScopedContainer;
  * both an {@link org.opensails.sails.adapter.IAdapterResolver} and
  * {@link org.opensails.rigging.ScopedContainer}.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class ContainerAdapterResolver {
 	protected final ScopedContainer container;

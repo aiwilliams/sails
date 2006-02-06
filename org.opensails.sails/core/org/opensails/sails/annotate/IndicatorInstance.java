@@ -8,7 +8,7 @@ import java.lang.annotation.ElementType;
  * IEventProcessorContext.
  * 
  * @see org.opensails.sails.annotate.IndicatorContext
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class IndicatorInstance {
 	public Annotation getAnnotation() {

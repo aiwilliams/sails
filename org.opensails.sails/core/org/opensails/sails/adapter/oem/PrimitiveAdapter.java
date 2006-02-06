@@ -10,7 +10,7 @@ import org.opensails.sails.adapter.IAdapter;
 /**
  * Supports adapting primitive and wrapper objects forModel and forWeb.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public class PrimitiveAdapter extends AbstractAdapter<Object, Object> {
     public static final Class[] SUPPORTED_TYPES;

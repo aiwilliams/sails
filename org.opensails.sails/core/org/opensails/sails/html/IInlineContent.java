@@ -3,7 +3,7 @@ package org.opensails.sails.html;
 /**
  * Content for IInlineContentElements.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IInlineContent {
 	String render();

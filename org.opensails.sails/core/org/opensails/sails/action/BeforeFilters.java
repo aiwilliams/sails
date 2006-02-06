@@ -26,7 +26,7 @@ import org.opensails.sails.annotate.filter.FilterBuilder;
  * like, in the beforeAction and it will be available in the afterAction.
  * 
  * @see BeforeFilter
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 @Documented
 @Behavior(behavior = ActionFilterHandler.class)

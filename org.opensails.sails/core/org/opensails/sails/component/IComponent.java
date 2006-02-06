@@ -21,7 +21,7 @@ import org.opensails.sails.event.oem.IActionEventProcessor;
  * IComponent instances: every request causes one to be created.
  * 
  * @see org.opensails.sails.component.IComponentImpl
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IComponent extends IActionEventProcessor {
 	ComponentFactory createFactory(ISailsEvent event);

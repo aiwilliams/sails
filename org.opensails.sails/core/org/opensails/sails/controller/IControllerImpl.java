@@ -5,6 +5,6 @@ import org.opensails.sails.event.IEventProcessingContext;
 /**
  * A controller implementation.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 public interface IControllerImpl extends IEventProcessingContext<IController> {}

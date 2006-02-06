@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * indicated as being Secure, this mixin will resolve the url in such a way as
  * to have the link include 'https', thereby making it a 'secure' action.
  * 
- * @author Adam 'Programmer' Williams
+ * @author aiwilliams
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
