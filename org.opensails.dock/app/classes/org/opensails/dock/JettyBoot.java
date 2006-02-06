@@ -9,6 +9,6 @@ public class JettyBoot extends DevelopmentBoot {
     
     @Override
     protected String contextDirectory() {
-        return "./war";
+        return "./app";
     }
 }

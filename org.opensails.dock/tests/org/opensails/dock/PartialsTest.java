@@ -2,7 +2,6 @@ package org.opensails.dock;
 
 import junit.framework.TestCase;
 
-import org.opensails.dock.controllers.PartialsController;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.SailsTester;

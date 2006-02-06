@@ -2,7 +2,7 @@ package org.opensails.dock;
 
 import junit.framework.TestCase;
 
-import org.opensails.dock.controllers.HomeController;
+import org.opensails.sails.fixture.controllers.HomeController;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.SailsTester;
 
