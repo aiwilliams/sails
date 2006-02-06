@@ -1,18 +1,18 @@
 package org.opensails.dock.components;
 
 import org.opensails.sails.component.oem.BaseComponent;
-import org.opensails.sails.persist.IDataMapper;
+import org.opensails.sails.persist.IObjectPersister;
 
 public class DotjerkysIdealComponent extends BaseComponent {
-	private final IDataMapper persister;
+	private final IObjectPersister persister;
 
 	String requiredProperty;
 	// @Remembered
 	String anotherProperty = "default";
 	Object complex;
 
-	public DotjerkysIdealComponent(IDataMapper mapper) {
-		this.persister = mapper;
+	public DotjerkysIdealComponent(IObjectPersister persister) {
+		this.persister = persister;
 	}
 
 	public void initialize(String id, String requiredProperty) {
