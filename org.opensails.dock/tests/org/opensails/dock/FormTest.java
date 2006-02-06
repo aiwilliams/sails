@@ -2,6 +2,8 @@ package org.opensails.dock;
 
 import junit.framework.TestCase;
 
+import org.opensails.dock.controllers.FormController;
+import org.opensails.dock.model.User;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.SailsTester;
