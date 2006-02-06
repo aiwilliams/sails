@@ -13,6 +13,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.viento"/>
 	<classpathentry kind="src" path="test/functional"/>
 	<classpathentry kind="src" path="test/generators"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.ezfile"/>
+	<classpathentry kind="src" path="support"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>
