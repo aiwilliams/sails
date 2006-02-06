@@ -219,7 +219,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected String[] getFieldNamesPrefixed(String prefix) {
 		if (fields.isEmpty()) return ArrayUtils.EMPTY_STRING_ARRAY;
 		List<String> fieldNames = new ArrayList<String>(5);
-		for (String key : fields.fieldNames())
+		for (String key : fields.getNames())
 			if (key.startsWith(prefix)) fieldNames.add(key.substring(prefix.length()));
 		return (String[]) fieldNames.toArray(new String[fieldNames.size()]);
 	}

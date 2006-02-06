@@ -1,18 +1,13 @@
 package org.opensails.sails.form;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.lang.StringUtils;
-import org.opensails.sails.SailsException;
-import org.opensails.sails.adapter.FieldType;
+import org.apache.commons.fileupload.*;
+import org.apache.commons.lang.*;
+import org.opensails.sails.*;
+import org.opensails.sails.adapter.*;
 
 /**
  * Encapsulates the values of successful controls from a form submission. See
@@ -95,16 +90,20 @@ public class FormFields {
 		return backingMap.containsKey(key);
 	}
 
-	public String[] fieldNames() {
+	public String[] getNames() {
 		return (String[]) backingMap.keySet().toArray(new String[backingMap.keySet().size()]);
 	}
 
-	public Set fieldNamesSet() {
+	public Set getNamesSet() {
 		return backingMap.keySet();
 	}
 
 	public FileUpload file(String name) {
 		return (FileUpload) backingMap.get(name);
+	}
+
+	public Collection<?> getValues() {
+		return backingMap.values();
 	}
 
 	public boolean isEmpty() {
@@ -140,7 +139,7 @@ public class FormFields {
 	public String toString() {
 		if (isEmpty()) return "Empty form";
 		StringBuilder string = new StringBuilder();
-		for (String name : fieldNames()) {
+		for (String name : getNames()) {
 			string.append(name);
 			string.append(" :: ");
 			string.append(value(name));

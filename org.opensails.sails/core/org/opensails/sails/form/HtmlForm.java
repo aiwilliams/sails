@@ -58,7 +58,7 @@ public class HtmlForm {
 	public boolean isValid() {
 		if (invalids == null) {
 			invalids = new WriteOnceHashMap<String, IInvalidProperty>();
-			for (String fieldName : formFields.fieldNames()) {
+			for (String fieldName : formFields.getNames()) {
 				IPropertyPath path = null;
 				if (!isMetaField(fieldName)) try {
 					path = fieldPropertyPath(fieldName);
