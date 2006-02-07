@@ -8,7 +8,7 @@
 
 
   <scm>
-  	<connection>scm:svn:http://opensails.org/sails/svn/trunk/org.opensails.build/</connection>
+  	<connection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.build/</connection>
   </scm>
 
   <packaging>pom</packaging>
