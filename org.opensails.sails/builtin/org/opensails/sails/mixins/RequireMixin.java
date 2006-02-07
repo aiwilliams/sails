@@ -38,9 +38,10 @@ public class RequireMixin {
 		binding.put(identifier, component.createFactory(event));
 
 		IUrl config = event.resolve(UrlType.COMPONENT, identifier + "/config");
+		ComponentRequire componentRequire = new ComponentRequire(event, component, require, resourceResolver);
 		if (resourceResolver.exists(config)) {
 			IBinding configBinding = new VientoBinding();
-			configBinding.put("require", new ComponentRequire(event, component, require, resourceResolver));
+			configBinding.put("require", componentRequire);
 			ITemplateRenderer renderer = event.getContainer().instance(ITemplateRenderer.class);
 			renderer.render(config, configBinding);
 		}
