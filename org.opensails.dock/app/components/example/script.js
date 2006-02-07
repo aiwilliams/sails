@@ -11,7 +11,7 @@ DotjerkysIdeal.prototype = {
 		else
 			Element.hide(this.container);
 		
-		this._doSomething('really really interesting');
+		this.doSomething('really really interesting');
 	},
 	
 	_doSomethingComplete: function(transport) {
