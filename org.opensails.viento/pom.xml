@@ -14,6 +14,10 @@
   
   <packaging>jar</packaging>
   
+  <scm>
+  	<connection>scm:svn:http://opensails.org/sails/svn/trunk/org.opensails.viento/</connection>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

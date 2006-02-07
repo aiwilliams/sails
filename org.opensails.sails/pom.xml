@@ -13,6 +13,10 @@
   <version>1.0-SNAPSHOT</version>
 
   <packaging>jar</packaging>
+
+  <scm>
+  	<connection>scm:svn:http://opensails.org/sails/svn/trunk/org.opensails.sails/</connection>
+  </scm>
   
   	<build>
       <sourceDirectory>.</sourceDirectory>

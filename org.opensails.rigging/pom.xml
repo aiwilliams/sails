@@ -12,6 +12,10 @@
   <artifactId>rigging</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+  <scm>
+  	<connection>scm:svn:http://opensails.org/sails/svn/trunk/org.opensails.rigging/</connection>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
