@@ -1,8 +1,9 @@
 package org.opensails.sails;
 
-import org.opensails.rigging.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.util.*;
+import org.opensails.rigging.ScopedContainer;
+import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.util.ClassHelper;
 
 public class RequestContainer extends ScopedContainer {
 	public RequestContainer(ScopedContainer parent) {
@@ -13,6 +14,16 @@ public class RequestContainer extends ScopedContainer {
 	public RequestContainer(ScopedContainer parent, ISailsEvent event) {
 		this(parent);
 		bind(event);
+	}
+
+	/**
+	 * Bind the event to this container
+	 * 
+	 * @param event
+	 */
+	protected void bind(ISailsEvent event) {
+		register(ISailsEvent.class, event);
+		register(event);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -27,10 +38,5 @@ public class RequestContainer extends ScopedContainer {
 	public void dispose() {
 		super.dispose();
 		getParent().removeChild(this);
-	}
-
-	protected void bind(ISailsEvent event) {
-		register(ISailsEvent.class, event);
-		register(event);
 	}
 }

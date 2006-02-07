@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<script type="text/javascript" src="../../builtin/common/scripts/prototype.js"></script>
+		<script type="text/javascript" src="../../builtin/common/scripts/log.js"></script>
+		<script type="text/javascript" src="../../builtin/common/scripts/tester.js"></script>
+		<script type="text/javascript" src="../../builtin/common/scripts/component.js"></script>
+		
+		<script>
+			Event.observe(window, 'load', test);
+			
+			function test() {
+				window.log = new Logger(document.body);
+				
+				var TestComponent = Component.create();
+				TestComponent.prototype = {
+					initialize: function()  {
+						this.initialized = true;
+					},
+					_doSomethingSuccess: function(transport) {
+						this.doSomethingResult = transport.responseText;
+					}
+				};
+				
+				var t = new Tester();
+				t.ajax('/doSomething/1/2?one=a', 'here');
+				var c = new TestComponent({a: 'a', doSomething: Component.callback('doSomething', '/doSomething', {parameters: 'one=a', method: 'get'})});
+				t.assertTrue(c.initialized);
+				t.assertEquals('a', c.a);
+				c.doSomething(1, 2);
+				t.assertEquals('here', c.doSomethingResult);
+				
+				t.output();
+			}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

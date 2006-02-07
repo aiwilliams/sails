@@ -16,6 +16,7 @@ public class TestComponent<C extends IComponentImpl> {
 	private final SailsComponentTester tester;
 	private final TestGetEvent event;
 	private IComponentImpl instance;
+	private boolean hasBeenInitialized;
 
 	public TestComponent(SailsComponentTester tester, TestGetEvent event, Class<? extends IComponentImpl> componentClass) {
 		this.tester = tester;
@@ -25,6 +26,7 @@ public class TestComponent<C extends IComponentImpl> {
 
 	@SuppressWarnings("unchecked")
 	public C initialize(Object... arguments) {
+		hasBeenInitialized = true;
 		IComponentResolver resolver = tester.getContainer().instance(IComponentResolver.class);
 		IComponent component = resolver.resolve(Sails.componentName(componentClass));
 		instance = component.createFactory(event).create(arguments);
@@ -40,7 +42,7 @@ public class TestComponent<C extends IComponentImpl> {
 	}
 
 	public Page render(Object... initializationArguments) {
-		initialize(initializationArguments);
+		if (!hasBeenInitialized) initialize(initializationArguments);
 		Page page = tester.doGet(event);
 		page.source();// cause render
 		return page;

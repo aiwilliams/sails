@@ -110,8 +110,24 @@ public class ClassHelper {
 			}
 			throw new RuntimeException(String.format("Could not find a field named %s on %s", name, clazz));
 		} catch (Throwable t) {
-			throw new RuntimeException(String.format("Could not access fields on %s", clazz));
+			throw new RuntimeException(String.format("Could not access fields on %s", clazz), t);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T readField(Object target, String name, boolean publicOnly) {
+		try {
+			Field field = fieldNamed(target.getClass(), name);
+			if (!publicOnly)
+				field.setAccessible(true);
+			return (T) field.get(target);
+		} catch (Throwable t) {
+			return null;
+		}
+	}
+
+	public static <T> T readField(Object target, String name) {
+		return readField(target, name, true);
 	}
 
 	public static Field[] fieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
@@ -120,6 +136,14 @@ public class ClassHelper {
 		for (Field field : declaredFields)
 			if (field.isAnnotationPresent(annotation)) annotatedFields.add(field);
 		return annotatedFields.toArray(new Field[annotatedFields.size()]);
+	}
+	
+	public static Method[] methodsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
+		Method[] declaredMethods = clazz.getDeclaredMethods();
+		List<Method> annotatedMethods = new ArrayList<Method>(declaredMethods.length);
+		for (Method method : declaredMethods)
+			if (method.isAnnotationPresent(annotation)) annotatedMethods.add(method);
+		return annotatedMethods.toArray(new Method[annotatedMethods.size()]);
 	}
 
 	public static Field[] fieldsNamed(Class clazz, String... names) {

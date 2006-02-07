@@ -49,8 +49,9 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	public Page doGet(TestGetEvent getEvent) {
+		Page page = application.get(getEvent);
 		prepareForNextRequest();
-		return application.get(getEvent);
+		return page;
 	}
 
 	public Page doPost(TestPostEvent postEvent) {

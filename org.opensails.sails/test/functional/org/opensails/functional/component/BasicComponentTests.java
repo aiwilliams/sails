@@ -11,9 +11,10 @@ import org.opensails.component.tester.SailsComponentTester;
 import org.opensails.component.tester.TestComponent;
 import org.opensails.functional.FunctionalTestConfigurator;
 import org.opensails.functional.SailsFunctionalTester;
-import org.opensails.functional.components.AnotherComponent;
 import org.opensails.functional.components.BasicComponent;
+import org.opensails.functional.components.ScriptInitComponent;
 import org.opensails.sails.component.ComponentInitializationException;
+import org.opensails.sails.template.Require;
 import org.opensails.sails.tester.Page;
 
 public class BasicComponentTests extends TestCase {
@@ -47,8 +48,19 @@ public class BasicComponentTests extends TestCase {
 
 	public void testNullPassedToInitialize() throws Exception {
 		SailsComponentTester t = new SailsComponentTester(FunctionalTestConfigurator.class);
-		TestComponent<AnotherComponent> c = t.component(AnotherComponent.class);
+		TestComponent<BasicComponent> c = t.component(BasicComponent.class);
 		c.initialize(new Object[] { null });
+	}
+	
+	public void testScriptInit() throws Exception {
+		SailsComponentTester t = new SailsComponentTester(FunctionalTestConfigurator.class);
+		TestComponent<ScriptInitComponent> c = t.component(ScriptInitComponent.class);
+		ScriptInitComponent component = c.initialize("someid");
+		c.render();
+		component.property = "asdf";
+		assertEquals("someid_something", component.idfor("something"));
+		assertEquals("window.someid = new ScriptInit({property: 'asdf', id: 'someid', callback: Component.callback('callback', 'http://localhost/shamcontext/shamservlet/component_scriptInit/callback', {method: 'get'}), something: $('someid_something')});", component.scriptInit().render());
+		assertTrue(t.getContainer().instance(Require.class).output().componentApplicationScripts().contains("common/scripts/component.js"));
 	}
 
 	/**

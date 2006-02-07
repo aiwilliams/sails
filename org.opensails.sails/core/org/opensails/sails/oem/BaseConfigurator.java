@@ -276,13 +276,10 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
 	protected ScopedContainer installContainer(IConfigurableSailsApplication application) {
 		ScopedContainer container = new ScopedContainer(ApplicationScope.SERVLET);
-
 		container.register(ISailsEventConfigurator.class, this);
 		container.register(IValidationEngine.class, SailsValidationEngine.class);
 		container.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
-		container.register(IBinding.class, VientoBinding.class);
 		container.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
-
 		container.register(ISailsApplication.class, application);
 		application.setContainer(container);
 		return container;
