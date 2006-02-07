@@ -148,6 +148,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		MixinResolver resolver = installMixinResolver(event, eventContainer);
 		configure(event, resolver);
 
+		eventContainer.register(Require.class);
 		eventContainer.registerResolver(Flash.class, new FlashComponentResolver(event));
 		eventContainer.register(RequestContainer.class, eventContainer);
 		eventContainer.register(ScopedContainer.class, eventContainer);
@@ -277,7 +278,6 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 		ScopedContainer container = new ScopedContainer(ApplicationScope.SERVLET);
 
 		container.register(ISailsEventConfigurator.class, this);
-		container.register(Require.class);
 		container.register(IValidationEngine.class, SailsValidationEngine.class);
 		container.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
 		container.register(IBinding.class, VientoBinding.class);

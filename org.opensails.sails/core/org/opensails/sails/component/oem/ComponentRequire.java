@@ -23,15 +23,17 @@ public class ComponentRequire {
 		this.require = require;
 
 		IUrl script = event.resolve(UrlType.COMPONENT, relativeToComponent("script.js"));
-		if (resourceResolver.exists(script)) require.componentScript(new Script(script));
+		if (resourceResolver.exists(script)) require.componentImplicitScript(new Script(script));
 
 		IUrl style = event.resolve(UrlType.COMPONENT, relativeToComponent("style.css"));
-		if (resourceResolver.exists(style)) require.componentStyle(new Style(style));
+		if (resourceResolver.exists(style)) require.componentImplicitStyle(new Style(style));
 	}
 
 	public void script(String identifier) {
-		if (applicationScope(identifier)) require.script(new Script(event.resolve(UrlType.SCRIPT, identifier)));
-		else require.componentScript(new Script(event.resolve(UrlType.COMPONENT, relativeToComponent(identifier))));
+		if (applicationScope(identifier))
+			require.componentApplicationScript(new Script(event.resolve(UrlType.SCRIPT, identifier)));
+		else
+			require.componentRequiredScript(new Script(event.resolve(UrlType.COMPONENT, relativeToComponent(identifier))));
 	}
 
 	public void scripts(List<String> identifiers) {
@@ -40,8 +42,10 @@ public class ComponentRequire {
 	}
 
 	public void style(String identifier) {
-		if (applicationScope(identifier)) require.style(new Style(event.resolve(UrlType.STYLE, identifier)));
-		else require.componentStyle(new Style(event.resolve(UrlType.COMPONENT, relativeToComponent(identifier))));
+		if (applicationScope(identifier))
+			require.componentApplicationStyle(new Style(event.resolve(UrlType.STYLE, identifier)));
+		else
+			require.componentRequiredStyle(new Style(event.resolve(UrlType.COMPONENT, relativeToComponent(identifier))));
 	}
 
 	protected boolean applicationScope(String identifier) {

@@ -9,19 +9,45 @@ import org.opensails.sails.html.Link;
 import org.opensails.sails.html.Script;
 import org.opensails.sails.html.Style;
 
+/**
+ * Used by the RequireMixin and the ComponentRequire. Not necessarily the
+ * 'public' way to require stuff.
+ * 
+ * @author aiwilliams
+ */
 public class Require {
-	protected final List<Script> componentScripts = new ArrayList<Script>(3);
-	protected final List<Style> componentStyles = new ArrayList<Style>(3);
+	protected final List<Script> componentApplicationScripts = new ArrayList<Script>(3);
+	protected final List<Script> componentRequiredScripts = new ArrayList<Script>(3);
+	protected final List<Script> componentImplicitScripts = new ArrayList<Script>(3);
+	protected final List<Style> componentApplicationStyles = new ArrayList<Style>(3);
+	protected final List<Style> componentImplicitStyles = new ArrayList<Style>(3);
+	protected final List<Style> componentRequiredStyles = new ArrayList<Style>(3);
 	protected final List<Link> links = new ArrayList<Link>(3);
 	protected final List<Script> scripts = new ArrayList<Script>(3);
 	protected final List<Style> styles = new ArrayList<Style>(3);
-
-	public void componentScript(Script script) {
-		componentScripts.add(script);
+	
+	public void componentApplicationScript(Script script) {
+		componentApplicationScripts.add(script);
+	}
+	
+	public void componentApplicationStyle(Style style) {
+		componentApplicationStyles.add(style);
 	}
 
-	public void componentStyle(Style style) {
-		componentStyles.add(style);
+	public void componentImplicitScript(Script script) {
+		componentImplicitScripts.add(script);
+	}
+	
+	public void componentImplicitStyle(Style style) {
+		componentImplicitStyles.add(style);
+	}
+	
+	public void componentRequiredScript(Script script) {
+		componentRequiredScripts.add(script);
+	}
+
+	public void componentRequiredStyle(Style style) {
+		componentRequiredStyles.add(style);
 	}
 
 	public void link(Link link) {
@@ -41,12 +67,28 @@ public class Require {
 	}
 
 	public class RequireOutput {
-		public String componentScripts() {
-			return toString(componentScripts);
+		public String componentApplicationScripts() {
+			return toString(componentApplicationScripts);
 		}
 
-		public String componentStyles() {
-			return toString(componentStyles);
+		public String componentApplicationStyles() {
+			return toString(componentApplicationStyles);
+		}
+		
+		public String componentImplicitScripts() {
+			return toString(componentImplicitScripts);
+		}
+		
+		public String componentImplicitStyles() {
+			return toString(componentImplicitStyles);
+		}
+		
+		public String componentRequiredScripts() {
+			return toString(componentRequiredScripts);
+		}
+		
+		public String componentRequiredStyles() {
+			return toString(componentRequiredStyles);
 		}
 
 		public String links() {
@@ -64,15 +106,23 @@ public class Require {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append(scripts());
+			builder.append(componentApplicationScripts());
 			builder.append("\n");
-			builder.append(componentScripts());
+			builder.append(componentRequiredScripts());
+			builder.append("\n");
+			builder.append(componentImplicitScripts());
+			builder.append("\n");
+			builder.append(scripts());
 			builder.append("\n");
 			builder.append(links());
 			builder.append("\n");
-			builder.append(styles());
+			builder.append(componentApplicationStyles());
 			builder.append("\n");
-			builder.append(componentStyles());
+			builder.append(componentRequiredStyles());
+			builder.append("\n");
+			builder.append(componentImplicitStyles());
+			builder.append("\n");
+			builder.append(styles());
 			builder.append("\n");
 			return builder.toString();
 		}

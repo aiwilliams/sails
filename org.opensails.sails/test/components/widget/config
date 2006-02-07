@@ -1,0 +1,6 @@
+# '/' indicates 'relative to application scripts directory'
+
+$require.script('/componentConfigRequiredAppScope.js')
+$require.script('scripts/componentConfigRequired.js')
+$require.style('/componentConfigRequiredAppScope.css')
+$require.style('componentConfigRequired.css')

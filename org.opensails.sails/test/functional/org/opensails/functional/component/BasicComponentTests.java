@@ -1,8 +1,12 @@
 package org.opensails.functional.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.opensails.component.tester.SailsComponentTester;
 import org.opensails.component.tester.TestComponent;
 import org.opensails.functional.FunctionalTestConfigurator;
@@ -13,15 +17,10 @@ import org.opensails.sails.component.ComponentInitializationException;
 import org.opensails.sails.tester.Page;
 
 public class BasicComponentTests extends TestCase {
-	public void testAssets() throws Exception {
+	public void testRequires() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		Page page = t.get("componentTest", "assets", ArrayUtils.EMPTY_STRING_ARRAY);
-		/**
-		 * The required scripts come before the implicit scripts as the implicit
-		 * scripts use the required scripts. The required styles come before the
-		 * implicit styles.
-		 */
-		page.assertMatches("Expected failure until implemented", ".*?shamcontext/scripts/somethingInApp.js.*?components/assets/scripts/testing.js.*?components/assets/script.js.*?");
+		Page page = t.get("componentTest", "requires", ArrayUtils.EMPTY_STRING_ARRAY);
+		page.assertMatches(expectedAssetRequirements());
 	}
 
 	public void testBasic() throws Exception {
@@ -50,5 +49,23 @@ public class BasicComponentTests extends TestCase {
 		SailsComponentTester t = new SailsComponentTester(FunctionalTestConfigurator.class);
 		TestComponent<AnotherComponent> c = t.component(AnotherComponent.class);
 		c.initialize(new Object[] { null });
+	}
+
+	/**
+	 * The required scripts come before the implicit scripts as the implicit
+	 * scripts use the required scripts. The required styles come before the
+	 * implicit styles.
+	 */
+	String expectedAssetRequirements() {
+		List<String> orderedExpectations = new ArrayList<String>();
+		orderedExpectations.add("shamcontext/scripts/componentConfigRequiredAppScope.js");
+		orderedExpectations.add("components/widget/scripts/componentConfigRequired.js");
+		orderedExpectations.add("components/widget/script.js");
+		orderedExpectations.add("controllerViewRequiredBeforeComponent.js");
+		orderedExpectations.add("controllerViewRequiredAfterComponent.js");
+		orderedExpectations.add("shamcontext/styles/componentConfigRequiredAppScope.css");
+		orderedExpectations.add("components/widget/componentConfigRequired.css");
+		orderedExpectations.add("components/widget/style.css");
+		return StringUtils.join(orderedExpectations.toArray(), ".*?");
 	}
 }

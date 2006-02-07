@@ -1,3 +1,0 @@
-$require.script('/somethingInApp.js')
-$require.script('scripts/testing.js')
-$require.style('/somethingInApp.css')
