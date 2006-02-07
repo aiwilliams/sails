@@ -17,6 +17,18 @@ public class VientoTemplateTest extends TestCase {
         verifyRender("stuff $tool.loop(3)[[block]] stuff", "stuff blockblockblock stuff");
     }
     
+    public void testIRenderable() throws Exception {
+		binding.put("key", new IRenderable() {
+			@Override public String toString() {
+				return "another";
+			}
+			public String render() {
+				return "one thing";
+			}
+		});
+		verifyRender("$key", "one thing");
+	}
+    
     public void testRender_CachesAST() throws Exception {
         VientoTemplate template = new VientoTemplate("testing");
         assertEquals("testing", template.render(binding));
