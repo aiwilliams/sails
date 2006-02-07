@@ -1,5 +1,6 @@
 package org.opensails.sails.template;
 
+import org.opensails.sails.url.IUrl;
 import org.opensails.viento.IBinding;
 
 /**
@@ -16,6 +17,13 @@ public interface ITemplateRenderer<T extends IBinding> {
 	T createBinding(T parent);
 
 	/**
+	 * @param templateUrl
+	 * @param binding
+	 * @return result of render
+	 */
+	StringBuilder render(IUrl templateUrl, T binding);
+
+	/**
 	 * @param templateIdentifier
 	 * @param binding
 	 * @return the result of rendering the template specified by
@@ -30,6 +38,13 @@ public interface ITemplateRenderer<T extends IBinding> {
 	 * @return the target
 	 */
 	StringBuilder render(String templateIdentifier, T binding, StringBuilder target);
+
+	/**
+	 * @param templateContent
+	 * @param binding
+	 * @return result of render
+	 */
+	StringBuilder renderString(String templateContent, T binding);
 
 	/**
 	 * @param templateIdentifier

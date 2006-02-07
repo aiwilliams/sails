@@ -1,17 +1,22 @@
 package org.opensails.sails.component.oem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.opensails.sails.adapter.*;
-import org.opensails.sails.component.*;
-import org.opensails.sails.template.*;
-import org.opensails.sails.util.*;
-import org.opensails.viento.*;
+import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.component.IComponent;
+import org.opensails.sails.component.IComponentImpl;
+import org.opensails.sails.component.IComponentResolver;
+import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.sails.util.IClassResolver;
+import org.opensails.viento.IBinding;
 
 public class ComponentResolver implements IComponentResolver {
 	protected final IAdapterResolver adapterResolver;
-	protected final List<IClassResolver<? extends IComponentImpl>> classResolvers;
 	protected final Map<String, Component<?>> cache;
+	protected final List<IClassResolver<? extends IComponentImpl>> classResolvers;
 	protected final ITemplateRenderer<IBinding> renderer;
 
 	public ComponentResolver(IAdapterResolver adapterResolver, ITemplateRenderer<IBinding> renderer) {
@@ -35,7 +40,7 @@ public class ComponentResolver implements IComponentResolver {
 				implementation = resolver.resolve(identifier);
 				if (implementation != null) break;
 			}
-			cache.put(identifier, component = new Component(implementation, adapterResolver, renderer));
+			cache.put(identifier, component = new Component(identifier, implementation, adapterResolver, renderer));
 		}
 		return component;
 	}

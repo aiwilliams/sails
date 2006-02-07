@@ -6,6 +6,7 @@ import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.TemplateBindingFixture;
+import org.opensails.sails.url.IUrl;
 import org.opensails.viento.IBinding;
 
 public class RenderMixinTest extends TestCase {
@@ -21,6 +22,10 @@ public class RenderMixinTest extends TestCase {
 				return createdBinding = TemplateBindingFixture.create();
 			}
 
+			public StringBuilder render(IUrl templateUrl, IBinding binding) {
+				return null;
+			}
+
 			public StringBuilder render(String templateIdentifier, IBinding binding) {
 				templateIdentifierGiven = templateIdentifier;
 				bindingGiven = binding;
@@ -28,6 +33,10 @@ public class RenderMixinTest extends TestCase {
 			}
 
 			public StringBuilder render(String templateIdentifier, IBinding binding, StringBuilder target) {
+				return null;
+			}
+
+			public StringBuilder renderString(String templateContent, IBinding binding) {
 				return null;
 			}
 

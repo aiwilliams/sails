@@ -49,7 +49,24 @@ public interface IComponent extends IActionEventProcessor {
 	Class<? extends IComponentImpl> getImplementation();
 
 	/**
+	 * @return the name of this component, not including the namespace
+	 */
+	String getName();
+
+	/**
+	 * @param identifier
+	 * @return the component relative path to identifier
+	 */
+	String getTemplatePath(String identifier);
+
+	/**
 	 * @return true if this has an implementation
 	 */
 	boolean hasImplementation();
+
+	/**
+	 * @param event
+	 * @return true if the event is destined for this
+	 */
+	boolean isDestination(ISailsEvent event);
 }

@@ -1,19 +1,26 @@
 package org.opensails.sails.tester;
 
-import java.io.*;
+import java.io.File;
 
-import org.apache.commons.configuration.*;
-import org.apache.commons.lang.*;
-import org.opensails.rigging.*;
-import org.opensails.sails.*;
-import org.opensails.sails.adapter.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.form.*;
-import org.opensails.sails.oem.*;
-import org.opensails.sails.tester.form.*;
-import org.opensails.sails.tester.oem.*;
-import org.opensails.sails.tester.servletapi.*;
-import org.opensails.sails.util.*;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.ArrayUtils;
+import org.opensails.rigging.ScopedContainer;
+import org.opensails.sails.ApplicationScope;
+import org.opensails.sails.ISailsApplication;
+import org.opensails.sails.Sails;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.form.FormFields;
+import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.tester.form.TestFormFields;
+import org.opensails.sails.tester.oem.TestingHttpServletResponse;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
+import org.opensails.sails.tester.servletapi.ShamHttpSession;
+import org.opensails.sails.tester.servletapi.ShamServletConfig;
+import org.opensails.sails.tester.servletapi.ShamServletContext;
+import org.opensails.sails.util.ClassInstanceAccessor;
 
 /**
  * Think of this as being a browser. Through it you request pages, and it
@@ -35,6 +42,20 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public SailsTester(Class<? extends BaseConfigurator> configurator) {
 		initialize(configurator);
+	}
+
+	protected SailsTester() {
+	// allow subclass control
+	}
+
+	public Page doGet(TestGetEvent getEvent) {
+		prepareForNextRequest();
+		return application.get(getEvent);
+	}
+
+	public Page doPost(TestPostEvent postEvent) {
+		prepareForNextRequest();
+		return application.post(postEvent);
 	}
 
 	/**
@@ -95,9 +116,9 @@ public class SailsTester implements ISailsApplication {
 	 * Performs an HTTP GET request
 	 * <p>
 	 * This is the 'fundamental' get method. It will not alter the working
-	 * context. The other get methods, which take an {@link IEventProcessingContext} class,
-	 * are what should be used unless there is no context class for the
-	 * action you would like to get.
+	 * context. The other get methods, which take an
+	 * {@link IEventProcessingContext} class, are what should be used unless
+	 * there is no context class for the action you would like to get.
 	 * 
 	 * @param context the context identifier
 	 * @param action
@@ -200,9 +221,9 @@ public class SailsTester implements ISailsApplication {
 	 * Performs an HTTP POST request
 	 * <p>
 	 * This is the 'fundamental' post method. It will not alter the working
-	 * context. The other post methods, which take an {@link IEventProcessingContext} class,
-	 * are what should be used unless there is no context class for the
-	 * action you would like to get.
+	 * context. The other post methods, which take an
+	 * {@link IEventProcessingContext} class, are what should be used unless
+	 * there is no context class for the action you would like to get.
 	 * 
 	 * @param context the context identifier
 	 * @param action
@@ -246,6 +267,21 @@ public class SailsTester implements ISailsApplication {
 
 	public String workingContext() {
 		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
+	}
+
+	/**
+	 * @param context
+	 * @param action
+	 * @param parameters
+	 * @return
+	 */
+	private String toPathInfo(String context, String action, String... parameters) {
+		StringBuilder pathInfo = new StringBuilder();
+		pathInfo.append(context);
+		pathInfo.append("/");
+		pathInfo.append(action);
+		pathInfo.append(toParametersString(parameters));
+		return pathInfo.toString();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -309,16 +345,6 @@ public class SailsTester implements ISailsApplication {
 		};
 	}
 
-	public Page doGet(TestGetEvent getEvent) {
-		prepareForNextRequest();
-		return application.get(getEvent);
-	}
-
-	public Page doPost(TestPostEvent postEvent) {
-		prepareForNextRequest();
-		return application.post(postEvent);
-	}
-
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
 		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
 	}
@@ -351,20 +377,5 @@ public class SailsTester implements ISailsApplication {
 			string.append(param);
 		}
 		return string.toString();
-	}
-
-	/**
-	 * @param context
-	 * @param action
-	 * @param parameters
-	 * @return
-	 */
-	private String toPathInfo(String context, String action, String... parameters) {
-		StringBuilder pathInfo = new StringBuilder();
-		pathInfo.append(context);
-		pathInfo.append("/");
-		pathInfo.append(action);
-		pathInfo.append(toParametersString(parameters));
-		return pathInfo.toString();
 	}
 }

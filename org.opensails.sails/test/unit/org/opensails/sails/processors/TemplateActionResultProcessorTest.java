@@ -12,12 +12,13 @@ import junit.framework.TestCase;
 import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.ShamController;
-import org.opensails.sails.event.*;
+import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.tester.util.CollectionAssert;
+import org.opensails.sails.url.IUrl;
 import org.opensails.viento.ExceptionHandler;
 import org.opensails.viento.IBinding;
 
@@ -64,7 +65,7 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		public void put(String key, Object object) {}
 
 		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
-		
+
 		public void putAll(Map<String, Object> map) {}
 	}
 
@@ -90,6 +91,14 @@ public class TemplateActionResultProcessorTest extends TestCase {
 
 		public boolean templateExists(String templateIdentifier) {
 			return false;
+		}
+
+		public StringBuilder renderString(String templateContent, ShamTemplateBinding binding) {
+			return null;
+		}
+
+		public StringBuilder render(IUrl templateUrl, ShamTemplateBinding binding) {
+			return null;
 		}
 	}
 }

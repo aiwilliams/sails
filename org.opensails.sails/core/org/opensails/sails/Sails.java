@@ -1,10 +1,10 @@
 package org.opensails.sails;
 
-import org.opensails.sails.component.*;
-import org.opensails.sails.controller.*;
-import org.opensails.sails.controller.oem.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.util.*;
+import org.opensails.sails.component.IComponentImpl;
+import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.controller.oem.Controller;
+import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.util.ClassHelper;
 
 /*
  * Don't let this become a dumping ground. Methods should be domain specific.
@@ -18,7 +18,7 @@ public class Sails {
 	/**
 	 * The default directory name for a Sails Application's context root.
 	 */
-	public static final String DEFAULT_CONTEXT_ROOT_DIRECTORY = "war";
+	public static final String DEFAULT_CONTEXT_ROOT_DIRECTORY = "app";
 
 	/**
 	 * Converts a Component implementation class into a String that could be the

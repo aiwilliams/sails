@@ -4,12 +4,15 @@ import java.io.InputStream;
 
 import javax.servlet.ServletContext;
 
+import org.opensails.ezfile.EzPath;
 import org.opensails.sails.IResourceResolver;
 import org.opensails.sails.url.ContextUrl;
 import org.opensails.sails.url.IUrl;
 
 /**
  * Looks in the ServletContext for resources.
+ * 
+ * @author aiwilliams
  */
 public class ServletContextResourceResolver implements IResourceResolver {
 	protected final String mountPoint;
@@ -30,7 +33,13 @@ public class ServletContextResourceResolver implements IResourceResolver {
 		return resolve(identifier) != null;
 	}
 
+	public InputStream resolve(IUrl applicationUrl) {
+		if (!(applicationUrl instanceof ContextUrl)) return null;
+		ContextUrl contextUrl = (ContextUrl) applicationUrl;
+		return resolve(contextUrl.getContextRelativePath());
+	}
+
 	public InputStream resolve(String identifier) {
-		return servletContext.getResourceAsStream(mountPoint + "/" + identifier);
+		return servletContext.getResourceAsStream(EzPath.join(mountPoint, identifier));
 	}
 }

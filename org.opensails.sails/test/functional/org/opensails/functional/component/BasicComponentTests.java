@@ -18,9 +18,10 @@ public class BasicComponentTests extends TestCase {
 		Page page = t.get("componentTest", "assets", ArrayUtils.EMPTY_STRING_ARRAY);
 		/**
 		 * The required scripts come before the implicit scripts as the implicit
-		 * scripts use the required scripts.
+		 * scripts use the required scripts. The required styles come before the
+		 * implicit styles.
 		 */
-		page.assertMatches("Expected failure until implemented", "<script.*?src=\".*?components/assets/scripts/testing.js\".*/<script.*?src=\".*?components/assets/script.js\"");
+		page.assertMatches("Expected failure until implemented", ".*?shamcontext/scripts/somethingInApp.js.*?components/assets/scripts/testing.js.*?components/assets/script.js.*?");
 	}
 
 	public void testBasic() throws Exception {

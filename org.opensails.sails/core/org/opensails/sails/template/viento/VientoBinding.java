@@ -8,8 +8,12 @@ public class VientoBinding extends Binding {
 	public VientoBinding() {
 		super();
 	}
-
+	
 	public VientoBinding(Binding parent) {
+		super(parent);
+	}
+
+	public VientoBinding(VientoBinding parent) {
 		super(parent);
 	}
 

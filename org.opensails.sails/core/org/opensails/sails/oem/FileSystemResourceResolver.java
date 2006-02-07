@@ -31,6 +31,13 @@ public class FileSystemResourceResolver implements IResourceResolver {
 		return new File(mountPoint + identifier).exists();
 	}
 
+	public InputStream resolve(IUrl applicationUrl) {
+		if (applicationUrl.render().startsWith("file://")) try {
+			return new FileInputStream(new File(new URI(applicationUrl.render())));
+		} catch (URISyntaxException e) {} catch (FileNotFoundException e) {}
+		return null;
+	}
+
 	public InputStream resolve(String identifier) {
 		File file = new File(mountPoint + identifier);
 		try {

@@ -7,6 +7,14 @@ import java.util.List;
 import org.opensails.sails.IResourceResolver;
 import org.opensails.sails.url.IUrl;
 
+/**
+ * A composite resolver.
+ * <p>
+ * Looks through a list of IResourceResolvers. The first to return a non-null
+ * value, or answer exists() == true, wins.
+ * 
+ * @author aiwilliams
+ */
 public class ResourceResolver implements IResourceResolver {
 	protected List<IResourceResolver> resolvers;
 
@@ -28,6 +36,14 @@ public class ResourceResolver implements IResourceResolver {
 
 	public void push(IResourceResolver resolver) {
 		resolvers.add(0, resolver);
+	}
+
+	public InputStream resolve(IUrl url) {
+		for (IResourceResolver resolver : resolvers) {
+			InputStream stream = resolver.resolve(url);
+			if (stream != null) return stream;
+		}
+		return null;
 	}
 
 	public InputStream resolve(String identifier) {

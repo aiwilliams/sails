@@ -12,6 +12,7 @@ import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.sails.url.IUrl;
 import org.opensails.viento.ExceptionHandler;
 import org.opensails.viento.IBinding;
 
@@ -67,6 +68,14 @@ public class PartialActionResultProcessorTest extends TestCase {
 
 		public boolean templateExists(String templateIdentifier) {
 			return false;
+		}
+
+		public StringBuilder renderString(String templateContent, ShamTemplateBinding binding) {
+			return null;
+		}
+
+		public StringBuilder render(IUrl templateUrl, ShamTemplateBinding binding) {
+			return null;
 		}
 	}
 }

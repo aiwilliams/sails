@@ -1,8 +1,3 @@
-/*
- * Created on Feb 10, 2005
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.oem;
 
 import java.io.InputStream;
@@ -12,6 +7,8 @@ import org.opensails.sails.url.IUrl;
 
 /**
  * Resolves resources by looking in the classpath.
+ * 
+ * @author aiwilliams
  */
 public class ClasspathResourceResolver implements IResourceResolver {
 	protected String mountPoint;
@@ -31,6 +28,10 @@ public class ClasspathResourceResolver implements IResourceResolver {
 
 	public boolean exists(String identifier) {
 		return resolve(identifier) != null;
+	}
+
+	public InputStream resolve(IUrl applicationUrl) {
+		return null;
 	}
 
 	public InputStream resolve(String identifier) {

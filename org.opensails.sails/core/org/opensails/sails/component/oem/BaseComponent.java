@@ -1,7 +1,6 @@
 package org.opensails.sails.component.oem;
 
 import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.Sails;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.event.oem.AbstractEventProcessingContext;
@@ -15,45 +14,21 @@ public class BaseComponent extends AbstractEventProcessingContext<IComponent> im
 	protected ScopedContainer container;
 	protected ITemplateRenderer<IBinding> renderer;
 
-	/**
-	 * Override to configure the component container after creation.
-	 * 
-	 * @param container
-	 */
-	protected void configureContainer(ScopedContainer container) {}
-
-	protected boolean isActingAsEventProcessor() {
-		return event.getProcessorName().equals("component_" + getComponentName());
-	}
-
-	/**
-	 * Called on toString() from the template.
-	 * 
-	 * @return the output of the component
-	 */
-	protected String render() {
-		String identifier = getTemplatePath("view");
-		try {
-			return renderer.render(identifier, getBinding()).toString();
-		} catch (Exception e) {
-			throw new TemplateRenderFailedException(identifier, e);
-		}
-	}
-
 	public String getComponentName() {
-		return Sails.componentName(this.getClass());
+		return processor.getName();
 	}
 
 	@Override
 	public ScopedContainer getContainer() {
 		if (container == null) {
 			container = super.getContainer();
-			if (!isActingAsEventProcessor()) {
+			if (!processor.isDestination(event)) {
 				container = super.getContainer().makeChild();
 				container.makeLocal(IBinding.class);
 				configureContainer(container);
-				getBinding().mixin(this);
-				getBinding().mixin(container.instance(IMixinResolver.class));
+				IBinding binding = getBinding();
+				binding.mixin(this);
+				binding.mixin(container.instance(IMixinResolver.class));
 			}
 		}
 		return container;
@@ -61,7 +36,7 @@ public class BaseComponent extends AbstractEventProcessingContext<IComponent> im
 
 	@Override
 	public String getTemplatePath(String identifier) {
-		return String.format("components/%s/%s", getComponentName(), identifier);
+		return processor.getTemplatePath(identifier);
 	}
 
 	public Script scriptInit() {
@@ -75,5 +50,26 @@ public class BaseComponent extends AbstractEventProcessingContext<IComponent> im
 	@Override
 	public String toString() {
 		return render();
+	}
+
+	/**
+	 * Override to configure the component container after creation.
+	 * 
+	 * @param container
+	 */
+	protected void configureContainer(ScopedContainer container) {}
+
+	/**
+	 * Called on toString() from the template.
+	 * 
+	 * @return the output of the component
+	 */
+	protected String render() {
+		String identifier = getTemplatePath("view");
+		try {
+			return renderer.render(identifier, getBinding()).toString();
+		} catch (Exception e) {
+			throw new TemplateRenderFailedException(identifier, e);
+		}
 	}
 }

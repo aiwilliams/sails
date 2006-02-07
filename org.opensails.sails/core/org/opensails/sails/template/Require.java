@@ -11,12 +11,17 @@ import org.opensails.sails.html.Style;
 
 public class Require {
 	protected final List<Script> componentScripts = new ArrayList<Script>(3);
+	protected final List<Style> componentStyles = new ArrayList<Style>(3);
 	protected final List<Link> links = new ArrayList<Link>(3);
 	protected final List<Script> scripts = new ArrayList<Script>(3);
 	protected final List<Style> styles = new ArrayList<Style>(3);
 
 	public void componentScript(Script script) {
 		componentScripts.add(script);
+	}
+
+	public void componentStyle(Style style) {
+		componentStyles.add(style);
 	}
 
 	public void link(Link link) {
@@ -26,7 +31,7 @@ public class Require {
 	public RequireOutput output() {
 		return new RequireOutput();
 	}
-	
+
 	public void script(Script script) {
 		scripts.add(script);
 	}
@@ -40,6 +45,10 @@ public class Require {
 			return toString(componentScripts);
 		}
 
+		public String componentStyles() {
+			return toString(componentStyles);
+		}
+
 		public String links() {
 			return toString(links);
 		}
@@ -47,7 +56,7 @@ public class Require {
 		public String scripts() {
 			return toString(scripts);
 		}
-		
+
 		public String styles() {
 			return toString(styles);
 		}
@@ -62,6 +71,8 @@ public class Require {
 			builder.append(links());
 			builder.append("\n");
 			builder.append(styles());
+			builder.append("\n");
+			builder.append(componentStyles());
 			builder.append("\n");
 			return builder.toString();
 		}

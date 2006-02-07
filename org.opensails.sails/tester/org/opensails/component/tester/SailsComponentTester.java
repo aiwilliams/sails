@@ -21,6 +21,13 @@ public class SailsComponentTester extends SailsTester {
 		super(configurator);
 	}
 
+	public <C extends IComponentImpl> TestComponent<C> component(Class<C> componentClass) {
+		String eventPath = String.format("dynamicallyGeneratedForTestingComponents/%s", Sails.componentName(componentClass));
+		TestComponent<C> testComponent = new TestComponent<C>(this, createGetEvent(eventPath), componentClass);
+		contentMap.put(eventPath + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, testComponent);
+		return testComponent;
+	}
+
 	@Override
 	protected SailsTesterConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
 		return new SailsTesterConfigurator(configuratorClass) {
@@ -35,6 +42,10 @@ public class SailsComponentTester extends SailsTester {
 						return false; // not called in this situation
 					}
 
+					public InputStream resolve(IUrl applicationUrl) {
+						return null;
+					}
+
 					public InputStream resolve(String identifier) {
 						return contentMap.get(identifier).referringTemplateContent();
 					}
@@ -42,12 +53,5 @@ public class SailsComponentTester extends SailsTester {
 				super.configure(resourceResolver);
 			}
 		};
-	}
-
-	public <C extends IComponentImpl> TestComponent<C> component(Class<C> componentClass) {
-		String eventPath = String.format("dynamicallyGeneratedForTestingComponents/%s", Sails.componentName(componentClass));
-		TestComponent<C> testComponent = new TestComponent<C>(this, createGetEvent(eventPath), componentClass);
-		contentMap.put(eventPath + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, testComponent);
-		return testComponent;
 	}
 }

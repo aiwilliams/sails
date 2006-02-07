@@ -9,5 +9,7 @@ public interface IResourceResolver {
 
 	boolean exists(String identifier);
 
+	InputStream resolve(IUrl applicationUrl);
+
 	InputStream resolve(String identifier);
 }
