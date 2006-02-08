@@ -33,6 +33,10 @@ public class SailsTester implements ISailsApplication {
 	protected ShamHttpSession session;
 	protected Class<? extends IEventProcessingContext> workingContext;
 
+	protected SailsTester() {
+	// allow subclass control
+	}
+
 	/**
 	 * @see org.opensails.sails.ISailsApplicationConfigurator
 	 * @param configurator the BaseConfigurator used to configure the
@@ -44,8 +48,114 @@ public class SailsTester implements ISailsApplication {
 		initialize(configurator);
 	}
 
-	protected SailsTester() {
-	// allow subclass control
+	/**
+	 * @param context
+	 * @param action
+	 * @param parameters
+	 * @return
+	 */
+	private String toPathInfo(String context, String action, String... parameters) {
+		StringBuilder pathInfo = new StringBuilder();
+		pathInfo.append(context);
+		pathInfo.append("/");
+		pathInfo.append(action);
+		pathInfo.append(toParametersString(parameters));
+		return pathInfo.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	protected String[] adaptParameters(Object[] parameters, ContainerAdapterResolver resolver) {
+		if (parameters != null && parameters.length > 0) {
+			String[] params = new String[parameters.length];
+			for (int i = 0; i < parameters.length; i++) {
+				Object object = parameters[i];
+				IAdapter adapter = resolver.resolve(object.getClass());
+				params[i] = String.valueOf(adapter.forWeb(object.getClass(), object));
+			}
+			return params;
+		}
+		return ArrayUtils.EMPTY_STRING_ARRAY;
+	}
+
+	protected TestGetEvent createGetEvent(String pathInfo) {
+		ShamHttpServletRequest request = createRequest();
+		request.setPathInfo(pathInfo);
+		TestingHttpServletResponse response = new TestingHttpServletResponse();
+		TestGetEvent event = new TestGetEvent(this, requestContainer, request, response);
+		requestContainer.bind(event);
+		response.set(event);
+		return event;
+	}
+
+	protected TestGetEvent createGetEvent(String context, String action, String... parameters) {
+		return createGetEvent(toPathInfo(context, action, parameters));
+	}
+
+	protected TestPostEvent createPostEvent(String pathInfo, FormFields formFields) {
+		ShamHttpServletRequest request = createRequest();
+		request.setPathInfo(pathInfo);
+		request.setParameters(formFields.toMap());
+		TestingHttpServletResponse response = new TestingHttpServletResponse();
+		TestPostEvent event = new TestPostEvent(this, requestContainer, request, response);
+		requestContainer.bind(event);
+		response.set(event);
+		return event;
+	}
+
+	protected TestPostEvent createPostEvent(String context, String action, FormFields formFields, String... parameters) {
+		return createPostEvent(toPathInfo(context, action, parameters), formFields);
+	}
+
+	/**
+	 * @return a request that is bound to this application such that when a
+	 *         session is created, we have it
+	 */
+	protected ShamHttpServletRequest createRequest() {
+		return new ShamHttpServletRequest(session) {
+			@Override
+			public javax.servlet.http.HttpSession getSession() {
+				return session = (ShamHttpSession) super.getSession();
+			};
+
+			@Override
+			public javax.servlet.http.HttpSession getSession(boolean create) {
+				return session = (ShamHttpSession) super.getSession(create);
+			};
+		};
+	}
+
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
+		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
+	}
+
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
+		initialize(configuratorClass, new ShamServletConfig(new ShamServletContext(contextRootDirectory)));
+	}
+
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
+		this.application = new TestableSailsApplication();
+		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
+		this.application.configure(instrumentedConfigurator(configuratorClass));
+		prepareForNextRequest();
+	}
+
+	protected SailsTesterConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
+		return new SailsTesterConfigurator(configuratorClass);
+	}
+
+	protected void prepareForNextRequest() {
+		// TODO: Bind to lazy created session container
+		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
+		else requestContainer = new TestRequestContainer(getContainer());
+	}
+
+	protected String toParametersString(String... parameters) {
+		StringBuilder string = new StringBuilder();
+		for (String param : parameters) {
+			string.append("/");
+			string.append(param);
+		}
+		return string.toString();
 	}
 
 	public Page doGet(TestGetEvent getEvent) {
@@ -55,8 +165,9 @@ public class SailsTester implements ISailsApplication {
 	}
 
 	public Page doPost(TestPostEvent postEvent) {
+		Page page = application.post(postEvent);
 		prepareForNextRequest();
-		return application.post(postEvent);
+		return page;
 	}
 
 	/**
@@ -268,115 +379,5 @@ public class SailsTester implements ISailsApplication {
 
 	public String workingContext() {
 		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
-	}
-
-	/**
-	 * @param context
-	 * @param action
-	 * @param parameters
-	 * @return
-	 */
-	private String toPathInfo(String context, String action, String... parameters) {
-		StringBuilder pathInfo = new StringBuilder();
-		pathInfo.append(context);
-		pathInfo.append("/");
-		pathInfo.append(action);
-		pathInfo.append(toParametersString(parameters));
-		return pathInfo.toString();
-	}
-
-	@SuppressWarnings("unchecked")
-	protected String[] adaptParameters(Object[] parameters, ContainerAdapterResolver resolver) {
-		if (parameters != null && parameters.length > 0) {
-			String[] params = new String[parameters.length];
-			for (int i = 0; i < parameters.length; i++) {
-				Object object = parameters[i];
-				IAdapter adapter = resolver.resolve(object.getClass());
-				params[i] = String.valueOf(adapter.forWeb(object.getClass(), object));
-			}
-			return params;
-		}
-		return ArrayUtils.EMPTY_STRING_ARRAY;
-	}
-
-	protected TestGetEvent createGetEvent(String pathInfo) {
-		ShamHttpServletRequest request = createRequest();
-		request.setPathInfo(pathInfo);
-		TestingHttpServletResponse response = new TestingHttpServletResponse();
-		TestGetEvent event = new TestGetEvent(this, requestContainer, request, response);
-		requestContainer.bind(event);
-		response.set(event);
-		return event;
-	}
-
-	protected TestGetEvent createGetEvent(String context, String action, String... parameters) {
-		return createGetEvent(toPathInfo(context, action, parameters));
-	}
-
-	protected TestPostEvent createPostEvent(String pathInfo, FormFields formFields) {
-		ShamHttpServletRequest request = createRequest();
-		request.setPathInfo(pathInfo);
-		request.setParameters(formFields.toMap());
-		TestingHttpServletResponse response = new TestingHttpServletResponse();
-		TestPostEvent event = new TestPostEvent(this, requestContainer, request, response);
-		requestContainer.bind(event);
-		response.set(event);
-		return event;
-	}
-
-	protected TestPostEvent createPostEvent(String context, String action, FormFields formFields, String... parameters) {
-		return createPostEvent(toPathInfo(context, action, parameters), formFields);
-	}
-
-	/**
-	 * @return a request that is bound to this application such that when a
-	 *         session is created, we have it
-	 */
-	protected ShamHttpServletRequest createRequest() {
-		return new ShamHttpServletRequest(session) {
-			@Override
-			public javax.servlet.http.HttpSession getSession() {
-				return session = (ShamHttpSession) super.getSession();
-			};
-
-			@Override
-			public javax.servlet.http.HttpSession getSession(boolean create) {
-				return session = (ShamHttpSession) super.getSession(create);
-			};
-		};
-	}
-
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
-		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
-	}
-
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
-		initialize(configuratorClass, new ShamServletConfig(new ShamServletContext(contextRootDirectory)));
-	}
-
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
-		this.application = new TestableSailsApplication();
-		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
-		this.application.configure(instrumentedConfigurator(configuratorClass));
-		prepareForNextRequest();
-	}
-
-	protected SailsTesterConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
-		return new SailsTesterConfigurator(configuratorClass);
-	}
-
-	protected void prepareForNextRequest() {
-		// TODO: Bind to lazy created session container
-		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
-		else requestContainer = new TestRequestContainer(getContainer());
-	}
-
-	protected String toParametersString(String... parameters) {
-		StringBuilder string = new StringBuilder();
-		for (String param : parameters) {
-			string.append("/");
-			string.append(param);
-		}
-		return string.toString();
 	}
 }

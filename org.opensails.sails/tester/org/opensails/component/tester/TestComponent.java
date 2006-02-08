@@ -3,6 +3,7 @@ package org.opensails.component.tester;
 import java.io.InputStream;
 
 import org.apache.tools.ant.filters.StringInputStream;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.Sails;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
@@ -24,13 +25,17 @@ public class TestComponent<C extends IComponentImpl> {
 		this.componentClass = componentClass;
 	}
 
+	protected void exposeForUseInDynamicTemplate(IComponentImpl componentImpl) {
+		event.getContainer().instance(IBinding.class).put("instance", componentImpl);
+	}
+
 	@SuppressWarnings("unchecked")
 	public C initialize(Object... arguments) {
 		hasBeenInitialized = true;
 		IComponentResolver resolver = tester.getContainer().instance(IComponentResolver.class);
 		IComponent component = resolver.resolve(Sails.componentName(componentClass));
 		instance = component.createFactory(event).create(arguments);
-		event.getContainer().instance(IBinding.class).put("instance", instance);
+		exposeForUseInDynamicTemplate(instance);
 		return (C) instance;
 	}
 
@@ -44,7 +49,11 @@ public class TestComponent<C extends IComponentImpl> {
 	public Page render(Object... initializationArguments) {
 		if (!hasBeenInitialized) initialize(initializationArguments);
 		Page page = tester.doGet(event);
-		page.source();// cause render
+		page.source(); // cause render
 		return page;
+	}
+
+	public RequestContainer getRequestContainer() {
+		return event.getContainer();
 	}
 }

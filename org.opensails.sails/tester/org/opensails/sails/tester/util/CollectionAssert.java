@@ -12,12 +12,12 @@ public class CollectionAssert {
 		if (!actual.containsAll(expected)) throw new ComparisonFailure("Expected to contain all in no particular order", expected.toString(), actual.toString());
 	}
 
-	//FIXME: this method conflicts with the array version
-//	public static <T> void containsOnly(T expected, Collection<T> actual) {
-//		containsOnly(Arrays.asList(expected), actual);
-//	}
 	public static <T> void containsOnly(Collection<T> expected, T[] actual) {
 		containsOnly(expected, Arrays.asList(actual));
+	}
+
+	public static <T> void containsOnly(T expected, Collection<T> actual) {
+		containsOnly(Arrays.asList(expected), actual);
 	}
 
 	public static <T> void containsOnly(T expected, T[] actual) {

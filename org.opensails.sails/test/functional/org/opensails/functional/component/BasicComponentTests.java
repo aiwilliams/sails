@@ -56,11 +56,11 @@ public class BasicComponentTests extends TestCase {
 		SailsComponentTester t = new SailsComponentTester(FunctionalTestConfigurator.class);
 		TestComponent<ScriptInitComponent> c = t.component(ScriptInitComponent.class);
 		ScriptInitComponent component = c.initialize("someid");
-		c.render();
 		component.property = "asdf";
 		assertEquals("someid_something", component.idfor("something"));
-		assertEquals("window.someid = new ScriptInit({property: 'asdf', id: 'someid', callback: Component.callback('callback', 'http://localhost/shamcontext/shamservlet/component_scriptInit/callback', {method: 'get'}), something: $('someid_something')});", component.scriptInit().render());
-		assertTrue(t.getContainer().instance(Require.class).output().componentApplicationScripts().contains("common/scripts/component.js"));
+		Page page = c.render();
+		assertEquals("window.someid = new ScriptInit({property: 'asdf', id: 'someid', callback: Component.callback('callback', 'http://localhost/shamcontext/shamservlet/component_scriptInit/callback', {method: 'get'}), something: $('someid_something')});", page.source());
+		assertTrue(c.getRequestContainer().instance(Require.class).output().componentApplicationScripts().contains("common/scripts/component.js"));
 	}
 
 	/**

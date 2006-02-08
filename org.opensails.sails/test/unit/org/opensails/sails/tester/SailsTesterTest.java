@@ -1,12 +1,14 @@
 package org.opensails.sails.tester;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
-import org.opensails.sails.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.oem.*;
-import org.opensails.sails.tester.components.*;
-import org.opensails.sails.tester.controllers.*;
+import org.opensails.sails.ApplicationScope;
+import org.opensails.sails.RequestContainer;
+import org.opensails.sails.SailsException;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.tester.components.TesterComponent;
+import org.opensails.sails.tester.controllers.TesterController;
 
 public class SailsTesterTest extends TestCase {
 	/**
@@ -48,10 +50,16 @@ public class SailsTesterTest extends TestCase {
 		TestRequestContainer requestContainer = tester.getRequestContainer();
 		assertNotNull("We can get it before we ever make a request", requestContainer);
 		assertSame("Same until request is made", requestContainer, tester.getRequestContainer());
+		IDo registeredBeforeGet = new IDo();
+		requestContainer.register(registeredBeforeGet);
 		Page pageOne = tester.get();
+		assertSame(registeredBeforeGet, requestContainer.instance(IDo.class));
 		assertSame("Same in page as was in tester before request", requestContainer, pageOne.container());
-		assertNotSame("New container for preparing for next request. Old container can still be obtained from Page of last request", requestContainer, tester.getRequestContainer());
+
+		TestRequestContainer subsequentRequestContainer = tester.getRequestContainer();
+		assertNotSame("New container for preparing for next request. Old container can still be obtained from Page of last request", requestContainer, subsequentRequestContainer);
 		Page pageTwo = tester.get();
+		assertNull("Something registered in container of last event shouldn't exist in subsequent containers", subsequentRequestContainer.instance(IDo.class));
 		assertNotSame(pageOne.container(), pageTwo.container());
 	}
 
@@ -75,6 +83,7 @@ public class SailsTesterTest extends TestCase {
 	public static class ReallyIDo implements ILoveTesting {}
 
 	public static class ReallyReallyIDo implements ILoveTesting {}
+	public static class IDo implements ILoveTesting {}
 
 	public static class ShamConfigurator extends BaseConfigurator {
 		@Override

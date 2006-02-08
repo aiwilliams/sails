@@ -1,5 +1,8 @@
 package org.opensails.sails.tester;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.opensails.rigging.ComponentImplementation;
 import org.opensails.rigging.ScopedContainer;
@@ -32,18 +35,10 @@ import org.opensails.sails.util.IClassResolver;
 import org.opensails.viento.IBinding;
 
 public class SailsTesterConfigurator extends DelegatingConfigurator {
+	protected List<ISailsEvent> configured = new ArrayList<ISailsEvent>();
+
 	public SailsTesterConfigurator(Class<? extends BaseConfigurator> delegateClass) {
 		super(delegateClass);
-	}
-
-	@Override
-	public void configure(ISailsEvent event, RequestContainer eventContainer) {
-		super.configure(event, eventContainer);
-
-		// Expose the same instance as two types
-		ComponentImplementation bindingComponent = new ComponentImplementation(TestingBinding.class, eventContainer);
-		eventContainer.registerResolver(IBinding.class, bindingComponent);
-		eventContainer.registerResolver(TestingBinding.class, bindingComponent);
 	}
 
 	@Override
@@ -114,5 +109,19 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 		container.register(IObjectPersister.class, persister);
 		container.register(IShamObjectPersister.class, persister);
 		super.installObjectPersister(application, container);
+	}
+
+	@Override
+	public void configure(ISailsEvent event, RequestContainer eventContainer) {
+		if (configured.contains(event)) return;
+
+		super.configure(event, eventContainer);
+
+		// Expose the same instance as two types
+		ComponentImplementation bindingComponent = new ComponentImplementation(TestingBinding.class, eventContainer);
+		eventContainer.registerResolver(IBinding.class, bindingComponent);
+		eventContainer.registerResolver(TestingBinding.class, bindingComponent);
+
+		configured.add(event);
 	}
 }

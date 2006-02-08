@@ -39,18 +39,14 @@ public class ResourceResolver implements IResourceResolver {
 	}
 
 	public InputStream resolve(IUrl url) {
-		for (IResourceResolver resolver : resolvers) {
-			InputStream stream = resolver.resolve(url);
-			if (stream != null) return stream;
-		}
+		for (IResourceResolver resolver : resolvers)
+			if (resolver.exists(url)) return resolver.resolve(url);
 		return null;
 	}
 
 	public InputStream resolve(String identifier) {
-		for (IResourceResolver resolver : resolvers) {
-			InputStream stream = resolver.resolve(identifier);
-			if (stream != null) return stream;
-		}
+		for (IResourceResolver resolver : resolvers)
+			if (resolver.exists(identifier)) return resolver.resolve(identifier);
 		return null;
 	}
 }
