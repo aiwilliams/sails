@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.Sails;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.component.Callback;
 import org.opensails.sails.component.Remembered;
 import org.opensails.sails.html.IInlineContent;
@@ -17,12 +19,15 @@ import org.opensails.sails.util.ClassHelper;
 
 public class ComponentScript extends Script implements IInlineContent {
 	private final BaseComponent component;
+	private final ContainerAdapterResolver adapterResolver;
 
-	public ComponentScript(BaseComponent component) {
+	public ComponentScript(BaseComponent component, ContainerAdapterResolver adapterResolver) {
+		this.adapterResolver = adapterResolver;
 		this.inlineContent = this;
 		this.component = component;
 	}
 
+	@SuppressWarnings("unchecked")
 	public String render() {
 		StringBuilder buffer = new StringBuilder();
 		buffer.append("window.");
@@ -33,18 +38,15 @@ public class ComponentScript extends Script implements IInlineContent {
 		
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		Field[] fields = component.getClass().getFields();
-		for (Field field : fields) {
-			try {
-				// TODO: Don't quote non strings
-				parameters.add(new Parameter(field.getName(), "'" + field.get(component) + "'"));
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
 		List<String> rememberedFields = new ArrayList<String>();
-		for (Field field : ClassHelper.fieldsAnnotated(component.getClass(), Remembered.class))
-			rememberedFields.add(field.getName() + "=" + ClassHelper.readField(component, field));
+		for (Field field : fields) {
+			// TODO: Don't quote non strings
+			IAdapter adapter = adapterResolver.resolve(field.getType());
+			Object forWeb = adapter.forWeb(field.getType(), ClassHelper.readField(component, field));
+			parameters.add(new Parameter(field.getName(), "'" + forWeb + "'"));
+			if (field.isAnnotationPresent(Remembered.class))
+				rememberedFields.add(field.getName() + "=" + forWeb);
+		}
 		String stringRemeberedFields = StringUtils.join(rememberedFields.iterator(), "&");
 		
 		UrlforMixin urlfor = component.getContainer().instance(UrlforMixin.class, UrlforMixin.class);

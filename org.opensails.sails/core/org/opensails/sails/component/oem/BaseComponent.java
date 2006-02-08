@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.opensails.rigging.ScopedContainer;
+import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.component.Remembered;
@@ -79,7 +80,7 @@ public class BaseComponent extends AbstractEventProcessingContext<IComponent> im
 	public ComponentScript scriptInit() {
 		getContainer().instance(Require.class).componentApplicationScript(new BuiltinScript(event).builtin("component.js"));
 		getContainer().instance(Require.class).componentApplicationScript(new BuiltinScript(event).builtin("prototype.js"));
-		return new ComponentScript(this);
+		return new ComponentScript(this, getContainer().instance(ContainerAdapterResolver.class));
 	}
 
 	public void setTemplateRenderer(ITemplateRenderer<IBinding> renderer) {
