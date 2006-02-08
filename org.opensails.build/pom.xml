@@ -17,6 +17,14 @@
   <ciManagement>
   	<system>Continuum</system>
   	<url>http://build.opensails.org</url>
+  	<notifiers>
+	  <notifier>
+	  	<type>mail</type>
+  		<configuration>
+		    <address>developers@lists.opensails.org</address>
+		</configuration>
+	  </notifier>
+  	</notifiers>
   </ciManagement>
 
   <developers>
