@@ -115,18 +115,18 @@ public class ClassHelper {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> T readField(Object target, String name, boolean publicOnly) {
+	public static Object readField(Object target, String name, boolean publicOnly) {
 		try {
 			Field field = fieldNamed(target.getClass(), name);
 			if (!publicOnly)
 				field.setAccessible(true);
-			return (T) field.get(target);
+			return field.get(target);
 		} catch (Throwable t) {
 			return null;
 		}
 	}
 
-	public static <T> T readField(Object target, String name) {
+	public static Object readField(Object target, String name) {
 		return readField(target, name, true);
 	}
 

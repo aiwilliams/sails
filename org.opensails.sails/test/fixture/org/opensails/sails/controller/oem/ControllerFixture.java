@@ -9,18 +9,18 @@ public class ControllerFixture {
 		return defaultAdapters();
 	}
 
-	public static Controller defaultAdapters() {
-		return new Controller(null, new AdapterResolver());
+	public static <I extends IControllerImpl> Controller<I> defaultAdapters() {
+		return new Controller<I>(null, new AdapterResolver());
 	}
 
-	public static Controller defaultAdapters(Class<? extends IControllerImpl> controllerImpl) {
-		return new Controller(controllerImpl, new AdapterResolver());
+	public static <I extends IControllerImpl> Controller<I> defaultAdapters(Class<I> controllerImpl) {
+		return new Controller<I>(controllerImpl, new AdapterResolver());
 	}
 
-	public static <I extends IControllerImpl> Controller defaultAdapters(final I controllerImpl) {
-		return new Controller(controllerImpl.getClass(), new AdapterResolver()) {
+	public static Controller defaultAdapters(final IControllerImpl controllerImpl) {
+		return new Controller<IControllerImpl>((Class<IControllerImpl>) controllerImpl.getClass(), new AdapterResolver()) {
 			@Override
-			protected I createInstance(ISailsEvent event, Class impl) {
+			protected IControllerImpl createInstance(ISailsEvent event, Class impl) {
 				return controllerImpl;
 			}
 		};
