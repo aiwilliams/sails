@@ -136,6 +136,10 @@ public class BindingTest extends TestCase {
 	    assertEquals("different", binding.call(target, "field"));
 	}
 	
+	public void testInvisible() throws Exception {
+		assertUnresolvable(binding.call(target, "notForViento"));
+	}
+	
 	class ShamMethodMissing implements MethodMissing {
 		public Object methodMissing(String methodName, Object[] args) {
 			return new Object[] {"methodMissing", args};
@@ -153,6 +157,11 @@ public class BindingTest extends TestCase {
 		
 		public int varargs(Object...args) {
 			return args.length;
+		}
+		
+		@Invisible
+		public String notForViento() {
+			return "";
 		}
 		
 		public String one() {

@@ -8,33 +8,39 @@ import junit.framework.TestCase;
 public class VientoTemplateTest extends TestCase {
 	Binding binding = new Binding();
 
-    public void testSubstitution_SpaceAfter() throws Exception {
-        binding.put("key", "value");
-        verifyRender("stuff $key stuff", "stuff value stuff");
+	public void testSubstitution_SpaceAfter() throws Exception {
+		binding.put("key", "value");
+		verifyRender("stuff $key stuff", "stuff value stuff");
 
 		binding.put("tool", new Tool());
-        verifyRender("stuff $tool.yesno(true) stuff", "stuff yes stuff");
-        verifyRender("stuff $tool.loop(3)[[block]] stuff", "stuff blockblockblock stuff");
-    }
-    
-    public void testIRenderable() throws Exception {
+		verifyRender("stuff $tool.yesno(true) stuff", "stuff yes stuff");
+		verifyRender("stuff $tool.loop(3)[[block]] stuff", "stuff blockblockblock stuff");
+	}
+
+	public void testIRenderable() throws Exception {
 		binding.put("key", new IRenderable() {
 			@Override public String toString() {
 				return "another";
 			}
-			public String render() {
+
+			public String renderThyself() {
 				return "one thing";
 			}
 		});
 		verifyRender("$key", "one thing");
+		/*
+		 * Wish this didn't work. Annotations on methods are not inherited.
+		 * Bummer.
+		 */
+		verifyRender("$key.renderThyself.?", "one thing");
 	}
-    
-    public void testRender_CachesAST() throws Exception {
-        VientoTemplate template = new VientoTemplate("testing");
-        assertEquals("testing", template.render(binding));
-        assertEquals("testing", template.render(binding));
-    }
-    
+
+	public void testRender_CachesAST() throws Exception {
+		VientoTemplate template = new VientoTemplate("testing");
+		assertEquals("testing", template.render(binding));
+		assertEquals("testing", template.render(binding));
+	}
+
 	public void testSimpleSubstitution() throws Exception {
 		binding.put("key", "value");
 		verifyRender("stuff$key\nstuff", "stuffvalue\nstuff");
@@ -118,54 +124,56 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("stuff$tool.loop (3) [[{$tool.timesTwo(34)}]]stuff", "stuff{68}{68}{68}stuff");
 		verifyRender("stuff$tool.timesTwo (3) [{$tool.timesTwo(34)}]stuff", "stuff6 [{68}]stuff");
 	}
-	
+
 	public void testStringBlock() throws Exception {
 		binding.put("tool", new Tool());
 		verifyRender("stuff$tool.stringTwice(\"{$tool.timesTwo(34)}\")stuff", "stuff{68}{68}stuff");
 		verifyRender("stuff$tool.stringTwice(\"hehe\\\"{$tool.timesTwo(34)}\")stuff", "stuffhehe\"{68}hehe\"{68}stuff");
 	}
-	
+
 	public void testQuickBlock() throws Exception {
 		binding.put("tool", new Tool());
 		verifyRender("stuff$tool.twice[>[block]\nstuff", "stuff[block][block]\nstuff");
 	}
-	
+
 	public void testTopLevelHelpers() throws Exception {
 		binding.mixin(new Tool());
 		verifyRender("stuff$loop (3) [[{$timesTwo(34)}]]stuff", "stuff{68}{68}{68}stuff");
 	}
-	
+
 	public void testComment() throws Exception {
 		verifyRender("stuff##comment\nstuff", "stuff\nstuff");
 
 		// Watch that excess whitespace, now.
 		verifyRender("#stuff##comment\n\t##comment\n\tstuff", "#stuff\n\tstuff");
-//		verifyRender("stuff  ##comment\n\t##comment\n\tstuff", "stuff\n\tstuff");
+		// verifyRender("stuff ##comment\n\t##comment\n\tstuff",
+		// "stuff\n\tstuff");
 
 		binding.put("key", "value");
 		verifyRender("stuff##comment$key\nstuff", "stuff\nstuff");
-		
+
 		binding.put("tool", new Tool());
 		verifyRender("$tool.twice[[block##comment\nblock]]", "block\nblockblock\nblock");
-//		verifyRender("$tool.twice[[block  ##comment\nblock]]", "block\nblockblock\nblock");
+		// verifyRender("$tool.twice[[block ##comment\nblock]]",
+		// "block\nblockblock\nblock");
 		verifyRender("$tool.twice[>block##comment\n", "blockblock\n");
-//		verifyRender("$tool.twice[>block  ##comment\n", "blockblock\n");
+		// verifyRender("$tool.twice[>block ##comment\n", "blockblock\n");
 	}
-	
+
 	public void testMultilineComment() throws Exception {
 		verifyRender("stuff#*comment\n *more #comment\n *# more stuff", "stuff more stuff");
 		verifyRender("one#**#two", "onetwo");
 	}
-	
+
 	public void testFailure() throws Exception {
 		binding.setExceptionHandler(new ShamExceptionHandler());
-		
+
 		verifyRender("$notHere", "here");
-		
+
 		binding.put("key", "value");
 		verifyRender("$key.notHere", "here");
 	}
-	
+
 	public void testLineNumbers() throws Exception {
 		try {
 			verifyRender("line1\r\nline2$breaks\nline3", "");
@@ -183,25 +191,25 @@ public class VientoTemplateTest extends TestCase {
 			assertTrue(e.getMessage().contains("Line: 1, Offset: 1"));
 		}
 	}
-	
+
 	public void testSilence() throws Exception {
 		verifyRender("$!notHere", "");
-		
+
 		binding.put("tool", new Tool());
 		verifyRender("$!tool.notHere", "");
 		verifyRender("$!tool.yesno(true)", "yes");
 	}
-	
+
 	public void testNumbersInIdentifiers() throws Exception {
 		binding.put("tool", new Tool());
 		verifyRender("$tool.numbers123", "here");
 	}
-	
+
 	public void testSlashR() throws Exception {
 		binding.put("key", "value");
 		verifyRender("$key\r\nasdf", "value\r\nasdf");
 	}
-	
+
 	public void testBooleanOperators() throws Exception {
 		binding.put("yes", true);
 		binding.put("no", false);
@@ -213,19 +221,19 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($no || $no)[[here]]", "");
 		verifyRender("$if($no || $no || false || true)[[here]]", "here");
 	}
-	
+
 	public void testBooleanNot() throws Exception {
 		binding.put("yes", true);
 		binding.put("no", false);
 		verifyRender("$if(!$no)[[here]]", "here");
 		verifyRender("$if(!$yes)[[here]]", "");
-		
+
 		verifyRender("$if($yes && !$no)[[here]]", "here");
-		
+
 		binding.put("key", "value");
 		verifyRender("$if(!$key.startsWith('asdf'))[[here]]", "here");
 	}
-	
+
 	public void testEquals() {
 		binding.put("one", "value");
 		binding.put("two", "value");
@@ -237,7 +245,7 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($one != 0)[[here]]", "here");
 		verifyRender("$if($one.length != 5)[[here]]", "");
 	}
-	
+
 	public void testComparisons() {
 		binding.put("i", 3);
 		verifyRender("$if($i < 4)[[here]]", "here");
@@ -246,7 +254,7 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($i <= 4)[[here]]", "here");
 		verifyRender("$if($i <= 3)[[here]]", "here");
 		verifyRender("$if($i <= 2)[[here]]", "");
-		
+
 		verifyRender("$if($i > 4)[[here]]", "");
 		verifyRender("$if($i > 3)[[here]]", "");
 		verifyRender("$if($i > 2)[[here]]", "here");
@@ -254,19 +262,19 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($i >= 3)[[here]]", "here");
 		verifyRender("$if($i >= 2)[[here]]", "here");
 	}
-	
+
 	public void testStringEscape() throws Exception {
 		verifyRender("$set(:key, '\\'\\\\\\n\\r\\t')$key", "'\\\n\r\t");
 	}
-	
+
 	public void testEscaping() throws Exception {
 		verifyRender("\\$name", "$name");
 		verifyRender("\\\\\\$name", "\\$name");
-		
+
 		binding.put("key", "value");
 		verifyRender("\\\\$key", "\\value");
 	}
-	
+
 	public void testPrototype() {
 		verifyRender("$('id')", "$('id')");
 	}
@@ -286,7 +294,7 @@ public class VientoTemplateTest extends TestCase {
 		public String timesTwo(int i) {
 			return String.valueOf(i * 2);
 		}
-		
+
 		public String numbers123() {
 			return "here";
 		}
@@ -319,11 +327,11 @@ public class VientoTemplateTest extends TestCase {
 		public String twice(Block block) {
 			return block.evaluate() + block.evaluate();
 		}
-		
+
 		public String stringTwice(String string) {
 			return string + string;
 		}
-		
+
 		public String loop(int times, Block block) {
 			StringBuilder buffer = new StringBuilder();
 			for (int i = 0; i < times; i++)

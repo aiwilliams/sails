@@ -50,7 +50,7 @@ public class VientoVisitor extends AbstractParserVisitor {
 	@Override
 	public void visit(ASTStatement node) {
 		Object result = evaluate(node);
-		buffer.append(result instanceof IRenderable ? ((IRenderable)result).render() : String.valueOf(result));
+		buffer.append(result instanceof IRenderable ? ((IRenderable)result).renderThyself() : String.valueOf(result));
 	}
 
 	protected Object evaluate(ASTStatement node) {

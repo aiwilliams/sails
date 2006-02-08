@@ -36,7 +36,8 @@ public class ObjectMethods {
 		Method theMethod = null;
 		Method[] methods = type.getMethods();
 		for (Method method : methods)
-			if (nameMatch(methodName, method)
+			if (!method.isAnnotationPresent(Invisible.class)
+					&& nameMatch(methodName, method)
 					&& typesMatch(method.getParameterTypes(), args, theMethod))
 				theMethod = method;
 		if (type.getSuperclass() != null && theMethod == null)
