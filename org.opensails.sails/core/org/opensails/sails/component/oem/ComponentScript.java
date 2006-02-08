@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.Sails;
 import org.opensails.sails.component.Callback;
+import org.opensails.sails.component.Remembered;
 import org.opensails.sails.html.IInlineContent;
 import org.opensails.sails.html.Script;
 import org.opensails.sails.mixins.UrlforMixin;
@@ -41,11 +42,26 @@ public class ComponentScript extends Script implements IInlineContent {
 			}
 		}
 		
+		List<String> rememberedFields = new ArrayList<String>();
+		for (Field field : ClassHelper.fieldsAnnotated(component.getClass(), Remembered.class))
+			rememberedFields.add(field.getName() + "=" + ClassHelper.readField(component, field));
+		String stringRemeberedFields = StringUtils.join(rememberedFields.iterator(), "&");
+		
 		UrlforMixin urlfor = component.getContainer().instance(UrlforMixin.class, UrlforMixin.class);
 		Method[] callbacks = ClassHelper.methodsAnnotated(component.getClass(), Callback.class);
 		for (Method callback : callbacks) {
 			String name = callback.getName();
-			parameters.add(new Parameter(name, "Component.callback('" + name + "', '" + urlfor.action(Sails.eventContextName(component.getClass()), name) + "', {method: '" + callback.getAnnotation(Callback.class).method().toString().toLowerCase() + "'})"));
+			StringBuilder callbackBuffer = new StringBuilder();
+			callbackBuffer.append("Component.callback('");
+			callbackBuffer.append(name);
+			callbackBuffer.append("', '");
+			callbackBuffer.append(urlfor.action(Sails.eventContextName(component.getClass()), name));
+			callbackBuffer.append("', {method: '");
+			callbackBuffer.append(callback.getAnnotation(Callback.class).method().toString().toLowerCase());
+			callbackBuffer.append("', parameters: '");
+			callbackBuffer.append(stringRemeberedFields);
+			callbackBuffer.append("'})");
+			parameters.add(new Parameter(name,  callbackBuffer.toString()));
 		}
 		
 		for (Map.Entry<String, String> node : component.domNodes.entrySet())

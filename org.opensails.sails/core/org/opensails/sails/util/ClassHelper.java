@@ -116,10 +116,14 @@ public class ClassHelper {
 	
 	@SuppressWarnings("unchecked")
 	public static Object readField(Object target, String name, boolean publicOnly) {
+		Field field = fieldNamed(target.getClass(), name);
+		if (!publicOnly)
+			field.setAccessible(true);
+		return readField(target, field);
+	}
+
+	public static Object readField(Object target, Field field) {
 		try {
-			Field field = fieldNamed(target.getClass(), name);
-			if (!publicOnly)
-				field.setAccessible(true);
 			return field.get(target);
 		} catch (Throwable t) {
 			return null;
@@ -130,8 +134,16 @@ public class ClassHelper {
 		return readField(target, name, true);
 	}
 
-	public static Field[] fieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
+	public static Field[] declaredFieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
 		Field[] declaredFields = clazz.getDeclaredFields();
+		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
+		for (Field field : declaredFields)
+			if (field.isAnnotationPresent(annotation)) annotatedFields.add(field);
+		return annotatedFields.toArray(new Field[annotatedFields.size()]);
+	}
+	
+	public static Field[] fieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
+		Field[] declaredFields = clazz.getFields();
 		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
 		for (Field field : declaredFields)
 			if (field.isAnnotationPresent(annotation)) annotatedFields.add(field);
@@ -153,7 +165,7 @@ public class ClassHelper {
 		return fields.toArray(new Field[fields.size()]);
 	}
 
-	public static Field[] fieldsUniquelyAnnotated(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+	public static Field[] declaredFieldsUniquelyAnnotated(Class<?> clazz, Class<? extends Annotation> annotationClass) {
 		Field[] declaredFields = clazz.getDeclaredFields();
 		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
 		Set<Annotation> annotations = new HashSet<Annotation>(declaredFields.length);

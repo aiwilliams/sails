@@ -6,6 +6,7 @@ import java.util.Map;
 import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
+import org.opensails.sails.component.Remembered;
 import org.opensails.sails.event.oem.AbstractEventProcessingContext;
 import org.opensails.sails.mixins.BuiltinScript;
 import org.opensails.sails.template.IMixinResolver;
@@ -19,7 +20,7 @@ public class BaseComponent extends AbstractEventProcessingContext<IComponent> im
 	protected ScopedContainer container;
 	protected ITemplateRenderer<IBinding> renderer;
 	protected Map<String, String> domNodes = new HashMap<String, String>();
-	public String id;
+	@Remembered public String id;
 
 	/**
 	 * Override to configure the component container after creation.
@@ -77,6 +78,7 @@ public class BaseComponent extends AbstractEventProcessingContext<IComponent> im
 
 	public ComponentScript scriptInit() {
 		getContainer().instance(Require.class).componentApplicationScript(new BuiltinScript(event).builtin("component.js"));
+		getContainer().instance(Require.class).componentApplicationScript(new BuiltinScript(event).builtin("prototype.js"));
 		return new ComponentScript(this);
 	}
 
