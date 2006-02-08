@@ -34,6 +34,18 @@
       <email>mikehale@gmail.com</email>
       <timezone>EDT</timezone>
     </developer>
+    <developer>
+      <id>aiwilliams</id>
+      <name>Adam Williams</name>
+      <email>adam@thewilliams.ws</email>
+      <timezone>EDT</timezone>
+    </developer>
+    <developer>
+      <id>bogus</id>
+      <name>David Bogus</name>
+      <email>davidbogus@gmail.com</email>
+      <timezone>EDT</timezone>
+    </developer>
   </developers>
 
   <scm>
