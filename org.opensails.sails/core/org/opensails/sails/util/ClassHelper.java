@@ -253,4 +253,12 @@ public class ClassHelper {
 		char upper = Character.toUpperCase(string.charAt(0));
 		return upper + string.substring(1);
 	}
+
+	public static void writeField(Field field, Object target, Object value) {
+		try {
+			field.set(target, value);
+		} catch (Exception e) {
+			throw new SailsException("Could not write field.", e);
+		}
+	}
 }

@@ -50,7 +50,7 @@ public class FormFields {
 			String key = (String) objects[i];
 			Object value = objects[i + 1];
 			if (value instanceof String[]) map.put(key, (String[]) value);
-			else map.put(key, new String[] { (String) value });
+			else map.put(key, new String[] { String.valueOf(value) });
 		}
 		return new FormFields(map);
 	}

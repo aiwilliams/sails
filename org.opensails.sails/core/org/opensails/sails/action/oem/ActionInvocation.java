@@ -126,4 +126,8 @@ public class ActionInvocation {
 	private boolean isActionResult(Object returnValue) {
 		return returnValue != null && returnValue instanceof IActionResult;
 	}
+
+	public String getFormField(String name) {
+		return event.getFieldValue(name);
+	}
 }

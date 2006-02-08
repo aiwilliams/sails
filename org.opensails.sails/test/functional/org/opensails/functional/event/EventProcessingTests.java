@@ -17,6 +17,17 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 	private int beginExecutionCallCount = 0;
 	private int endExecutionCallCount;
 
+	private void assertHeardActionEvents() {
+		// Once for application container, once for event container
+		assertEquals(2, beginExecutionCallCount);
+		assertEquals(2, endExecutionCallCount);
+	}
+
+	private void registerAsActionListener(SailsFunctionalTester tester) {
+		tester.getContainer().register(this);
+		tester.getRequestContainer().register(this);
+	}
+
 	public void beginExecution(IAction action) {
 		beginExecutionCallCount++;
 	}
@@ -40,18 +51,18 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		assertHeardActionEvents();
 	}
 
-	public void testGet_DifferentTemplateRendered() {
-		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		Page page = tester.get("differentTemplate");
-		page.assertContains("rendered different/template");
-	}
-
 	public void testGet_ActionsInSuperclass() {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestSubclassController.class);
 		registerAsActionListener(tester);
 		Page page = tester.get("simpleGet");
 		page.assertTemplate("eventTestSubclass/simpleGet");
 		assertHeardActionEvents();
+	}
+
+	public void testGet_DifferentTemplateRendered() {
+		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
+		Page page = tester.get("differentTemplate");
+		page.assertContains("rendered different/template");
 	}
 
 	public void testGet_NoCodeBehind() {
@@ -86,6 +97,14 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		assertHeardActionEvents();
 	}
 
+	public void testPost_FieldsAdaptedAndSet() {
+		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
+		Page page = tester.post("simplePost", FormFields.quick("stringField", "postedStringFieldValue", "intField", 3, "floatField", 5.4));
+		page.assertContains("postedStringFieldValue");
+		page.assertContains("3");
+		page.assertExcludes("5.4");
+	}
+
 	public void testPost_MetaAction_ImageSubmit_Parameters() {
 		FormFields fields = new FormFields();
 		fields.setValue("postedField", "postedValue");
@@ -114,16 +133,5 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		page.assertContains("postedValue");
 		page.assertContains("one");
 		page.assertContains("2");
-	}
-
-	private void assertHeardActionEvents() {
-		// Once for application container, once for event container
-		assertEquals(2, beginExecutionCallCount);
-		assertEquals(2, endExecutionCallCount);
-	}
-
-	private void registerAsActionListener(SailsFunctionalTester tester) {
-		tester.getContainer().register(this);
-		tester.getRequestContainer().register(this);
 	}
 }

@@ -1,15 +1,27 @@
 package org.opensails.sails.action.oem;
 
-import java.lang.annotation.*;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.opensails.sails.*;
-import org.opensails.sails.action.*;
-import org.opensails.sails.adapter.*;
-import org.opensails.sails.annotate.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.util.*;
+import org.opensails.sails.RequestContainer;
+import org.opensails.sails.action.IAction;
+import org.opensails.sails.action.IActionListener;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.annotate.Behavior;
+import org.opensails.sails.annotate.BehaviorInstance;
+import org.opensails.sails.annotate.IBehaviorHandler;
+import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.util.ClassHelper;
 
 /**
  * An Action as seen by the Sails framework.
@@ -24,18 +36,19 @@ public class Action implements IAction {
 
 	protected final Method[] actionMethods;
 	protected final IAdapterResolver adapterResolver;
-	protected final Class<? extends IEventProcessingContext> processor;
+	protected final Class<? extends IEventProcessingContext> contextClass;
 	protected final String name;
 
-	public Action(String name, Class<? extends IEventProcessingContext> processor, IAdapterResolver adapterResolver) {
+	public Action(String name, Class<? extends IEventProcessingContext> contextClass, IAdapterResolver adapterResolver) {
 		this.name = name;
-		this.processor = processor;
+		this.contextClass = contextClass;
 		this.adapterResolver = adapterResolver;
-		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(processor, name);
+		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(contextClass, name);
 	}
 
 	public IActionResult execute(ActionInvocation invocation) {
 		beginExecution(invocation);
+		setFields(invocation);
 		if (beforeBehaviors(invocation)) invocation.invoke();
 		else invocation.result = invocation.getContext().getActionResult();
 		afterBehaviors(invocation);
@@ -45,13 +58,26 @@ public class Action implements IAction {
 		return invocation.result;
 	}
 
+	@SuppressWarnings("unchecked")
+	protected void setFields(ActionInvocation invocation) {
+		IEventProcessingContext context = invocation.getContext();
+		if (context == null) return;
+		for (Field field : context.getClass().getFields()) {
+			String formField = invocation.getFormField(field.getName());
+			if (formField != null) {
+				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
+				ClassHelper.writeField(field, context, adapter.forModel(field.getType(), formField));
+			}
+		}
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	@Override
 	public String toString() {
-		return processor + "#" + name;
+		return contextClass + "#" + name;
 	}
 
 	private BehaviorInstance[] allBehaviors(ActionInvocation invocation) {
