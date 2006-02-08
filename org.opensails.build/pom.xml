@@ -51,6 +51,11 @@
 	        <target>1.5</target>
 	      </configuration>
 	    </plugin>
+	    
+	    <plugin>
+	      <groupId>org.codehaus.mojo</groupId>
+	      <artifactId>changelog-maven-plugin</artifactId>
+	    </plugin>
 	  </plugins>
 	</build>
 
