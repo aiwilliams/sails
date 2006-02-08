@@ -51,6 +51,7 @@
             <phase>generate-sources</phase>
 	        <configuration>
 	          <sourceDirectory>${basedir}/src/java/org/opensails/viento/parser</sourceDirectory>
+	          <outputDirectory>${basedir}/src/java/org/opensails/viento/parser</outputDirectory>
 	        </configuration>
             <goals>
               <goal>jjtree</goal>
