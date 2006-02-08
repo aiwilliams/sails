@@ -5,7 +5,28 @@
   <groupId>org.opensails</groupId>
   <artifactId>opensails-all</artifactId>
   <version>1.0-SNAPSHOT</version>
+  
+  <inceptionYear>2004</inceptionYear>
+  <url>http://opensails.org</url>
+  
+  <issueManagement>
+  	<system>Trac</system>
+  	<url>http://trac.opensails.org/sails/report</url>
+  </issueManagement>
+  
+  <ciManagement>
+  	<system>Continuum</system>
+  	<url>http://build.opensails.org</url>
+  </ciManagement>
 
+  <developers>
+    <developer>
+      <id>mikehale</id>
+      <name>Michael Hale</name>
+      <email>mikehale@gmail.com</email>
+      <timezone>EDT</timezone>
+    </developer>
+  </developers>
 
   <scm>
   	<connection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.build/</connection>
@@ -20,6 +41,7 @@
   </modules>
 
 	<build>
+	  <defaultGoal>package</defaultGoal>
 	  <plugins>
 	    <plugin>
 	      <groupId>org.apache.maven.plugins</groupId>
