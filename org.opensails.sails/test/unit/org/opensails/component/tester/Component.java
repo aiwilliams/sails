@@ -6,7 +6,7 @@ public class Component extends BaseComponent {
 	public void initialize() {}
 
 	@Override
-	public String render() {
+	public String renderThyself() {
 		return ""; // we don't want a view
 	}
 }

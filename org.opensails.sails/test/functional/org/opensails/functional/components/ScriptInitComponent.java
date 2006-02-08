@@ -16,7 +16,7 @@ public class ScriptInitComponent extends BaseComponent {
 	}
 	
 	@Override
-	public String render() {
+	public String renderThyself() {
 		return scriptInit().render();
 	}
 }

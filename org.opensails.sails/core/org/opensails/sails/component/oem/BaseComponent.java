@@ -68,7 +68,7 @@ public class BaseComponent extends AbstractEventProcessingContext<IComponent> im
 	/**
 	 * @return the output of the component
 	 */
-	public String render() {
+	public String renderThyself() {
 		String identifier = getTemplatePath("view");
 		try {
 			return renderer.render(identifier, getBinding()).toString();
