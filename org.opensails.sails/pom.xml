@@ -21,6 +21,11 @@
   	<build>
       <sourceDirectory>.</sourceDirectory>
       <testSourceDirectory>test</testSourceDirectory>
+      <testResources>
+      	<testResource><directory>test/unit</directory></testResource>
+      	<testResource><directory>builtin</directory></testResource>
+      	<testResource><directory>builtin/views</directory></testResource>
+      </testResources>
   	
 	  <plugins>
 	    <plugin>
@@ -33,6 +38,7 @@
 	      	</excludes>
 	      	<includes>
 		      	<include>core/**</include>
+		      	<include>builtin/**</include>
 		      	<include>builtin/**</include>
 		      	<include>builtin/views/**</include>
 		      	<include>generators/src/**</include>
