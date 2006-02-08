@@ -1,11 +1,14 @@
 package org.opensails.ezfile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 public class RealEzFile implements EzFile {
 	/**
-	 * @param relativeTo
-	 *            the Class path is relative to
+	 * @param relativeTo the Class path is relative to
 	 * @param path
 	 * @return a RealEzFile for the path as found by Class#getResource()
 	 */
@@ -13,11 +16,14 @@ public class RealEzFile implements EzFile {
 		return new RealEzFile(relativeTo.getResource(path).getFile());
 	}
 
+	public static RealEzFile resource(String... path) {
+		return new RealEzFile(path);
+	}
+
 	protected File file;
 
 	public RealEzFile(File file) {
-		if (file.exists() && !file.isFile())
-			throw new IllegalArgumentException("Not a file " + file);
+		if (file.exists() && !file.isFile()) throw new IllegalArgumentException("Not a file " + file);
 		this.file = file;
 	}
 
@@ -67,8 +73,7 @@ public class RealEzFile implements EzFile {
 				try {
 					writer.flush();
 					writer.close();
-				} catch (Exception ex) {
-				}
+				} catch (Exception ex) {}
 			}
 		}
 	}
@@ -76,8 +81,7 @@ public class RealEzFile implements EzFile {
 	public String text() {
 		try {
 			long length = file.length();
-			if (length > Integer.MAX_VALUE)
-				throw new RuntimeException("Need to handle larger files");
+			if (length > Integer.MAX_VALUE) throw new RuntimeException("Need to handle larger files");
 
 			StringBuffer content = new StringBuffer((int) length);
 			FileReader reader = new FileReader(file);
@@ -95,6 +99,5 @@ public class RealEzFile implements EzFile {
 	/**
 	 * BDUF nop
 	 */
-	public void touch() {
-	}
+	public void touch() {}
 }
