@@ -1,26 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?><project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>org.opensails</groupId>
   <artifactId>build</artifactId>
-  <packaging>pom</packaging>
-  <version>1.0</version>
-  <url>http://opensails.org</url>
-  <issueManagement>
-    <system>Trac</system>
-    <url>http://trac.opensails.org/sails/report</url>
-  </issueManagement>
-  <ciManagement>
-    <system>Continuum</system>
-    <url>http://build.opensails.org</url>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>developers@lists.opensails.org</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
+  <version>1.0-SNAPSHOT</version>
+  
   <inceptionYear>2004</inceptionYear>
+  <url>http://opensails.org</url>
+  
+  <issueManagement>
+  	<system>Trac</system>
+  	<url>http://trac.opensails.org/sails/report</url>
+  </issueManagement>
+  
+  <ciManagement>
+  	<system>Continuum</system>
+  	<url>http://build.opensails.org</url>
+  	<notifiers>
+	  <notifier>
+	  	<type>mail</type>
+  		<configuration>
+		    <address>developers@lists.opensails.org</address>
+		</configuration>
+	  </notifier>
+  	</notifiers>
+  </ciManagement>
+  
+  <distributionManagement>
+    <repository>
+      <id>opensails.org</id>
+      <name>OpenSails Maven Repository</name>
+      <url>scp://aiwilliams@opensails.org:/download</url>
+    </repository>
+  </distributionManagement>
+
   <developers>
     <developer>
       <id>mikehale</id>
@@ -41,42 +55,44 @@
       <timezone>EDT</timezone>
     </developer>
   </developers>
+
   <scm>
-    <connection>scm:svn:http://opensails.org/svn/sails/tags/abc/org.opensails.build/</connection>
-    <developerConnection>scm:svn:http://mikehale@opensails.org/svn/sails/tags/abc/org.opensails.build/</developerConnection>
+  	<connection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.build/</connection>
+  	<developerConnection>scm:svn:http://mikehale@opensails.org/svn/sails/trunk/org.opensails.build/</developerConnection>
   </scm>
-  <build>
-    <defaultGoal>package</defaultGoal>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>changelog-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <tagBase>svn:http://opensails.org/svn/sails/tags/mavenRelease</tagBase>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+
+  
+  <packaging>pom</packaging>
   <modules>
     <module>../org.opensails.viento</module>
     <module>../org.opensails.rigging</module>
     <module>../org.opensails.sails</module>
   </modules>
-  <distributionManagement>
-    <repository>
-      <id>opensails.org</id>
-      <name>OpenSails Maven Repository</name>
-      <url>scp://aiwilliams@opensails.org:/download</url>
-    </repository>
-  </distributionManagement>
+
+	<build>
+	  <defaultGoal>package</defaultGoal>
+	  <plugins>
+	    <plugin>
+	      <groupId>org.apache.maven.plugins</groupId>
+	      <artifactId>maven-compiler-plugin</artifactId>
+	      <configuration>
+	        <source>1.5</source>
+	        <target>1.5</target>
+	      </configuration>
+	    </plugin>
+	    
+	    <plugin>
+	      <groupId>org.codehaus.mojo</groupId>
+	      <artifactId>changelog-maven-plugin</artifactId>
+	    </plugin>
+	    
+	    <plugin>
+	        <artifactId>maven-release-plugin</artifactId>
+	        <configuration>
+	          <tagBase>svn:http://opensails.org/svn/sails/tags/mavenRelease</tagBase>
+	        </configuration>
+	    </plugin>
+	  </plugins>
+	</build>
+
 </project>
