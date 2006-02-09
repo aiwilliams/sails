@@ -2,7 +2,6 @@ package org.opensails.prevayler.acceptance;
 
 import java.util.Iterator;
 
-import org.opensails.prevayler.IdentifiableString;
 import org.opensails.prevayler.PrevaylerPersister;
 
 public class Read extends ExternalMain {

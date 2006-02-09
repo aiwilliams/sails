@@ -1,7 +1,8 @@
-package org.opensails.prevayler;
+package org.opensails.prevayler.commands;
 
 import java.util.Date;
 
+import org.opensails.prevayler.IdentifiableObjectPrevalentSystem;
 import org.opensails.sails.persist.IIdentifiable;
 import org.prevayler.Transaction;
 

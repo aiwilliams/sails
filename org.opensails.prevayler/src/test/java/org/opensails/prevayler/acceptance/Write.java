@@ -1,6 +1,5 @@
 package org.opensails.prevayler.acceptance;
 
-import org.opensails.prevayler.IdentifiableString;
 import org.opensails.prevayler.PrevaylerPersister;
 
 public class Write extends ExternalMain {

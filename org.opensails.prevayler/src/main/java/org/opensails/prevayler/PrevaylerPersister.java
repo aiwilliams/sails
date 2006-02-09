@@ -3,12 +3,15 @@ package org.opensails.prevayler;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.opensails.sails.persist.IDataMapper;
+import org.opensails.prevayler.commands.DestroyCommand;
+import org.opensails.prevayler.commands.FindCommand;
+import org.opensails.prevayler.commands.SaveCommand;
 import org.opensails.sails.persist.IIdentifiable;
+import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.persist.PersistException;
 import org.prevayler.Prevayler;
 
-public class PrevaylerPersister implements IDataMapper {
+public class PrevaylerPersister implements IObjectPersister {
 	private final Prevayler prevayler;
 
 	public PrevaylerPersister(Prevayler prevayler) {

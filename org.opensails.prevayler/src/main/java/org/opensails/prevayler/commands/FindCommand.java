@@ -1,7 +1,8 @@
-package org.opensails.prevayler;
+package org.opensails.prevayler.commands;
 
 import java.util.Date;
 
+import org.opensails.prevayler.IdentifiableObjectPrevalentSystem;
 import org.prevayler.TransactionWithQuery;
 
 public class FindCommand implements TransactionWithQuery {

@@ -5,23 +5,24 @@ import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.BaseConfigurator;
-import org.opensails.sails.persist.IDataMapper;
+import org.opensails.sails.persist.IObjectPersister;
 import org.prevayler.Prevayler;
 
 public abstract class PrevaylerApplicationConfigurator extends BaseConfigurator {
 
 	// TODO why do I need to implement this method in addition to installObjectPersister()? I don't understand it's usefullness. This should probably be tested.
+	// For Database based persistance IObjectPersisters are registered at the Request scope to keep transactions as short lived as possible.
 	@Override
 	public void configure(ISailsEvent event, RequestContainer eventContainer) {
 		super.configure(event, eventContainer);
-		eventContainer.register(IDataMapper.class, PrevaylerPersister.class);
+		eventContainer.register(IObjectPersister.class, PrevaylerPersister.class);
 	}
 
 	@Override
 	protected void installObjectPersister(IConfigurableSailsApplication application, ScopedContainer container) {
 		super.installObjectPersister(application, container);
 		container.register(Prevayler.class, getPrevayler());
-		container.register(IDataMapper.class, PrevaylerPersister.class);
+		container.register(IObjectPersister.class, PrevaylerPersister.class);
 	}
 
 	/**

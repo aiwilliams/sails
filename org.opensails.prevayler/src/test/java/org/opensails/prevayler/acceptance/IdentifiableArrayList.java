@@ -1,4 +1,4 @@
-package org.opensails.prevayler;
+package org.opensails.prevayler.acceptance;
 
 import java.io.Serializable;
 import java.util.ArrayList;

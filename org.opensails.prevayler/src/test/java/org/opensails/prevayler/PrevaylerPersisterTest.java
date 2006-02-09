@@ -4,20 +4,24 @@ import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.persist.IDataMapper;
+import org.opensails.prevayler.acceptance.IdentifiableArrayList;
+import org.opensails.prevayler.acceptance.IdentifiableString;
+import org.opensails.sails.persist.IObjectPersister;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
 public class PrevaylerPersisterTest extends TestCase {
 
+	protected IdentifiableObjectPrevalentSystem prevalantSystem;
+
 	protected Prevayler prevayler;
 
-	protected IDataMapper dataMapper;
+	protected IObjectPersister dataMapper;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		IdentifiableObjectPrevalentSystem prevalantSystem = new IdentifiableObjectPrevalentSystem();
+		prevalantSystem = new IdentifiableObjectPrevalentSystem();
 		prevayler = PrevaylerFactory.createTransientPrevayler(prevalantSystem);
 		dataMapper = new PrevaylerPersister(prevayler);
 	}
