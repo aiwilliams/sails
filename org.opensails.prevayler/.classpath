@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/prevayler-2.02.006.jar"/>
+	<classpathentry sourcepath="/org.opensails.sails.vendor/src/junit_src.zip" kind="lib" path="/org.opensails.sails.vendor/lib/junit.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails"/>
-	<classpathentry exported="true" sourcepath="/org.junit/junitsrc.zip" kind="lib" path="/org.junit/junit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
