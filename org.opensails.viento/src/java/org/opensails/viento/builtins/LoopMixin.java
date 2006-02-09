@@ -10,6 +10,14 @@ import java.util.Set;
 import org.opensails.viento.Block;
 
 public class LoopMixin {
+	public Loop before(Collection target, Object block) {
+		return new Loop(target).before(block);
+	}
+
+	public Loop before(Object[] target, Object block) {
+		return new Loop(target).before(block);
+	}
+
 	public Loop each(Collection target, String temp, Block each) {
 		return new Loop(target).each(temp, each);
 	}
@@ -17,47 +25,39 @@ public class LoopMixin {
 	public Loop each(Collection target, String temp, String indexTemp, Block each) {
 		return new Loop(target).each(temp, indexTemp, each);
 	}
-	
-	public Loop before(Collection target, Object block) {
-		return new Loop(target).before(block);
-	}
-	
+
 	public Loop each(Object[] target, String temp, Block each) {
 		return new Loop(target).each(temp, each);
 	}
-	
+
 	public Loop each(Object[] target, String temp, String indexTemp, Block each) {
 		return new Loop(target).each(temp, indexTemp, each);
 	}
-	
-	public Loop before(Object[] target, Object block) {
-		return new Loop(target).before(block);
-	}
-	
-	public Loop sans(Object[] target, Map<String, Object> filter) {
-		return new Loop(target).sans(filter);
-	}
-	
-	public Loop sans(Object[] target, Collection<Object> objects) {
-		return new Loop(target).sans(objects);
-	}
-	
-	public Loop sans(Object[] target, Object object) {
-		return new Loop(target).sans(object);
-	}
-	
-	public Loop sans(Collection target, Map<String, Object> filter) {
-		return new Loop(target).sans(filter);
-	}
-	
+
 	public Loop sans(Collection target, Collection<Object> objects) {
 		return new Loop(target).sans(objects);
 	}
-	
+
+	public Loop sans(Collection target, Map<String, Object> filter) {
+		return new Loop(target).sans(filter);
+	}
+
 	public Loop sans(Collection target, Object object) {
 		return new Loop(target).sans(object);
 	}
-	
+
+	public Loop sans(Object[] target, Collection<Object> objects) {
+		return new Loop(target).sans(objects);
+	}
+
+	public Loop sans(Object[] target, Map<String, Object> filter) {
+		return new Loop(target).sans(filter);
+	}
+
+	public Loop sans(Object[] target, Object object) {
+		return new Loop(target).sans(object);
+	}
+
 	public class Loop {
 		private Object[] target;
 		private String temp;
@@ -66,19 +66,30 @@ public class LoopMixin {
 		private Object before;
 		private Object after;
 		private Object delimiter;
+		private boolean trim;
 		private Set<Object> removals = new HashSet<Object>();
 		private Map<String, Object> filter;
 
 		public Loop(Collection target) {
 			this.target = target.toArray();
 		}
-		
+
 		public Loop(Object[] target) {
 			this.target = target;
 		}
 		
+		public Loop trim() {
+			trim = true;
+			return this;
+		}
+
 		public Loop after(Object after) {
 			this.after = after;
+			return this;
+		}
+
+		public Loop before(Object before) {
+			this.before = before;
 			return this;
 		}
 
@@ -87,50 +98,44 @@ public class LoopMixin {
 			return this;
 		}
 
-		public Loop before(Object before) {
-			this.before = before;
-			return this;
-		}
-		
 		public Loop each(String temp, Block each) {
 			this.temp = temp;
 			this.indexTemp = "index";
 			this.each = each;
 			return this;
 		}
-		
+
 		public Loop each(String temp, String indexTemp, Block each) {
 			this.temp = temp;
 			this.indexTemp = indexTemp;
 			this.each = each;
 			return this;
 		}
-		
-		public Loop sans(Map<String, Object> filter) {
-			this.filter = filter;
-			return this;
-		}
-		
+
 		public Loop sans(Collection<Object> objects) {
 			removals.addAll(objects);
 			return this;
 		}
-		
+
+		public Loop sans(Map<String, Object> filter) {
+			this.filter = filter;
+			return this;
+		}
+
 		public Loop sans(Object object) {
 			removals.add(object);
 			return this;
 		}
 
-		@Override
-		public String toString() {
+		@Override public String toString() {
 			Collection<Object> filtered = filterTarget();
 			if (filtered.isEmpty())
 				return "";
 			StringBuilder buffer = new StringBuilder();
-			
+
 			if (before != null)
 				buffer.append(before);
-			
+
 			int index = 1;
 			Iterator iterator = filtered.iterator();
 			while (iterator.hasNext()) {
@@ -138,12 +143,12 @@ public class LoopMixin {
 
 				each.put(indexTemp, index++);
 				each.put(temp, item);
-				buffer.append(each);
-				
+				buffer.append(trim ? each.evaluate().trim() : each);
+
 				if (iterator.hasNext() && delimiter != null)
 					buffer.append(delimiter);
 			}
-			
+
 			if (after != null)
 				buffer.append(after);
 
@@ -164,7 +169,7 @@ public class LoopMixin {
 			for (Map.Entry<String, Object> entry : filter.entrySet()) {
 				try {
 					Object value = each.getBinding().call(item, entry.getKey());
-					if (entry.getValue() instanceof Collection && ((Collection)entry.getValue()).contains(value) || entry.getValue().equals(value))
+					if (entry.getValue() instanceof Collection && ((Collection) entry.getValue()).contains(value) || entry.getValue().equals(value))
 						return true;
 				} catch (Exception e) {
 				}
