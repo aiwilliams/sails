@@ -32,6 +32,9 @@
 	      <groupId>org.apache.maven.plugins</groupId>
 	      <artifactId>maven-compiler-plugin</artifactId>
 	      <configuration>
+	      	<testExcludes>
+	      	  <exclude>**/FlashTest.java</exclude>
+	      	</testExcludes>
 	      	<excludes>
 	      	  <exclude>generators/*.java</exclude>
 	      	  <exclude>generators/project/**</exclude>
