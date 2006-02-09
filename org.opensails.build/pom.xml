@@ -58,7 +58,7 @@
 
   <scm>
   	<connection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.build/</connection>
-  	<developerConnection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.build/</developerConnection>
+  	<developerConnection>scm:svn:http://mikehale@opensails.org/svn/sails/trunk/org.opensails.build/</developerConnection>
   </scm>
 
   <packaging>pom</packaging>
