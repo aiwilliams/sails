@@ -1,8 +1,11 @@
 package org.opensails.ezfile;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
@@ -75,6 +78,14 @@ public class RealEzFile implements EzFile {
 					writer.close();
 				} catch (Exception ex) {}
 			}
+		}
+	}
+
+	public InputStream stream() {
+		try {
+			return new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
