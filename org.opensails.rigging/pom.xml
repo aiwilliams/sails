@@ -4,7 +4,7 @@
 
   <parent>
     <groupId>org.opensails</groupId>
-    <artifactId>opensails-all</artifactId>
+    <artifactId>build</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
