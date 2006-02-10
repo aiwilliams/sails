@@ -9,6 +9,7 @@ import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.tester.components.TesterComponent;
 import org.opensails.sails.tester.controllers.TesterController;
+import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 
 public class SailsTesterTest extends TestCase {
 	/**
@@ -43,6 +44,13 @@ public class SailsTesterTest extends TestCase {
 		Page page = tester.get();
 		assertTrue(page.url().matches("http://"));
 		page.assertContains("Welcome to Sails");
+	}
+	public void testFollow_TestRedirectUrl() throws Exception {
+		SailsTester tester = SailsTesterFixture.create();
+		ShamHttpServletResponse response = response = new ShamHttpServletResponse();
+		response.sendRedirect("http://google.com");
+		Page page = tester.follow(new TestRedirectUrl(response ));
+		assertTrue(page.url().matches("http://google.com"));
 	}
 
 	public void testGetRequestContainer() {

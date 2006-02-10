@@ -25,6 +25,13 @@ import org.opensails.sails.util.ClassInstanceAccessor;
 /**
  * Think of this as being a browser. Through it you request pages, and it
  * communicates with an ISailsApplication to render responses.
+ * 
+ * <pre>
+ *   The main methods to understand browser simulation 
+ *   #get(String, String, String[])
+ *   #post(Class, FormFields, Object[])
+ *   #follow(TestRedirectUrl)
+ * </pre>
  */
 public class SailsTester implements ISailsApplication {
 	protected TestableSailsApplication application;
@@ -239,6 +246,10 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public Page get(String context, String action, String... parameters) {
 		TestGetEvent event = createGetEvent(context, action, parameters);
+		return get(event);
+	}
+
+	protected Page get(TestGetEvent event) {
 		event.getContainer().registerAll(getRequestContainer());
 		return doGet(event);
 	}
@@ -380,4 +391,19 @@ public class SailsTester implements ISailsApplication {
 	public String workingContext() {
 		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
 	}
+
+	/**
+	 * Performs an HTTP GET request to follow a redirect sent in a previous Page
+	 * response
+	 * <p>
+	 * 
+	 * 
+	 * @param redirect the url to get to follow the http redirect command
+	 * 
+	 * @return the page for the given context/action
+	 */
+	public Page follow(TestRedirectUrl redirect) {
+		return get(createGetEvent(redirect.toString()));
+	}
+
 }
