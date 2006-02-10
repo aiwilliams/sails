@@ -18,6 +18,11 @@ public class TestRedirectUrlTest extends TestCase {
 		response.sendRedirect("some location");
 		new TestRedirectUrl(response).assertMatches("some location");
 	}
+	public void testToString() throws Exception {
+		response.sendRedirect("some location");
+		assertEquals("some location", new TestRedirectUrl(response).toString());
+	}
+
 
 	public void testConstructorShouldBlowUpIfNoRedirectHasBeenSent() {
 		try {
