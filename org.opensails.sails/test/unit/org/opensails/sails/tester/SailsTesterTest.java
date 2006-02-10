@@ -45,12 +45,20 @@ public class SailsTesterTest extends TestCase {
 		assertTrue(page.url().matches("http://"));
 		page.assertContains("Welcome to Sails");
 	}
+
 	public void testFollow_TestRedirectUrl() throws Exception {
 		SailsTester tester = SailsTesterFixture.create();
 		ShamHttpServletResponse response = response = new ShamHttpServletResponse();
 		response.sendRedirect("http://google.com");
-		Page page = tester.follow(new TestRedirectUrl(response ));
+		Page page = tester.follow(new TestRedirectUrl(response));
 		assertTrue(page.url().matches("http://google.com"));
+	}
+	
+	public void testFollow_TestRedirectUrl_ToASailsController() {
+		SailsTester tester = new SailsTester(ShamConfigurator.class);
+		Page redirect = tester.get(TesterController.class, "redirect");
+		Page otherAction = tester.follow(redirect.redirectUrl());
+		otherAction.assertContains("Made it!");
 	}
 
 	public void testGetRequestContainer() {
@@ -91,6 +99,7 @@ public class SailsTesterTest extends TestCase {
 	public static class ReallyIDo implements ILoveTesting {}
 
 	public static class ReallyReallyIDo implements ILoveTesting {}
+
 	public static class IDo implements ILoveTesting {}
 
 	public static class ShamConfigurator extends BaseConfigurator {

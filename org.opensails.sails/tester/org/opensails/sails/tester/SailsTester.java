@@ -27,10 +27,10 @@ import org.opensails.sails.util.ClassInstanceAccessor;
  * communicates with an ISailsApplication to render responses.
  * 
  * <pre>
- *   The main methods to understand browser simulation 
- *   #get(String, String, String[])
- *   #post(Class, FormFields, Object[])
- *   #follow(TestRedirectUrl)
+ *    The main methods to understand browser simulation 
+ *    #get(String, String, String[])
+ *    #post(Class, FormFields, Object[])
+ *    #follow(TestRedirectUrl)
  * </pre>
  */
 public class SailsTester implements ISailsApplication {
@@ -394,16 +394,13 @@ public class SailsTester implements ISailsApplication {
 
 	/**
 	 * Performs an HTTP GET request to follow a redirect sent in a previous Page
-	 * response
-	 * <p>
-	 * 
+	 * response <em> to a sails action only</em>
 	 * 
 	 * @param redirect the url to get to follow the http redirect command
-	 * 
 	 * @return the page for the given context/action
 	 */
 	public Page follow(TestRedirectUrl redirect) {
-		return get(createGetEvent(redirect.toString()));
+		return get(createGetEvent(redirect.pathInfo()));
 	}
 
 }

@@ -10,4 +10,8 @@ public class TesterController extends BaseController {
 	public void redirect() {
 		redirectAction(TesterController.class, "otherAction");
 	}
+	
+	public void otherAction() {
+		renderString("Made it!");
+	}
 }
