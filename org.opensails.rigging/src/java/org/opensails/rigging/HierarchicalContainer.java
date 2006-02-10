@@ -22,15 +22,8 @@ public class HierarchicalContainer extends SimpleContainer {
 			children.add(child);
 		}
 	}
-	
-	protected List<HierarchicalContainer> copyOfChildren() {
-		synchronized (children) {
-			return new ArrayList<HierarchicalContainer>(children);
-		}		
-	}
 
-	@Override
-	public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
+	@Override public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
 		Collection<T> instances = super.allInstances(type, shouldInstantiate);
 		for (HierarchicalContainer child : copyOfChildren())
 			instances.addAll(child.allInstances(type, shouldInstantiate));
@@ -43,8 +36,7 @@ public class HierarchicalContainer extends SimpleContainer {
 	 *         ancestry.
 	 * @see HierarchicalContainer#containsLocally(Class)
 	 */
-	@Override
-	public boolean contains(Class key) {
+	@Override public boolean contains(Class key) {
 		return containsLocally(key) || (parent != null && parent.contains(key));
 	}
 
@@ -61,10 +53,11 @@ public class HierarchicalContainer extends SimpleContainer {
 		return parent;
 	}
 
-	@Override
-	public <T> T instance(Class<T> key) {
-		if (containsLocally(key)) return super.instance(key);
-		if (parent == null) return null;
+	@Override public <T> T instance(Class<T> key) {
+		if (containsLocally(key))
+			return super.instance(key);
+		if (parent == null)
+			return null;
 		return parent.instance(key);
 	}
 
@@ -77,17 +70,23 @@ public class HierarchicalContainer extends SimpleContainer {
 		return child;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void makeLocal(Class key) {
+	@SuppressWarnings("unchecked") public void makeLocal(Class key) {
 		ComponentResolver resolver = resolverInHeirarchy(key);
-		if (resolver != null) registerResolver(key, resolver.cloneFor(this));
+		if (resolver != null)
+			registerResolver(key, resolver.cloneFor(this));
 	}
 
 	public void removeChild(HierarchicalContainer child) {
 		synchronized (children) {
 			children.remove(child);
-		}		
+		}
 		child.orphan();
+	}
+
+	protected List<HierarchicalContainer> copyOfChildren() {
+		synchronized (children) {
+			return new ArrayList<HierarchicalContainer>(children);
+		}
 	}
 
 	protected void orphan() {
