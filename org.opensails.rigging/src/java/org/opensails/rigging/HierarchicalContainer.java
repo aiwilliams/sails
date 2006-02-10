@@ -6,8 +6,7 @@ import java.util.List;
 
 public class HierarchicalContainer extends SimpleContainer {
 	protected HierarchicalContainer parent;
-
-	protected List<HierarchicalContainer> children;
+	private List<HierarchicalContainer> children;
 
 	public HierarchicalContainer() {
 		children = new ArrayList<HierarchicalContainer>();
@@ -18,14 +17,22 @@ public class HierarchicalContainer extends SimpleContainer {
 		this.parent = parent;
 	}
 
-	public void addChild(ScopedContainer child) {
-		children.add(child);
+	public void addChild(HierarchicalContainer child) {
+		synchronized (children) {
+			children.add(child);
+		}
+	}
+	
+	protected List<HierarchicalContainer> copyOfChildren() {
+		synchronized (children) {
+			return new ArrayList<HierarchicalContainer>(children);
+		}		
 	}
 
 	@Override
 	public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
 		Collection<T> instances = super.allInstances(type, shouldInstantiate);
-		for (HierarchicalContainer child : new ArrayList<HierarchicalContainer>(children))
+		for (HierarchicalContainer child : copyOfChildren())
 			instances.addAll(child.allInstances(type, shouldInstantiate));
 		return instances;
 	}
@@ -66,7 +73,7 @@ public class HierarchicalContainer extends SimpleContainer {
 	 */
 	public HierarchicalContainer makeChild() {
 		HierarchicalContainer child = new HierarchicalContainer(this);
-		children.add(child);
+		addChild(child);
 		return child;
 	}
 
@@ -77,7 +84,9 @@ public class HierarchicalContainer extends SimpleContainer {
 	}
 
 	public void removeChild(HierarchicalContainer child) {
-		children.remove(child);
+		synchronized (children) {
+			children.remove(child);
+		}		
 		child.orphan();
 	}
 

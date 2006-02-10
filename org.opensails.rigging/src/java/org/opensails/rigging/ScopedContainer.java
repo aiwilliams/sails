@@ -62,7 +62,7 @@ public class ScopedContainer extends HierarchicalContainer {
 	 */
 	public ScopedContainer makeChild(Enum scope) {
 		ScopedContainer child = new ScopedContainer(this, scope);
-		children.add(child);
+		addChild(child);
 		return child;
 	}
 
