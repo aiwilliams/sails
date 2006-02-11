@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.tester.util.CollectionAssert;
+import org.opensails.sails.util.Quick;
 
 public class FlashTest extends TestCase {
 	protected Flash flash = new Flash();
@@ -67,13 +68,13 @@ public class FlashTest extends TestCase {
 	}
 
 	public void testKeySet() throws Exception {
-		CollectionAssert.containsOnly(new String[] { "firstStuff", "secondStuff" }, flash.keySet());
+		CollectionAssert.containsOnly(Quick.list("firstStuff", "secondStuff"), flash.keySet());
 		flash.beginDispatch(null);
-		CollectionAssert.containsOnly(new String[] { "firstStuff", "secondStuff" }, flash.keySet());
+		CollectionAssert.containsOnly(Quick.list("firstStuff", "secondStuff"), flash.keySet());
 		putAfterBeginRequest();
-		CollectionAssert.containsOnly(new String[] { "firstStuff", "secondStuff", "thirdStuff" }, flash.keySet());
+		CollectionAssert.containsOnly(Quick.list("firstStuff", "secondStuff", "thirdStuff"), flash.keySet());
 		flash.endDispatch(null);
-		CollectionAssert.containsOnly(new String[] { "secondStuff", "thirdStuff" }, flash.keySet());
+		CollectionAssert.containsOnly(Quick.list("secondStuff", "thirdStuff"), flash.keySet());
 	}
 
 	public void testPutAll() throws Exception {
@@ -120,13 +121,13 @@ public class FlashTest extends TestCase {
 	}
 
 	public void testValues() {
-		CollectionAssert.containsOnly(new String[] { "firstStuffValue", "secondStuffValue" }, flash.values());
+		CollectionAssert.containsOnly(Quick.list("firstStuffValue", "secondStuffValue"), flash.values());
 		flash.beginDispatch(null);
-		CollectionAssert.containsOnly(new String[] { "firstStuffValue", "secondStuffValue" }, flash.values());
+		CollectionAssert.containsOnly(Quick.list("firstStuffValue", "secondStuffValue"), flash.values());
 		putAfterBeginRequest();
-		CollectionAssert.containsOnly(new String[] { "firstStuffValue", "newSecondStuffValue", "thirdStuffValue" }, flash.values());
+		CollectionAssert.containsOnly(Quick.list("firstStuffValue", "newSecondStuffValue", "thirdStuffValue"), flash.values());
 		flash.endDispatch(null);
-		CollectionAssert.containsOnly(new String[] { "newSecondStuffValue", "thirdStuffValue" }, flash.values());
+		CollectionAssert.containsOnly(Quick.list("newSecondStuffValue", "thirdStuffValue"), flash.values());
 	}
 
 	protected void putAfterBeginRequest() {
