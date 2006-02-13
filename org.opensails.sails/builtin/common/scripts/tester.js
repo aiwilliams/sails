@@ -38,8 +38,10 @@ Tester.prototype = {
 	assertTrue: function(condition, message) {
 		if (condition)
 			this.passed.push(message);
-		else
+		else {
+			log.error(message);
 			this.failed.push(message);
+		}
 	},
 	assertHidden: function(node, message) {
 		this.assertTrue(Element.getStyle(node, 'display') == 'none', 'Expected node [' + node + '] to be hidden ' + (message||''));
@@ -51,9 +53,6 @@ Tester.prototype = {
 		if (this.failed.length == 0)
 			log.info('Successful: ' + this.passed.length);
 		else {
-			this.failed.each(function(failure) {
-				log.error(failure);
-			});
 			log.error('Failed: ' + this.failed.length + ' Successful: ' + this.passed.length);
 		}
 	}
