@@ -56,7 +56,7 @@ Tester.prototype = {
 			});
 			log.error('Failed: ' + this.failed.length + ' Successful: ' + this.passed.length);
 		}
-	} 
+	}
 };
 
 var ShamTransport = Class.create();
