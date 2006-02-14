@@ -26,8 +26,31 @@ import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.RegexHelper;
 
 public class Page {
+	public class ExposedObject {
+		public Object value;
+
+		public ExposedObject(Object value) {
+			this.value = value;
+		}
+
+		// TODO: Make this support all the possible things the exposed value
+		// might be (Collection<T>, T[], etc)
+		@SuppressWarnings("unchecked")
+		public <T> void assertContainsOnly(T[] expected) {
+			CollectionAssert.containsOnly(expected, (Collection<T>) value);
+		}
+
+		public void assertEquals(Object expectedValue) {
+			Assert.assertEquals(expectedValue, value);
+		}
+
+		public void assertExists() {
+			Assert.assertNotNull(value);
+		}
+	}
 	protected final ISailsEvent event;
 	protected HttpServletRequest request;
+
 	protected ShamHttpServletResponse response;
 
 	public Page(ISailsEvent event) {
@@ -79,6 +102,24 @@ public class Page {
 
 	public void assertMatches(String message, String regex) {
 		assertPageExpectation(message + " Expected " + url() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
+	}
+
+	/**
+	 * If expected is not true, dump the content of the current browser page to
+	 * System.err and fail.
+	 */
+	protected void assertPageExpectation(String message, boolean expected) {
+		if (!expected) {
+			OutputStreamWriter stringWriter = new OutputStreamWriter(System.err);
+			try {
+				stringWriter.write(message);
+				stringWriter.write(" See source below:\n");
+				viewSource(stringWriter);
+			} catch (Exception e) {
+				throw new SailsException("Couldn't write to System.err");
+			}
+			Assert.fail(message);
+		}
 	}
 
 	/**
@@ -160,6 +201,10 @@ public class Page {
 		return new TestRedirectUrl(response);
 	}
 
+	public ScriptList scripts() {
+		return new ScriptList(source());
+	}
+
 	/**
 	 * @return the html source
 	 */
@@ -183,47 +228,6 @@ public class Page {
 			writer.flush();
 		} catch (IOException e) {
 			throw new SailsException("Unable to view source of page", e);
-		}
-	}
-
-	/**
-	 * If expected is not true, dump the content of the current browser page to
-	 * System.err and fail.
-	 */
-	protected void assertPageExpectation(String message, boolean expected) {
-		if (!expected) {
-			OutputStreamWriter stringWriter = new OutputStreamWriter(System.err);
-			try {
-				stringWriter.write(message);
-				stringWriter.write(" See source below:\n");
-				viewSource(stringWriter);
-			} catch (Exception e) {
-				throw new SailsException("Couldn't write to System.err");
-			}
-			Assert.fail(message);
-		}
-	}
-
-	public class ExposedObject {
-		public Object value;
-
-		public ExposedObject(Object value) {
-			this.value = value;
-		}
-
-		// TODO: Make this support all the possible things the exposed value
-		// might be (Collection<T>, T[], etc)
-		@SuppressWarnings("unchecked")
-		public <T> void assertContainsOnly(T[] expected) {
-			CollectionAssert.containsOnly(expected, (Collection<T>) value);
-		}
-
-		public void assertEquals(Object expectedValue) {
-			Assert.assertEquals(expectedValue, value);
-		}
-
-		public void assertExists() {
-			Assert.assertNotNull(value);
 		}
 	}
 }

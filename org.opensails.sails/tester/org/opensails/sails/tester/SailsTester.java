@@ -280,6 +280,16 @@ public class SailsTester implements ISailsApplication {
 		return (session == null && create) ? session = new ShamHttpSession() : session;
 	}
 
+	/**
+	 * Performs a get and renders the provided templateContent.
+	 * 
+	 * @param templateContent
+	 * @return the rendered page
+	 */
+	public Page getTemplated(String templateContent) {
+		return doGet(createVirtualEvent("dynamicallyGeneratedInSailsTester/getTemplated", templateContent));
+	}
+
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
 		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
 	}

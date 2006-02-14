@@ -2,16 +2,25 @@ package org.opensails.sails.mixins;
 
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.html.Script;
+import org.opensails.sails.template.Require;
 import org.opensails.sails.url.UrlType;
 
 public class BuiltinScript extends Script {
-	private final ISailsEvent event;
+	protected final ISailsEvent event;
+	protected Require require;
 
 	public BuiltinScript(ISailsEvent event) {
 		this.event = event;
 	}
 
+	public BuiltinScript(Require require, ISailsEvent event) {
+		this.require = require;
+		this.event = event;
+	}
+
 	public BuiltinScript builtin(String argument) {
-		return (BuiltinScript) src(event.resolve(UrlType.SCRIPT_BUILTIN, argument));
+		BuiltinScript builtin = (BuiltinScript) src(event.resolve(UrlType.SCRIPT_BUILTIN, argument));
+		if (require != null) require.script(builtin);
+		return builtin;
 	}
 }

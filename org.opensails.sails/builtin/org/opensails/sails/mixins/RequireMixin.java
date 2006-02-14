@@ -51,6 +51,10 @@ public class RequireMixin {
 		return require.output();
 	}
 
+	public BuiltinScript script() {
+		return new BuiltinScript(require, event);
+	}
+
 	public void script(IUrl url) {
 		require.script(new Script(url));
 	}
