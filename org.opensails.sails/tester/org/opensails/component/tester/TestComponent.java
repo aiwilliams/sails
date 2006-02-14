@@ -1,8 +1,5 @@
 package org.opensails.component.tester;
 
-import java.io.InputStream;
-
-import org.apache.tools.ant.filters.StringInputStream;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.Sails;
 import org.opensails.sails.component.IComponent;
@@ -37,13 +34,6 @@ public class TestComponent<C extends IComponentImpl> {
 		instance = component.createFactory(event).create(arguments);
 		exposeForUseInDynamicTemplate(instance);
 		return (C) instance;
-	}
-
-	/**
-	 * @return an InputStream that is a 'template' that refers to this component
-	 */
-	public InputStream referringTemplateContent() {
-		return new StringInputStream("$instance");
 	}
 
 	public Page render(Object... initializationArguments) {

@@ -12,10 +12,13 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.tester.form.TestFormFields;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
+import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpSession;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
@@ -27,10 +30,10 @@ import org.opensails.sails.util.ClassInstanceAccessor;
  * communicates with an ISailsApplication to render responses.
  * 
  * <pre>
- *    The main methods to understand browser simulation 
- *    #get(String, String, String[])
- *    #post(Class, FormFields, Object[])
- *    #follow(TestRedirectUrl)
+ *         The main methods to understand browser simulation 
+ *         #get(String, String, String[])
+ *         #post(Class, FormFields, Object[])
+ *         #follow(TestRedirectUrl)
  * </pre>
  */
 public class SailsTester implements ISailsApplication {
@@ -53,21 +56,6 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public SailsTester(Class<? extends BaseConfigurator> configurator) {
 		initialize(configurator);
-	}
-
-	/**
-	 * @param context
-	 * @param action
-	 * @param parameters
-	 * @return
-	 */
-	private String toPathInfo(String context, String action, String... parameters) {
-		StringBuilder pathInfo = new StringBuilder();
-		pathInfo.append(context);
-		pathInfo.append("/");
-		pathInfo.append(action);
-		pathInfo.append(toParametersString(parameters));
-		return pathInfo.toString();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -131,38 +119,23 @@ public class SailsTester implements ISailsApplication {
 		};
 	}
 
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
-		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
-	}
-
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
-		initialize(configuratorClass, new ShamServletConfig(new ShamServletContext(contextRootDirectory)));
-	}
-
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
-		this.application = new TestableSailsApplication();
-		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
-		this.application.configure(instrumentedConfigurator(configuratorClass));
-		prepareForNextRequest();
-	}
-
-	protected SailsTesterConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
-		return new SailsTesterConfigurator(configuratorClass);
-	}
-
-	protected void prepareForNextRequest() {
-		// TODO: Bind to lazy created session container
-		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
-		else requestContainer = new TestRequestContainer(getContainer());
-	}
-
-	protected String toParametersString(String... parameters) {
-		StringBuilder string = new StringBuilder();
-		for (String param : parameters) {
-			string.append("/");
-			string.append(param);
-		}
-		return string.toString();
+	/**
+	 * If you would like to have an event, but not have a controller or
+	 * controller directory with templates, you can use this to establish the
+	 * environment necessary to make this application think that the controller
+	 * and action exist.
+	 * 
+	 * @param eventPath
+	 * @param templateContent
+	 * @return a TestGetEvent that is configured by the ISailsEventConfigurator
+	 *         and has the given eventPath
+	 */
+	public TestGetEvent createVirtualEvent(String eventPath, String templateContent) {
+		TestGetEvent event = createGetEvent(eventPath);
+		application.getContainer().instance(ISailsEventConfigurator.class).configure(event, event.getContainer());
+		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
+		resourceResolver.register(eventPath + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, templateContent);
+		return event;
 	}
 
 	public Page doGet(TestGetEvent getEvent) {
@@ -175,6 +148,17 @@ public class SailsTester implements ISailsApplication {
 		Page page = application.post(postEvent);
 		prepareForNextRequest();
 		return page;
+	}
+
+	/**
+	 * Performs an HTTP GET request to follow a redirect sent in a previous Page
+	 * response <em> to a sails action only</em>
+	 * 
+	 * @param redirect the url to get to follow the http redirect command
+	 * @return the page for the given context/action
+	 */
+	public Page follow(TestRedirectUrl redirect) {
+		return get(createGetEvent(redirect.pathInfo()));
 	}
 
 	/**
@@ -296,6 +280,21 @@ public class SailsTester implements ISailsApplication {
 		return (session == null && create) ? session = new ShamHttpSession() : session;
 	}
 
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
+		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
+	}
+
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
+		initialize(configuratorClass, new ShamServletConfig(new ShamServletContext(contextRootDirectory)));
+	}
+
+	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
+		this.application = new TestableSailsApplication();
+		new ClassInstanceAccessor(TestableSailsApplication.class, true).setProperty(application, "config", config);
+		this.application.configure(instrumentedConfigurator(configuratorClass));
+		prepareForNextRequest();
+	}
+
 	/**
 	 * TODO register at the requested scope
 	 */
@@ -308,6 +307,10 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public <T> void inject(Class<? super T> key, T instance, ApplicationScope scope) {
 		getRequestContainer().inject(key, instance);
+	}
+
+	protected SailsTesterConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
+		return new SailsTesterConfigurator(configuratorClass);
 	}
 
 	/**
@@ -358,6 +361,12 @@ public class SailsTester implements ISailsApplication {
 		return doPost(postEvent);
 	}
 
+	protected void prepareForNextRequest() {
+		// TODO: Bind to lazy created session container
+		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
+		else requestContainer = new TestRequestContainer(getContainer());
+	}
+
 	/**
 	 * Allows placement of <em>non-null</em> object into HttpSession.
 	 * 
@@ -388,19 +397,32 @@ public class SailsTester implements ISailsApplication {
 		this.workingContext = context;
 	}
 
-	public String workingContext() {
-		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
+	protected String toParametersString(String... parameters) {
+		StringBuilder string = new StringBuilder();
+		for (String param : parameters) {
+			string.append("/");
+			string.append(param);
+		}
+		return string.toString();
 	}
 
 	/**
-	 * Performs an HTTP GET request to follow a redirect sent in a previous Page
-	 * response <em> to a sails action only</em>
-	 * 
-	 * @param redirect the url to get to follow the http redirect command
-	 * @return the page for the given context/action
+	 * @param context
+	 * @param action
+	 * @param parameters
+	 * @return
 	 */
-	public Page follow(TestRedirectUrl redirect) {
-		return get(createGetEvent(redirect.pathInfo()));
+	private String toPathInfo(String context, String action, String... parameters) {
+		StringBuilder pathInfo = new StringBuilder();
+		pathInfo.append(context);
+		pathInfo.append("/");
+		pathInfo.append(action);
+		pathInfo.append(toParametersString(parameters));
+		return pathInfo.toString();
+	}
+
+	public String workingContext() {
+		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
 	}
 
 }

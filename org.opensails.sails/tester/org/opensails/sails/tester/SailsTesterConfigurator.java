@@ -24,11 +24,13 @@ import org.opensails.sails.event.oem.ExceptionEvent;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.DelegatingConfigurator;
 import org.opensails.sails.oem.Dispatcher;
+import org.opensails.sails.oem.ResourceResolver;
 import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.oem.ErrorController;
 import org.opensails.sails.tester.oem.LazyActionResultProcessor;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.oem.TestingDispatcher;
+import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.persist.MemoryObjectPersister;
 import org.opensails.sails.util.IClassResolver;
@@ -39,6 +41,20 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 
 	public SailsTesterConfigurator(Class<? extends BaseConfigurator> delegateClass) {
 		super(delegateClass);
+	}
+
+	@Override
+	public void configure(ISailsEvent event, RequestContainer eventContainer) {
+		if (configured.contains(event)) return;
+
+		super.configure(event, eventContainer);
+
+		// Expose the same instance as two types
+		ComponentImplementation bindingComponent = new ComponentImplementation(TestingBinding.class, eventContainer);
+		eventContainer.registerResolver(IBinding.class, bindingComponent);
+		eventContainer.registerResolver(TestingBinding.class, bindingComponent);
+
+		configured.add(event);
 	}
 
 	@Override
@@ -112,16 +128,11 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 	}
 
 	@Override
-	public void configure(ISailsEvent event, RequestContainer eventContainer) {
-		if (configured.contains(event)) return;
-
-		super.configure(event, eventContainer);
-
-		// Expose the same instance as two types
-		ComponentImplementation bindingComponent = new ComponentImplementation(TestingBinding.class, eventContainer);
-		eventContainer.registerResolver(IBinding.class, bindingComponent);
-		eventContainer.registerResolver(TestingBinding.class, bindingComponent);
-
-		configured.add(event);
+	protected ResourceResolver installResourceResolver(IConfigurableSailsApplication application, ScopedContainer container) {
+		ResourceResolver resourceResolver = super.installResourceResolver(application, container);
+		VirtualResourceResolver virtualResourceResolver = new VirtualResourceResolver();
+		resourceResolver.push(virtualResourceResolver);
+		container.register(virtualResourceResolver);
+		return resourceResolver;
 	}
 }
