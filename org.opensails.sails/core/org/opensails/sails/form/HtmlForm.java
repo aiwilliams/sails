@@ -19,6 +19,22 @@ import org.opensails.sails.validation.IInvalidProperty;
 import org.opensails.sails.validation.IValidationEngine;
 import org.opensails.sails.validation.IValidationResult;
 
+/**
+ * This encapsulates the behavior of:
+ * <ul>
+ * <li>transferring values into the model</li>
+ * <li>validating the model using an IValidationEngine</li>
+ * <li>keeping reference to all invalid fields</li>
+ * </ul>
+ * <p>
+ * The IFormValueModel is the interface used by the FormMixin (basically an html
+ * generator factory) to transfer values out of a model into the view. These
+ * parts need to come together somehow, and they will soon. The other thing
+ * missing is decorators around the generators used by the FormMixin. When a
+ * field is invalid, an application may want to do something pretty.
+ * 
+ * @author aiwilliams
+ */
 public class HtmlForm {
 	protected final IAdapterResolver adapterResolver;
 	protected final RequestContainer container;
