@@ -39,7 +39,7 @@ public class CollectionAssert {
 
 	public static <T> void containsOnly(T[] expected, Collection<T> actual) {
 		Assert.assertEquals("Actual should contain expected number of items.", expected.length, actual.size());
-		if (!actual.containsAll(Arrays.asList(expected))) throw new ComparisonFailure("Expected to contain all in no particular order", expected.toString(), actual.toString());
+		if (!actual.containsAll(Arrays.asList(expected))) throw new ComparisonFailure("Expected to contain all in no particular order", Arrays.toString(expected), actual.toString());
 	}
 
 	public static <T> void containsOnly(T[] expected, T[] actual) {

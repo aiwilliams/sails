@@ -15,6 +15,7 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.model.oem.DotPropertyPath;
 
 /**
  * YAGNI and YARGNI, all in one class.
@@ -29,37 +30,6 @@ import org.opensails.sails.SailsException;
 public class ClassHelper {
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
-	private static Class[] argTypes(Object... args) {
-		Class[] argTypes = new Class[args.length];
-		for (int i = 0; i < args.length; i++)
-			argTypes[i] = args[i] == null ? null : args[i].getClass();
-		return argTypes;
-	}
-
-	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
-		if (argTypes.length != parameterTypes.length) return false;
-
-		for (int i = 0; i < parameterTypes.length; i++)
-			if (!((argTypes[i] == null && Object.class.isAssignableFrom(parameterTypes[i])) || (argTypes[i] != null && parameterTypes[i].isAssignableFrom(argTypes[i])))) return false;
-		return true;
-	}
-
-	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
-		Constructor[] constructors = clazz.getConstructors();
-		for (Constructor<T> constructor : constructors) {
-			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
-		}
-		throw new SailsException("Could not find a constructor accepting " + argTypes);
-	}
-
-	private static Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
-		Method[] methods = clazz.getMethods();
-		for (Method method : methods) {
-			if (method.getName().equals(name) && argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
-		}
-		throw new SailsException(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
-	}
-
 	public static Object callMethod(Object instance, String methodName, Object... args) {
 		try {
 			return findMethod(instance.getClass(), methodName, argTypes(args)).invoke(instance, args);
@@ -70,6 +40,28 @@ public class ClassHelper {
 		} catch (InvocationTargetException e) {
 			throw new SailsException("Could not instantiate. The constructor threw and exception.", e);
 		}
+	}
+
+	public static Field[] declaredFieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
+		Field[] declaredFields = clazz.getDeclaredFields();
+		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
+		for (Field field : declaredFields)
+			if (field.isAnnotationPresent(annotation)) annotatedFields.add(field);
+		return annotatedFields.toArray(new Field[annotatedFields.size()]);
+	}
+
+	public static Field[] declaredFieldsUniquelyAnnotated(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+		Field[] declaredFields = clazz.getDeclaredFields();
+		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
+		Set<Annotation> annotations = new HashSet<Annotation>(declaredFields.length);
+		for (Field field : declaredFields) {
+			Annotation annotation = field.getAnnotation(annotationClass);
+			if (field.isAnnotationPresent(annotationClass) && !annotations.contains(annotation)) {
+				annotations.add(annotation);
+				annotatedFields.add(field);
+			}
+		}
+		return annotatedFields.toArray(new Field[annotatedFields.size()]);
 	}
 
 	/**
@@ -113,35 +105,7 @@ public class ClassHelper {
 			throw new RuntimeException(String.format("Could not access fields on %s", clazz), t);
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static Object readField(Object target, String name, boolean publicOnly) {
-		Field field = fieldNamed(target.getClass(), name);
-		if (!publicOnly)
-			field.setAccessible(true);
-		return readField(target, field);
-	}
 
-	public static Object readField(Object target, Field field) {
-		try {
-			return field.get(target);
-		} catch (Throwable t) {
-			return null;
-		}
-	}
-
-	public static Object readField(Object target, String name) {
-		return readField(target, name, true);
-	}
-
-	public static Field[] declaredFieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
-		Field[] declaredFields = clazz.getDeclaredFields();
-		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
-		for (Field field : declaredFields)
-			if (field.isAnnotationPresent(annotation)) annotatedFields.add(field);
-		return annotatedFields.toArray(new Field[annotatedFields.size()]);
-	}
-	
 	public static Field[] fieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
 		Field[] declaredFields = clazz.getFields();
 		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
@@ -149,34 +113,12 @@ public class ClassHelper {
 			if (field.isAnnotationPresent(annotation)) annotatedFields.add(field);
 		return annotatedFields.toArray(new Field[annotatedFields.size()]);
 	}
-	
-	public static Method[] methodsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
-		Method[] declaredMethods = clazz.getDeclaredMethods();
-		List<Method> annotatedMethods = new ArrayList<Method>(declaredMethods.length);
-		for (Method method : declaredMethods)
-			if (method.isAnnotationPresent(annotation)) annotatedMethods.add(method);
-		return annotatedMethods.toArray(new Method[annotatedMethods.size()]);
-	}
 
 	public static Field[] fieldsNamed(Class clazz, String... names) {
 		List<Field> fields = new ArrayList<Field>();
 		for (String name : names)
 			fields.add(fieldNamed(clazz, name));
 		return fields.toArray(new Field[fields.size()]);
-	}
-
-	public static Field[] declaredFieldsUniquelyAnnotated(Class<?> clazz, Class<? extends Annotation> annotationClass) {
-		Field[] declaredFields = clazz.getDeclaredFields();
-		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
-		Set<Annotation> annotations = new HashSet<Annotation>(declaredFields.length);
-		for (Field field : declaredFields) {
-			Annotation annotation = field.getAnnotation(annotationClass);
-			if (field.isAnnotationPresent(annotationClass) && !annotations.contains(annotation)) {
-				annotations.add(annotation);
-				annotatedFields.add(field);
-			}
-		}
-		return annotatedFields.toArray(new Field[annotatedFields.size()]);
 	}
 
 	public static String getName(Class clazz) {
@@ -229,13 +171,21 @@ public class ClassHelper {
 	}
 
 	public static String lowerCamelName(Class clazz) {
-		String className = getName(clazz);
+		String className = new DotPropertyPath(getName(clazz)).lastNode();
 		char lower = Character.toLowerCase(className.charAt(0));
 		return lower + className.substring(1);
 	}
 
 	public static String lowerCamelName(Object instance) {
 		return lowerCamelName(instance.getClass());
+	}
+
+	public static Method[] methodsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
+		Method[] declaredMethods = clazz.getDeclaredMethods();
+		List<Method> annotatedMethods = new ArrayList<Method>(declaredMethods.length);
+		for (Method method : declaredMethods)
+			if (method.isAnnotationPresent(annotation)) annotatedMethods.add(method);
+		return annotatedMethods.toArray(new Method[annotatedMethods.size()]);
 	}
 
 	/**
@@ -261,6 +211,25 @@ public class ClassHelper {
 		return matches.toArray(new Method[matches.size()]);
 	}
 
+	public static Object readField(Object target, Field field) {
+		try {
+			return field.get(target);
+		} catch (Throwable t) {
+			return null;
+		}
+	}
+
+	public static Object readField(Object target, String name) {
+		return readField(target, name, true);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Object readField(Object target, String name, boolean publicOnly) {
+		Field field = fieldNamed(target.getClass(), name);
+		if (!publicOnly) field.setAccessible(true);
+		return readField(target, field);
+	}
+
 	public static String upperCamel(String string) {
 		char upper = Character.toUpperCase(string.charAt(0));
 		return upper + string.substring(1);
@@ -272,5 +241,36 @@ public class ClassHelper {
 		} catch (Exception e) {
 			throw new SailsException("Could not write field.", e);
 		}
+	}
+
+	private static Class[] argTypes(Object... args) {
+		Class[] argTypes = new Class[args.length];
+		for (int i = 0; i < args.length; i++)
+			argTypes[i] = args[i] == null ? null : args[i].getClass();
+		return argTypes;
+	}
+
+	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
+		if (argTypes.length != parameterTypes.length) return false;
+
+		for (int i = 0; i < parameterTypes.length; i++)
+			if (!((argTypes[i] == null && Object.class.isAssignableFrom(parameterTypes[i])) || (argTypes[i] != null && parameterTypes[i].isAssignableFrom(argTypes[i])))) return false;
+		return true;
+	}
+
+	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
+		Constructor[] constructors = clazz.getConstructors();
+		for (Constructor<T> constructor : constructors) {
+			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
+		}
+		throw new SailsException("Could not find a constructor accepting " + argTypes);
+	}
+
+	private static Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
+		Method[] methods = clazz.getMethods();
+		for (Method method : methods) {
+			if (method.getName().equals(name) && argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
+		}
+		throw new SailsException(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
 	}
 }

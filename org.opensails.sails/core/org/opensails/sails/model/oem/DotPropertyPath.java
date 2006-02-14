@@ -1,9 +1,11 @@
 package org.opensails.sails.model.oem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
-import org.apache.commons.lang.*;
-import org.opensails.sails.model.*;
+import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.model.IPropertyPath;
 
 /**
  * Represents a the path to a property as a dot (.) separated node path.
@@ -71,6 +73,11 @@ public class DotPropertyPath implements IPropertyPath {
 		int delimiterIndex = path.indexOf(".");
 		if (delimiterIndex == -1) return path;
 		return path.substring(0, delimiterIndex);
+	}
+
+	public String lastNode() {
+		String[] allNodes = getAllNodes();
+		return allNodes.length > 0 ? allNodes[allNodes.length - 1] : null;
 	}
 
 	@Override
