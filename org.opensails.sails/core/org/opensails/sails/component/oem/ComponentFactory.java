@@ -4,6 +4,7 @@ import org.opensails.sails.component.ComponentInitializationException;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.util.ClassHelper;
 import org.opensails.viento.Name;
 
@@ -25,6 +26,7 @@ public class ComponentFactory {
 	@Name("new")
 	public IComponentImpl create(Object... args) {
 		IComponentImpl impl = component.createInstance(event);
+		impl.setIdGenerator(event.getContainer().instance(IFormElementIdGenerator.class));
 		try {
 			ClassHelper.callMethod(impl, "initialize", args);
 		} catch (Throwable e) {

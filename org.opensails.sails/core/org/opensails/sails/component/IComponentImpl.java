@@ -1,8 +1,9 @@
 package org.opensails.sails.component;
 
-import org.opensails.sails.event.*;
-import org.opensails.sails.template.*;
-import org.opensails.viento.*;
+import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.viento.IBinding;
 
 /**
  * A component implementation.
@@ -38,6 +39,14 @@ public interface IComponentImpl extends IEventProcessingContext<IComponent> {
 	 * @return the name of the component
 	 */
 	String getComponentName();
+
+	/**
+	 * Called after creation, before initialize.
+	 * 
+	 * @param generator that the component should use to create ids for
+	 *        elements.
+	 */
+	void setIdGenerator(IFormElementIdGenerator generator);
 
 	/**
 	 * Called after creation, after
