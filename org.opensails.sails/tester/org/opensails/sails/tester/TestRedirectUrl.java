@@ -16,7 +16,7 @@ public class TestRedirectUrl {
 	}
 
 	public void assertMatches(String regex) {
-		Assert.assertTrue(String.format("{0} should have matched {1}", redirect, regex), RegexHelper.containsMatch(redirect, regex));
+		Assert.assertTrue(String.format("%s should have matched %s", redirect, regex), RegexHelper.containsMatch(redirect, regex));
 	}
 
 	@Override

@@ -76,9 +76,10 @@ public class HtmlForm {
 			invalids = new WriteOnceHashMap<String, IInvalidProperty>();
 			for (String fieldName : formFields.getNames()) {
 				IPropertyPath path = null;
+				Object model = null;
 				if (!isMetaField(fieldName)) try {
 					path = fieldPropertyPath(fieldName);
-					Object model = modelContext.getModel(path);
+					model = modelContext.getModel(path);
 					IPropertyAccessor accessor = accessor(path);
 					Class propertyTypeOnTarget = accessor.getPropertyType(model);
 					IAdapter adapter = adapter(path, propertyTypeOnTarget);
@@ -89,11 +90,11 @@ public class HtmlForm {
 					for (IInvalidProperty invalid : validationResult.getInvalidProperties())
 						invalids.put(invalid.getProperty(), invalid);
 				} catch (AdaptationException e) {
-					invalids.put(path.getProperty(), new UnadaptableProperty(e));
+					invalids.put(path.getProperty(), new UnadaptableProperty(fieldName, path, model, e));
 				} catch (AccessorException e) {
-					invalids.put(path.getProperty(), new InaccessibleProperty(e));
+					invalids.put(path.getProperty(), new InaccessibleProperty(fieldName, path, model, e));
 				} catch (PropertyPathException e) {
-					invalids.put(fieldName, new InvalidProperty(e));
+					invalids.put(fieldName, new InvalidProperty(fieldName, path, model, e));
 				}
 			}
 		}

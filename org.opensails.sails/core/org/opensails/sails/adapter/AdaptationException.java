@@ -1,6 +1,6 @@
 package org.opensails.sails.adapter;
 
-import org.opensails.sails.*;
+import org.opensails.sails.SailsException;
 
 /**
  * Thrown by {@link org.opensails.sails.adapter.IAdapter}'s when they are
@@ -11,18 +11,15 @@ import org.opensails.sails.*;
 public class AdaptationException extends SailsException {
 	private static final long serialVersionUID = 3228078495740352118L;
 
-	public AdaptationException() {
-		super("Failure adapting object");
+	public AdaptationException(String message) {
+		super(message);
 	}
-    public AdaptationException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
-    public AdaptationException(String message) {
-        super(message);
-    }
+	public AdaptationException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public AdaptationException(Throwable cause) {
-        super(cause);
-    }
+	public AdaptationException(Throwable cause) {
+		super(cause);
+	}
 }

@@ -9,37 +9,37 @@ import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.FieldAccessor;
 
 public class MemoryObjectPersisterTest extends TestCase {
-	protected MemoryObjectPersister registry = new MemoryObjectPersister();
+	protected MemoryObjectPersister persister = new MemoryObjectPersister();
 
 	public void testDestroy_InTransaction() throws Exception {
-		ShamIdentifiable oldDevotion = new ShamIdentifiable();
-		registry.provides(oldDevotion);
-		registry.beginTransaction();
-		registry.destroy(oldDevotion);
-		assertNull(registry.find(ShamIdentifiable.class, oldDevotion.getId()));
-		assertFalse(registry.wasDestroyed(oldDevotion));
-		MemoryObjectPersister newRegistry = new MemoryObjectPersister(registry.source);
-		assertEquals(oldDevotion, newRegistry.find(ShamIdentifiable.class, oldDevotion.getId()));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { oldDevotion }, newRegistry.all(ShamIdentifiable.class));
-		assertTrue(registry.all(ShamIdentifiable.class).isEmpty());
-		registry.commit();
-		assertNull(registry.find(ShamIdentifiable.class, oldDevotion.getId()));
-		assertNull(newRegistry.find(ShamIdentifiable.class, oldDevotion.getId()));
-		assertTrue(registry.wasDestroyed(oldDevotion));
-		assertTrue(registry.all(ShamIdentifiable.class).isEmpty());
-		assertTrue(newRegistry.all(ShamIdentifiable.class).isEmpty());
+		ShamIdentifiable old = new ShamIdentifiable();
+		persister.provides(old);
+		persister.beginTransaction();
+		persister.destroy(old);
+		assertNull(persister.find(ShamIdentifiable.class, old.getId()));
+		assertFalse(persister.wasDestroyed(old));
+		MemoryObjectPersister newPersister = new MemoryObjectPersister(persister.source);
+		assertEquals(old, newPersister.find(ShamIdentifiable.class, old.getId()));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { old }, newPersister.all(ShamIdentifiable.class));
+		assertTrue(persister.all(ShamIdentifiable.class).isEmpty());
+		persister.commit();
+		assertNull(persister.find(ShamIdentifiable.class, old.getId()));
+		assertNull(newPersister.find(ShamIdentifiable.class, old.getId()));
+		assertTrue(persister.wasDestroyed(old));
+		assertTrue(persister.all(ShamIdentifiable.class).isEmpty());
+		assertTrue(newPersister.all(ShamIdentifiable.class).isEmpty());
 	}
 
 	public void testDestroy_NoTransaction() throws Exception {
-		ShamIdentifiable oldDevotion = new ShamIdentifiable();
-		registry.provides(oldDevotion);
-		registry.destroy(oldDevotion);
-		MemoryObjectPersister newRegistry = new MemoryObjectPersister(registry.source);
-		assertNull(registry.find(ShamIdentifiable.class, oldDevotion.getId()));
-		assertTrue(registry.all(ShamIdentifiable.class).isEmpty());
-		assertNull(newRegistry.find(ShamIdentifiable.class, oldDevotion.getId()));
-		assertTrue(newRegistry.all(ShamIdentifiable.class).isEmpty());
-		assertTrue(registry.wasDestroyed(oldDevotion));
+		ShamIdentifiable old = new ShamIdentifiable();
+		persister.provides(old);
+		persister.destroy(old);
+		MemoryObjectPersister newPersister = new MemoryObjectPersister(persister.source);
+		assertNull(persister.find(ShamIdentifiable.class, old.getId()));
+		assertTrue(persister.all(ShamIdentifiable.class).isEmpty());
+		assertNull(newPersister.find(ShamIdentifiable.class, old.getId()));
+		assertTrue(newPersister.all(ShamIdentifiable.class).isEmpty());
+		assertTrue(persister.wasDestroyed(old));
 	}
 
 	public void testFind_Unique() {
@@ -50,34 +50,34 @@ public class MemoryObjectPersisterTest extends TestCase {
 		FieldAccessor nameWriter = new FieldAccessor("first");
 		nameWriter.set(nullIdentifiable, null);
 		nameWriter.set(oneSquared, "one");
-		registry.save(one);
-		registry.save(oneSquared);
-		registry.save(two);
-		registry.save(nullIdentifiable);
-		assertEquals(two, registry.find(ShamIdentifiable.class, "first", "two"));
+		persister.save(one);
+		persister.save(oneSquared);
+		persister.save(two);
+		persister.save(nullIdentifiable);
+		assertEquals(two, persister.find(ShamIdentifiable.class, "first", "two"));
 		try {
-			registry.find(ShamIdentifiable.class, "first", "one");
+			persister.find(ShamIdentifiable.class, "first", "one");
 			fail("Should throw an exception");
 		} catch (Exception e) {}
-		assertEquals(nullIdentifiable, registry.find(ShamIdentifiable.class, "first", null));
+		assertEquals(nullIdentifiable, persister.find(ShamIdentifiable.class, "first", null));
 
-		assertNull(registry.find(ShamDatedIdentifiable.class, "first", "dummy"));
+		assertNull(persister.find(ShamDatedIdentifiable.class, "first", "dummy"));
 	}
 
 	public void testGet() throws Exception {
 		try {
-			registry.find(ShamIdentifiable.class, null);
+			persister.find(ShamIdentifiable.class, null);
 			fail("The real registry throws an IllegalArgumentException when given null. This must behave the same to make unit tests accurate.");
 		} catch (IllegalArgumentException expected) {}
 	}
 
 	public void testGetAll() {
-		ShamIdentifiable asset1 = new ShamIdentifiable();
-		ShamIdentifiable asset2 = new ShamIdentifiable();
-		registry.save(asset1);
-		registry.save(asset2);
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { asset1, asset2 }, registry.all(ShamIdentifiable.class));
-		assertTrue(registry.all(ShamDatedIdentifiable.class).isEmpty());
+		ShamIdentifiable one = new ShamIdentifiable();
+		ShamIdentifiable two = new ShamIdentifiable();
+		persister.save(one);
+		persister.save(two);
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { one, two }, persister.all(ShamIdentifiable.class));
+		assertTrue(persister.all(ShamDatedIdentifiable.class).isEmpty());
 	}
 
 	public void testGetAll_MultipleAttributes() throws Exception {
@@ -85,83 +85,83 @@ public class MemoryObjectPersisterTest extends TestCase {
 		ShamDatedIdentifiable first = new ShamDatedIdentifiable("standardName", standardDate);
 		ShamDatedIdentifiable second = new ShamDatedIdentifiable("standardName", standardDate);
 		ShamDatedIdentifiable third = new ShamDatedIdentifiable("differentName", standardDate);
-		registry.save(first);
-		registry.save(second);
-		registry.save(third);
-		CollectionAssert.containsOnly(new ShamDatedIdentifiable[] { first, second }, registry.findAll(ShamDatedIdentifiable.class, new String[] { "aDate", "first" }, new Object[] {
+		persister.save(first);
+		persister.save(second);
+		persister.save(third);
+		CollectionAssert.containsOnly(new ShamDatedIdentifiable[] { first, second }, persister.findAll(ShamDatedIdentifiable.class, new String[] { "aDate", "first" }, new Object[] {
 			standardDate, "standardName" }));
-		CollectionAssert.containsOnly(new ShamDatedIdentifiable[] { third }, registry.findAll(ShamDatedIdentifiable.class, new String[] { "aDate", "first" }, new Object[] {
+		CollectionAssert.containsOnly(new ShamDatedIdentifiable[] { third }, persister.findAll(ShamDatedIdentifiable.class, new String[] { "aDate", "first" }, new Object[] {
 			standardDate, "differentName" }));
-		assertTrue(registry.findAll(ShamDatedIdentifiable.class, new String[] { "aDate", "first" }, new Object[] { "differentId", "differentName" }).isEmpty());
+		assertTrue(persister.findAll(ShamDatedIdentifiable.class, new String[] { "aDate", "first" }, new Object[] { "differentId", "differentName" }).isEmpty());
 	}
 
 	public void testGetAll_SingleAttribute() throws Exception {
-		ShamIdentifiable asset1 = new ShamIdentifiable("standardName");
-		ShamIdentifiable asset2 = new ShamIdentifiable("standardName");
-		ShamIdentifiable asset3 = new ShamIdentifiable("differentName");
-		registry.save(asset1);
-		registry.save(asset2);
-		registry.save(asset3);
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { asset1, asset2 }, registry.findAll(ShamIdentifiable.class, "first", "standardName"));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { asset3 }, registry.findAll(ShamIdentifiable.class, "first", "differentName"));
-		assertTrue(registry.findAll(ShamIdentifiable.class, "first", "unusedName").isEmpty());
+		ShamIdentifiable one = new ShamIdentifiable("standardName");
+		ShamIdentifiable two = new ShamIdentifiable("standardName");
+		ShamIdentifiable three = new ShamIdentifiable("differentName");
+		persister.save(one);
+		persister.save(two);
+		persister.save(three);
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { one, two }, persister.findAll(ShamIdentifiable.class, "first", "standardName"));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { three }, persister.findAll(ShamIdentifiable.class, "first", "differentName"));
+		assertTrue(persister.findAll(ShamIdentifiable.class, "first", "unusedName").isEmpty());
 	}
 
 	public void testGetUnique_MultipleAttributes() throws Exception {
 		ShamIdentifiable identifiable = new ShamIdentifiable("leFirst", "leSecond");
-		registry.save(identifiable);
-		ShamIdentifiable retrieved = registry.find(ShamIdentifiable.class, new String[] { "first", "last" }, new Object[] { "leFirst", "leSecond" });
+		persister.save(identifiable);
+		ShamIdentifiable retrieved = persister.find(ShamIdentifiable.class, new String[] { "first", "last" }, new Object[] { "leFirst", "leSecond" });
 		assertEquals(identifiable, retrieved);
-		retrieved = registry.find(ShamIdentifiable.class, new String[] { "first", "last" }, new Object[] { "oops", "" });
+		retrieved = persister.find(ShamIdentifiable.class, new String[] { "first", "last" }, new Object[] { "oops", "" });
 		assertNull(retrieved);
 	}
 
 	public void testProvides() {
 		ShamIdentifiable asset = new ShamIdentifiable();
 		assertNull(asset.getId());
-		registry.provides(asset);
+		persister.provides(asset);
 		assertNotNull(asset.getId());
-		assertEquals(asset, registry.find(asset.getClass(), asset.getId()));
-		assertFalse(registry.wasSaved(asset));
+		assertEquals(asset, persister.find(asset.getClass(), asset.getId()));
+		assertFalse(persister.wasSaved(asset));
 	}
 
 	public void testSave_InTransaction() {
-		ShamIdentifiable oldDevotion = new ShamIdentifiable("Barney");
-		registry.provides(oldDevotion);
-		registry.beginTransaction();
+		ShamIdentifiable old = new ShamIdentifiable("Barney");
+		persister.provides(old);
+		persister.beginTransaction();
 		ShamIdentifiable asset = new ShamIdentifiable("Fred");
 		assertNull(asset.getId());
-		registry.save(asset);
+		persister.save(asset);
 		assertNotNull(asset.getId());
-		assertEquals(asset, registry.find(asset.getClass(), asset.getId()));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { oldDevotion, asset }, registry.all(ShamIdentifiable.class));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { asset }, registry.findAll(ShamIdentifiable.class, "first", "Fred"));
-		assertEquals(asset, registry.find(ShamIdentifiable.class, "first", "Fred"));
+		assertEquals(asset, persister.find(asset.getClass(), asset.getId()));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { old, asset }, persister.all(ShamIdentifiable.class));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { asset }, persister.findAll(ShamIdentifiable.class, "first", "Fred"));
+		assertEquals(asset, persister.find(ShamIdentifiable.class, "first", "Fred"));
 
-		MemoryObjectPersister newRegistry = new MemoryObjectPersister(registry.source);
-		assertNull(newRegistry.find(asset.getClass(), asset.getId()));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { oldDevotion }, newRegistry.all(ShamIdentifiable.class));
+		MemoryObjectPersister newPersister = new MemoryObjectPersister(persister.source);
+		assertNull(newPersister.find(asset.getClass(), asset.getId()));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { old }, newPersister.all(ShamIdentifiable.class));
 
-		registry.commit();
-		assertEquals(asset, newRegistry.find(asset.getClass(), asset.getId()));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { oldDevotion, asset }, registry.all(ShamIdentifiable.class));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { oldDevotion, asset }, newRegistry.all(ShamIdentifiable.class));
+		persister.commit();
+		assertEquals(asset, newPersister.find(asset.getClass(), asset.getId()));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { old, asset }, persister.all(ShamIdentifiable.class));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { old, asset }, newPersister.all(ShamIdentifiable.class));
 
 		// TODO get another session and make sure its there?
 		// assertTrue(registry.wasSaved(asset));
 
 		// Create an object that isn't "whole"
 		ShamIdentifiable troubledAsset = new ShamIdentifiable(null);
-		registry.setExceptionOnSave(new PersistException("Fake"));
+		persister.setExceptionOnSave(new PersistException("Fake"));
 		try {
-			registry.save(troubledAsset);
+			persister.save(troubledAsset);
 			fail("Should throw exception");
 		} catch (Exception e) {}
-		registry.setExceptionOnSave(null);
+		persister.setExceptionOnSave(null);
 		troubledAsset.setName("Something");
-		registry.save(troubledAsset);
-		assertEquals(troubledAsset, registry.find(troubledAsset.getClass(), troubledAsset.getId()));
-		CollectionAssert.containsOnly(new ShamIdentifiable[] { oldDevotion, asset, troubledAsset }, registry.all(ShamIdentifiable.class));
+		persister.save(troubledAsset);
+		assertEquals(troubledAsset, persister.find(troubledAsset.getClass(), troubledAsset.getId()));
+		CollectionAssert.containsOnly(new ShamIdentifiable[] { old, asset, troubledAsset }, persister.all(ShamIdentifiable.class));
 		assertNotNull(troubledAsset.getId());
 		// TODO get another session and make sure its there?
 		// assertTrue(registry.wasSaved(asset));
@@ -170,22 +170,33 @@ public class MemoryObjectPersisterTest extends TestCase {
 	public void testSave_NoTransaction() {
 		ShamIdentifiable asset = new ShamIdentifiable();
 		assertNull(asset.getId());
-		registry.save(asset);
+		persister.save(asset);
 		assertNotNull(asset.getId());
-		assertEquals(asset, registry.find(asset.getClass(), asset.getId()));
-		assertTrue(registry.wasSaved(asset));
+		assertEquals(asset, persister.find(asset.getClass(), asset.getId()));
+		assertTrue(persister.wasSaved(asset));
 
 		ShamIdentifiable troubledAsset = new ShamIdentifiable();
-		registry.setExceptionOnSave(new PersistException("Fake"));
+		persister.setExceptionOnSave(new PersistException("Fake"));
 		try {
-			registry.save(troubledAsset);
+			persister.save(troubledAsset);
 			fail("Should throw exception");
 		} catch (Exception e) {
 			assertNull(troubledAsset.getId());
 		}
-		registry.setExceptionOnSave(null);
-		registry.save(troubledAsset);
+		persister.setExceptionOnSave(null);
+		persister.save(troubledAsset);
 		assertNotNull(troubledAsset.getId());
-		assertTrue(registry.wasSaved(troubledAsset));
+		assertTrue(persister.wasSaved(troubledAsset));
+	}
+
+	public void testWasSaved_WasDestroyed() throws Exception {
+		ShamIdentifiablePrimitive one = new ShamIdentifiablePrimitive();
+		assertFalse(persister.wasSaved(one));
+		assertFalse(persister.wasDestroyed(one));
+		persister.save(one);
+		assertTrue(persister.wasSaved(one));
+		assertFalse(persister.wasDestroyed(one));
+		persister.destroy(one);
+		assertTrue(persister.wasDestroyed(one));
 	}
 }

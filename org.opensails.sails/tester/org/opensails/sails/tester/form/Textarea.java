@@ -6,7 +6,7 @@ import org.opensails.sails.tester.html.HtmlPattern;
 import org.opensails.sails.tester.html.TestElementError;
 
 public class Textarea extends TestFormElement<Textarea> {
-	public static final Pattern PATTERN = Pattern.compile("<textarea.*?>(.*?)</textarea>", Pattern.CASE_INSENSITIVE);
+	public static final Pattern PATTERN = Pattern.compile("<textarea.*?>(.*?)</textarea>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 	public Textarea(String containerSource, String name) {
 		super(containerSource, name);

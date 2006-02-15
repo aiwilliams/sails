@@ -9,7 +9,7 @@ public class ClassAdapter extends AbstractAdapter<Class, String> {
 		try {
 			return Class.forName(fromWeb);
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Could not adapt class " + fromWeb, e);
+			throw new AdaptationException("Could not adapt class " + fromWeb, e);
 		}
 	}
 

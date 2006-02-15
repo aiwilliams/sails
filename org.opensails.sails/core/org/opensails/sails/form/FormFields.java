@@ -1,13 +1,19 @@
 package org.opensails.sails.form;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.fileupload.*;
-import org.apache.commons.lang.*;
-import org.opensails.sails.*;
-import org.opensails.sails.adapter.*;
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.SailsException;
+import org.opensails.sails.adapter.FieldType;
 
 /**
  * Encapsulates the values of successful controls from a form submission. See
@@ -90,16 +96,16 @@ public class FormFields {
 		return backingMap.containsKey(key);
 	}
 
+	public FileUpload file(String name) {
+		return (FileUpload) backingMap.get(name);
+	}
+
 	public String[] getNames() {
 		return (String[]) backingMap.keySet().toArray(new String[backingMap.keySet().size()]);
 	}
 
 	public Set getNamesSet() {
 		return backingMap.keySet();
-	}
-
-	public FileUpload file(String name) {
-		return (FileUpload) backingMap.get(name);
 	}
 
 	public Collection<?> getValues() {
@@ -150,7 +156,8 @@ public class FormFields {
 
 	/**
 	 * Coerces the value for fieldName into a single String. If the value is
-	 * actually a String[], the String at index 0 is returned.
+	 * actually a String[], the String at index 0 is returned. If it is a
+	 * FileUpload, the file name is returned.
 	 * 
 	 * @param fieldName
 	 * @return a String for fieldName
@@ -158,19 +165,18 @@ public class FormFields {
 	public String value(String fieldName) {
 		Object value = backingMap.get(fieldName);
 		if (value == null) return null;
-		if (value.getClass().isArray()) {
-			String[] values = (String[]) value;
-			if (values.length == 0) return NULL_OR_BLANK_STRING_VALUE;
-			if (values.length >= 1) value = values[0];
-		} else if (value.getClass() == FileUpload.class) value = ((FileUpload) value).getFileName();
-		if (StringUtils.isEmpty((String) value)) return NULL_OR_BLANK_STRING_VALUE;
+		if (value instanceof FileUpload) value = ((FileUpload) value).getFileName();
+		else value = stringValue(value);
 		return (String) value;
 	}
 
 	public Object valueAs(String fieldName, FieldType fieldType) {
 		switch (fieldType) {
 		case STRING:
-			return value(fieldName);
+			Object value = backingMap.get(fieldName);
+			if (value == null) return null;
+			if (value instanceof FileUpload) return ((FileUpload) value).stringContent();
+			return stringValue(value);
 		case STRING_ARRAY:
 			return values(fieldName);
 		case FILE_UPLOAD:
@@ -197,6 +203,22 @@ public class FormFields {
 			if (values.length == 0) return NULL_OR_EMPTY_STRING_ARRAY_VALUE;
 		} else values = new String[] { (String) value };
 		return values;
+	}
+
+	/**
+	 * Converts non-null value to a String. Does not handle FileUpload.
+	 * 
+	 * @param value
+	 * @return String for value
+	 */
+	protected String stringValue(Object value) {
+		if (value.getClass().isArray()) {
+			String[] values = (String[]) value;
+			if (values.length == 0) return NULL_OR_BLANK_STRING_VALUE;
+			if (values.length >= 1) value = values[0];
+		}
+		if (StringUtils.isEmpty((String) value)) return NULL_OR_BLANK_STRING_VALUE;
+		return (String) value;
 	}
 
 	void addFieldValue(String fieldName, String string) {
