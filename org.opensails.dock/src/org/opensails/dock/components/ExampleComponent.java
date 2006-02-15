@@ -1,30 +1,21 @@
 package org.opensails.dock.components;
 
 import org.opensails.sails.component.Callback;
+import org.opensails.sails.component.Remembered;
 import org.opensails.sails.component.oem.BaseComponent;
-import org.opensails.sails.persist.IObjectPersister;
 
 public class ExampleComponent extends BaseComponent {
-	String requiredProperty;
-	// @Remembered
-	String anotherProperty = "default";
+	public String requiredProperty;
+	@Remembered String rememberedProperty = "default";
 	Object complex;
-	IObjectPersister persister;
 
-	public ExampleComponent(IObjectPersister persister) {
-		this.persister = persister;
+	// TODO: Remove public once callbacks are restricted
+	@Callback public void doSomething(String actionParamProvidedToClientSideCallback) {
+		renderString("Remembered: " + rememberedProperty + " Action Param: " + actionParamProvidedToClientSideCallback);
 	}
 
 	public void initialize(String id, String requiredProperty) {
 		initialize(id);
 		this.requiredProperty = requiredProperty;
-	}
-
-	@Callback void doSomething(String somethingInteresting) {
-		assert id != null;
-		assert anotherProperty != null;
-		assert requiredProperty == null;
-		assert somethingInteresting.equals("really really interesting");
-		renderString("very good");
 	}
 }

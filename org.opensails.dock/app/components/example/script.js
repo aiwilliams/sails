@@ -1,5 +1,5 @@
-var DotjerkysIdeal = Component.create();
-DotjerkysIdeal.prototype = {
+var Example = Component.create();
+Example.prototype = {
 	initialize: function() {
 		this.text = $(this.id);
 		this.somethingElse = this.complex.firstProperty;
