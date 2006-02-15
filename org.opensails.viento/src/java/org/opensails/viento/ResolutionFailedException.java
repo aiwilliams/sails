@@ -41,8 +41,9 @@ public class ResolutionFailedException extends RuntimeException {
 				buffer.append("Block");
 			else if (args[i] instanceof String)
 				buffer.append(String.format("'%s'", args[i]));
-			else
-				buffer.append(args[i]);
+			else if (args[i] instanceof UnresolvableObject) {
+				buffer.append(String.format("[%s]", ((UnresolvableObject)args[i]).causeMessage()));
+			} else buffer.append(args[i]);
 		}
 		buffer.append(")>");
 		if (target != null) {

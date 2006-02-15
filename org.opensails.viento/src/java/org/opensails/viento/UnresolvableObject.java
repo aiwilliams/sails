@@ -2,7 +2,6 @@ package org.opensails.viento;
 
 public class UnresolvableObject implements MethodMissing {
 	private final ExceptionHandler exceptionHandler;
-
 	private final Throwable exception;
 	private final MethodKey key;
 	private final Object target;
@@ -10,6 +9,7 @@ public class UnresolvableObject implements MethodMissing {
 	private final int line;
 	private final int offset;
 	private final boolean wasNull;
+
 	public UnresolvableObject(ExceptionHandler exceptionHandler, Throwable exception, MethodKey key, Object target, Object[] args, int line, int offset, boolean wasNull) {
 		this.exceptionHandler = exceptionHandler;
 		this.exception = exception;
@@ -21,18 +21,24 @@ public class UnresolvableObject implements MethodMissing {
 		this.wasNull = wasNull;
 	}
 
+	public String causeMessage() {
+		if (wasNull)
+			return String.format("%s:null", key);
+		if (exception != null)
+			return String.format("%s:%s", key, exception.getMessage());
+		return String.format("%s:resolution failure", key);
+	}
+
 	public Object methodMissing(String methodName, Object[] args) {
 		// TODO keep track of these things?
 		return this;
 	}
 
-	@Name("?")
-	public Object silence() {
+	@Name("?") public Object silence() {
 		return new SilencedObject();
 	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		// ugly.
 		if (wasNull)
 			return String.valueOf(exceptionHandler.nullTarget(((TopLevelMethodKey) key).methodName, args, line, offset));
@@ -51,8 +57,7 @@ public class UnresolvableObject implements MethodMissing {
 			return this;
 		}
 
-		@Override
-		public String toString() {
+		@Override public String toString() {
 			return "";
 		}
 	}
