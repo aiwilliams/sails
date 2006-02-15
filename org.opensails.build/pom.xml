@@ -16,12 +16,12 @@
   
   <ciManagement>
   	<system>Continuum</system>
-  	<url>http://build.opensails.org</url>
+  	<url>http://build.opensails.org:8080/continuum</url>
   	<notifiers>
 	  <notifier>
 	  	<type>mail</type>
   		<configuration>
-		    <address>developers@lists.opensails.org</address>
+		    <address>builds@lists.opensails.org</address>
 		</configuration>
 	  </notifier>
   	</notifiers>
