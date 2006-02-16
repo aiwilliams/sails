@@ -3,6 +3,7 @@ Tester.prototype = {
 	passed: [],
 	failed: [],
 	initialize: function() {
+		this.oldGetTransport = window.Ajax.getTransport;
 		window.Ajax.getTransport = this.getTransport.bind(this);
 	},
 	responses: {},
@@ -55,8 +56,22 @@ Tester.prototype = {
 		else {
 			log.error('Failed: ' + this.failed.length + ' Successful: ' + this.passed.length);
 		}
+	},
+	teardown: function() {
+		window.Ajax.getTransport = this.oldGetTransport;
 	}
 };
+
+
+Object.extend(Test.Unit.Testcase.prototype, {
+	assertJson: function(expected, actual) {
+		if (typeof expected != 'string')
+			expected = JSON.stringify(expected);
+		if (typeof actual != 'string')
+			actual = JSON.stringify(actual);
+		this.assertEqual(expected, actual);
+	}
+});
 
 var ShamTransport = Class.create();
 ShamTransport.prototype = {
@@ -64,7 +79,6 @@ ShamTransport.prototype = {
 		this.tester = tester;
 	},
 	open: function(method, url, asynchronous) {
-		log.debug(url);
 		// prototype appends '&_=' when there are parameters
 		this.responseText = this.tester.responses[url] || this.tester.responses[url.substring(0, url.length - 3)];
 	},
