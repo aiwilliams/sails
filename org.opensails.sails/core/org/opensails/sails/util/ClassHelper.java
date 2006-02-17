@@ -235,9 +235,17 @@ public class ClassHelper {
 		return upper + string.substring(1);
 	}
 
-	public static void writeField(Field field, Object target, Object value) {
+	public static void writeField(Object target, Field field, Object value) {
 		try {
 			field.set(target, value);
+		} catch (Exception e) {
+			throw new SailsException("Could not write field.", e);
+		}
+	}
+	
+	public static void writeField(Object target, String field, Object value) {
+		try {
+			writeField(target, target.getClass().getField(field), value);
 		} catch (Exception e) {
 			throw new SailsException("Could not write field.", e);
 		}

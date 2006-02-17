@@ -66,7 +66,7 @@ public class Action implements IAction {
 			String formField = invocation.getFormField(field.getName());
 			if (formField != null) {
 				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
-				ClassHelper.writeField(field, context, adapter.forModel(field.getType(), formField));
+				ClassHelper.writeField(context, field, adapter.forModel(field.getType(), formField));
 			}
 		}
 	}
