@@ -46,6 +46,7 @@ public class FormFieldsTest extends TestCase {
 	public void testValue_FileUpload() throws Exception {
 		TestFileUpload upload = new TestFileUpload("theFileName.test", "content");
 		FormFields fields = new FormFields();
+		ClassHelper.writeDeclaredField(fields, "multipartContent", true);
 		Map<String, Object> backingMap = (Map<String, Object>) ClassHelper.readField(fields, "backingMap", false);
 		backingMap.put("myFileUpload", upload);
 		assertEquals("content", fields.valueAs("myFileUpload", FieldType.STRING));

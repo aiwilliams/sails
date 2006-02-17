@@ -250,6 +250,16 @@ public class ClassHelper {
 			throw new SailsException("Could not write field.", e);
 		}
 	}
+	
+	public static void writeDeclaredField(Object target, String field, Object value) {
+		try {
+			Field declaredField = target.getClass().getDeclaredField(field);
+			declaredField.setAccessible(true);
+			writeField(target, declaredField, value);
+		} catch (Exception e) {
+			throw new SailsException("Could not write field.", e);
+		}
+	}
 
 	private static Class[] argTypes(Object... args) {
 		Class[] argTypes = new Class[args.length];

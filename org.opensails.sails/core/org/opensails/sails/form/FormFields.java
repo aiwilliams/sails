@@ -63,13 +63,16 @@ public class FormFields {
 
 	protected Map<String, Object> backingMap;
 
+	protected boolean multipartContent;
+
 	public FormFields() {
 		this(new HashMap<String, Object>());
 	}
 
 	@SuppressWarnings("unchecked")
 	public FormFields(HttpServletRequest request) {
-		if (!DiskFileUpload.isMultipartContent(request)) {
+		multipartContent = DiskFileUpload.isMultipartContent(request);
+		if (!multipartContent) {
 			backingMap = new HashMap<String, Object>(request.getParameterMap());
 			return;
 		}
@@ -97,6 +100,7 @@ public class FormFields {
 	}
 
 	public FileUpload file(String name) {
+		if (!multipartContent) throw new SailsException("Form was not multipart. Set enctype=\"multipart/form-data\" on your form if you want to upload files.");
 		return (FileUpload) backingMap.get(name);
 	}
 
