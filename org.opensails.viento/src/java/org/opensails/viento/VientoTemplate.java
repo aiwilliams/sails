@@ -3,13 +3,13 @@ package org.opensails.viento;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.opensails.viento.ast.Template;
 import org.opensails.viento.parser.ParseException;
 import org.opensails.viento.parser.Parser;
-import org.opensails.viento.parser.SimpleNode;
 
 public class VientoTemplate {
     protected InputStream stream;
-    protected SimpleNode template;
+    protected Template template;
 
     public VientoTemplate(InputStream inputStream) {
         this.stream = inputStream;
@@ -24,16 +24,15 @@ public class VientoTemplate {
     }
 
     public StringBuilder render(StringBuilder output, Binding templateBinding) {
-        VientoVisitor visitor = new VientoVisitor(output, templateBinding);
-        getTemplateNode().childrenAccept(visitor, null);
+        getTemplateNode().evaluate(templateBinding, output);
         return output;
     }
 
-    protected SimpleNode getTemplateNode() {
+    protected Template getTemplateNode() {
         if (template == null) {
             Parser parser = new Parser(stream);
             try {
-                template = parser.Template();
+                template = parser.template();
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }

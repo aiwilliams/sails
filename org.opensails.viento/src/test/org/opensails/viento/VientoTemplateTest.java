@@ -236,14 +236,6 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$key.length();.", "5.");
 	}
 
-	public void testSilence() throws Exception {
-		verifyRender("$!notHere", "");
-
-		binding.put("tool", new Tool());
-		verifyRender("$!tool.notHere", "");
-		verifyRender("$!tool.yesno(true)", "yes");
-	}
-
 	public void testSimpleSubstitution() throws Exception {
 		binding.put("key", "value");
 		verifyRender("stuff$key\nstuff", "stuffvalue\nstuff");

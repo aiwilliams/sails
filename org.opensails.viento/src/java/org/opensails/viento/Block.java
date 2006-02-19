@@ -1,20 +1,19 @@
 package org.opensails.viento;
 
-import org.opensails.viento.parser.ASTBody;
 
 public class Block {
 	protected Binding binding;
-	protected ASTBody body;
+	protected org.opensails.viento.ast.Block body;
 
-	public Block(Binding binding, ASTBody body) {
+	public Block(Binding binding, org.opensails.viento.ast.Block body) {
 		this.binding = new Binding(binding);
 		this.body = body;
 	}
 
 	public String evaluate() {
-		StringBuilder buffer = new StringBuilder();
-		body.childrenAccept(new VientoVisitor(buffer, binding), null);
-		return buffer.toString();
+		StringBuilder s = new StringBuilder();
+		body.evaluate(binding, s);
+		return s.toString();
 	}
 
 	public Binding getBinding() {

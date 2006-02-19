@@ -31,52 +31,50 @@ public class Binding implements IBinding {
 		populateDefaults();
 	}
 
+	public Object call(CallableMethod method, MethodKey key, Object target, Object[] args, int line, int offset) {
+		if (method == null)
+			return new UnresolvableObject(exceptionHandler, null, key, target, args, line, offset, false);
+//		cache.put(key, method);
+		Object result = null;
+		try {
+			result = method.call(target, args);
+		} catch (Throwable t) {
+			return new UnresolvableObject(exceptionHandler, t, key, target, args, line, offset, false);
+		}
+		
+		if (result == null)
+			return new UnresolvableObject(exceptionHandler, null, key, target, args, line, offset, true);
+		return result;
+	}
+
 	public Object call(Object target, String methodName) {
 		return call(target, methodName, new Object[0]);
 	}
 
 	public Object call(Object target, String methodName, Object[] args) {
-		return call(target, methodName, args, false, 0, 0);
-	}
-
-	public Object call(Object target, String methodName, Object[] args, boolean isSilent, int line, int offset) {
-		TargetedMethodKey key = new TargetedMethodKey(target.getClass(), methodName, getClasses(args));
-		return call(findMethod(key), key, target, args, isSilent, line, offset);
+		return call(target, methodName, args, 0, 0);
 	}
 	
+	public Object call(Object target, String methodName, Object[] args, int line, int offset) {
+		TargetedMethodKey key = new TargetedMethodKey(target.getClass(), methodName, getClasses(args));
+		return call(findMethod(key), key, target, args, line, offset);
+	}
+	
+	public Object call(String methodName) {
+		return call(methodName, new Object[0]);
+	}
+
+	public Object call(String methodName, Object[] args) {
+		return call(methodName, args, 0, 0);
+	}
+
+	public Object call(String methodName, Object[] args, int line, int offset) {
+		TopLevelMethodKey key = new TopLevelMethodKey(methodName, getClasses(args));
+		return call(findMethod(key), key, null, args, line, offset);
+	}
+
 	public boolean canResolve(String name) {
 		return statics.find(new TopLevelMethodKey(name, new Class[0])) != null;
-	}
-	
-	protected Class[] getClasses(Object[] args) {
-		Class[] classes = new Class[args.length];
-		for (int i = 0; i < args.length; i++) {
-			if (args[i] == null)
-				classes[i] = null;
-			else
-				classes[i] = args[i].getClass();
-		}
-		return classes;
-	}
-
-	protected CallableMethod findMethod(TopLevelMethodKey key) {
-//		CallableMethod method = cache.find(key);
-//		if (method != null)
-//			return method;
-		CallableMethod method = statics.find(key);
-		if (method != null)
-			return method;
-		method = topLevelMixins.find(key);
-		if (method != null)
-			return method;
-//		for (DynamicResolver dynamicResolver : dynamicResolvers) {
-//			method = dynamicResolver.find(key);
-//			if (method != null)
-//				return method;
-//		}
-		if (parent != null)
-			return parent.findMethod(key);
-		return null;
 	}
 
 	protected CallableMethod findMethod(TargetedMethodKey key) {
@@ -96,42 +94,36 @@ public class Binding implements IBinding {
 			return parent.findMethod(key);
 		return null;
 	}
-
-	public Object call(String methodName) {
-		return call(methodName, new Object[0]);
-	}
-
-	public Object call(String methodName, Object[] args) {
-		return call(methodName, args, false, 0, 0);
+	
+	protected CallableMethod findMethod(TopLevelMethodKey key) {
+//		CallableMethod method = cache.find(key);
+//		if (method != null)
+//			return method;
+		CallableMethod method = statics.find(key);
+		if (method != null)
+			return method;
+		method = topLevelMixins.find(key);
+		if (method != null)
+			return method;
+//		for (DynamicResolver dynamicResolver : dynamicResolvers) {
+//			method = dynamicResolver.find(key);
+//			if (method != null)
+//				return method;
+//		}
+		if (parent != null)
+			return parent.findMethod(key);
+		return null;
 	}
 	
-	public Object call(String methodName, Object[] args, boolean isSilent, int line, int offset) {
-		TopLevelMethodKey key = new TopLevelMethodKey(methodName, getClasses(args));
-		return call(findMethod(key), key, null, args, isSilent, line, offset);
-	}
-	
-	public Object call(CallableMethod method, MethodKey key, Object target, Object[] args, boolean isSilent, int line, int offset) {
-		if (method == null) {
-			if (isSilent)
-				return "";
-			return new UnresolvableObject(exceptionHandler, null, key, target, args, line, offset, false);
+	protected Class[] getClasses(Object[] args) {
+		Class[] classes = new Class[args.length];
+		for (int i = 0; i < args.length; i++) {
+			if (args[i] == null)
+				classes[i] = null;
+			else
+				classes[i] = args[i].getClass();
 		}
-//		cache.put(key, method);
-		Object result = null;
-		try {
-			result = method.call(target, args);
-		} catch (Throwable t) {
-			if (isSilent)
-				return "";
-			return new UnresolvableObject(exceptionHandler, t, key, target, args, line, offset, false);
-		}
-		
-		if (result == null) {
-			if (isSilent)
-				return "";
-			return new UnresolvableObject(exceptionHandler, null, key, target, args, line, offset, true);
-		}
-		return result;
+		return classes;
 	}
 
 	public void mixin(Class<?> target, Object mixin) {
@@ -140,23 +132,6 @@ public class Binding implements IBinding {
 
 	public void mixin(Object mixin) {
 		topLevelMixins.add(mixin);
-	}
-
-	public void put(String key, Object object) {
-		statics.put(key, object);
-	}
-	
-	public void putAll(Map<String, Object> map) {
-		for (Map.Entry<String, Object> entry : map.entrySet())
-			put(entry.getKey(), entry.getValue());
-	}
-	
-//	public void add(DynamicResolver dynamicResolver) {
-//		dynamicResolvers.add(dynamicResolver);
-//	}
-
-	public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-		this.exceptionHandler = exceptionHandler;
 	}
 
 	protected void populateDefaults() {
@@ -183,5 +158,22 @@ public class Binding implements IBinding {
 		mixin(Collection.class, new LoopMixin());
 		mixin(Object[].class, new LoopMixin());
 		mixin(Object.class, new ObjectMixin());
+	}
+	
+	public void put(String key, Object object) {
+		statics.put(key, object);
+	}
+	
+//	public void add(DynamicResolver dynamicResolver) {
+//		dynamicResolvers.add(dynamicResolver);
+//	}
+
+	public void putAll(Map<String, Object> map) {
+		for (Map.Entry<String, Object> entry : map.entrySet())
+			put(entry.getKey(), entry.getValue());
+	}
+
+	public void setExceptionHandler(ExceptionHandler exceptionHandler) {
+		this.exceptionHandler = exceptionHandler;
 	}
 }
