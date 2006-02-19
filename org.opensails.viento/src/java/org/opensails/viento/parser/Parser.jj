@@ -1,0 +1,324 @@
+options {                                                                        
+    STATIC = false;                   
+}
+
+PARSER_BEGIN(Parser)
+
+package org.opensails.viento.parser;
+
+import java.util.Stack;
+import org.opensails.viento.ast.*;
+
+public class Parser {}
+
+PARSER_END(Parser)
+
+
+TOKEN_MGR_DECLS : {
+	Stack stateStack = initializeStack();
+
+	public void pushState(int state) {
+		SwitchTo(state);
+		stateStack.push(state);
+	}
+	
+	public void popState() {
+		stateStack.pop();
+		SwitchTo((Integer)stateStack.peek());
+	}
+	
+	protected Stack initializeStack() {
+		Stack stack = new Stack();
+		stack.push(DEFAULT);
+		return stack;
+	}
+}
+
+
+<EXPRESSION, ARGS_OR_BLOCK, BLOCK, END> SKIP : { " " | "\r" | "\t" }
+
+<DEFAULT, IN_BLOCK, IN_QUICK_BLOCK> SKIP : {
+	<("\r")? ("\n")? ([" ", "\t"])* "##"> {pushState(SINGLELINE_COMMENT);}
+|	<"#*"> {pushState(MULTILINE_COMMENT);}
+}
+
+<SINGLELINE_COMMENT> SKIP : {
+	<(~["\r", "\n"])*> {popState();}
+}
+
+<MULTILINE_COMMENT> SKIP : {
+	<(~["*", "#"])+ | "*" | "#">
+|	<"*#"> {popState();}
+}
+
+TOKEN : {
+	<TEXT: (~["$", "#", "\\"] | ("\\" ~[]))+>
+}
+
+<IN_BLOCK> TOKEN : {
+	<TEXT_IN_BLOCK: (~["$", "#", "\\", "]"] | ("\\" ~[]))+ >
+}
+
+<IN_QUICK_BLOCK> TOKEN : {
+	<TEXT_IN_QUICK_BLOCK: (~["$", "#", "\\", "\n"] | ("\\" ~[]))+ >
+}
+
+<STRING_BLOCK> TOKEN : {
+	<TEXT_IN_STRING_BLOCK: (~["$", "#", "\\", "\"", "\n"] | "\\\"" | ("\\" ~[]))+ >
+}
+
+<DEFAULT, IN_BLOCK, IN_QUICK_BLOCK, STRING_BLOCK> TOKEN : {
+	<HASH: "#">
+}
+
+<DEFAULT, EXPRESSION, IN_BLOCK, IN_QUICK_BLOCK, STRING_BLOCK> TOKEN : {
+	<DOLLAR: "$" > {pushState(STATEMENT);}
+}
+
+<STATEMENT> TOKEN : {
+	<IDENTIFIER: (["a"-"z", "A"-"Z", "!", "?", "_"])(["a"-"z", "A"-"Z", "!", "?", "_", "-", "0"-"9"])* > {pushState(ARGS_OR_BLOCK);}
+}
+
+<STATEMENT> MORE : {
+	<([" ", "\t", "\r"])* (~["a"-"z", "A"-"Z", "!", "?", "_", "-", "0"-"9"])> {input_stream.backup(1); popState();}
+}
+
+<ARGS_OR_BLOCK> TOKEN : {
+	<LPAREN: "("> {pushState(EXPRESSION);}
+}
+
+<ARGS_OR_BLOCK> MORE : {
+	<([" ", "\t", "\r"])* (~["(", "[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
+}
+
+<ARGS_OR_BLOCK, BLOCK> TOKEN : {
+	<BEGIN_BLOCK: "[["> {pushState(IN_BLOCK);}
+|	<BEGIN_QUICK_BLOCK: "[>"> {pushState(IN_QUICK_BLOCK);}
+}
+
+<BLOCK> MORE : {
+	<([" ", "\t", "\r"])* (~["[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
+}
+
+<ARGS_OR_BLOCK, BLOCK, END> TOKEN : {
+	<DOT: "."> {popState();}
+}
+
+<ARGS_OR_BLOCK, BLOCK, END> SKIP : {
+	";" {popState(); popState();}
+}
+
+<END> MORE : {
+	<([" ", "\t", "\r"])* (~[".", ";"])> {input_stream.backup(1); popState(); popState();}
+}
+
+<EXPRESSION> TOKEN : {
+	<RPAREN: ")"> {popState(); popState(); pushState(BLOCK);}
+|	<COMMA: ",">
+|	<INTEGER: (("-")? ["0"-"9"])+>
+|	<BOOLEAN: ("true"|"false")>
+|	<NULL: "null">
+|	<OPEN_SQUOTE: "'"> {pushState(STRING_LITERAL);}
+|	<OPEN_DQUOTE: "\""> {pushState(STRING_BLOCK);}
+|	<LBRACKET: "[">
+|	<RBRACKET: "]">
+|	<MAP_LBRACE: "{">
+|	<MAP_RBRACE: "}">
+|	<COLON: ":">
+|	<SYMBOL: (["a"-"z", "A"-"Z", ".", "_", "-"])+>
+|	<NOT: "!">
+|	<INFIX: ("&&" | "||" | "==" | "!=" | ">" | "<" | ">=" | "<=")>
+}
+
+<STRING_LITERAL> TOKEN : {
+	<STRING: ((~["'"]) | ("\\'"))*>
+|	<CLOSE_SQUOTE: "'"> {popState();}
+}
+
+<STRING_BLOCK> TOKEN : {
+	<CLOSE_DQUOTE: "\""> {popState();}
+}
+
+<IN_BLOCK> TOKEN : {
+	<END_BLOCK: "]]"> {popState(); popState(); pushState(END);}
+|	<TEXT_RBRACKET: "]">
+}
+
+<IN_QUICK_BLOCK> TOKEN : {
+	<END_QUICK_BLOCK: "\n"> {input_stream.backup(1); popState(); popState(); pushState(END);}
+}
+
+Template template() : {Template template = new Template();}
+{
+	body(template)
+	<EOF>
+	{return template;}
+}
+
+void body(Body body) : {Text t; Statement s;}
+{
+	(
+		LOOKAHEAD(2)	s = statement()	{body.add(s);}
+|					t = text()		{body.add(t);}
+	)*
+}
+
+Text text() : {Token t;}
+{
+	((t = <TEXT>) | (t = <TEXT_IN_BLOCK>) | (t = <TEXT_IN_QUICK_BLOCK>) | (t = <HASH>) | (t = <TEXT_RBRACKET>) | (t = <DOLLAR>) | (t = <TEXT_IN_STRING_BLOCK>))
+	{return new Text(t);}
+}
+
+Statement statement() : {Statement s = new Statement(); Token t; Call c;}
+{
+	t = <DOLLAR>	{s.token(t);}
+	c = call()	{s.add(c);}
+	(
+		<DOT>
+		c = call()	{s.add(c);}
+	)*
+	{return s;}
+}
+
+Call call() : {Call c = new Call(); Identifier i; ArgumentList a; Block b;}
+{
+	(
+		i = identifier() {c.identifier(i);}
+		[a = arguments() {c.args(a);}]
+		[b = block() {c.block(b);}]
+	)
+	{return c;}
+}
+
+Identifier identifier() : {Token t;}
+{
+	t = <IDENTIFIER>
+	{return new Identifier(t);}
+}
+
+ArgumentList arguments() : {ArgumentList l = new ArgumentList(); Token t; Expression e;}
+{
+	t = <LPAREN> {l.token(t);}
+	[e = expression() {l.add(e);}]
+	(
+		<COMMA>
+		e = expression() {l.add(e);}
+	)*
+	t = <RPAREN> {l.token(t); return l;}
+}
+
+Expression expression() : {Expression e;}
+{
+	LOOKAHEAD(leftHandExpression() <INFIX>)
+	e = infixExpression() {return e;}
+|	e = leftHandExpression() {return e;}
+}
+
+Expression leftHandExpression() : {Expression e;}
+{
+	e = not() {return e;}
+|	e = statement() {return e;}
+|	e = map() {return e;}
+|	e = list() {return e;}
+|	e = string() {return e;}
+|	e = number() {return e;}
+|	e = booleanLiteral() {return e;}
+|	e = nullLiteral() {return e;}
+|	e = stringBlock() {return e;}
+//|	e = floatLiteral() {return e;}
+//|	e = enum() {return e;}
+}
+
+NumberLiteral number() : {Token t;}
+{
+	t = <INTEGER>
+	{return new NumberLiteral(t);}
+}
+
+BooleanLiteral booleanLiteral() : {Token t;}
+{
+	t = <BOOLEAN>
+	{return new BooleanLiteral(t);}
+}
+
+
+InfixExpression infixExpression() : {InfixExpression ie = new InfixExpression(); Expression e; Token t;}
+{
+	e = leftHandExpression() {ie.left(e);}
+	t = <INFIX> {ie.operator(t);}
+	e = expression() {ie.right(e); return ie;}
+}
+
+NegatedExpression not() : {NegatedExpression e = new NegatedExpression(); Token t; Statement s;}
+{
+	t = <NOT> {e.token(t);}
+	s = statement() {e.statement(s); return e;}
+}
+
+NullLiteral nullLiteral() : {Token t;}
+{
+	t = <NULL> {return new NullLiteral(t);}
+}
+
+StringLiteral string() : {StringLiteral s = new StringLiteral(); Token t;}
+{
+	(
+		[t = <COLON> {s.token(t);}]
+		t = <SYMBOL> {s.text(t); return s;}
+	) | (
+		t = <OPEN_SQUOTE> {s.token(t);}
+		[t = <STRING> {s.text(t);}]
+		t = <CLOSE_SQUOTE> {s.token(t); return s;}
+	)
+}
+
+ListLiteral list() : {ListLiteral l = new ListLiteral(); Expression e; Token t;}
+{
+	t = <LBRACKET> {l.token(t);}
+	[e = expression() {l.add(e);}]
+	(
+		<COMMA>
+		e = expression() {l.add(e);}
+	)*
+	t = <RBRACKET> {l.token(t); return l;}
+}
+
+MapLiteral map() : {MapLiteral m = new MapLiteral(); MapEntry e; Token t;}
+{
+	t = <MAP_LBRACE> {m.token(t);}
+	[e = mapEntry() {m.add(e);}]
+	(
+		<COMMA>
+		e = mapEntry() {m.add(e);}
+	)*
+	t = <MAP_RBRACE> {m.token(t); return m;}
+}
+
+MapEntry mapEntry() : {MapEntry me = new MapEntry(); Expression e; Token t;}
+{
+	e = expression() {me.key(e);}
+	<COLON>
+	e = expression() {me.value(e); return me;}
+}
+
+Block block() : {Block b = new Block(); Token t;}
+{
+	((
+		t = <BEGIN_BLOCK> {b.token(t);}
+		body(b)
+		t = <END_BLOCK> {b.token(t);}
+	) | (
+		t = <BEGIN_QUICK_BLOCK> {b.token(t);}
+		body(b)
+		(t = <END_QUICK_BLOCK> {b.token(t);} | <EOF>)
+	)) {return b;}
+}
+
+StringBlock stringBlock() : {StringBlock b = new StringBlock(); Token t;}
+{
+	t = <OPEN_DQUOTE> {b.token(t);}
+	body(b)
+	t = <CLOSE_DQUOTE> {b.token(t); return b;}
+}

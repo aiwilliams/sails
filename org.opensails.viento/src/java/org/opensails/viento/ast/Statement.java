@@ -6,7 +6,7 @@ import java.util.List;
 import org.opensails.viento.Binding;
 import org.opensails.viento.IRenderable;
 
-public class Statement extends BodyNode implements Expression {
+public class Statement extends Node implements BodyNode, Expression {
 	protected List<Call> calls = new ArrayList<Call>();
 	
 	public void add(Call call) {
@@ -14,7 +14,6 @@ public class Statement extends BodyNode implements Expression {
 		calls.add(call);
 	}
 
-	@Override
 	public void evaluate(Binding binding, StringBuilder s) {
 		s.append(render(evaluate(binding)));
 	}
