@@ -39,4 +39,16 @@ public class Node implements INode {
 		if (first == null) first = t;
 		last = t;
 	}
+
+	public int endOffset() {
+		return last.endOffset;
+	}
+
+	public int startOffset() {
+		return first.beginOffset;
+	}
+
+	public int length() {
+		return endOffset() - startOffset();
+	}
 }

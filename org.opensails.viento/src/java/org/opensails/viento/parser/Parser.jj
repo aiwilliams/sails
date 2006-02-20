@@ -104,10 +104,7 @@ TOKEN : {
 
 <ARGS_OR_BLOCK, BLOCK, END> TOKEN : {
 	<DOT: "."> {popState();}
-}
-
-<ARGS_OR_BLOCK, BLOCK, END> SKIP : {
-	";" {popState(); popState();}
+|	<SEMICOLON: ";"> {popState(); popState();}
 }
 
 <END> MORE : {
@@ -161,7 +158,7 @@ void body(Body body) : {Text t; Statement s;}
 {
 	(
 		LOOKAHEAD(2)	s = statement()	{body.add(s);}
-|					t = text()		{body.add(t);}
+|						t = text()		{body.add(t);}
 	)*
 }
 
@@ -173,12 +170,13 @@ Text text() : {Token t;}
 
 Statement statement() : {Statement s = new Statement(); Token t; Call c;}
 {
-	t = <DOLLAR>	{s.token(t);}
-	c = call()	{s.add(c);}
+	t = <DOLLAR> {s.token(t);}
+	c = call() {s.add(c);}
 	(
 		<DOT>
-		c = call()	{s.add(c);}
+		c = call() {s.add(c);}
 	)*
+	[t = <SEMICOLON> {s.token(t);}]
 	{return s;}
 }
 

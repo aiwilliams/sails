@@ -3,6 +3,9 @@
 	<property name="parserSourcePath" value="src/java/org/opensails/viento/parser"></property>
 	<target name="parser" depends="clean">
         <javacc javacchome="vendor/javacc/lib" outputdirectory="${parserSourcePath}" target="${parserSourcePath}/Parser.jj"/>
+		<!-- Easiest way I could think of to extend that method. -->
+		<replaceregexp file="${parserSourcePath}/ParserTokenManager.java" match="(t\.endColumn = input_stream\.getBeginColumn\(\);)" replace="\1 t.beginOffset = input_stream.tokenBegin; t.endOffset = input_stream.bufpos;"/>
+		<replaceregexp file="${parserSourcePath}/ParserTokenManager.java" match="(t\.endColumn = input_stream\.getEndColumn\(\);)" replace="\1 t.beginOffset = input_stream.tokenBegin; t.endOffset = input_stream.bufpos;"/>
     </target>
 	
 	<target name="clean">

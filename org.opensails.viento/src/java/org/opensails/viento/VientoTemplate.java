@@ -27,6 +27,10 @@ public class VientoTemplate {
         getTemplateNode().evaluate(templateBinding, output);
         return output;
     }
+    
+    public Template getAst() {
+    	return getTemplateNode();
+    }
 
     protected Template getTemplateNode() {
         if (template == null) {
