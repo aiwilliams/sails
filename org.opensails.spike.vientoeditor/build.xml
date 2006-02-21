@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<project name="project" default="default">
+    <target name="default" depends="clean">
+        <ant antfile="../org.opensails.viento/build.xml" inheritall="false">
+        	<property name="dist.dir" location="lib"/>
+        </ant>
+    </target>
+	
+    <target name="clean">
+    	<delete>
+    		<fileset dir="lib">
+	    		<include name="*.jar"/>
+			</fileset>
+		</delete>
+    </target>
+</project>

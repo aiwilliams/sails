@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <file-association
+            content-type="viento"
+            file-extensions="vto"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.opensails.spike.vientoeditor.VientoEditor"
+            contributorClass="org.opensails.spike.vientoeditor.ActionBarContributor"
+            default="true"
+            icon="icons/sample.gif"
+            id="org.opensails.spike.vientoeditor.editor"
+            name="Viento Editor">
+         <contentTypeBinding contentTypeId="viento"/>
+      </editor>
+   </extension>
+
+</plugin>
