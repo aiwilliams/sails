@@ -6,6 +6,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.opensails.functional.SailsFunctionalTester;
 import org.opensails.functional.controllers.EventTestController;
 import org.opensails.functional.controllers.EventTestSubclassController;
+import org.opensails.functional.controllers.ExampleEnum;
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
 import org.opensails.sails.form.FormFields;
@@ -16,17 +17,6 @@ import org.opensails.sails.tester.Page;
 public class EventProcessingTests extends TestCase implements IActionListener {
 	private int beginExecutionCallCount = 0;
 	private int endExecutionCallCount;
-
-	private void assertHeardActionEvents() {
-		// Once for application container, once for event container
-		assertEquals(2, beginExecutionCallCount);
-		assertEquals(2, endExecutionCallCount);
-	}
-
-	private void registerAsActionListener(SailsFunctionalTester tester) {
-		tester.getContainer().register(this);
-		tester.getRequestContainer().register(this);
-	}
 
 	public void beginExecution(IAction action) {
 		beginExecutionCallCount++;
@@ -73,16 +63,17 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	public void testGet_NoImplementation() {
 		SailsFunctionalTester tester = new SailsFunctionalTester();
-		Page page = tester.get("noImplementation", "index", ArrayUtils.EMPTY_STRING_ARRAY);
+		Page page = tester.get("noImplementation", "index", ArrayUtils.EMPTY_OBJECT_ARRAY);
 		page.assertContains("index");
 	}
 
 	public void testGet_Parameters() {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		Page page = tester.get("parameterGet", new String[] { "true", "two", "three" });
+		Page page = tester.get("parameterGet", new Object[] { "true", "two", ExampleEnum.ENUM_EXAMPLE_TWO, "four" });
 		page.assertTemplate("eventTest/parameterGet");
 		page.assertContains("true");
 		page.assertContains("two");
+		page.assertContains(ExampleEnum.ENUM_EXAMPLE_TWO.name());
 
 		page = tester.get("parameterGet");
 		page.assertRenderFails("Arguments weren't exposed: zero parameter event for parameterized action, code doesn't get executed");
@@ -99,9 +90,10 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	public void testPost_FieldsAdaptedAndSet() {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		Page page = tester.post("simplePost", FormFields.quick("stringField", "postedStringFieldValue", "intField", 3, "floatField", 5.4));
+		Page page = tester.post("simplePost", FormFields.quick("stringField", "postedStringFieldValue", "intField", 3, "floatField", 5.4, "enumField", ExampleEnum.ENUM_EXAMPLE_ONE));
 		page.assertContains("postedStringFieldValue");
 		page.assertContains("3");
+		page.assertContains(ExampleEnum.ENUM_EXAMPLE_ONE.name());
 		page.assertExcludes("5.4");
 	}
 
@@ -133,5 +125,16 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		page.assertContains("postedValue");
 		page.assertContains("one");
 		page.assertContains("2");
+	}
+
+	private void assertHeardActionEvents() {
+		// Once for application container, once for event container
+		assertEquals(2, beginExecutionCallCount);
+		assertEquals(2, endExecutionCallCount);
+	}
+
+	private void registerAsActionListener(SailsFunctionalTester tester) {
+		tester.getContainer().register(this);
+		tester.getRequestContainer().register(this);
 	}
 }

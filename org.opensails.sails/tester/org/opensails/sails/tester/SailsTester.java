@@ -30,10 +30,10 @@ import org.opensails.sails.util.ClassInstanceAccessor;
  * communicates with an ISailsApplication to render responses.
  * 
  * <pre>
- *              The main methods to understand browser simulation 
- *              #get(String, String, String[])
- *              #post(Class, FormFields, Object[])
- *              #follow(TestRedirectUrl)
+ *                  The main methods to understand browser simulation 
+ *                  #get(String, String, String[])
+ *                  #post(Class, FormFields, Object[])
+ *                  #follow(TestRedirectUrl)
  * </pre>
  */
 public class SailsTester implements ISailsApplication {
@@ -130,13 +130,13 @@ public class SailsTester implements ISailsApplication {
 	 * @param parameters
 	 * @return the page for the given context/action
 	 */
-	public Page get(Class<? extends IEventProcessingContext> context, String action, String... parameters) {
+	public Page get(Class<? extends IEventProcessingContext> context, String action, Object... parameters) {
 		this.workingContext = context;
 		return get(action, parameters);
 	}
 
 	public Page get(String action) {
-		return get(workingContext(), action, ArrayUtils.EMPTY_STRING_ARRAY);
+		return get(workingContext(), action, ArrayUtils.EMPTY_OBJECT_ARRAY);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class SailsTester implements ISailsApplication {
 	 * @param parameters
 	 * @return the page for &lt;workingContext&gt;/action
 	 */
-	public Page get(String action, String... parameters) {
+	public Page get(String action, Object... parameters) {
 		return get(workingContext(), action, parameters);
 	}
 
@@ -167,8 +167,8 @@ public class SailsTester implements ISailsApplication {
 	 * @param parameters
 	 * @return the page for the given context/action
 	 */
-	public Page get(String context, String action, String... parameters) {
-		TestGetEvent event = createGetEvent(context, action, parameters);
+	public Page get(String context, String action, Object... parameters) {
+		TestGetEvent event = createGetEvent(context, action, adaptParameters(parameters));
 		return get(event);
 	}
 
@@ -282,7 +282,7 @@ public class SailsTester implements ISailsApplication {
 	 * @return the page for the given context/action
 	 */
 	public Page post(String context, String action, FormFields formFields, Object... parameters) {
-		TestPostEvent postEvent = createPostEvent(context, action, formFields, adaptParameters(parameters, new ContainerAdapterResolver(application.getContainer().instance(IAdapterResolver.class), requestContainer)));
+		TestPostEvent postEvent = createPostEvent(context, action, formFields, adaptParameters(parameters));
 		return doPost(postEvent);
 	}
 
@@ -318,6 +318,10 @@ public class SailsTester implements ISailsApplication {
 
 	public String workingContext() {
 		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
+	}
+
+	protected String[] adaptParameters(Object... parameters) {
+		return adaptParameters(parameters, new ContainerAdapterResolver(application.getContainer().instance(IAdapterResolver.class), requestContainer));
 	}
 
 	@SuppressWarnings("unchecked")

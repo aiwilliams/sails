@@ -9,6 +9,7 @@ public class DefaultAdapterResolver extends ClassResolverAdapter<IAdapter> {
 	public Class<? extends IAdapter> resolve(Class key) {
 		if (String.class == key || key.isPrimitive() || isPrimitiveWrapper(key)) return PrimitiveAdapter.class;
 		else if (IIdentifiable.class.isAssignableFrom(key)) return IdentifiableAdapter.class;
+		else if (key.isEnum()) return EnumAdapter.class;
 		return null;
 	}
 
