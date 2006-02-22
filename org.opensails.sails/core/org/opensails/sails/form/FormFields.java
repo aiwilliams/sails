@@ -62,7 +62,6 @@ public class FormFields {
 	}
 
 	protected Map<String, Object> backingMap;
-
 	protected boolean multipartContent;
 
 	public FormFields() {
@@ -71,24 +70,9 @@ public class FormFields {
 
 	@SuppressWarnings("unchecked")
 	public FormFields(HttpServletRequest request) {
-		multipartContent = DiskFileUpload.isMultipartContent(request);
-		if (!multipartContent) {
-			backingMap = new HashMap<String, Object>(request.getParameterMap());
-			return;
-		}
-
-		backingMap = new HashMap<String, Object>();
-		DiskFileUpload upload = new DiskFileUpload();
-		try {
-			List<FileItem> list = upload.parseRequest(request);
-			for (FileItem item : list) {
-				String fieldName = item.getFieldName();
-				if (item.isFormField()) addFieldValue(fieldName, item.getString());
-				else backingMap.put(fieldName, new FileUpload(item));
-			}
-		} catch (FileUploadException e) {
-			throw new SailsException(e);
-		}
+		multipartContent = isMultipartRequest(request);
+		if (multipartContent) initializeFromMultipart(request);
+		else backingMap = new HashMap<String, Object>(request.getParameterMap());
 	}
 
 	private FormFields(Map<String, Object> backingMap) {
@@ -209,6 +193,38 @@ public class FormFields {
 		return values;
 	}
 
+	protected void addFieldValue(String fieldName, String string) {
+		String[] existing = (String[]) backingMap.get(fieldName);
+		if (existing == null) existing = new String[] { string };
+		else {
+			String[] expanded = new String[existing.length + 1];
+			System.arraycopy(existing, 0, expanded, 0, existing.length);
+			expanded[existing.length] = string;
+			existing = expanded;
+		}
+		backingMap.put(fieldName, existing);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void initializeFromMultipart(HttpServletRequest request) {
+		backingMap = new HashMap<String, Object>();
+		DiskFileUpload upload = new DiskFileUpload();
+		try {
+			List<FileItem> list = upload.parseRequest(request);
+			for (FileItem item : list) {
+				String fieldName = item.getFieldName();
+				if (item.isFormField()) addFieldValue(fieldName, item.getString());
+				else backingMap.put(fieldName, new FileUpload(item));
+			}
+		} catch (FileUploadException e) {
+			throw new SailsException(e);
+		}
+	}
+
+	protected boolean isMultipartRequest(HttpServletRequest request) {
+		return DiskFileUpload.isMultipartContent(request);
+	}
+
 	/**
 	 * Converts non-null value to a String. Does not handle FileUpload.
 	 * 
@@ -223,17 +239,5 @@ public class FormFields {
 		}
 		if (StringUtils.isEmpty((String) value)) return NULL_OR_BLANK_STRING_VALUE;
 		return (String) value;
-	}
-
-	void addFieldValue(String fieldName, String string) {
-		String[] existing = (String[]) backingMap.get(fieldName);
-		if (existing == null) existing = new String[] { string };
-		else {
-			String[] expanded = new String[existing.length + 1];
-			System.arraycopy(existing, 0, expanded, 0, existing.length);
-			expanded[existing.length] = string;
-			existing = expanded;
-		}
-		backingMap.put(fieldName, existing);
 	}
 }

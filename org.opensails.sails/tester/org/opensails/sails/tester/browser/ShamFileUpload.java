@@ -1,15 +1,20 @@
-package org.opensails.sails.tester.form;
+package org.opensails.sails.tester.browser;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.opensails.sails.form.FileUpload;
 
-public class TestFileUpload extends FileUpload {
+/**
+ * Used to construct a FileUpload to be submitted in a post or get.
+ * 
+ * @author aiwilliams
+ */
+public class ShamFileUpload extends FileUpload {
 	protected final String content;
 	protected final String name;
 
-	public TestFileUpload(String name, String content) {
+	public ShamFileUpload(String name, String content) {
 		this.name = name;
 		this.content = content;
 	}

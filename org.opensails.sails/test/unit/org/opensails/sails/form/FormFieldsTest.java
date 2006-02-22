@@ -6,7 +6,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.opensails.sails.adapter.FieldType;
-import org.opensails.sails.tester.form.TestFileUpload;
+import org.opensails.sails.tester.browser.ShamFileUpload;
 import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.ClassHelper;
 import org.opensails.sails.util.Quick;
@@ -44,7 +44,7 @@ public class FormFieldsTest extends TestCase {
 
 	@SuppressWarnings("unchecked")
 	public void testValue_FileUpload() throws Exception {
-		TestFileUpload upload = new TestFileUpload("theFileName.test", "content");
+		ShamFileUpload upload = new ShamFileUpload("theFileName.test", "content");
 		FormFields fields = new FormFields();
 		ClassHelper.writeDeclaredField(fields, "multipartContent", true);
 		Map<String, Object> backingMap = (Map<String, Object>) ClassHelper.readField(fields, "backingMap", false);

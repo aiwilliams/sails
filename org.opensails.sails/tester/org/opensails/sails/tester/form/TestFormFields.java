@@ -1,28 +1,35 @@
 package org.opensails.sails.tester.form;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
-import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.event.oem.EventServletRequest;
 import org.opensails.sails.form.FormFields;
-import org.opensails.sails.form.html.Submit;
-import org.opensails.sails.form.html.ValueElement;
+import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 
+/**
+ * Answered by the Page to allow for assertions against the form fields. Also
+ * makes simulated file uploads possible.
+ * 
+ * @author aiwilliams
+ */
 public class TestFormFields extends FormFields {
-	protected final ContainerAdapterResolver adapterResolver;
-	protected final List<ValueElement> elements;
-
-	public TestFormFields(ContainerAdapterResolver adapterResolver) {
-		this.adapterResolver = adapterResolver;
-		this.elements = new ArrayList<ValueElement>();
+	public TestFormFields(HttpServletRequest request) {
+		super(request);
 	}
 
-	public Submit submit(String action) {
-		return add(new Submit("", adapterResolver).action(action));
+	protected ShamHttpServletRequest asShamRequest(HttpServletRequest request) {
+		EventServletRequest wrapper = ((EventServletRequest) request);
+		ShamHttpServletRequest shamRequest = (ShamHttpServletRequest) wrapper.getRequest();
+		return shamRequest;
 	}
 
-	protected <T extends ValueElement> T add(T element) {
-		elements.add(element);
-		return element;
+	@Override
+	protected void initializeFromMultipart(HttpServletRequest request) {
+		this.backingMap = asShamRequest(request).getMultipartParameters();
+	}
+
+	@Override
+	protected boolean isMultipartRequest(HttpServletRequest request) {
+		return asShamRequest(request).isMultipartRequest();
 	}
 }

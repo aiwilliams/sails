@@ -4,6 +4,8 @@ import org.opensails.functional.form.Model;
 import org.opensails.sails.controller.oem.BaseController;
 
 public class FormTestController extends BaseController {
+	public String aFileField;
+
 	public void explicitExpose() {
 		exposeModel("model", new Model());
 		exposeModel("other", null);
@@ -24,5 +26,9 @@ public class FormTestController extends BaseController {
 	public void implicitExpose() {
 		exposeModel(new Model());
 		renderTemplate("renderModel");
+	}
+
+	public void fileUpload() {
+		renderString(aFileField);
 	}
 }

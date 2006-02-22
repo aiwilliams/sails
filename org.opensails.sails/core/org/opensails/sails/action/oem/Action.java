@@ -21,6 +21,7 @@ import org.opensails.sails.annotate.BehaviorInstance;
 import org.opensails.sails.annotate.IBehaviorHandler;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.form.FormFields;
 import org.opensails.sails.util.ClassHelper;
 
 /**
@@ -58,19 +59,6 @@ public class Action implements IAction {
 		return invocation.result;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void setFields(ActionInvocation invocation) {
-		IEventProcessingContext context = invocation.getContext();
-		if (context == null) return;
-		for (Field field : context.getClass().getFields()) {
-			String formField = invocation.getFormField(field.getName());
-			if (formField != null) {
-				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
-				ClassHelper.writeField(context, field, adapter.forModel(field.getType(), formField));
-			}
-		}
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -78,6 +66,64 @@ public class Action implements IAction {
 	@Override
 	public String toString() {
 		return contextClass + "#" + name;
+	}
+
+	protected void afterBehaviors(ActionInvocation invocation) {
+		for (IBehaviorHandler handler : invocation.getHandlers())
+			handler.afterAction(invocation);
+	}
+
+	protected boolean beforeBehaviors(ActionInvocation invocation) {
+		for (IBehaviorHandler handler : invocation.getHandlers())
+			if (!handler.beforeAction(invocation)) return false;
+		return true;
+	}
+
+	protected void beginExecution(ActionInvocation invocation) {
+		getActionListeners(invocation.event).beginExecution(this);
+		invocation.code = methodHavingArgCount(invocation.parameters.size());
+		initializeHandlers(invocation);
+	}
+
+	protected IActionResult defaultActionResult(ISailsEvent event) {
+		return new TemplateActionResult(event);
+	}
+
+	protected void endExecution(ActionInvocation invocation) {
+		getActionListeners(invocation.event).endExecution(this);
+	}
+
+	protected IActionListener getActionListeners(ISailsEvent event) {
+		return event.getApplication().getContainer().broadcast(IActionListener.class, false);
+	}
+
+	protected Method methodHavingArgCount(int i) {
+		for (Method method : actionMethods)
+			if (method.getParameterTypes().length <= i) return method;
+		return null;
+	}
+
+	protected void registerResult(ActionInvocation invocation) {
+		RequestContainer container = invocation.getContainer();
+		container.register(IActionResult.class, invocation.result);
+		container.register(invocation.result);
+	}
+
+	protected void setDefaultResult(ActionInvocation invocation) {
+		invocation.result = defaultActionResult(invocation.event);
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void setFields(ActionInvocation invocation) {
+		IEventProcessingContext context = invocation.getContext();
+		if (context == null) return;
+		FormFields formFields = invocation.getFormFields();
+		for (Field field : context.getClass().getFields()) {
+			if (formFields.contains(field.getName())) {
+				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
+				ClassHelper.writeField(context, field, adapter.forModel(field.getType(), formFields.valueAs(field.getName(), adapter.getFieldType())));
+			}
+		}
 	}
 
 	private BehaviorInstance[] allBehaviors(ActionInvocation invocation) {
@@ -146,50 +192,5 @@ public class Action implements IAction {
 		} catch (Exception possibleAndIgnored) {
 			return null;
 		}
-	}
-
-	protected void afterBehaviors(ActionInvocation invocation) {
-		for (IBehaviorHandler handler : invocation.getHandlers())
-			handler.afterAction(invocation);
-	}
-
-	protected boolean beforeBehaviors(ActionInvocation invocation) {
-		for (IBehaviorHandler handler : invocation.getHandlers())
-			if (!handler.beforeAction(invocation)) return false;
-		return true;
-	}
-
-	protected void beginExecution(ActionInvocation invocation) {
-		getActionListeners(invocation.event).beginExecution(this);
-		invocation.code = methodHavingArgCount(invocation.parameters.size());
-		initializeHandlers(invocation);
-	}
-
-	protected IActionResult defaultActionResult(ISailsEvent event) {
-		return new TemplateActionResult(event);
-	}
-
-	protected void endExecution(ActionInvocation invocation) {
-		getActionListeners(invocation.event).endExecution(this);
-	}
-
-	protected IActionListener getActionListeners(ISailsEvent event) {
-		return event.getApplication().getContainer().broadcast(IActionListener.class, false);
-	}
-
-	protected Method methodHavingArgCount(int i) {
-		for (Method method : actionMethods)
-			if (method.getParameterTypes().length <= i) return method;
-		return null;
-	}
-
-	protected void registerResult(ActionInvocation invocation) {
-		RequestContainer container = invocation.getContainer();
-		container.register(IActionResult.class, invocation.result);
-		container.register(invocation.result);
-	}
-
-	protected void setDefaultResult(ActionInvocation invocation) {
-		invocation.result = defaultActionResult(invocation.event);
 	}
 }

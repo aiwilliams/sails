@@ -7,6 +7,8 @@ import org.opensails.rigging.ScopedContainer;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.event.oem.PostEvent;
+import org.opensails.sails.form.FormFields;
+import org.opensails.sails.tester.form.TestFormFields;
 
 public class TestPostEvent extends PostEvent {
 	public TestPostEvent(ISailsApplication application, TestRequestContainer container, HttpServletRequest req, HttpServletResponse resp) {
@@ -29,5 +31,10 @@ public class TestPostEvent extends PostEvent {
 	@Override
 	protected RequestContainer createContainer(ScopedContainer parentContainer) {
 		return container;
+	}
+
+	@Override
+	protected FormFields createFormFields(HttpServletRequest req) {
+		return new TestFormFields(req);
 	}
 }

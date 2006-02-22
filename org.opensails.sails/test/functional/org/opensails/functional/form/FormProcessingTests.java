@@ -6,35 +6,45 @@ import org.opensails.functional.SailsFunctionalTester;
 import org.opensails.functional.controllers.FormTestController;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.tester.Page;
+import org.opensails.sails.tester.browser.ShamFileUpload;
+import org.opensails.sails.tester.browser.ShamFormFields;
 import org.opensails.sails.tester.form.Form;
 
 public class FormProcessingTests extends TestCase {
+	public void testPost_FileUpload() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		ShamFormFields fields = t.getFormFields();
+		fields.addFile("aFileField", new ShamFileUpload("theFileName.txt", "the content"));
+		Page page = t.post("fileUpload", fields);
+		page.assertContains("the content");
+	}
+
 	public void testPostThenRender() throws Exception {
-		SailsFunctionalTester tester = new SailsFunctionalTester(FormTestController.class);
-		Page page = tester.post("postThenRender", FormFields.quick("model.textProperty", "hello"));
+		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		Page page = t.post("postThenRender", FormFields.quick("model.textProperty", "hello"));
 		Form form = page.form();
 		form.text("model.textProperty").value("hello");
 	}
 
 	public void testRender_Model() {
-		SailsFunctionalTester tester = new SailsFunctionalTester(FormTestController.class);
-		Page page = tester.get("explicitExpose");
+		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		Page page = t.get("explicitExpose");
 		Form form = page.form();
 		assertModelRendered(form);
 
-		page = tester.get("implicitExpose");
+		page = t.get("implicitExpose");
 		assertModelRendered(form);
 	}
 
 	public void testRender_ModelDoesntHaveProperty() {
-		SailsFunctionalTester tester = new SailsFunctionalTester(FormTestController.class);
-		Page page = tester.get("referenceToMissingProperty");
+		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		Page page = t.get("referenceToMissingProperty");
 		page.assertRenderFails("Will not render if property not supported");
 	}
 
 	public void testRender_NoModel() {
-		SailsFunctionalTester tester = new SailsFunctionalTester(FormTestController.class);
-		Page page = tester.get("renderNoModel");
+		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		Page page = t.get("renderNoModel");
 		page.assertRenders();
 	}
 

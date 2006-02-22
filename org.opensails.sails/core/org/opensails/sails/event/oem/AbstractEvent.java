@@ -51,7 +51,6 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected AbstractEvent(HttpServletRequest req, HttpServletResponse resp) {
 		this.req = new EventServletRequest(this, req);
 		this.response = resp;
-		this.fields = new FormFields(req);
 	}
 
 	public void beginDispatch() {
@@ -194,6 +193,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return new RequestContainer(parentContainer, this);
 	}
 
+	protected FormFields createFormFields(HttpServletRequest req) {
+		return new FormFields(req);
+	}
+
 	/**
 	 * Called once, lazily, when getActionParameters is invoked first time
 	 * 
@@ -227,6 +230,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected void initialize(ScopedContainer parentContainer) {
 		url = new EventUrl(req);
 		container = createContainer(parentContainer);
+		fields = createFormFields(req);
 		container.register(FormFields.class, fields);
 		containerSet();
 	}

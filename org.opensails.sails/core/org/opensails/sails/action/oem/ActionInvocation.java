@@ -16,6 +16,7 @@ import org.opensails.sails.annotate.BehaviorInstance;
 import org.opensails.sails.annotate.IBehaviorHandler;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.form.FormFields;
 import org.opensails.sails.util.ClassHelper;
 
 /**
@@ -62,6 +63,10 @@ public class ActionInvocation {
 
 	public Class<? extends IEventProcessingContext> getContextClass() {
 		return context.getClass();
+	}
+
+	public FormFields getFormFields() {
+		return event.getContainer().instance(FormFields.class);
 	}
 
 	/**
@@ -125,9 +130,5 @@ public class ActionInvocation {
 
 	private boolean isActionResult(Object returnValue) {
 		return returnValue != null && returnValue instanceof IActionResult;
-	}
-
-	public String getFormField(String name) {
-		return event.getFieldValue(name);
 	}
 }

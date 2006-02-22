@@ -1,8 +1,3 @@
-/*
- * Created on Jan 30, 2005
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.tester.servletapi;
 
 import java.io.BufferedReader;
@@ -15,7 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletInputStream;
@@ -24,7 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.form.FileUpload;
 
+/**
+ * @author aiwilliams, built on experience gained at RoleModel Software
+ */
 public class ShamHttpServletRequest implements HttpServletRequest {
 	public static final String DELETE = "DELETE";
 	public static final String GET = "GET";
@@ -32,12 +30,12 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 
 	protected Map<String, Object> attributes = new HashMap<String, Object>();
 	protected String contextPath = "/shamcontext";
+	protected Map<String, FileUpload> fileUploads = new HashMap<String, FileUpload>();
+
 	protected Map<String, String> headers = new HashMap<String, String>();
-
 	protected HttpSession httpSession;
-	protected String method;
 
-	// Note that all values, if present, are String[]s
+	protected String method;
 	protected Map<String, Object> parameters = new HashMap<String, Object>();
 	protected String pathInfo;
 	protected int port = 80;
@@ -147,6 +145,19 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 		return method;
 	}
 
+	/**
+	 * @throws IllegalStateException if this is not a multipart request as
+	 *         defined by {@link #isMultipartRequest()}
+	 * @return a Map that has String[] and FileUploads
+	 */
+	public Map<String, Object> getMultipartParameters() {
+		if (!isMultipartRequest()) throw new IllegalStateException("Not a multipart request. You must have a FileUpload parameter to cause this to be multipart.");
+		Map<String, Object> multipartParams = new HashMap<String, Object>(parameters);
+		for (Map.Entry<String, FileUpload> fileUploadEntry : fileUploads.entrySet())
+			multipartParams.put(fileUploadEntry.getKey(), fileUploadEntry.getValue());
+		return multipartParams;
+	}
+
 	public String getParameter(String key) {
 		String[] parameter = (String[]) parameters.get(key);
 		if (parameter == null) return null;
@@ -178,7 +189,7 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getQueryString() {
-		StringBuffer query = new StringBuffer();
+		StringBuilder query = new StringBuilder();
 		for (Iterator iter = parameters.entrySet().iterator(); iter.hasNext();) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			if (entry.getValue().getClass().isArray()) appendAllValuesToQueryString(query, (String) entry.getKey(), (String[]) entry.getValue());
@@ -277,6 +288,16 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 		return principal;
 	}
 
+	/**
+	 * When there are FileUploads, this answers true. Don't know of any cases
+	 * yet where we would want something different.
+	 * 
+	 * @return true if there are any FileUploads in this request
+	 */
+	public boolean isMultipartRequest() {
+		return !fileUploads.isEmpty();
+	}
+
 	public boolean isRequestedSessionIdFromCookie() {
 		return false;
 	}
@@ -301,11 +322,14 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 		return false;
 	}
 
-	public void removeAttribute(String name) {}
+	public void removeAttribute(String name) {
+		attributes.remove(name);
+	}
 
 	public void reset() {
 		attributes.clear();
 		parameters.clear();
+		fileUploads.clear();
 		headers.clear();
 		servletPath = null;
 		contextPath = null;
@@ -332,32 +356,40 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	/**
 	 * Gaurds the contract of getParameter() and getParameterMap()
 	 */
-	public void setParameter(String parameterName, String parameterValue) {
+	public void setParameter(String parameterName, FileUpload parameterValue) {
 		if (parameterValue == null) parameters.put(parameterName, parameterValue);
-		else parameters.put(parameterName, new String[] { parameterValue });
+		else parameters.put(parameterName, parameterValue.getFileName());
+		fileUploads.put(parameterName, parameterValue);
 	}
 
 	/**
-	 * Replaces the parameters completely. Your values will be converted to
-	 * String[]s to maintain the HttpServletRequest API.
+	 * Gaurds the contract of getParameter() and getParameterMap()
+	 */
+	public void setParameter(String parameterName, String parameterValue) {
+		if (parameterValue == null) parameters.put(parameterName, parameterValue);
+		else parameters.put(parameterName, new String[] { parameterValue });
+		fileUploads.remove(parameterName);
+	}
+
+	/**
+	 * Replaces the parameters completely. Your String values will be converted
+	 * to String[]s and FileUploads are handled.
 	 * 
 	 * @param parameters
 	 */
 	public void setParameters(Map<String, Object> parameters) {
 		this.parameters = parameters;
-		for (Entry<String, Object> entry : parameters.entrySet()) {
-			Object value = entry.getValue();
-			if (value == null) value = StringUtils.EMPTY;
-			if (!String[].class.equals(value.getClass())) entry.setValue(new String[] { (String) value });
-		}
+		updateParameters(parameters);
 	}
 
 	/**
 	 * Gaurds the contract of getParameters() and getParameterMap()
 	 */
 	public void setParameters(String parameterName, String[] parameterValues) {
-		if (parameterValues == null || parameterValues.length == 0) parameters.put(parameterName, null);
-		else parameters.put(parameterName, parameterValues);
+		Object valueToSet = null;
+		if (parameterValues != null && parameterValues.length != 0) valueToSet = parameterValues;
+		parameters.put(parameterName, valueToSet);
+		fileUploads.remove(parameterName);
 	}
 
 	/**
@@ -392,20 +424,22 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	/**
-	 * @param parameters to update from. Note that the values, if not already a
-	 *        String[], will be converted to one. This maintains the
-	 *        HttpServletRequest API.
+	 * @param parameters to update from. Note that the String values, if not
+	 *        already a String[], will be converted to one. FileUploads are
+	 *        handled.
 	 */
-	public void updateParameters(Map newParameters) {
-		for (Iterator iter = newParameters.keySet().iterator(); iter.hasNext();) {
-			String key = (String) iter.next();
-			Object value = newParameters.get(key);
-			if (value instanceof String[]) setParameters(key, (String[]) value);
-			else setParameter(key, (String) value);
+	public void updateParameters(Map<String, Object> newParameters) {
+		for (Map.Entry<String, Object> entry : newParameters.entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+			if (value == null) setParameter(key, (String) null);
+			else if (value instanceof String[]) setParameters(key, (String[]) value);
+			else if (value instanceof String) setParameter(key, (String) value);
+			else if (value instanceof FileUpload) setParameter(key, (FileUpload) value);
 		}
 	}
 
-	private void appendAllValuesToQueryString(StringBuffer query, String key, String[] strings) {
+	private void appendAllValuesToQueryString(StringBuilder query, String key, String[] strings) {
 		for (int i = 0; i < strings.length; i++) {
 			query.append(key);
 			query.append("=");
