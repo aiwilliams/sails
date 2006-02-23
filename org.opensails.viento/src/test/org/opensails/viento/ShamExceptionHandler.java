@@ -21,4 +21,8 @@ public class ShamExceptionHandler implements ExceptionHandler {
 	public Object nullTarget(String methodName, Object[] args, int line, int offset) {
 		return "here";
 	}
+
+	public Object exceptionInRender(Throwable exception, int line, int offset) {
+		return "here";
+	}
 }

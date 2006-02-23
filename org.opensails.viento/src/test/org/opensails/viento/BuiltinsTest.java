@@ -36,12 +36,6 @@ public class BuiltinsTest extends TestCase {
         verifyRender("$list.each(item)[[<h$index;>$item</h$index;>]]", "<h1>one</h1><h2>two</h2><h3>three</h3>");
         verifyRender("$list.each(item, indexB)[[<h$indexB;>$item</h$indexB;>]]", "<h1>one</h1><h2>two</h2><h3>three</h3>");
 
-        try {
-			verifyRender("$!list.each(item)[[<h1>$notHere</h1>]]", "");
-			fail("! shouldn't silence things inside the block");
-		} catch (Exception expected) {
-		}
-
 		verifyRender("$list.each(item)[[\t<h1>$item</h1>\r\n  ]].trim", "<h1>one</h1><h1>two</h1><h1>three</h1>");
         
         verifyRender("$list.each(item)[[<h1>$item</h1>]].sans(one)", "<h1>two</h1><h1>three</h1>");

@@ -62,5 +62,9 @@ public class SilenceMixin {
 		public Object nullTarget(String methodName, Object[] args, int line, int offset) {
 			return somethingFailed();
 		}
+
+		public Object exceptionInRender(Throwable exception, int line, int offset) {
+			return somethingFailed();
+		}
 	}
 }

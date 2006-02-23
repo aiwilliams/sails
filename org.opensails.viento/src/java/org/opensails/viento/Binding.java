@@ -46,6 +46,10 @@ public class Binding implements IBinding {
 			return new UnresolvableObject(exceptionHandler, null, key, target, args, line, offset, true);
 		return result;
 	}
+	
+	public ExceptionHandler getExceptionHandler() {
+		return exceptionHandler;
+	}
 
 	public Object call(Object target, String methodName) {
 		return call(target, methodName, new Object[0]);

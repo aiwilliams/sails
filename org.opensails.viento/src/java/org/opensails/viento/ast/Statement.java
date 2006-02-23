@@ -3,8 +3,7 @@ package org.opensails.viento.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensails.viento.Binding;
-import org.opensails.viento.IRenderable;
+import org.opensails.viento.*;
 
 public class Statement extends Node implements BodyNode, Expression {
 	protected List<Call> calls = new ArrayList<Call>();
@@ -15,7 +14,13 @@ public class Statement extends Node implements BodyNode, Expression {
 	}
 
 	public void evaluate(Binding binding, StringBuilder s) {
-		s.append(render(evaluate(binding)));
+		try {
+			s.append(render(evaluate(binding)));
+		} catch (Throwable e) {
+			if (e instanceof ResolutionFailedException)
+				throw (ResolutionFailedException) e;
+			s.append(binding.getExceptionHandler().exceptionInRender(e, startLine(), startColumn()));
+		}
 	}
 
 	public Object evaluate(Binding binding) {

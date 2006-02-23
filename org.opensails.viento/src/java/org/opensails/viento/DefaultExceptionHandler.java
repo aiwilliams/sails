@@ -20,6 +20,10 @@ public class DefaultExceptionHandler implements ExceptionHandler {
 	}
 
 	public Object nullTarget(String methodName, Object[] args, int line, int offset) {
-		throw new NullPointerException("Viento line: " + line + ", offset: " + offset);
+		throw new NullPointerException("Viento line: " + line + ", column: " + offset);
+	}
+
+	public Object exceptionInRender(Throwable exception, int line, int offset) {
+		throw new RuntimeException(String.format("Failed trying to render object on line: %d, column: %d", line, offset), exception);
 	}
 }
