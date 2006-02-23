@@ -19,7 +19,7 @@ public class IfMixin {
 
 		@Name("elseif")
 		public If condition(Object condition, Object body) {
-			if (condition != null && !condition.equals(false) && bodyToEvaluate == null)
+			if (condition != null && !Boolean.FALSE.equals(condition) && bodyToEvaluate == null)
 				bodyToEvaluate = body;
 			return this;
 		}
