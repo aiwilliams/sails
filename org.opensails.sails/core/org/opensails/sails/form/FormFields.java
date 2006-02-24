@@ -153,7 +153,7 @@ public class FormFields {
 	public String value(String fieldName) {
 		Object value = backingMap.get(fieldName);
 		if (value == null) return null;
-		if (value instanceof FileUpload) value = ((FileUpload) value).getFileName();
+		if (value instanceof FileUpload) value = ((FileUpload) value).stringContent();
 		else value = stringValue(value);
 		return (String) value;
 	}
@@ -161,10 +161,7 @@ public class FormFields {
 	public Object valueAs(String fieldName, FieldType fieldType) {
 		switch (fieldType) {
 		case STRING:
-			Object value = backingMap.get(fieldName);
-			if (value == null) return null;
-			if (value instanceof FileUpload) return ((FileUpload) value).stringContent();
-			return stringValue(value);
+			return value(fieldName);
 		case STRING_ARRAY:
 			return values(fieldName);
 		case FILE_UPLOAD:

@@ -51,6 +51,6 @@ public class FormFieldsTest extends TestCase {
 		backingMap.put("myFileUpload", upload);
 		assertEquals("content", fields.valueAs("myFileUpload", FieldType.STRING));
 		assertSame(upload, fields.valueAs("myFileUpload", FieldType.FILE_UPLOAD));
-		assertEquals("theFileName.test", fields.value("myFileUpload"));
+		assertEquals("content", fields.value("myFileUpload"));
 	}
 }
