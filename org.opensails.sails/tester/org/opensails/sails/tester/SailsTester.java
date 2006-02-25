@@ -28,13 +28,6 @@ import org.opensails.sails.util.ClassInstanceAccessor;
 /**
  * Think of this as being a browser. Through it you request pages, and it
  * communicates with an ISailsApplication to render responses.
- * 
- * <pre>
- *                  The main methods to understand browser simulation 
- *                  #get(String, String, String[])
- *                  #post(Class, FormFields, Object[])
- *                  #follow(TestRedirectUrl)
- * </pre>
  */
 public class SailsTester implements ISailsApplication {
 	protected TestableSailsApplication application;
