@@ -1,17 +1,22 @@
 package org.opensails.hibernate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-import org.opensails.sails.persist.*;
+import org.opensails.sails.persist.IIdentifiable;
 
-@Entity(access = AccessType.FIELD)
+@Entity
 public class Harbor implements IIdentifiable {
-	@Id(generate = GeneratorType.AUTO)
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@OneToMany(mappedBy = "harbor")
+	@OneToMany(targetEntity = Sailboat.class, mappedBy = "harbor")
 	private Collection<Sailboat> sailboats = new ArrayList<Sailboat>();
 
 	public void addSailboat(Sailboat sailboat) {
@@ -36,5 +41,4 @@ public class Harbor implements IIdentifiable {
 	public int hashCode() {
 		return new Long(id).hashCode();
 	}
-
 }

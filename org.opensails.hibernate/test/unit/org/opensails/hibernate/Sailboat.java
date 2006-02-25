@@ -1,16 +1,22 @@
 package org.opensails.hibernate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
-import org.hibernate.validator.*;
-import org.opensails.sails.persist.*;
+import org.hibernate.validator.NotNull;
+import org.opensails.sails.persist.IIdentifiable;
 
-@Entity(access = AccessType.FIELD)
+@Entity
 public class Sailboat implements IIdentifiable {
 	@ManyToOne
 	private Harbor harbor;
-	@Id(generate = GeneratorType.AUTO)
+
+	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
+
 	@NotNull
 	private String name;
 
