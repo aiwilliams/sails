@@ -15,10 +15,12 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.tester.browser.ShamFormFields;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
+import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpSession;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
@@ -240,6 +242,18 @@ public class SailsTester implements ISailsApplication {
 		session = null;
 	}
 
+	/**
+	 * Provides access to the IObjectPersister of the application under test.
+	 * <p>
+	 * This is written to return an IShamObjectPersister on purpose. If you are
+	 * using a non-sham, please write a wrapper to place your non-sham in.
+	 * 
+	 * @return the current sham IObjectPersister
+	 */
+	public IShamObjectPersister objectPersister() {
+		return (IShamObjectPersister) getRequestContainer().instance(IObjectPersister.class);
+	}
+
 	public Page post(Class<? extends IEventProcessingContext> context, FormFields formFields, Object... parameters) {
 		return post(Sails.eventContextName(context), formFields, parameters);
 	}
@@ -431,5 +445,4 @@ public class SailsTester implements ISailsApplication {
 		pathInfo.append(toParametersString(parameters));
 		return pathInfo.toString();
 	}
-
 }

@@ -67,7 +67,7 @@ public class Page {
 		String finalMessage = "Expected " + url() + " to contain <" + exactString + ">";
 		if (!StringUtils.isBlank(message)) finalMessage = message + " ";
 		finalMessage = "\n" + finalMessage;
-		assertPageExpectation(message, contains(exactString));
+		assertPageExpectation(finalMessage, contains(exactString));
 	}
 
 	public void assertContainsInOrder(String... strings) {
