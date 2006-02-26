@@ -1,6 +1,7 @@
 package org.opensails.viento.ast;
 
 import org.opensails.viento.Binding;
+import org.opensails.viento.VientoVisitor;
 import org.opensails.viento.parser.Token;
 
 public class InfixExpression extends Node implements Expression {
@@ -25,6 +26,12 @@ public class InfixExpression extends Node implements Expression {
 	public void right(Expression expression) {
 		this.right = expression;
 		nodeAdded(expression);
+	}
+	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
+		left.visit(visitor);
+		right.visit(visitor);
 	}
 
 	public enum Operator {

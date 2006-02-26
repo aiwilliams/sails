@@ -1,5 +1,6 @@
 package org.opensails.viento.ast;
 
+import org.opensails.viento.VientoVisitor;
 import org.opensails.viento.parser.Token;
 
 public interface INode {
@@ -12,4 +13,5 @@ public interface INode {
 	int startLine();
 	int startOffset();
 	int length();
+	void visit(VientoVisitor visitor);
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opensails.viento.Binding;
+import org.opensails.viento.VientoVisitor;
 
 public class Call extends Node {
 	protected Identifier identifier;
@@ -36,5 +37,14 @@ public class Call extends Node {
 		if (block != null)
 			evaledArgs.add(block.evaluate(binding));
 		return evaledArgs.toArray();
+	}
+	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
+		identifier.visit(visitor);
+		if (args != null)
+			args.visit(visitor);
+		if (block != null)
+			block.visit(visitor);
 	}
 }

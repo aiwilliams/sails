@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.opensails.viento.Binding;
+import org.opensails.viento.VientoVisitor;
 
 public class MapLiteral extends Node implements Expression {
 	protected List<MapEntry> entries = new ArrayList<MapEntry>();
@@ -20,5 +21,11 @@ public class MapLiteral extends Node implements Expression {
 		for (MapEntry entry : entries)
 			map.put(entry.evalKey(binding), entry.evalValue(binding));
 		return map;
+	}
+	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
+		for (MapEntry entry : entries)
+			entry.visit(visitor);
 	}
 }

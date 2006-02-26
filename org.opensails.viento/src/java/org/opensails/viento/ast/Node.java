@@ -2,7 +2,7 @@ package org.opensails.viento.ast;
 
 import org.opensails.viento.parser.Token;
 
-public class Node implements INode {
+public abstract class Node implements INode {
 	protected Token first;
 	protected Token last;
 	
@@ -49,6 +49,6 @@ public class Node implements INode {
 	}
 
 	public int length() {
-		return endOffset() - startOffset();
+		return endOffset() - startOffset() + 1;
 	}
 }

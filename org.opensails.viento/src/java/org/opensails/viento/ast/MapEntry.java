@@ -1,6 +1,7 @@
 package org.opensails.viento.ast;
 
 import org.opensails.viento.Binding;
+import org.opensails.viento.VientoVisitor;
 
 public class MapEntry extends Node {
 	protected Expression key;
@@ -22,5 +23,11 @@ public class MapEntry extends Node {
 
 	public Object evalValue(Binding binding) {
 		return value.evaluate(binding);
+	}
+	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
+		key.visit(visitor);
+		value.visit(visitor);
 	}
 }

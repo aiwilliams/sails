@@ -20,6 +20,12 @@ public class ListLiteral extends Node implements Expression {
 		return evaled;
 	}
 	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
+		for (Expression expression : list)
+			expression.visit(visitor);
+	}
+	
 	private Object nullIfUnresolvable(Object object) {
 		return object instanceof UnresolvableObject ? null : object;
 	}

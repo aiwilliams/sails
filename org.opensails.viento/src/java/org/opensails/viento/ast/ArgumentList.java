@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opensails.viento.Binding;
+import org.opensails.viento.VientoVisitor;
 
 public class ArgumentList extends Node {
 	protected List<Expression> arguments = new ArrayList<Expression>();
@@ -18,5 +19,11 @@ public class ArgumentList extends Node {
 		for (Expression expression : arguments)
 			evaled.add(expression.evaluate(binding));
 		return evaled;
+	}
+	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
+		for (Expression argument : arguments)
+			argument.visit(visitor);
 	}
 }

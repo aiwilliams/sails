@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.opensails.viento.Binding;
 
-public class Body extends Node {
+public abstract class Body extends Node {
 	public List<BodyNode> nodes = new ArrayList<BodyNode>();
 	
 	public void add(BodyNode node) {

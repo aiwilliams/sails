@@ -39,4 +39,10 @@ public class Statement extends Node implements BodyNode, Expression {
 	protected String render(Object result) {
 		return result instanceof IRenderable ? ((IRenderable)result).renderThyself() : String.valueOf(result);
 	}
+	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
+		for (Call call : calls)
+			call.visit(visitor);
+	}
 }

@@ -1,6 +1,7 @@
 package org.opensails.viento.ast;
 
 import org.opensails.viento.Binding;
+import org.opensails.viento.VientoVisitor;
 import org.opensails.viento.parser.Token;
 
 public class Text extends Node implements BodyNode {
@@ -17,5 +18,9 @@ public class Text extends Node implements BodyNode {
 	
 	protected String unescape(String value) {
 		return value.replaceAll("\\\\([$\\\\])", "$1");
+	}
+	
+	public void visit(VientoVisitor visitor) {
+		visitor.visit(this);
 	}
 }
