@@ -2,16 +2,11 @@ package org.opensails.sails.tester.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.ComparisonFailure;
 
 public class CollectionAssert {
-	public static <T> void containsOnly(Collection<T> expected, Collection<T> actual) {
-		Assert.assertEquals("Actual should contain expected number of items.", expected.size(), actual.size());
-		if (!actual.containsAll(expected)) throw new ComparisonFailure("Expected to contain all in no particular order", expected.toString(), actual.toString());
-	}
 
 	public static <T> void containsOnly(Collection<T> expected, T[] actual) {
 		containsOnly(expected, Arrays.asList(actual));
@@ -27,7 +22,7 @@ public class CollectionAssert {
 	 * everything fine, but the Sun compiler don't.
 	 */
 	@SuppressWarnings("unchecked")
-	public static void containsOnly(List expected, Collection actual) {
+	public static void containsOnly(Collection expected, Collection actual) {
 		Assert.assertEquals("Actual should contain expected number of items.", expected.size(), actual.size());
 		if (!actual.containsAll(expected)) throw new ComparisonFailure("Expected to contain all in no particular order", expected.toString(), actual.toString());
 	}
