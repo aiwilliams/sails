@@ -13,7 +13,7 @@
             class="org.opensails.spike.vientoeditor.VientoEditor"
             contributorClass="org.opensails.spike.vientoeditor.ActionBarContributor"
             default="true"
-            icon="icons/sample.gif"
+            icon="icons/file_obj.gif"
             id="org.opensails.spike.vientoeditor.editor"
             name="Viento Editor">
          <contentTypeBinding contentTypeId="viento"/>
