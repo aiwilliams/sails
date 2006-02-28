@@ -26,6 +26,7 @@ public class HardCodedHighlightingConfiguration implements HighlightingConfigura
 			map.put(HighlightedElement.STATEMENT, color(115, 190, 30));
 			map.put(HighlightedElement.KEYWORD, boldColor(127, 0, 85));
 			map.put(HighlightedElement.QUOTED_STRING, color(30, 115, 190));
+			map.put(HighlightedElement.INTERPOLATED_STRING, color(30, 115, 190));
 			map.put(HighlightedElement.LIST, color(190, 104, 30));
 			map.put(HighlightedElement.MAP, color(104, 30, 190));
 		}

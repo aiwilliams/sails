@@ -13,6 +13,7 @@ import org.opensails.viento.ast.MapLiteral;
 import org.opensails.viento.ast.NullLiteral;
 import org.opensails.viento.ast.NumberLiteral;
 import org.opensails.viento.ast.Statement;
+import org.opensails.viento.ast.StringBlock;
 import org.opensails.viento.ast.StringLiteral;
 import org.opensails.viento.ast.Template;
 import org.opensails.viento.ast.Text;
@@ -27,6 +28,8 @@ import org.opensails.viento.ast.Text;
  * visitor, without tying us to a one-to-one mapping between node types and
  * ranges (i.e. you can inspect the node to further qualify how it ought to be
  * styled).
+ * 
+ * TODO: ## (need to change the AST), differentiate :string and string from 'string'
  */
 public class VientoHighlighter {
 	protected HighlightingConfiguration configuration;
@@ -99,6 +102,10 @@ public class VientoHighlighter {
 		
 		@Override public void visit(StringLiteral node) {
 			setRange(node, HighlightedElement.QUOTED_STRING);
+		}
+		
+		@Override public void visit(StringBlock node) {
+			setRange(node, HighlightedElement.INTERPOLATED_STRING);
 		}
 		
 		@Override public void visit(Text text) {
