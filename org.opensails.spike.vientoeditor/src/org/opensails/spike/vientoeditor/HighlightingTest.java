@@ -23,10 +23,13 @@ public class HighlightingTest extends TestCase {
 		
 		t.viento("asdf$one('asdf', :asdf).two(asdf) [[asdf]]");
 		t.colors("____-----++++++--+++++------++++----____--");
+		
+		t.viento("$one(true, [false, null], {asdf: ''})");
+		t.colors("_____----__$-----$$----$__%++++%%++%_");
 	}
-
+	
 	class HighlightingTester {
-		VientoHighlighter highlighter = new VientoHighlighter();
+		VientoHighlighter highlighter = new VientoHighlighter(new TestHighlightingConfiguration());
 		String viento;
 
 		public void colors(String string) {
@@ -56,6 +59,15 @@ public class HighlightingTest extends TestCase {
 				if (range.start <= lastPos && (lastPos - range.start) < range.length)
 					return range;
 			return null;
+		}
+	}
+	
+	class TestHighlightingConfiguration implements HighlightingConfiguration {
+		public ElementStyle styleFor(HighlightedElement element) {
+			ElementStyle style = new ElementStyle();
+			// make it unique
+			style.rise = element.ordinal();
+			return style;
 		}
 	}
 }

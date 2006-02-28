@@ -5,11 +5,10 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
-import org.eclipse.jface.text.reconciler.Reconciler;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -19,16 +18,16 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.opensails.viento.ast.Template;
 
 public class VientoEditor extends AbstractDecoratedTextEditor {
-	protected VientoHighlighter highlighter = new VientoHighlighter();
-	Color red, blue, white;
+	protected VientoHighlighter highlighter;
+	protected HardCodedHighlightingConfiguration highlightingConfiguration;
+	protected VientoReconcilingStrategy reconcilingStrategy;
 
 	@Override protected void initializeEditor() {
+		reconcilingStrategy = new VientoReconcilingStrategy(this);
 		setSourceViewerConfiguration(new SourceViewerConfiguration() {
 			@Override public IReconciler getReconciler(ISourceViewer sourceViewer) {
-				Reconciler reconciler = new Reconciler();
-				reconciler.setDelay(0);
-				reconciler.setIsIncrementalReconciler(false);
-				reconciler.setReconcilingStrategy(new VientoReconcilingStrategy(VientoEditor.this), IDocument.DEFAULT_CONTENT_TYPE);
+				MonoReconciler reconciler = new MonoReconciler(reconcilingStrategy, false);
+				reconciler.setDelay(10);
 				return reconciler;
 			}
 
@@ -51,16 +50,15 @@ public class VientoEditor extends AbstractDecoratedTextEditor {
 
 	@Override public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
-		red = new Color(getSite().getShell().getDisplay(), 255, 0, 0);
-		blue = new Color(getSite().getShell().getDisplay(), 0, 0, 255);
-		white = new Color(getSite().getShell().getDisplay(), 255, 255, 255);
+		highlightingConfiguration = new HardCodedHighlightingConfiguration(getSite().getShell().getDisplay());
+		highlighter = new VientoHighlighter(highlightingConfiguration);
+		// doesn't seem to get called by the framework
+		reconcilingStrategy.initialReconcile();
 	}
 
 	@Override public void dispose() {
+		highlightingConfiguration.dispose();
 		super.dispose();
-		white.dispose();
-		red.dispose();
-		blue.dispose();
 	}
 
 	public void reconciled(Template template) {
@@ -68,6 +66,8 @@ public class VientoEditor extends AbstractDecoratedTextEditor {
 		 * TODO: Consider document partitioning.
 		 */
 		
+		if (getSite().getShell().isDisposed()) return;
+
 		final StyleRange[] ranges = highlighter.rangesFor(template);
 		getSite().getShell().getDisplay().syncExec(new Runnable() {
 			public void run() {

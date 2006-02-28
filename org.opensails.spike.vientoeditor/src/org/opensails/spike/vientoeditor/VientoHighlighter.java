@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.opensails.viento.VientoVisitor;
+import org.opensails.viento.ast.BooleanLiteral;
 import org.opensails.viento.ast.INode;
+import org.opensails.viento.ast.ListLiteral;
+import org.opensails.viento.ast.MapLiteral;
+import org.opensails.viento.ast.NullLiteral;
+import org.opensails.viento.ast.NumberLiteral;
 import org.opensails.viento.ast.Statement;
 import org.opensails.viento.ast.StringLiteral;
 import org.opensails.viento.ast.Template;
@@ -25,6 +29,11 @@ import org.opensails.viento.ast.Text;
  * styled).
  */
 public class VientoHighlighter {
+	protected HighlightingConfiguration configuration;
+
+	public VientoHighlighter(HighlightingConfiguration configuration) {
+		this.configuration = configuration;
+	}
 
 	public StyleRange[] rangesFor(Template ast) {
 		HighlightingVisitor visitor = new HighlightingVisitor();
@@ -34,11 +43,7 @@ public class VientoHighlighter {
 	}
 	
 	private StyleRange peak(Range peak) {
-		StyleRange range = new StyleRange();
-		range.start = peak.offset();
-		range.length = peak.length();
-		range.fontStyle = peak.style;
-		return range;
+		return configuration.styleFor(peak.element).createRange(peak.offset(), peak.length());
 	}
 	
 	private void processRange(Range range, ListIterator<Range> iter, List<StyleRange> list) {
@@ -82,38 +87,55 @@ public class VientoHighlighter {
 		int leftBound = left == null ? valley.offset() : left.endOffset() + 1;
 		int rightBound = right == null ? valley.endOffset() + 1 : right.offset();
 		
-		StyleRange range = new StyleRange();
-		range.start = leftBound;
-		range.length = rightBound - leftBound;
-		range.fontStyle = valley.style;
-		return range;
+		return configuration.styleFor(valley.element).createRange(leftBound, rightBound - leftBound);
 	}
 
 	protected class HighlightingVisitor extends VientoVisitor {
 		public List<Range> ranges = new ArrayList<Range>();
 		
 		@Override public void visit(Statement statement) {
-			setRange(statement).style(SWT.BOLD);
+			setRange(statement, HighlightedElement.STATEMENT);
 		}
 		
 		@Override public void visit(StringLiteral node) {
-			setRange(node).style(SWT.NONE);
+			setRange(node, HighlightedElement.QUOTED_STRING);
 		}
 		
 		@Override public void visit(Text text) {
-			setRange(text).style(SWT.ITALIC);
+			setRange(text, HighlightedElement.TEXT);
+		}
+		
+		@Override public void visit(BooleanLiteral node) {
+			setRange(node, HighlightedElement.KEYWORD);
+		}
+		
+		@Override public void visit(NullLiteral node) {
+			setRange(node, HighlightedElement.KEYWORD);
+		}
+		
+		@Override public void visit(ListLiteral node) {
+			setRange(node, HighlightedElement.LIST);
+		}
+		
+		@Override public void visit(MapLiteral node) {
+			setRange(node, HighlightedElement.MAP);
+		}
+		
+		@Override public void visit(NumberLiteral node) {
+			setRange(node, HighlightedElement.STATEMENT);
 		}
 
-		private Range setRange(INode node) {
+		private Range setRange(INode node, HighlightedElement element) {
 			Range range = new Range(node);
+			range.element = element;
 			ranges.add(range);
 			return range;
 		}
 	}
 
 	protected class Range {
-		public int style;
 		private final INode node;
+		public HighlightedElement element;
 		
 		public Range(INode node) {
 			this.node = node;
@@ -133,10 +155,6 @@ public class VientoHighlighter {
 		
 		public boolean overlaps(Range range) {
 			return range.endOffset() > this.offset();
-		}
-		
-		public void style(int style) {
-			this.style = style;
 		}
 		
 		public boolean touches(Range range) {
