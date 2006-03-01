@@ -3,9 +3,11 @@
 <plugin>
    <extension
          point="org.eclipse.core.runtime.contentTypes">
-      <file-association
-            content-type="viento"
-            file-extensions="vto"/>
+      <content-type
+            file-extensions="vto"
+            id="viento"
+            name="Viento Files"
+            priority="normal"/>
    </extension>
    <extension
          point="org.eclipse.ui.editors">
@@ -13,6 +15,7 @@
             class="org.opensails.spike.vientoeditor.VientoEditor"
             contributorClass="org.opensails.spike.vientoeditor.ActionBarContributor"
             default="true"
+            extensions="vto"
             icon="icons/file_obj.gif"
             id="org.opensails.spike.vientoeditor.editor"
             name="Viento Editor">
