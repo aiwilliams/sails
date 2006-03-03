@@ -1,6 +1,6 @@
 package org.opensails.sails.adapter;
 
-import org.opensails.rigging.ScopedContainer;
+import org.opensails.rigging.IScopedContainer;
 import org.opensails.sails.adapter.oem.PrimitiveAdapter;
 
 public class AdapterResolverFixture {
@@ -17,7 +17,7 @@ public class AdapterResolverFixture {
 
 	public static IAdapterResolver single(final IAdapter toReturn) {
 		return new IAdapterResolver() {
-			public IAdapter resolve(Class<?> parameterClass, ScopedContainer container) {
+			public IAdapter resolve(Class<?> parameterClass, IScopedContainer container) {
 				return toReturn;
 			}
 		};

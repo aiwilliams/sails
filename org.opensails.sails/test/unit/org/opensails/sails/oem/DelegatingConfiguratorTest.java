@@ -1,295 +1,315 @@
 package org.opensails.sails.oem;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
-import junit.framework.*;
+import junit.framework.AssertionFailedError;
+import junit.framework.TestCase;
 
-import org.apache.commons.configuration.*;
-import org.opensails.rigging.*;
-import org.opensails.sails.*;
-import org.opensails.sails.action.oem.*;
-import org.opensails.sails.adapter.oem.*;
+import org.apache.commons.configuration.CompositeConfiguration;
+import org.opensails.sails.ApplicationContainer;
+import org.opensails.sails.IConfigurableSailsApplication;
+import org.opensails.sails.IEventContextContainer;
+import org.opensails.sails.action.oem.ActionResultProcessorResolver;
+import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.component.oem.ComponentResolver;
-import org.opensails.sails.controller.oem.*;
-import org.opensails.sails.event.*;
-import org.opensails.sails.template.*;
-import org.opensails.sails.url.*;
-import org.opensails.sails.util.*;
-import org.opensails.viento.*;
+import org.opensails.sails.controller.oem.ControllerResolver;
+import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.template.MixinResolver;
+import org.opensails.sails.url.UrlResolver;
+import org.opensails.sails.util.ClassHelper;
+import org.opensails.viento.IBinding;
 
 public class DelegatingConfiguratorTest extends TestCase {
-	public void testAllMethodsOverridden() throws Exception {
-		assertAllMethodsOverridden(DelegatingConfigurator.class);
-	}
+    public void testAllMethodsOverridden() throws Exception {
+        assertAllMethodsOverridden(DelegatingConfigurator.class);
+    }
 
-	public void testDelegates() throws Exception {
-		assertAllMethodsOverridden(CapturingDelegate.class);
+    public void testDelegates() throws Exception {
+        assertAllMethodsOverridden(CapturingDelegate.class);
 
-		Method configureApplication = BaseConfigurator.class.getDeclaredMethod("configure", new Class[] { IConfigurableSailsApplication.class });
-		DelegatingConfigurator delegatingConfigurator = new DelegatingConfigurator(CapturingDelegate.class);
-		CapturingDelegate capturingDelegate = (CapturingDelegate) delegatingConfigurator.delegate;
-		for (Method method : BaseConfigurator.class.getDeclaredMethods()) {
-			// skip - it calls super
-			if (configureApplication.equals(method)) continue;
-			if (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) {
-				method.invoke(delegatingConfigurator, new Object[method.getParameterTypes().length]);
-				capturingDelegate.assertInvoked(method);
-			}
-		}
-	}
+        Method configureApplication = BaseConfigurator.class.getDeclaredMethod("configure", new Class[] { IConfigurableSailsApplication.class });
+        Method installContainer = BaseConfigurator.class.getDeclaredMethod("installContainer", new Class[] { IConfigurableSailsApplication.class });
+        DelegatingConfigurator delegatingConfigurator = new DelegatingConfigurator(CapturingDelegate.class);
+        CapturingDelegate capturingDelegate = (CapturingDelegate) delegatingConfigurator.delegate;
+        for (Method method : BaseConfigurator.class.getDeclaredMethods()) {
+            // skip - they call super
+            if (configureApplication.equals(method) || installContainer.equals(method)) continue;
+            if (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) {
+                method.invoke(delegatingConfigurator, new Object[method.getParameterTypes().length]);
+                capturingDelegate.assertInvoked(method);
+            }
+        }
+    }
 
-	void assertAllMethodsOverridden(Class<? extends BaseConfigurator> delegatingClass) throws NoSuchMethodException {
-		for (Method method : BaseConfigurator.class.getDeclaredMethods()) {
-			if (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) {
-				assertNotNull(delegatingClass.getDeclaredMethod(method.getName(), (Class[]) method.getParameterTypes()));
-			}
-		}
-	}
+    void assertAllMethodsOverridden(Class<? extends BaseConfigurator> delegatingClass) throws NoSuchMethodException {
+        for (Method method : BaseConfigurator.class.getDeclaredMethods()) {
+            if (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())) {
+                assertNotNull(delegatingClass.getDeclaredMethod(method.getName(), (Class[]) method.getParameterTypes()));
+            }
+        }
+    }
 
-	public static class CapturingDelegate extends BaseConfigurator {
-		private Method methodInvoked;
+    public static class CapturingDelegate extends BaseConfigurator {
+        private Method methodInvoked;
 
-		public void assertInvoked(Method method) {
-			assertEquals(method, getMethodInvoked());
-			methodInvoked = null;
-		}
+        public void assertInvoked(Method method) {
+            assertEquals(method, getMethodInvoked());
+            methodInvoked = null;
+        }
 
-		@Override
-		public void configure(ActionResultProcessorResolver resultProcessorResolver) {
-			setMethodInvoked(findMethod(new Class[] { ActionResultProcessorResolver.class }));
-		}
+        @Override
+        public void configure(ActionResultProcessorResolver resultProcessorResolver) {
+            setMethodInvoked(findMethod(new Class[] { ActionResultProcessorResolver.class }));
+        }
 
-		@Override
-		public void configure(AdapterResolver adapterResolver) {
-			setMethodInvoked(findMethod(new Class[] { AdapterResolver.class }));
-		}
+        @Override
+        public void configure(AdapterResolver adapterResolver) {
+            setMethodInvoked(findMethod(new Class[] { AdapterResolver.class }));
+        }
 
-		@Override
-		public void configure(ComponentResolver componentResolver) {
-			setMethodInvoked(findMethod(new Class[] { ComponentResolver.class }));
-		}
+        @Override
+        public void configure(ComponentResolver componentResolver) {
+            setMethodInvoked(findMethod(new Class[] { ComponentResolver.class }));
+        }
 
-		@Override
-		public void configure(ControllerResolver controllerResolver) {
-			setMethodInvoked(findMethod(new Class[] { ControllerResolver.class }));
-		}
+        @Override
+        public void configure(ControllerResolver controllerResolver) {
+            setMethodInvoked(findMethod(new Class[] { ControllerResolver.class }));
+        }
 
-		@Override
-		public void configure(IConfigurableSailsApplication application) {
-			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class }));
-		}
+        @Override
+        public void configure(IConfigurableSailsApplication application) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class }));
+        }
 
-		@Override
-		public void configure(ISailsEvent event, IBinding binding) {
-			setMethodInvoked(findMethod(new Class[] { ISailsEvent.class, IBinding.class }));
-		}
+        @Override
+        public void configure(ISailsEvent event, IBinding binding) {
+            setMethodInvoked(findMethod(new Class[] { ISailsEvent.class, IBinding.class }));
+        }
 
-		@Override
-		public void configure(ISailsEvent event, MixinResolver resolver) {
-			setMethodInvoked(findMethod(new Class[] { ISailsEvent.class, MixinResolver.class }));
-		}
+        @Override
+        public void configure(ISailsEvent event, IEventContextContainer eventContainer) {
+            setMethodInvoked(findMethod(new Class[] { ISailsEvent.class, IEventContextContainer.class }));
+        }
 
-		@Override
-		public void configure(ISailsEvent event, RequestContainer eventContainer) {
-			setMethodInvoked(findMethod(new Class[] { ISailsEvent.class, RequestContainer.class }));
-		}
+        @Override
+        public void configure(ISailsEvent event, MixinResolver resolver) {
+            setMethodInvoked(findMethod(new Class[] { ISailsEvent.class, MixinResolver.class }));
+        }
 
-		@Override
-		public void configure(ResourceResolver resourceResolver) {
-			setMethodInvoked(findMethod(new Class[] { ResourceResolver.class }));
-		}
+        @Override
+        public void configure(ResourceResolver resourceResolver) {
+            setMethodInvoked(findMethod(new Class[] { ResourceResolver.class }));
+        }
 
-		@Override
-		protected void configure(IConfigurableSailsApplication application, CompositeConfiguration compositeConfiguration) {
-			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, CompositeConfiguration.class }));
-		}
+        @Override
+        protected void configure(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ApplicationContainer.class }));
+        }
 
-		@Override
-		protected void configure(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ScopedContainer.class }));
-		}
+        @Override
+        protected void configure(IConfigurableSailsApplication application, CompositeConfiguration compositeConfiguration) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, CompositeConfiguration.class }));
+        }
 
-		@Override
-		protected void configureName(IConfigurableSailsApplication application, CompositeConfiguration configuration) {
-			setMethodInvoked(findMethod());
-		}
+        @Override
+        protected void configureName(IConfigurableSailsApplication application, CompositeConfiguration configuration) {
+            setMethodInvoked(findMethod());
+        }
 
-		protected Method findMethod() {
-			try {
-				throw new RuntimeException();
-			} catch (Exception e) {
-				StackTraceElement[] stackTrace = e.getStackTrace();
-				String methodName = stackTrace[1].getMethodName();
-				try {
-					return ClassHelper.declaredMethodsNamed(BaseConfigurator.class, methodName)[0];
-				} catch (Exception e1) {
-					throw new AssertionFailedError(String.format("There is no method %s with 0 parameters", methodName));
-				}
-			}
-		}
+        @Override
+        protected ApplicationContainer createApplicationContainer(IConfigurableSailsApplication application) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class }));
+            return null;
+        }
 
-		protected Method findMethod(Class[] parameterTypes) {
-			try {
-				throw new RuntimeException();
-			} catch (Exception e) {
-				StackTraceElement[] stackTrace = e.getStackTrace();
-				String methodName = stackTrace[1].getMethodName();
-				try {
-					return BaseConfigurator.class.getDeclaredMethod(methodName, parameterTypes);
-				} catch (Exception e1) {
-					throw new AssertionFailedError(String.format("There is no method %s with parameters of type %s", methodName, parameterTypes));
-				}
-			}
-		}
+        protected Method findMethod() {
+            try {
+                throw new RuntimeException();
+            } catch (Exception e) {
+                StackTraceElement[] stackTrace = e.getStackTrace();
+                String methodName = stackTrace[1].getMethodName();
+                try {
+                    return ClassHelper.declaredMethodsNamed(BaseConfigurator.class, methodName)[0];
+                } catch (Exception e1) {
+                    throw new AssertionFailedError(String.format("There is no method %s with 0 parameters", methodName));
+                }
+            }
+        }
 
-		@Override
-		protected String getApplicationRootPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        protected Method findMethod(Class[] parameterTypes) {
+            try {
+                throw new RuntimeException();
+            } catch (Exception e) {
+                StackTraceElement[] stackTrace = e.getStackTrace();
+                String methodName = stackTrace[1].getMethodName();
+                try {
+                    return BaseConfigurator.class.getDeclaredMethod(methodName, parameterTypes);
+                } catch (Exception e1) {
+                    throw new AssertionFailedError(String.format("There is no method %s with parameters of type %s", methodName, parameterTypes));
+                }
+            }
+        }
 
-		@Override
-		protected String getBuiltinAdaptersPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getApplicationRootPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getBuiltinComponentPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getBuiltinAdaptersPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getBuiltinControllerPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getBuiltinComponentPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getBuiltinMixinPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getBuiltinControllerPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getBuitinActionResultProcessorPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getBuiltinMixinPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getDefaultActionResultProcessorPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getBuitinActionResultProcessorPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getDefaultAdaptersPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getDefaultActionResultProcessorPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getDefaultComponentPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getDefaultAdaptersPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getDefaultControllerPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getDefaultComponentPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected String getDefaultMixinPackage() {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected String getDefaultControllerPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		protected Method getMethodInvoked() {
-			return methodInvoked;
-		}
+        @Override
+        protected String getDefaultMixinPackage() {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected ActionResultProcessorResolver installActionResultProcessorResolver(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        protected Method getMethodInvoked() {
+            return methodInvoked;
+        }
 
-		@Override
-		protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ScopedContainer.class }));
-			return null;
-		}
+        @Override
+        protected ActionResultProcessorResolver installActionResultProcessorResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ScopedContainer.class }));
-			return null;
-		}
+        @Override
+        protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ApplicationContainer.class }));
+            return null;
+        }
 
-		@Override
-		protected CompositeConfiguration installConfiguration(IConfigurableSailsApplication application) {
-			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class }));
-			return null;
-		}
+        @Override
+        protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ApplicationContainer.class }));
+            return null;
+        }
 
-		@Override
-		protected void installConfigurator(IConfigurableSailsApplication application) {
-			setMethodInvoked(findMethod());
-		}
+        @Override
+        protected CompositeConfiguration installConfiguration(IConfigurableSailsApplication application) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class }));
+            return null;
+        }
 
-		@Override
-		protected ScopedContainer installContainer(IConfigurableSailsApplication application) {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected void installConfigurator(IConfigurableSailsApplication application) {
+            setMethodInvoked(findMethod());
+        }
 
-		@Override
-		protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected ApplicationContainer installContainer(IConfigurableSailsApplication application) {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected Dispatcher installDispatcher(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected EventProcessorResolver installEventProcessorResolver(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ScopedContainer.class }));
-			return null;
-		}
+        @Override
+        protected Dispatcher installDispatcher(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected MixinResolver installMixinResolver(ISailsEvent event, RequestContainer eventContainer) {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected EventProcessorResolver installEventProcessorResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod(new Class[] { IConfigurableSailsApplication.class, ApplicationContainer.class }));
+            return null;
+        }
 
-		@Override
-		protected void installObjectPersister(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod());
-		}
+        @Override
+        protected MixinResolver installMixinResolver(ISailsEvent event, IEventContextContainer eventContainer) {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		@Override
-		protected ResourceResolver installResourceResolver(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected void installObjectPersister(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod());
+        }
 
-		@Override
-		protected UrlResolver installUrlResolverResolver(IConfigurableSailsApplication application, ScopedContainer container) {
-			setMethodInvoked(findMethod());
-			return null;
-		}
+        @Override
+        protected ResourceResolver installResourceResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod());
+            return null;
+        }
 
-		protected void setMethodInvoked(Method methodInvoked) {
-			if (this.methodInvoked == null) this.methodInvoked = methodInvoked;
-		}
-	}
+        @Override
+        protected UrlResolver installUrlResolverResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+            setMethodInvoked(findMethod());
+            return null;
+        }
+
+        @Override
+        protected void provideApplicationScopedContainerAccess(ApplicationContainer applicationContainer) {
+            setMethodInvoked(findMethod(new Class[] { ApplicationContainer.class }));
+        }
+
+        @Override
+        protected void provideEventScopedContainerAccess(IEventContextContainer eventContainer) {
+            setMethodInvoked(findMethod(new Class[] { IEventContextContainer.class }));
+        }
+
+        protected void setMethodInvoked(Method methodInvoked) {
+            if (this.methodInvoked == null) this.methodInvoked = methodInvoked;
+        }
+    }
 }

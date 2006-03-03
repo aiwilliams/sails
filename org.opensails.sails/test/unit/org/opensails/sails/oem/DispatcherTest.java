@@ -3,8 +3,8 @@ package org.opensails.sails.oem;
 import junit.framework.TestCase;
 
 import org.opensails.sails.ApplicationScope;
+import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.ISailsApplication;
-import org.opensails.sails.RequestContainer;
 import org.opensails.sails.action.ActionResultFixture;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.IActionResultProcessor;
@@ -41,7 +41,7 @@ public class DispatcherTest extends TestCase {
 		final GetEvent dispatchedEvent = SailsEventFixture.actionGet("controller", "action");
 		ISailsApplication application = SailsApplicationFixture.basic();
 		application.getContainer().register(ISailsEventConfigurator.class, new ISailsEventConfigurator() {
-			public void configure(ISailsEvent event, RequestContainer eventContainer) {
+			public void configure(ISailsEvent event, IEventContextContainer eventContainer) {
 				configureEventAndContainerCalled = true;
 				assertSame(dispatchedEvent, event);
 				assertSame(event.getContainer(), eventContainer);

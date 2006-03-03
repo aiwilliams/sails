@@ -1,6 +1,6 @@
 package org.opensails.sails.event;
 
-import org.opensails.rigging.ScopedContainer;
+import org.opensails.rigging.IScopedContainer;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.event.oem.IActionEventProcessor;
 
@@ -15,7 +15,7 @@ public interface IEventProcessingContext<P extends IActionEventProcessor> {
 	/**
 	 * @return the container that created this
 	 */
-	ScopedContainer getContainer();
+	IScopedContainer getContainer();
 
 	/**
 	 * @return the ISailsEvent for this processing context

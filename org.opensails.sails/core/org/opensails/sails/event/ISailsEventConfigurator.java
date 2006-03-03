@@ -1,6 +1,6 @@
 package org.opensails.sails.event;
 
-import org.opensails.sails.RequestContainer;
+import org.opensails.sails.IEventContextContainer;
 
 public interface ISailsEventConfigurator {
 	/**
@@ -9,6 +9,6 @@ public interface ISailsEventConfigurator {
 	 * @param event
 	 * @param eventContainer convenience, event.getContainer() == eventContainer
 	 */
-	void configure(ISailsEvent event, RequestContainer eventContainer);
+	void configure(ISailsEvent event, IEventContextContainer eventContainer);
 
 }

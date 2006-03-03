@@ -8,7 +8,7 @@ public interface IActionResult {
 	 * @return the container of the ISailsEvent that this is the result of
 	 *         processing
 	 */
-	ScopedContainer getContainer();
+	IScopedContainer getContainer();
 
 	/**
 	 * @return the controller implementation instance, if there was one - may be

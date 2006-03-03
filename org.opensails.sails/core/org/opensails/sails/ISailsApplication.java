@@ -1,7 +1,6 @@
 package org.opensails.sails;
 
 import org.apache.commons.configuration.Configuration;
-import org.opensails.rigging.ScopedContainer;
 
 /**
  * The 'runtime' interface of a Sails application. This is what clients see the
@@ -14,7 +13,7 @@ import org.opensails.rigging.ScopedContainer;
 public interface ISailsApplication {
     Configuration getConfiguration();
 
-    ScopedContainer getContainer();
+    ApplicationContainer getContainer();
 
     String getName();
 }

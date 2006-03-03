@@ -7,7 +7,8 @@ import org.opensails.sails.url.IUrlResolver;
 import org.opensails.sails.url.UrlType;
 
 public class BuiltinScriptUrlResolver implements IUrlResolver {
-	public IUrl resolve(UrlType urlType, ISailsEvent event, String urlFragmentOrAbsolute) {
-		return new ContextUrl(event, String.format("common/scripts/%s", urlFragmentOrAbsolute));
-	}
+    public IUrl resolve(UrlType urlType, ISailsEvent event, String builtinScriptsRelative) {
+        if (!builtinScriptsRelative.endsWith(".js")) builtinScriptsRelative += ".js";
+        return new ContextUrl(event, String.format("common/scripts/%s", builtinScriptsRelative));
+    }
 }

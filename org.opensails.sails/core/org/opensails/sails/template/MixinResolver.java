@@ -3,7 +3,7 @@ package org.opensails.sails.template;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensails.rigging.SimpleContainer;
+import org.opensails.rigging.IContainer;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.util.IClassResolver;
@@ -11,7 +11,7 @@ import org.opensails.sails.util.IClassResolver;
 public class MixinResolver implements IMixinResolver {
 	protected IControllerImpl controller;
 	protected final List<IClassResolver> resolvers;
-	private final SimpleContainer container;
+	private final IContainer container;
 
 	/**
 	 * Compatability
@@ -21,7 +21,7 @@ public class MixinResolver implements IMixinResolver {
 		this(event.getContainer());
 	}
 	
-	public MixinResolver(SimpleContainer container) {
+	public MixinResolver(IContainer container) {
 		this.container = container;
 		this.resolvers = new ArrayList<IClassResolver>();
 	}

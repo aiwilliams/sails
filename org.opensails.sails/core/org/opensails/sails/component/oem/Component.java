@@ -37,7 +37,7 @@ public class Component<I extends IComponentImpl> extends AbstractActionEventProc
 	@Override
 	protected I createInstanceOrNull(ISailsEvent event) {
 		if (!hasImplementation()) return null;
-		I instance = isDestination(event) ? event.getContainer().create(processingContext, event) : event.getContainer().instance(processingContext, processingContext);
+		I instance = isDestination(event) ? event.getContainer().createEventContext(processingContext, event) : event.getContainer().instance(processingContext, processingContext);
 		instance.setEventContext(event, this);
 		instance.setTemplateRenderer(renderer);
 		return instance;

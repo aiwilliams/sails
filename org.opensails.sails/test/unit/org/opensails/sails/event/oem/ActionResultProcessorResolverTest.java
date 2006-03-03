@@ -3,8 +3,8 @@ package org.opensails.sails.event.oem;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.ApplicationScope;
+import org.opensails.sails.ApplicationContainer;
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.action.ActionResultFixture;
 import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.oem.ActionResultProcessorResolver;
@@ -18,13 +18,13 @@ public class ActionResultProcessorResolverTest extends TestCase {
 
     public void testConstructor_WrongScope() throws Exception {
         try {
-            new ActionResultProcessorResolver(new ScopedContainer(ApplicationScope.REQUEST));
+            new ActionResultProcessorResolver(new RequestContainer(new ApplicationContainer()));
             fail("These resolvers are Sails Application scoped (servlet), as I can't think of a reason you would want it otherwise");
         } catch (IllegalArgumentException expected) {}
     }
 
     public void testIt() throws Exception {
-        ActionResultProcessorResolver resolver = new ActionResultProcessorResolver(new ScopedContainer(ApplicationScope.SERVLET) {
+        ActionResultProcessorResolver resolver = new ActionResultProcessorResolver(new ApplicationContainer() {
             @Override
             @SuppressWarnings("unchecked")
             public <T> T instance(Class<T> key) {
@@ -47,7 +47,7 @@ public class ActionResultProcessorResolverTest extends TestCase {
     }
 
     public void testPush() throws Exception {
-        ActionResultProcessorResolver resolver = new ActionResultProcessorResolver(new ScopedContainer(ApplicationScope.SERVLET));
+        ActionResultProcessorResolver resolver = new ActionResultProcessorResolver(new ApplicationContainer());
         ClassResolverAdapter<IActionResultProcessor> resolverOne = new ClassResolverAdapter<IActionResultProcessor>() {
             @Override
             public Class<? extends IActionResultProcessor> resolve(Class key) {

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opensails.rigging.ScopedContainer;
+import org.opensails.rigging.IScopedContainer;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.action.IActionResult;
@@ -14,11 +14,11 @@ import org.opensails.sails.action.IActionResultProcessorResolver;
 import org.opensails.sails.util.IClassResolver;
 
 public class ActionResultProcessorResolver implements IActionResultProcessorResolver {
-    protected final ScopedContainer container;
+    protected final IScopedContainer container;
     protected Map<Class<? extends IActionResult>, Class<? extends IActionResultProcessor>> processorClassCache;
     protected List<IClassResolver> resolvers;
 
-    public ActionResultProcessorResolver(ScopedContainer container) {
+    public ActionResultProcessorResolver(IScopedContainer container) {
         if (container.getScope() != ApplicationScope.SERVLET) throw new IllegalArgumentException("IActionResultProcessors must be scoped at " + ApplicationScope.SERVLET);
         this.container = container;
         this.resolvers = new ArrayList<IClassResolver>();

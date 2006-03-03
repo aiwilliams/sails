@@ -2,47 +2,16 @@ package org.opensails.sails.oem;
 
 import junit.framework.TestCase;
 
-import org.opensails.rigging.ScopedContainer;
-import org.opensails.sails.IConfigurableSailsApplication;
+import org.opensails.functional.SailsFunctionalTester;
+import org.opensails.rigging.Disposable;
+import org.opensails.rigging.Startable;
+import org.opensails.rigging.Stoppable;
+import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.ISailsApplicationConfigurator;
-import org.opensails.sails.SailsApplicationConfiguratorFixture;
-import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.event.oem.GetEvent;
-import org.opensails.sails.event.oem.PostEvent;
-import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
-import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
 import org.opensails.sails.tester.servletapi.ShamServletContext;
 
 public class SailsApplicationTest extends TestCase {
-    private ISailsEvent dispatchedEvent;
-
-    public void testDoGet_DoPost() throws Exception {
-        SailsApplication application = new SailsApplication();
-        SailsApplicationConfiguratorFixture.configure(application, new BaseConfigurator() {
-            @Override
-            public Dispatcher installDispatcher(IConfigurableSailsApplication application, ScopedContainer container) {
-                Dispatcher dispatcher = new Dispatcher(null, null, null, null) {
-                    @Override
-                    public void dispatch(GetEvent event) {
-                        dispatchedEvent = event;
-                    }
-
-                    @Override
-                    public void dispatch(PostEvent event) {
-                        dispatchedEvent = event;
-                    }
-                };
-                application.setDispatcher(dispatcher);
-                return dispatcher;
-            }
-        });
-        application.service(new ShamHttpServletRequest(ShamHttpServletRequest.GET), new ShamHttpServletResponse());
-        assertEquals(GetEvent.class, dispatchedEvent.getClass());
-        application.service(new ShamHttpServletRequest(ShamHttpServletRequest.POST), new ShamHttpServletResponse());
-        assertEquals(PostEvent.class, dispatchedEvent.getClass());
-    }
-
     public void testInit() throws Exception {
         ShamServletContext context = new ShamServletContext();
         context.setInitParameter("some.property.somewhere", "from context");
@@ -64,5 +33,43 @@ public class SailsApplicationTest extends TestCase {
         assertEquals("from context", application.getConfiguration().getProperty("someotheragain.property.somewhere"));
 
         assertTrue(((ShamApplicationConfigurator) application.configurator).containerStarted);
+    }
+
+    public void testLifecycleNotifications() throws Exception {
+        SailsFunctionalTester t = new SailsFunctionalTester();
+        MyListener myListener = new MyListener();
+        t.inject(MyListener.class, myListener, ApplicationScope.SERVLET);
+        assertFalse(myListener.started);
+        assertFalse(myListener.stopped);
+        assertFalse(myListener.disposed);
+        t.get();
+        assertTrue(myListener.started);
+        assertFalse(myListener.disposed);
+        myListener.started = false;
+        t.get();
+        assertFalse(myListener.started);
+        assertFalse(myListener.stopped);
+        assertFalse(myListener.disposed);
+        t.destroy();
+        assertTrue(myListener.stopped);
+        assertTrue(myListener.disposed);
+    }
+
+    public class MyListener implements Startable, Stoppable, Disposable {
+        boolean disposed;
+        boolean started;
+        boolean stopped;
+
+        public void dispose() {
+            disposed = true;
+        }
+
+        public void start() {
+            started = true;
+        }
+
+        public void stop() {
+            stopped = true;
+        }
     }
 }
