@@ -31,8 +31,13 @@
     <repository>
       <id>opensails.org</id>
       <name>OpenSails Maven Repository</name>
-      <url>scp://aiwilliams@opensails.org:/download</url>
+      <url>scp://opensails.org/users/home/aiwilliams/web/public/maven</url>
     </repository>
+    <!-- repository>
+      <id>peter.studio.rolemodelsoftware.com</id>
+      <name>OpenSails RMS Test Repository</name>
+      <url>scp://peter.studio.rolemodelsoftware.com/home/developer/public_html/maven/repo/</url>
+    </repository -->
   </distributionManagement>
 
   <developers>
@@ -71,6 +76,15 @@
 
 	<build>
 	  <defaultGoal>package</defaultGoal>
+	  
+		<extensions>
+		  <extension>
+		    <groupId>org.apache.maven.wagon</groupId>
+		     <artifactId>wagon-ssh-external</artifactId>
+		     <version>1.0-alpha-5</version>
+		  </extension>
+		</extensions>	  
+	  
 	  <plugins>
 	    <plugin>
 	      <groupId>org.apache.maven.plugins</groupId>
