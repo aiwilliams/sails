@@ -23,9 +23,11 @@
       <testSourceDirectory>test</testSourceDirectory>
       <testResources>
       	<testResource><directory>test/unit</directory></testResource>
-      	<testResource><directory>builtin</directory></testResource>
-      	<testResource><directory>builtin/views</directory></testResource>
       </testResources>
+      <resources>
+      	<resource><directory>builtin</directory></resource>
+      	<resource><directory>builtin/views</directory></resource>
+      </resources>
   	
 	  <plugins>
 	    <plugin>
