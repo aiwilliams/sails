@@ -4,102 +4,90 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class HierarchicalContainer extends SimpleContainer {
-	protected HierarchicalContainer parent;
-	private List<HierarchicalContainer> children;
+public class HierarchicalContainer extends SimpleContainer implements IHierarchicalContainer {
+    protected IHierarchicalContainer parent;
 
-	public HierarchicalContainer() {
-		children = new ArrayList<HierarchicalContainer>();
-	}
+    private List<IHierarchicalContainer> children;
 
-	protected HierarchicalContainer(HierarchicalContainer parent) {
-		this();
-		this.parent = parent;
-	}
+    public HierarchicalContainer() {
+        children = new ArrayList<IHierarchicalContainer>();
+    }
 
-	public void addChild(HierarchicalContainer child) {
-		synchronized (children) {
-			children.add(child);
-		}
-	}
+    protected HierarchicalContainer(IHierarchicalContainer parent) {
+        this();
+        this.parent = parent;
+    }
 
-	@Override public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
-		Collection<T> instances = super.allInstances(type, shouldInstantiate);
-		for (HierarchicalContainer child : copyOfChildren())
-			instances.addAll(child.allInstances(type, shouldInstantiate));
-		return instances;
-	}
+    public void addChild(IHierarchicalContainer child) {
+        synchronized (children) {
+            children.add(child);
+        }
+    }
 
-	/**
-	 * @param key
-	 * @return whether the key exists anywhere in this container or its
-	 *         ancestry.
-	 * @see HierarchicalContainer#containsLocally(Class)
-	 */
-	@Override public boolean contains(Class key) {
-		return containsLocally(key) || (parent != null && parent.contains(key));
-	}
+    @Override
+    public <T> Collection<T> allInstances(Class<T> type, boolean shouldInstantiate) {
+        Collection<T> instances = super.allInstances(type, shouldInstantiate);
+        for (IHierarchicalContainer child : copyOfChildren())
+            instances.addAll(child.allInstances(type, shouldInstantiate));
+        return instances;
+    }
 
-	/**
-	 * @param key
-	 * @return whether the key exists locally in this container.
-	 * @see HierarchicalContainer#contains(Class)
-	 */
-	public boolean containsLocally(Class key) {
-		return super.contains(key);
-	}
+    @Override
+    public boolean contains(Class key) {
+        return containsLocally(key) || (parent != null && parent.contains(key));
+    }
 
-	public HierarchicalContainer getParent() {
-		return parent;
-	}
+    public boolean containsLocally(Class key) {
+        return super.contains(key);
+    }
 
-	@Override public <T> T instance(Class<T> key) {
-		if (containsLocally(key))
-			return super.instance(key);
-		if (parent == null)
-			return null;
-		return parent.instance(key);
-	}
+    public IHierarchicalContainer getParent() {
+        return parent;
+    }
 
-	/**
-	 * @return child
-	 */
-	public HierarchicalContainer makeChild() {
-		HierarchicalContainer child = new HierarchicalContainer(this);
-		addChild(child);
-		return child;
-	}
+    @Override
+    public <T> T instance(Class<T> key) {
+        if (containsLocally(key)) return super.instance(key);
+        if (parent == null) return null;
+        return parent.instance(key);
+    }
 
-	@SuppressWarnings("unchecked") public void makeLocal(Class key) {
-		ComponentResolver resolver = resolverInHeirarchy(key);
-		if (resolver != null)
-			registerResolver(key, resolver.cloneFor(this));
-	}
+    public IHierarchicalContainer makeChild() {
+        IHierarchicalContainer child = new HierarchicalContainer(this);
+        addChild(child);
+        return child;
+    }
 
-	public void removeChild(HierarchicalContainer child) {
-		synchronized (children) {
-			children.remove(child);
-		}
-		child.orphan();
-	}
+    @SuppressWarnings("unchecked")
+    public void makeLocal(Class key) {
+        ComponentResolver resolver = resolverInHeirarchy(key);
+        if (resolver != null) registerResolver(key, resolver.cloneFor(this));
+    }
 
-	protected List<HierarchicalContainer> copyOfChildren() {
-		synchronized (children) {
-			return new ArrayList<HierarchicalContainer>(children);
-		}
-	}
+    public void orphan() {
+        parent = null;
+    }
 
-	protected void orphan() {
-		parent = null;
-	}
+    public void removeChild(IHierarchicalContainer child) {
+        synchronized (children) {
+            children.remove(child);
+        }
+        child.orphan();
+    }
 
-	protected <T> ComponentResolver resolverInHeirarchy(Class<T> key) {
-		ComponentResolver resolver = null;
-		HierarchicalContainer container = this;
-		while (resolver == null && container != null) {
-			resolver = container.resolver(key);
-			container = container.getParent();
-		}
-		return resolver;
-	}
+    protected List<IHierarchicalContainer> copyOfChildren() {
+        synchronized (children) {
+            return new ArrayList<IHierarchicalContainer>(children);
+        }
+    }
+
+    protected <T> ComponentResolver resolverInHeirarchy(Class<T> key) {
+        ComponentResolver resolver = null;
+        IHierarchicalContainer container = this;
+        while (resolver == null && container != null) {
+            resolver = container.resolver(key);
+            container = container.getParent();
+        }
+        return resolver;
+    }
 }

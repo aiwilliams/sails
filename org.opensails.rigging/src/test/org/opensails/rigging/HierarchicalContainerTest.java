@@ -11,7 +11,7 @@ import org.opensails.rigging.SimpleContainerTest.Shoelace;
 
 public class HierarchicalContainerTest extends TestCase {
 	HierarchicalContainer parent = new HierarchicalContainer();
-	HierarchicalContainer child = parent.makeChild();
+	IHierarchicalContainer child = parent.makeChild();
 	
 	public void testAllInstances() throws Exception {
 		child.register(ShamComponent.class, new ShamComponent());

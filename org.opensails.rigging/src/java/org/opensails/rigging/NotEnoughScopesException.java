@@ -1,15 +1,18 @@
 package org.opensails.rigging;
 
+/**
+ * Thrown when last scope in Enum has been reached.
+ */
 public class NotEnoughScopesException extends RuntimeException {
-	private static final long serialVersionUID = 3257009873320687152L;
-	private final Enum parentScope;
+    private static final long serialVersionUID = 3257009873320687152L;
+    private final Enum parentScope;
 
-	public NotEnoughScopesException(Enum parentScope) {
-		this.parentScope = parentScope;
-	}
-	
-	@Override
-	public String getMessage() {
-		return "There is no scope lower than <" + parentScope + "> in enum <" + parentScope.getClass() + ">";
-	}
+    public NotEnoughScopesException(Enum parentScope) {
+        this.parentScope = parentScope;
+    }
+
+    @Override
+    public String getMessage() {
+        return "There is no scope lower than <" + parentScope + "> in enum <" + parentScope.getClass() + ">";
+    }
 }

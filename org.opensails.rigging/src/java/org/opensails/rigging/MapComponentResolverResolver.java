@@ -37,11 +37,11 @@ public class MapComponentResolverResolver implements IComponentResolverResolver 
     	}
     }
 
-    public ComponentResolver resolve(Class key, SimpleContainer container) {
+    public ComponentResolver resolve(Class key, IContainer container) {
         return componentResolvers.get(key);
     }
 
-    public boolean canResolve(Class key, SimpleContainer container) {
+    public boolean canResolve(Class key, IContainer container) {
         return componentResolvers.containsKey(key);
     }
 }

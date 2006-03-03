@@ -184,7 +184,7 @@ public class SimpleContainerTest extends TestCase {
     
     public void testResolverResolving() throws Exception {
         container.push(new IComponentResolverResolver() {
-            public boolean canResolve(Class key, SimpleContainer container) {
+            public boolean canResolve(Class key, IContainer container) {
                 return true;
             }
 
@@ -192,7 +192,7 @@ public class SimpleContainerTest extends TestCase {
                 return null;
             }
 
-            public ComponentResolver resolve(Class key, SimpleContainer container) {
+            public ComponentResolver resolve(Class key, IContainer container) {
                 resolverResolverCalled = true;
                 return null;
             }
@@ -251,7 +251,7 @@ public class SimpleContainerTest extends TestCase {
     }
     
     public static interface IModifiesContainer {
-    	void go(SimpleContainer container);
+    	void go(IContainer container);
     }
 
     public static interface IShoelace {
@@ -261,7 +261,7 @@ public class SimpleContainerTest extends TestCase {
     }
     
     public static class ModifiesContainer implements IModifiesContainer {
-    	public void go(SimpleContainer container) {
+    	public void go(IContainer container) {
     		container.register(ShamComponent.class);
     	}
     }

@@ -1,90 +1,63 @@
 package org.opensails.rigging;
 
-/**
- * A Container that works with named scopes. For best results, order your
- * constants from highest scope to lowest in the enum declaration.
- */
-public class ScopedContainer extends HierarchicalContainer {
-	protected Enum scope;
+public class ScopedContainer extends HierarchicalContainer implements IScopedContainer {
+    protected Enum scope;
 
-	public ScopedContainer(Enum scope) {
-		this.scope = scope;
-	}
+    public ScopedContainer(Enum scope) {
+        this.scope = scope;
+    }
 
-	protected ScopedContainer(ScopedContainer parent, Enum scope) {
-		super(parent);
-		this.scope = scope;
-	}
+    protected ScopedContainer(IScopedContainer parent, Enum scope) {
+        super(parent);
+        this.scope = scope;
+    }
 
-	/**
-	 * @param scope
-	 * @return a container at the requested scope. Will be either this
-	 *         container, or a container in its ancestry, or null if none could
-	 *         be found.
-	 */
-	public ScopedContainer getContainerInHierarchy(Enum scope) {
-		if (scope == this.scope)
-			return this;
-		if (parent == null)
-			return null;
-		return getParent().getContainerInHierarchy(scope);
-	}
+    public IScopedContainer getContainerInHierarchy(Enum scope) {
+        if (scope == this.scope) return this;
+        if (parent == null) return null;
+        return getParent().getContainerInHierarchy(scope);
+    }
 
-	@Override
-	public ScopedContainer getParent() {
-		return (ScopedContainer) super.getParent();
-	}
+    @Override
+    public IScopedContainer getParent() {
+        return (IScopedContainer) super.getParent();
+    }
 
-	public Enum getScope() {
-		return scope;
-	}
+    public Enum getScope() {
+        return scope;
+    }
 
-	/**
-	 * Figures out the appropriate scope for the child by looking at the enum
-	 * type.
-	 * 
-	 * @return child
-	 * @throws NotEnoughScopesException
-	 *             if there isn't another scope in the enum
-	 * @see ScopedContainer#makeChild(Enum)
-	 */
-	@Override
-	public ScopedContainer makeChild() {
-		return makeChild(childScope());
-	}
+    /**
+     * Figures out the appropriate scope for the child by looking at the enum
+     * type.
+     * 
+     * @return child
+     * @throws NotEnoughScopesException if there isn't another scope in the enum
+     * @see ScopedContainer#makeChild(Enum)
+     */
+    @Override
+    public IScopedContainer makeChild() {
+        return makeChild(childScope());
+    }
 
-	/**
-	 * Creates a <em>immediate</em> child with the given scope. Does
-	 * <em>not</em> walk down the tree.
-	 * 
-	 * @param scope
-	 * @return child
-	 */
-	public ScopedContainer makeChild(Enum scope) {
-		ScopedContainer child = new ScopedContainer(this, scope);
-		addChild(child);
-		return child;
-	}
+    public IScopedContainer makeChild(Enum scope) {
+        ScopedContainer child = new ScopedContainer(this, scope);
+        addChild(child);
+        return child;
+    }
 
-	/**
-	 * Creates a child that is a HierarchicalContainer
-	 * 
-	 * @return child
-	 * @see HierarchicalContainer#makeChild()
-	 */
-	public HierarchicalContainer makeChildUnscoped() {
-		return super.makeChild();
-	}
+    public IHierarchicalContainer makeChildUnscoped() {
+        return super.makeChild();
+    }
 
-	@Override
-	public String toString() {
-		return scope + ": " + super.toString();
-	}
+    @Override
+    public String toString() {
+        return scope + ": " + super.toString();
+    }
 
-	protected Enum childScope() {
-		int next = scope.ordinal() + 1;
-		if (next >= scope.getClass().getEnumConstants().length)
-			throw new NotEnoughScopesException(scope);
-		return scope.getClass().getEnumConstants()[next];
-	}
+    protected Enum childScope() {
+        int next = scope.ordinal() + 1;
+        if (next >= scope.getClass().getEnumConstants().length) throw new NotEnoughScopesException(scope);
+        return scope.getClass().getEnumConstants()[next];
+    }
 }

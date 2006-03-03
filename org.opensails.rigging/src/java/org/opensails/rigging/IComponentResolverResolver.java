@@ -8,7 +8,7 @@ public interface IComponentResolverResolver {
      * @param container
      * @return true if this can resolve a ComponentResolver for key
      */
-    boolean canResolve(Class key, SimpleContainer container);
+    boolean canResolve(Class key, IContainer container);
 
     /**
      * @return the current known set of keys, which will change as
@@ -16,5 +16,5 @@ public interface IComponentResolverResolver {
      */
     Set<Class> keySet();
 
-    ComponentResolver resolve(Class key, SimpleContainer container);
+    ComponentResolver resolve(Class key, IContainer container);
 }
