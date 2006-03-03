@@ -28,6 +28,8 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	public static final String GET = "GET";
 	public static final String POST = "POST";
 
+	public boolean multipart;
+
 	protected Map<String, Object> attributes = new HashMap<String, Object>();
 	protected String contextPath = "/shamcontext";
 	protected Map<String, FileUpload> fileUploads = new HashMap<String, FileUpload>();
@@ -289,13 +291,11 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	/**
-	 * When there are FileUploads, this answers true. Don't know of any cases
-	 * yet where we would want something different.
-	 * 
-	 * @return true if there are any FileUploads in this request
+	 * @return true if there are any FileUploads in this request or if multipart ==
+	 *         true
 	 */
 	public boolean isMultipartRequest() {
-		return !fileUploads.isEmpty();
+		return multipart == true || !fileUploads.isEmpty();
 	}
 
 	public boolean isRequestedSessionIdFromCookie() {

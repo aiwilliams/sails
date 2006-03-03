@@ -13,14 +13,8 @@ public class FormTestController extends BaseController {
 		renderTemplate("renderModel");
 	}
 
-	public void referenceToMissingProperty() {
-		exposeModel("model", new Object());
-		renderTemplate("renderModel");
-	}
-
-	public void postThenRender() {
-		updateModel(new Model());
-		renderTemplate("renderModel");
+	public void fileUpload() {
+		renderString(aFileField);
 	}
 
 	public void implicitExpose() {
@@ -28,7 +22,18 @@ public class FormTestController extends BaseController {
 		renderTemplate("renderModel");
 	}
 
-	public void fileUpload() {
-		renderString(aFileField);
+	public void multipart() {
+		file("not uploaded, but is multipart");
+		renderString("made it here");
+	}
+
+	public void postThenRender() {
+		updateModel(new Model());
+		renderTemplate("renderModel");
+	}
+
+	public void referenceToMissingProperty() {
+		exposeModel("model", new Object());
+		renderTemplate("renderModel");
 	}
 }

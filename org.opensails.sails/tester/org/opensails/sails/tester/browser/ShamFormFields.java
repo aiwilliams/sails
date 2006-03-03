@@ -8,6 +8,7 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.ValueElement;
+import org.opensails.sails.tester.SailsTester;
 
 /**
  * Used to construct the fields to be submitted in a post or get.
@@ -17,8 +18,10 @@ import org.opensails.sails.form.html.ValueElement;
 public class ShamFormFields extends FormFields {
 	protected final ContainerAdapterResolver adapterResolver;
 	protected final List<ValueElement> elements;
+	protected final SailsTester tester;
 
-	public ShamFormFields(ContainerAdapterResolver adapterResolver) {
+	public ShamFormFields(SailsTester tester, ContainerAdapterResolver adapterResolver) {
+		this.tester = tester;
 		this.adapterResolver = adapterResolver;
 		this.elements = new ArrayList<ValueElement>();
 	}
@@ -31,6 +34,11 @@ public class ShamFormFields extends FormFields {
 	 */
 	public void addFile(String fileFieldName, ShamFileUpload upload) {
 		backingMap.put(fileFieldName, upload);
+	}
+
+	public ShamFormFields multipart() {
+		tester.nextRequestIsMultipart = true;
+		return this;
 	}
 
 	/**

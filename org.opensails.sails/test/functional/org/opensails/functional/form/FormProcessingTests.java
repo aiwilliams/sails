@@ -19,6 +19,17 @@ public class FormProcessingTests extends TestCase {
 		page.assertContains("the content");
 	}
 
+	public void testPost_Multipart() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		Page page = t.post("multipart", t.getFormFields().multipart());
+		page.assertContains("made it here");
+
+		try {
+			page = t.post("multipart", t.getFormFields());
+			fail("Should complain when request is not multipart. Hopefully this will save us some headaches.");
+		} catch (Exception expected) {}
+	}
+
 	public void testPostThenRender() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
 		Page page = t.post("postThenRender", FormFields.quick("model.textProperty", "hello"));
