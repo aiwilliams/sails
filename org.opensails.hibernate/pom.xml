@@ -3,9 +3,19 @@
   <groupId>org.opensails</groupId>
   <artifactId>hibernate</artifactId>
   <version>1.0-SNAPSHOT</version>
+  
   <scm>
     <connection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.hibernate/</connection>
   </scm>
+  
+  <repositories>  
+      <repository>
+      <id>opensails</id>
+      <name>sails snapshots</name>
+      <url>http://opensails.org/maven</url>
+    </repository>
+  </repositories>  
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>test/unit</testSourceDirectory>
