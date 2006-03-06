@@ -4,32 +4,27 @@
   <artifactId>hibernate</artifactId>
   <version>1.0-SNAPSHOT</version>
   
+  <parent>
+    <groupId>org.opensails</groupId>
+    <artifactId>build</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
   <scm>
     <connection>scm:svn:http://opensails.org/svn/sails/trunk/org.opensails.hibernate/</connection>
   </scm>
   
-  <repositories>  
-      <repository>
+  <repositories>
+    <repository>
       <id>opensails</id>
       <name>sails snapshots</name>
       <url>http://opensails.org/maven</url>
     </repository>
   </repositories>  
-  
+   
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>test/unit</testSourceDirectory>
-    
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-    </plugins>
-    
   </build>
   
   <dependencies>
@@ -61,7 +56,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-annotations</artifactId>
-      <version>3.1beta7</version>
+      <version>3.1beta8</version>
     </dependency>
     
     <dependency>
