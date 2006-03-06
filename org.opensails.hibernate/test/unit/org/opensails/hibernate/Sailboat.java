@@ -7,14 +7,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.validator.NotNull;
-import org.opensails.sails.persist.IIdentifiable;
+import org.opensails.sails.persist.AbstractIdentifiable;
 
 @Entity
-public class Sailboat implements IIdentifiable {
+public class Sailboat extends AbstractIdentifiable {
 	@ManyToOne
 	private Harbor harbor;
 
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@NotNull
@@ -28,11 +29,6 @@ public class Sailboat implements IIdentifiable {
 		this.name = name;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		return id == ((Sailboat) obj).id;
-	}
-
 	public Harbor getHarbor() {
 		return harbor;
 	}
@@ -43,11 +39,6 @@ public class Sailboat implements IIdentifiable {
 
 	public String getName() {
 		return name;
-	}
-
-	@Override
-	public int hashCode() {
-		return new Long(id).hashCode();
 	}
 
 	public void setHarbor(Harbor harbor) {

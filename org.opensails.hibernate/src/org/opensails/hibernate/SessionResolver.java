@@ -3,23 +3,23 @@ package org.opensails.hibernate;
 import org.hibernate.Session;
 import org.opensails.rigging.ComponentResolver;
 import org.opensails.rigging.SimpleContainer;
-import org.opensails.sails.RequestContainer;
+import org.opensails.sails.IEventContextContainer;
 
 /**
  * A Rigging ComponentResolver for Hibernate Sessions.
  * <p>
- * If you are using the HibernateObjectPersister and want access to the Hibernate
- * Session in any of your Rigging managed objects, you must register this
- * resolver.
+ * If you are using the HibernateObjectPersister and want access to the
+ * Hibernate Session in any of your Rigging managed objects, you must register
+ * this resolver.
  * 
  * @see org.opensails.hibernate.HibernateObjectPersister
  * @author aiwilliams
  */
 public class SessionResolver implements ComponentResolver {
-	protected final RequestContainer eventContainer;
+	protected final IEventContextContainer eventContainer;
 	protected Session session;
 
-	public SessionResolver(RequestContainer eventContainer) {
+	public SessionResolver(IEventContextContainer eventContainer) {
 		this.eventContainer = eventContainer;
 	}
 

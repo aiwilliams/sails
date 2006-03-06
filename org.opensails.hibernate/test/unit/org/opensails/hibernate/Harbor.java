@@ -9,11 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import org.opensails.sails.persist.IIdentifiable;
+import org.opensails.sails.persist.AbstractIdentifiable;
 
 @Entity
-public class Harbor implements IIdentifiable {
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+public class Harbor extends AbstractIdentifiable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@OneToMany(targetEntity = Sailboat.class, mappedBy = "harbor")
@@ -24,21 +25,11 @@ public class Harbor implements IIdentifiable {
 		sailboat.setHarbor(this);
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		return id == ((Harbor) obj).id;
-	}
-
 	public Long getId() {
 		return id;
 	}
 
 	public Collection<Sailboat> getSailboats() {
 		return sailboats;
-	}
-
-	@Override
-	public int hashCode() {
-		return new Long(id).hashCode();
 	}
 }
