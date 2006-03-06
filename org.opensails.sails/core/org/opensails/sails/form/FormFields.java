@@ -114,11 +114,11 @@ public class FormFields {
 		return backingMap.remove(fieldName);
 	}
 
-	public void setValue(String name, String value) {
-		backingMap.put(name, new String[] { value });
+	public void setValue(String name, Object value) {
+		backingMap.put(name, new String[] { String.valueOf(value) });
 	}
 
-	public void setValues(String name, String[] values) {
+	public void setValues(String name, String... values) {
 		backingMap.put(name, values);
 	}
 

@@ -1,5 +1,6 @@
 package org.opensails.functional.controllers;
 
+import org.opensails.functional.event.EventProcessingTests.MyDomainModel;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.StringActionResult;
 import org.opensails.sails.controller.oem.BaseController;
@@ -9,6 +10,8 @@ public class EventTestController extends BaseController {
 	public ExampleEnum enumField;
 	public int intField;
 	public String stringField;
+	public String[] stringArrayField;
+	public MyDomainModel[] objectArrayField;
 
 	// This will not be set, even if in form fields
 	protected float floatField;

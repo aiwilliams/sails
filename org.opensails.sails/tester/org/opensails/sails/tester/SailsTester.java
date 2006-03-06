@@ -18,6 +18,7 @@ import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.tester.browser.ShamFormFields;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
+import org.opensails.sails.tester.oem.VirtualAdapterResolver;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
@@ -302,6 +303,21 @@ public class SailsTester implements ISailsApplication {
 	public Page post(String context, String action, FormFields formFields, Object... parameters) {
 		TestPostEvent postEvent = createPostEvent(context, action, formFields, adaptParameters(parameters));
 		return doPost(postEvent);
+	}
+
+	/**
+	 * Allows tests to provide the IAdapter Class for a model type.
+	 * <p>
+	 * This does not allow instances as I (aiwilliams) don't really see a need
+	 * for that. It seems best to me to provide an adapter in the same form that
+	 * the framework would discover them: as classes.
+	 * 
+	 * @param <T>
+	 * @param modelType
+	 * @param adapter
+	 */
+	public <T> void registerAdapter(Class<T> modelType, Class<? extends IAdapter<T, ?>> adapter) {
+		application.getContainer().instance(VirtualAdapterResolver.class).register(modelType, adapter);
 	}
 
 	/**

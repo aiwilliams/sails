@@ -9,13 +9,17 @@ import org.opensails.functional.controllers.EventTestSubclassController;
 import org.opensails.functional.controllers.ExampleEnum;
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
+import org.opensails.sails.adapter.AbstractAdapter;
+import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.FormMeta;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.Page;
+import org.opensails.sails.tester.browser.ShamFormFields;
 
 public class EventProcessingTests extends TestCase implements IActionListener {
 	private int beginExecutionCallCount = 0;
+
 	private int endExecutionCallCount;
 
 	public void beginExecution(IAction action) {
@@ -90,10 +94,22 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	public void testPost_FieldsAdaptedAndSet() {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		Page page = tester.post("simplePost", FormFields.quick("stringField", "postedStringFieldValue", "intField", 3, "floatField", 5.4, "enumField", ExampleEnum.ENUM_EXAMPLE_ONE));
+		tester.registerAdapter(MyDomainModel.class, MyAdapter.class);
+
+		ShamFormFields formFields = tester.getFormFields();
+		formFields.setValue("stringField", "postedStringFieldValue");
+		formFields.setValue("intField", 3);
+		formFields.setValue("floatField", 5.4);
+		formFields.setValue("enumField", ExampleEnum.ENUM_EXAMPLE_ONE);
+		formFields.setValues("stringArrayField", "one", "two");
+		formFields.setValues("objectArrayField", "hello", "there");
+
+		Page page = tester.post("simplePost", formFields);
 		page.assertContains("postedStringFieldValue");
 		page.assertContains("3");
 		page.assertContains(ExampleEnum.ENUM_EXAMPLE_ONE.name());
+		page.assertContains("[one, two]");
+		page.assertContains("[hello, there]");
 		page.assertExcludes("5.4");
 	}
 
@@ -136,5 +152,23 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 	private void registerAsActionListener(SailsFunctionalTester tester) {
 		tester.getContainer().register(this);
 		tester.getRequestContainer().register(this);
+	}
+
+	public static class MyAdapter extends AbstractAdapter<MyDomainModel, String> {
+		public MyDomainModel forModel(Class<? extends MyDomainModel> modelType, String fromWeb) throws AdaptationException {
+			return new MyDomainModel(fromWeb);
+		}
+
+		public String forWeb(Class<? extends MyDomainModel> modelType, MyDomainModel fromModel) throws AdaptationException {
+			return fromModel.web;
+		}
+	}
+
+	public static class MyDomainModel {
+		public final String web;
+
+		public MyDomainModel(String fromWeb) {
+			this.web = fromWeb;
+		}
 	}
 }
