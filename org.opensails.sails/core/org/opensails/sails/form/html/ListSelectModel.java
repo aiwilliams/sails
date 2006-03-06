@@ -2,7 +2,6 @@ package org.opensails.sails.form.html;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -13,19 +12,19 @@ import java.util.List;
  * 
  * Override the appropriate methods to render in a specific way.
  */
-public class ListSelectModel implements SelectModel {
-	protected List<Object> list;
+public class ListSelectModel<T> implements SelectModel<T> {
+	protected List<T> list;
 
-	public ListSelectModel(List<?> list) {
-		if (list == null) list = new ArrayList<Object>(0);
-		this.list = new ArrayList<Object>(list);
+	public ListSelectModel(List<T> list) {
+		if (list == null) list = new ArrayList<T>(0);
+		this.list = new ArrayList<T>(list);
 	}
 
-	public ListSelectModel(Object... options) {
+	public ListSelectModel(T... options) {
 		this(Arrays.asList(options));
 	}
 
-	public boolean contains(Object object) {
+	public boolean contains(T object) {
 		return allOptions().contains(object);
 	}
 
@@ -34,11 +33,11 @@ public class ListSelectModel implements SelectModel {
 		throw new IndexOutOfBoundsException(String.valueOf(index) + " is out of range: 0 to " + getOptionCount());
 	}
 
-	public String getLabel(Object object) {
+	public String getLabel(T object) {
 		return object == null ? NULL_OPTION_LABEL : object.toString();
 	}
 
-	public Object getOption(int index) {
+	public T getOption(int index) {
 		return allOptions().get(index);
 	}
 
@@ -51,19 +50,17 @@ public class ListSelectModel implements SelectModel {
 		throw new IndexOutOfBoundsException(index + " is out of range: 0 to " + getOptionCount());
 	}
 
-	public String getValue(Object object) {
+	public String getValue(T object) {
 		return object == null ? NULL_OPTION_VALUE : object.toString();
 	}
 
-	public Object translateValue(String value) {
-		for (Iterator iter = allOptions().iterator(); iter.hasNext();) {
-			Object option = (Object) iter.next();
+	public T translateValue(String value) {
+		for (T option : allOptions())
 			if (getValue(option).equals(value)) return option;
-		}
 		throw new IllegalArgumentException("The option " + value + " is not legal");
 	}
 
-	protected List allOptions() {
+	protected List<T> allOptions() {
 		return list;
 	}
 
@@ -71,7 +68,7 @@ public class ListSelectModel implements SelectModel {
 		return index >= 0 && index < getOptionCount();
 	}
 
-	protected int indexOf(Object object) {
+	protected int indexOf(T object) {
 		return allOptions().indexOf(object);
 	}
 }
