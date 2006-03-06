@@ -189,6 +189,14 @@ public class MemoryObjectPersisterTest extends TestCase {
 		assertTrue(persister.wasSaved(troubledAsset));
 	}
 
+	public void testSave_PrimitiveId() throws Exception {
+		ShamIdentifiablePrimitive one = new ShamIdentifiablePrimitive();
+		ShamIdentifiablePrimitive two = new ShamIdentifiablePrimitive();
+		persister.save(one);
+		persister.save(two);
+		assertFalse(one.getId().equals(two.getId()));
+	}
+
 	public void testWasSaved_WasDestroyed() throws Exception {
 		ShamIdentifiablePrimitive one = new ShamIdentifiablePrimitive();
 		assertFalse(persister.wasSaved(one));
