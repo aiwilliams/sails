@@ -14,9 +14,9 @@ public class TestSession {
 	public void assertContains(Class name) {
 		assertContains(name.getName());
 	}
-	
+
 	public void assertContains(String key) {
-		assertSession();
+		assertExists();
 		Assert.assertNotNull(String.format("Expected session to contain %s but did not", key), getSession().getAttribute(key));
 	}
 
@@ -25,12 +25,16 @@ public class TestSession {
 		Assert.assertNull(String.format("Expected session not to contain %s but did", key), getSession().getAttribute(key));
 	}
 
-	public void setAttribute(String key, Object value) {
-		getSession(true).setAttribute(key, value);
+	public void assertNull() {
+		Assert.assertNull("Session is available", getSession());
 	}
 
-	protected void assertSession() {
+	public void assertExists() {
 		Assert.assertNotNull("No session is available", getSession());
+	}
+
+	public void setAttribute(String key, Object value) {
+		getSession(true).setAttribute(key, value);
 	}
 
 	protected ShamHttpSession getSession() {

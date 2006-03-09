@@ -9,9 +9,16 @@ import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.ValueElement;
 import org.opensails.sails.tester.SailsTester;
+import org.opensails.sails.util.BleedingEdgeException;
 
 /**
  * Used to construct the fields to be submitted in a post or get.
+ * <p>
+ * NOTE: This needs further development
+ * <p>
+ * Provides the ability to construct form fields from objects using the
+ * IAdapters of your application. This is important. Not using the adapters is
+ * repeating yourself.
  * 
  * @author aiwilliams
  */
@@ -39,6 +46,10 @@ public class ShamFormFields extends FormFields {
 	public ShamFormFields multipart() {
 		tester.nextRequestIsMultipart = true;
 		return this;
+	}
+
+	public ShamFormFields quickSet(Object... keyValuePairs) {
+		throw new BleedingEdgeException("This needs to use the adapters for the values");
 	}
 
 	/**

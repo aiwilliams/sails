@@ -10,6 +10,7 @@ import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.form.FormFields;
@@ -19,6 +20,7 @@ import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.tester.browser.ShamFormFields;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
+import org.opensails.sails.tester.oem.VirtualControllerResolver;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
@@ -318,6 +320,10 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public <T> void registerAdapter(Class<T> modelType, Class<? extends IAdapter<T, ?>> adapter) {
 		application.getContainer().instance(VirtualAdapterResolver.class).register(modelType, adapter);
+	}
+
+	public <C extends IControllerImpl> void registerController(C controller) {
+		getContainer().instance(VirtualControllerResolver.class).register(controller);
 	}
 
 	/**

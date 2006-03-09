@@ -2,6 +2,7 @@ package org.opensails.sails.form.html;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,10 +15,26 @@ import java.util.List;
  */
 public class ListSelectModel<T> implements SelectModel<T> {
 	protected List<T> list;
+	protected T selected;
 
-	public ListSelectModel(List<T> list) {
-		if (list == null) list = new ArrayList<T>(0);
-		this.list = new ArrayList<T>(list);
+	/**
+	 * Convenience ctor for Collections.
+	 * <p>
+	 * A ListSelectModel expects things to be in order. Your Collection may not
+	 * be. Expect things to be in random order.
+	 * 
+	 * @param options
+	 */
+	public ListSelectModel(Collection<T> options) {
+		this(new ArrayList<T>(options));
+	}
+
+	/**
+	 * @param options
+	 */
+	public ListSelectModel(List<T> options) {
+		if (options == null) options = new ArrayList<T>(0);
+		this.list = new ArrayList<T>(options);
 	}
 
 	public ListSelectModel(T... options) {
@@ -45,6 +62,10 @@ public class ListSelectModel<T> implements SelectModel<T> {
 		return allOptions().size();
 	}
 
+	public T getSelected() {
+		return selected;
+	}
+
 	public String getValue(int index) {
 		if (indexInRange(index)) return getValue(getOption(index));
 		throw new IndexOutOfBoundsException(index + " is out of range: 0 to " + getOptionCount());
@@ -52,6 +73,15 @@ public class ListSelectModel<T> implements SelectModel<T> {
 
 	public String getValue(T object) {
 		return object == null ? NULL_OPTION_VALUE : object.toString();
+	}
+
+	public boolean hasSelected() {
+		return selected != null;
+	}
+
+	public SelectModel select(T option) {
+		selected = option;
+		return this;
 	}
 
 	public T translateValue(String value) {

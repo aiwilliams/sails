@@ -26,209 +26,215 @@ import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.RegexHelper;
 
 public class Page {
-    protected final ISailsEvent event;
+	protected final ISailsEvent event;
 
-    protected HttpServletRequest request;
-    protected ShamHttpServletResponse response;
+	protected HttpServletRequest request;
+	protected ShamHttpServletResponse response;
 
-    public Page(ISailsEvent event) {
-        this.event = event;
-        this.request = event.getRequest();
-        this.response = (ShamHttpServletResponse) event.getResponse();
-    }
+	public Page(ISailsEvent event) {
+		this.event = event;
+		this.request = event.getRequest();
+		this.response = (ShamHttpServletResponse) event.getResponse();
+	}
 
-    public void assertContains(String exactString) throws AssertionFailedError {
-        assertContains("", exactString);
-    }
+	public void assertContains(String exactString) throws AssertionFailedError {
+		assertContains("", exactString);
+	}
 
-    public void assertContains(String message, String exactString) throws AssertionFailedError {
-        String finalMessage = "Expected " + url() + " to contain <" + exactString + ">";
-        if (!StringUtils.isBlank(message)) finalMessage = message + " ";
-        finalMessage = "\n" + finalMessage;
-        assertPageExpectation(finalMessage, contains(exactString));
-    }
+	public void assertContains(String message, String exactString) throws AssertionFailedError {
+		String finalMessage = "Expected " + url() + " to contain <" + exactString + ">";
+		if (!StringUtils.isBlank(message)) finalMessage = message + " ";
+		finalMessage = "\n" + finalMessage;
+		assertPageExpectation(finalMessage, contains(exactString));
+	}
 
-    public void assertContainsInOrder(String... strings) {
-        String source = source();
-        int index = 0;
-        for (String string : strings) {
-            index = source.indexOf(string, index);
-            if (index == -1) assertPageExpectation("Expected " + url() + " to contain <" + string + "> in a particular place", false);
-        }
-    }
+	public void assertContainsInOrder(String... strings) {
+		String source = source();
+		int index = 0;
+		for (String string : strings) {
+			index = source.indexOf(string, index);
+			if (index == -1) assertPageExpectation("Expected " + url() + " to contain <" + string + "> in a particular place", false);
+		}
+	}
 
-    public void assertContentType(ContentType expected) throws AssertionFailedError {
-        Assert.assertEquals(expected.value(), response.getContentType());
-    }
+	public void assertContentType(ContentType expected) throws AssertionFailedError {
+		Assert.assertEquals(expected.value(), response.getContentType());
+	}
 
-    public void assertExcludes(String exactString) {
-        assertPageExpectation("Expected " + url() + " not to contain <" + exactString + ">", !contains(exactString));
-    }
+	public void assertExcludes(String exactString) {
+		assertPageExpectation("Expected " + url() + " not to contain <" + exactString + ">", !contains(exactString));
+	}
 
-    public void assertLayout(String expected) throws AssertionFailedError {
-        TemplateActionResult result = container().instance(TemplateActionResult.class);
-        if (result == null) {
-            if (expected != null) throw new AssertionFailedError("A template was not rendered");
-            else return; // !template, layout == null
-        }
-        Assert.assertEquals("Layout was not rendered ", expected, result.getLayout());
-    }
+	public void assertLayout(String expected) throws AssertionFailedError {
+		TemplateActionResult result = container().instance(TemplateActionResult.class);
+		if (result == null) {
+			if (expected != null) throw new AssertionFailedError("A template was not rendered");
+			else return; // !template, layout == null
+		}
+		Assert.assertEquals("Layout was not rendered ", expected, result.getLayout());
+	}
 
-    public void assertMatches(String regex) {
-        assertMatches("", regex);
-    }
+	public void assertMatches(String regex) {
+		assertMatches("", regex);
+	}
 
-    public void assertMatches(String message, String regex) {
-        assertPageExpectation(message + " Expected " + url() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
-    }
+	public void assertMatches(String message, String regex) {
+		assertPageExpectation(message + " Expected " + url() + " to match <" + regex + ">", RegexHelper.containsMatch(source(), regex));
+	}
 
-    /**
-     * @throws AssertionFailedError if the page does render successfully
-     */
-    public void assertRenderFails() throws AssertionFailedError {
-        assertRenderFails("Expected render to fail");
-    }
+	/**
+	 * @throws AssertionFailedError if the page does render successfully
+	 */
+	public void assertRenderFails() throws AssertionFailedError {
+		assertRenderFails("Expected render to fail");
+	}
 
-    /**
-     * @param message
-     * @throws AssertionFailedError if the page does render successfully
-     */
-    public void assertRenderFails(String message) throws AssertionFailedError {
-        boolean rendered = false;
-        try {
-            source();
-            rendered = true;
-        } catch (Throwable expected) {}
-        if (rendered) Assert.fail(message);
-    }
+	/**
+	 * @param message
+	 * @throws AssertionFailedError if the page does render successfully
+	 */
+	public void assertRenderFails(String message) throws AssertionFailedError {
+		boolean rendered = false;
+		try {
+			source();
+			rendered = true;
+		} catch (Throwable expected) {}
+		if (rendered) Assert.fail(message);
+	}
 
-    public void assertRenders() throws AssertionFailedError {
-        source();
-    }
+	public void assertRenders() throws AssertionFailedError {
+		ensureNotRedirected("Browser was redirected. No render could have occurred.");
+		source();
+	}
 
-    public void assertResponseHeader(String headerName, String expected) throws AssertionFailedError {
-        Assert.assertEquals(expected, response.getHeader(headerName));
-    }
+	public void assertResponseHeader(String headerName, String expected) throws AssertionFailedError {
+		Assert.assertEquals(expected, response.getHeader(headerName));
+	}
 
-    public void assertTemplate(String expected) {
-        TemplateActionResult result = container().instance(TemplateActionResult.class);
-        if (result == null) {
-            if (expected != null) throw new AssertionFailedError("A template was not rendered");
-            else return; // not template, layout expected to be null, so no
-            // problem
-        }
-        Assert.assertEquals("Template was not rendered as expected", expected, result.getIdentifier());
-    }
+	public void assertTemplate(String expected) {
+		TemplateActionResult result = container().instance(TemplateActionResult.class);
+		if (result == null) {
+			if (expected != null) throw new AssertionFailedError("A template was not rendered");
+			else return; // not template, layout expected to be null, so no
+			// problem
+		}
+		Assert.assertEquals("Template was not rendered as expected", expected, result.getIdentifier());
+	}
 
-    /**
-     * @return the container of the ISailsEvent that generated this page
-     */
-    public IEventContextContainer container() {
-        return event.getContainer();
-    }
+	/**
+	 * @return the container of the ISailsEvent that generated this page
+	 */
+	public IEventContextContainer container() {
+		return event.getContainer();
+	}
 
-    public boolean contains(String exactString) {
-        return source().contains(exactString);
-    }
+	public boolean contains(String exactString) {
+		return source().contains(exactString);
+	}
 
-    public ExposedObject exposed(String nameAsExposed) {
-        return new ExposedObject(container().instance(TestingBinding.class).get(nameAsExposed));
-    }
+	public ExposedObject exposed(String nameAsExposed) {
+		ensureNotRedirected("Browser was redirected. Exposed objects are not available");
+		return new ExposedObject(container().instance(TestingBinding.class).get(nameAsExposed));
+	}
 
-    /**
-     * @param id
-     * @return a FieldSet anywhere on this page
-     */
-    public FieldSet fieldSet(String id) {
-        return new FieldSet(source(), id);
-    }
+	/**
+	 * @param id
+	 * @return a FieldSet anywhere on this page
+	 */
+	public FieldSet fieldSet(String id) {
+		return new FieldSet(source(), id);
+	}
 
-    public TestFlash flash() {
-        return new TestFlash(container().instance(Flash.class));
-    }
+	public TestFlash flash() {
+		return new TestFlash(container().instance(Flash.class));
+	}
 
-    public Form form() {
-        HtmlForm htmlForm = container().instance(HtmlForm.class);
-        if (htmlForm != null) return new Form(source(), htmlForm);
-        else return new Form(source());
-    }
+	public Form form() {
+		HtmlForm htmlForm = container().instance(HtmlForm.class);
+		if (htmlForm != null) return new Form(source(), htmlForm);
+		else return new Form(source());
+	}
 
-    public boolean matches(String regex) {
-        return source().matches(regex);
-    }
+	public boolean matches(String regex) {
+		return source().matches(regex);
+	}
 
-    public TestRedirectUrl redirectUrl() {
-        return new TestRedirectUrl(response);
-    }
+	public TestRedirectUrl redirectUrl() {
+		return new TestRedirectUrl(response);
+	}
 
-    public ScriptList scripts() {
-        return new ScriptList(source());
-    }
+	public ScriptList scripts() {
+		return new ScriptList(source());
+	}
 
-    /**
-     * @return the html source
-     */
-    public String source() {
-        return response.getWrittenContent();
-    }
+	/**
+	 * @return the html source
+	 */
+	public String source() {
+		return response.getWrittenContent();
+	}
 
-    public TestUrl url() {
-        return new TestUrl(event.getEventUrl());
-    }
+	public TestUrl url() {
+		return new TestUrl(event.getEventUrl());
+	}
 
-    public void viewSource(Writer writer) {
-        try {
-            writer.write("vvvvvvvvvvvvvvvvvv begin response to ");
-            writer.write(event.getEventUrl().getActionUrl());
-            writer.write(" vvvvvvvvvvvvvvvvvv\n");
-            writer.write(source());
-            writer.write("\n^^^^^^^^^^^^^^^^^^^ end response to ");
-            writer.write(event.getEventUrl().getActionUrl());
-            writer.write(" ^^^^^^^^^^^^^^^^^^^\n\n");
-            writer.flush();
-        } catch (IOException e) {
-            throw new SailsException("Unable to view source of page", e);
-        }
-    }
+	public void viewSource(Writer writer) {
+		try {
+			writer.write("vvvvvvvvvvvvvvvvvv begin response to ");
+			writer.write(event.getEventUrl().getActionUrl());
+			writer.write(" vvvvvvvvvvvvvvvvvv\n");
+			writer.write(source());
+			writer.write("\n^^^^^^^^^^^^^^^^^^^ end response to ");
+			writer.write(event.getEventUrl().getActionUrl());
+			writer.write(" ^^^^^^^^^^^^^^^^^^^\n\n");
+			writer.flush();
+		} catch (IOException e) {
+			throw new SailsException("Unable to view source of page", e);
+		}
+	}
 
-    /**
-     * If expected is not true, dump the content of the current browser page to
-     * System.err and fail.
-     */
-    protected void assertPageExpectation(String message, boolean expected) {
-        if (!expected) {
-            OutputStreamWriter stringWriter = new OutputStreamWriter(System.err);
-            try {
-                stringWriter.write(message);
-                stringWriter.write(" See source below:\n");
-                viewSource(stringWriter);
-            } catch (Exception e) {
-                throw new SailsException("Couldn't write to System.err");
-            }
-            Assert.fail(message);
-        }
-    }
+	/**
+	 * If expected is not true, dump the content of the current browser page to
+	 * System.err and fail.
+	 */
+	protected void assertPageExpectation(String message, boolean expected) {
+		if (!expected) {
+			OutputStreamWriter stringWriter = new OutputStreamWriter(System.err);
+			try {
+				stringWriter.write(message);
+				stringWriter.write(" See source below:\n");
+				viewSource(stringWriter);
+			} catch (Exception e) {
+				throw new SailsException("Couldn't write to System.err");
+			}
+			Assert.fail(message);
+		}
+	}
 
-    public class ExposedObject {
-        public Object value;
+	protected void ensureNotRedirected(String message) throws AssertionFailedError {
+		if (response.wasRedirected()) throw new AssertionFailedError(message);
+	}
 
-        public ExposedObject(Object value) {
-            this.value = value;
-        }
+	public class ExposedObject {
+		public Object value;
 
-        // TODO: Make this support all the possible things the exposed value
-        // might be (Collection<T>, T[], etc)
-        @SuppressWarnings("unchecked")
-        public <T> void assertContainsOnly(T[] expected) {
-            CollectionAssert.containsOnly(expected, (Collection<T>) value);
-        }
+		public ExposedObject(Object value) {
+			this.value = value;
+		}
 
-        public void assertEquals(Object expectedValue) {
-            Assert.assertEquals(expectedValue, value);
-        }
+		// TODO: Make this support all the possible things the exposed value
+		// might be (Collection<T>, T[], etc)
+		@SuppressWarnings("unchecked")
+		public <T> void assertContainsOnly(T[] expected) {
+			CollectionAssert.containsOnly(expected, (Collection<T>) value);
+		}
 
-        public void assertExists() {
-            Assert.assertNotNull(value);
-        }
-    }
+		public void assertEquals(Object expectedValue) {
+			Assert.assertEquals(expectedValue, value);
+		}
+
+		public void assertExists() {
+			Assert.assertNotNull(value);
+		}
+	}
 }

@@ -21,35 +21,52 @@ public interface SelectModel<T> {
 	 * @param object
 	 * @return true if object is one of the options
 	 */
-	public abstract boolean contains(T object);
+	boolean contains(T object);
 
 	/**
 	 * @return the label of the option at index
 	 */
-	public abstract String getLabel(int index);
+	String getLabel(int index);
 
 	/**
 	 * @return the label of the Object option
 	 */
-	public abstract String getLabel(T option);
+	String getLabel(T option);
 
 	/**
 	 * @return the Object of the option at index
 	 */
-	public abstract T getOption(int index);
+	T getOption(int index);
 
 	/**
 	 * @return the number of options for this select
 	 */
-	public abstract int getOptionCount();
+	int getOptionCount();
+
+	/**
+	 * @return the selected option
+	 */
+	T getSelected();
 
 	/**
 	 * @return the value of the option at index
 	 */
-	public abstract String getValue(int index);
+	String getValue(int index);
 
 	/**
 	 * @return the value of the Object option
 	 */
-	public abstract String getValue(T object);
+	String getValue(T object);
+
+	/**
+	 * @return true if an option is selected
+	 */
+	boolean hasSelected();
+
+	/**
+	 * @param option the selected option - should be in options or null for no
+	 *        selection
+	 * @return this for convenience
+	 */
+	SelectModel select(T option);
 }

@@ -7,7 +7,6 @@ package org.opensails.sails.form.html;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -21,22 +20,21 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	public static final String SELECT = "select";
 
 	protected Label label;
-	protected Object selected;
-	protected SelectModel selectModel;
+	protected SelectModel<Object> selectModel;
 
 	/**
 	 * @param name
 	 */
 	public Select(String name) {
-		super(Select.SELECT, name);
+		this(name, new ListSelectModel<Object>());
 	}
 
 	/**
 	 * @param name
 	 * @param selectModel
 	 */
-	public Select(String name, SelectModel selectModel) {
-		this(name);
+	public Select(String name, SelectModel<Object> selectModel) {
+		super(SELECT, name);
 		this.selectModel = selectModel;
 	}
 
@@ -45,7 +43,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	 * @param selectModel
 	 * @param attributes
 	 */
-	public Select(String name, SelectModel selectModel, Map<String, String> attributes) {
+	public Select(String name, SelectModel<Object> selectModel, Map<String, String> attributes) {
 		this(name, selectModel);
 		this.attributes = attributes;
 	}
@@ -60,22 +58,22 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 		return this;
 	}
 
-	public Select model(Collection<String> model) {
-		selectModel = new ListSelectModel(new ArrayList<String>(model));
+	public Select model(Collection<Object> model) {
+		selectModel = new ListSelectModel<Object>(model);
 		return this;
 	}
 
-	public Select model(SelectModel model) {
+	public Select model(SelectModel<Object> model) {
 		selectModel = model;
 		return this;
 	}
 
 	/**
-	 * @param selected the selected Object. It will be run through the
+	 * @param options the selected Object. It will be run through the
 	 *        SelectModel on render.
 	 */
-	public Select selected(Object selected) {
-		this.selected = selected;
+	public Select selected(Object options) {
+		selectModel.select(options);
 		return this;
 	}
 
@@ -87,11 +85,11 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 
 	@Override
 	protected void body(HtmlGenerator generator) throws IOException {
-		if (selectModel == null) return;
+		if (!hasOptions()) return;
 
 		String selectedValue = null;
-		if (!selectModel.contains(selected)) option(generator, SelectModel.NULL_OPTION_VALUE, SelectModel.NULL_OPTION_LABEL, true);
-		else selectedValue = selectModel.getValue(selected);
+		if (!selectModel.contains(selectModel.getSelected())) option(generator, SelectModel.NULL_OPTION_VALUE, SelectModel.NULL_OPTION_LABEL, true);
+		else selectedValue = selectModel.getValue(selectModel.getSelected());
 		for (int count = 0; count < selectModel.getOptionCount(); count++) {
 			String value = selectModel.getValue(count);
 			option(generator, value, selectModel.getLabel(count), value.equals(selectedValue));
@@ -101,6 +99,10 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	@Override
 	protected boolean hasBody() {
 		return true;
+	}
+
+	protected boolean hasOptions() {
+		return selectModel != null && selectModel.getOptionCount() > 0;
 	}
 
 	protected HtmlGenerator option(HtmlGenerator generator, String value, String label, boolean selected) throws IOException {
@@ -115,6 +117,6 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
 		super.writeAttributes(generator);
-		if (selectModel == null) generator.attribute(HtmlConstants.DISABLED_ATTRIBUTE, HtmlConstants.TRUE);
+		if (!hasOptions()) generator.attribute(HtmlConstants.DISABLED_ATTRIBUTE, HtmlConstants.TRUE);
 	}
 }

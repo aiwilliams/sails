@@ -32,6 +32,7 @@ import org.opensails.sails.tester.oem.LazyActionResultProcessor;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
+import org.opensails.sails.tester.oem.VirtualControllerResolver;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.persist.MemoryObjectPersister;
@@ -115,6 +116,7 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 
 	@Override
 	protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+		final VirtualControllerResolver virtualControllerResolver = container.instance(VirtualControllerResolver.class, VirtualControllerResolver.class);
 		final ControllerResolver controllerResolver = super.installControllerResolver(application, container);
 		ControllerResolver testResolver = new ControllerResolver(container.instance(IAdapterResolver.class)) {
 			@Override
@@ -124,7 +126,10 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 
 			@Override
 			public IController resolve(String controllerIdentifier) {
-				return ExceptionEvent.CONTROLLER_NAME.equals(controllerIdentifier) ? new ErrorController() : controllerResolver.resolve(controllerIdentifier);
+				IController controller = virtualControllerResolver.resolve(controllerIdentifier);
+				if (controller == null) controller = ExceptionEvent.CONTROLLER_NAME.equals(controllerIdentifier) ? new ErrorController()
+						: controllerResolver.resolve(controllerIdentifier);
+				return controller;
 			}
 		};
 		container.register(IControllerResolver.class, testResolver);

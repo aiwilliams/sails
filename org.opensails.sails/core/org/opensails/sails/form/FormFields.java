@@ -14,6 +14,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.FieldType;
+import org.opensails.sails.tester.SailsTester;
 
 /**
  * Encapsulates the values of successful controls from a form submission. See
@@ -38,7 +39,7 @@ public class FormFields {
 	 * If you desire #value() to return something other than null, like an empty
 	 * String, for non-extant or blank values, set this to your liking.
 	 */
-	public static final String NULL_OR_BLANK_STRING_VALUE = null;
+	public static String NULL_OR_BLANK_STRING_VALUE = null;
 
 	/**
 	 * The value to use when a field has a null or empty String[].
@@ -47,8 +48,12 @@ public class FormFields {
 	 * empty String[], for non-extant or zero-length values, set this to your
 	 * liking.
 	 */
-	public static final String[] NULL_OR_EMPTY_STRING_ARRAY_VALUE = null;
+	public static String[] NULL_OR_EMPTY_STRING_ARRAY_VALUE = null;
 
+	/**
+	 * @deprecated this will be going away once ShamFormFields supports it.
+	 * @see SailsTester#getFormFields()
+	 */
 	public static FormFields quick(Object... objects) {
 		if (objects.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
 		Map<String, Object> map = new HashMap<String, Object>();

@@ -11,6 +11,7 @@ import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
 import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
+import org.opensails.sails.controller.oem.BaseController;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.FormMeta;
 import org.opensails.sails.http.ContentType;
@@ -34,6 +35,15 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
 		Page page = tester.get("actionReturnsResult");
 		page.assertContains("string rendered");
+	}
+
+	public void testFlash() throws Exception {
+		SailsFunctionalTester tester = new SailsFunctionalTester(Flasher.class);
+		tester.registerController(new Flasher());
+		tester.get("flashInRequest");
+		tester.getSession().assertNull();
+		tester.get("flashInSession");
+		tester.getSession().assertNull();
 	}
 
 	public void testGet() {
@@ -152,6 +162,16 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 	private void registerAsActionListener(SailsFunctionalTester tester) {
 		tester.getContainer().register(this);
 		tester.getRequestContainer().register(this);
+	}
+
+	public static class Flasher extends BaseController {
+		public void flashInRequest() {
+			flash("something", "inthere");
+		}
+
+		public void flashInSession() {
+			flashSession("something", "inthere");
+		}
 	}
 
 	public static class MyAdapter extends AbstractAdapter<MyDomainModel, String> {
