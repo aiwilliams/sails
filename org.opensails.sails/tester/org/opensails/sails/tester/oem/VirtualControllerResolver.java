@@ -8,7 +8,7 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
-import org.opensails.sails.controller.oem.Controller;
+import org.opensails.sails.event.oem.AbstractActionEventProcessor;
 
 public class VirtualControllerResolver implements IControllerResolver {
 	protected Map<String, IControllerImpl> instances = new HashMap<String, IControllerImpl>();
@@ -32,7 +32,7 @@ public class VirtualControllerResolver implements IControllerResolver {
 		return IControllerResolver.NAMESPACE.equals(namespace);
 	}
 
-	static class VirtualController extends Controller {
+	static class VirtualController<I extends IControllerImpl> extends AbstractActionEventProcessor<I> implements IController {
 		protected IControllerImpl controllerInstance;
 
 		@SuppressWarnings("unchecked")

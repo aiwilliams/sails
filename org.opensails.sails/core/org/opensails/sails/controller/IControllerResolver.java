@@ -11,8 +11,8 @@ import org.opensails.sails.event.INamespacedProcessorResolver;
  * 
  * @author aiwilliams
  */
-public interface IControllerResolver extends INamespacedProcessorResolver<IController> {
+public interface IControllerResolver<C extends IController> extends INamespacedProcessorResolver<C> {
 	String NAMESPACE = "Controller";
 
-	IController resolve(String controllerIdentifier);
+	C resolve(String controllerIdentifier);
 }
