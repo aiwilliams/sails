@@ -310,7 +310,8 @@ Block block() : {Block b = new Block(); Token t;}
 	) | (
 		t = <BEGIN_QUICK_BLOCK> {b.token(t);}
 		body(b)
-		(t = <END_QUICK_BLOCK> {b.token(t);} | <EOF>)
+		(<END_QUICK_BLOCK> | <EOF>)
+		// The newline is given to the next Text node. Best not to overlap.
 	)) {return b;}
 }
 
