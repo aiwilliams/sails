@@ -5,7 +5,7 @@ import org.opensails.sails.event.oem.PostEvent;
 import org.opensails.sails.oem.SailsApplication;
 
 @SuppressWarnings("serial")
-public class TestableSailsApplication extends SailsApplication {
+public class TestSailsApplication extends SailsApplication {
     public void configure(SailsTesterConfigurator configurator) {
         configureAndStart(configurator);
     }

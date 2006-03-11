@@ -1,4 +1,4 @@
-package org.opensails.sails.tester;
+package org.opensails.sails.tester.browser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,10 +9,12 @@ import org.opensails.rigging.ComponentResolver;
 import org.opensails.rigging.IScopedContainer;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.tester.ITestScopedContainer;
 
 /**
- * @deprecated but keep using it until the SailsTestApplication and Browser are
- *             up and running
+ * A RequestContainer that allows test-time injections.
+ * 
+ * @author aiwilliams
  */
 public class TestRequestContainer extends RequestContainer implements ITestScopedContainer {
 	protected Map<Class<?>, ComponentResolver> injections = new HashMap<Class<?>, ComponentResolver>();

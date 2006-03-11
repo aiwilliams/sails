@@ -18,126 +18,128 @@ import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.PostEvent;
 
 public class SailsApplication extends HttpServlet implements IConfigurableSailsApplication {
-    protected ApplicationContainer applicationContainer;
-    protected Configuration configuration;
-    protected ISailsApplicationConfigurator configurator;
-    protected Dispatcher dispatcher;
-    protected String name;
+	private static final long serialVersionUID = 1704190879499722509L;
 
-    @Override
-    public void destroy() {
-        applicationContainer.stop();
-        applicationContainer.dispose();
-    }
+	protected ApplicationContainer applicationContainer;
+	protected Configuration configuration;
+	protected ISailsApplicationConfigurator configurator;
+	protected Dispatcher dispatcher;
+	protected String name;
 
-    public Configuration getConfiguration() {
-        return configuration;
-    }
+	@Override
+	public void destroy() {
+		applicationContainer.stop();
+		applicationContainer.dispose();
+	}
 
-    public ApplicationContainer getContainer() {
-        return applicationContainer;
-    }
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public ApplicationContainer getContainer() {
+		return applicationContainer;
+	}
 
-    @Override
-    public void init() throws ServletException {
-        configureAndStart(getServletConfig());
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-    }
+	@Override
+	public void init() throws ServletException {
+		configureAndStart(getServletConfig());
+	}
 
-    public void setConfigurator(ISailsApplicationConfigurator configurator) {
-        this.configurator = configurator;
-    }
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
 
-    public void setContainer(ApplicationContainer container) {
-        applicationContainer = container;
-    }
+	public void setConfigurator(ISailsApplicationConfigurator configurator) {
+		this.configurator = configurator;
+	}
 
-    public void setDispatcher(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
-    }
+	public void setContainer(ApplicationContainer container) {
+		applicationContainer = container;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setDispatcher(Dispatcher dispatcher) {
+		this.dispatcher = dispatcher;
+	}
 
-    protected void configureAndStart(Class configuratorClass) throws InstantiationException, IllegalAccessException {
-        // TODO: Logging
-        // LOG.info("Using SailsConfigurator class <" +
-        // configuratorClassName + "> as defined in the web.xml by the
-        // parameter <" + configuratorParamName + ">");
-        ISailsApplicationConfigurator configurator = (ISailsApplicationConfigurator) configuratorClass.newInstance();
-        configureAndStart(configurator);
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    protected void configureAndStart(ISailsApplicationConfigurator configurator) {
-        this.configurator = configurator;
-        this.configurator.configure(this);
-        if (configuration == null) throw new IllegalStateException("Your implementation of " + ISailsApplicationConfigurator.class
-                + " must install an application configuration that implements " + Configuration.class);
-        if (applicationContainer == null) throw new IllegalStateException("Your implementation of " + ISailsApplicationConfigurator.class
-                + " must install an ApplicationContainer");
-        if (dispatcher == null) throw new IllegalStateException("Your implementation of " + ISailsApplicationConfigurator.class + " must install a " + Dispatcher.class);
-        this.startApplication();
-    }
+	protected void configureAndStart(Class configuratorClass) throws InstantiationException, IllegalAccessException {
+		// TODO: Logging
+		// LOG.info("Using SailsConfigurator class <" +
+		// configuratorClassName + "> as defined in the web.xml by the
+		// parameter <" + configuratorParamName + ">");
+		ISailsApplicationConfigurator configurator = (ISailsApplicationConfigurator) configuratorClass.newInstance();
+		configureAndStart(configurator);
+	}
 
-    protected void configureAndStart(ServletConfig config) {
-        String configuratorParamName = ISailsApplicationConfigurator.class.getName();
-        String configuratorClassName = getConfiguratorClassName(config, configuratorParamName);
-        String configuratorInterface = ClassUtils.getShortClassName(ISailsApplicationConfigurator.class);
-        if (configuratorClassName == null) throw new IllegalStateException("You must provide the init-param named '" + configuratorParamName
-                + "' that contains a value that is the fully-qualified class name of the " + configuratorInterface + " to configure your application with.");
-        try {
-            Class configuratorClass = Class.forName(configuratorClassName);
-            configureAndStart(configuratorClass);
-        } catch (ClassNotFoundException e) {
-            throw new SailsException("Could not find the " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property "
-                    + configuratorParamName, e);
-        } catch (InstantiationException e) {
-            throw new SailsException("Could not instantiate the " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property "
-                    + configuratorParamName, e);
-        } catch (IllegalAccessException e) {
-            throw new SailsException("Could not access the " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property "
-                    + configuratorParamName, e);
-        } catch (ClassCastException e) {
-            throw new SailsException("The " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property " + configuratorParamName, e);
-        }
-    }
+	protected void configureAndStart(ISailsApplicationConfigurator configurator) {
+		this.configurator = configurator;
+		this.configurator.configure(this);
+		if (configuration == null) throw new IllegalStateException("Your implementation of " + ISailsApplicationConfigurator.class
+				+ " must install an application configuration that implements " + Configuration.class);
+		if (applicationContainer == null) throw new IllegalStateException("Your implementation of " + ISailsApplicationConfigurator.class
+				+ " must install an ApplicationContainer");
+		if (dispatcher == null) throw new IllegalStateException("Your implementation of " + ISailsApplicationConfigurator.class + " must install a " + Dispatcher.class);
+		this.startApplication();
+	}
 
-    protected GetEvent createGetEvent(HttpServletRequest req, HttpServletResponse resp) {
-        return new GetEvent(this, req, resp);
-    }
+	protected void configureAndStart(ServletConfig config) {
+		String configuratorParamName = ISailsApplicationConfigurator.class.getName();
+		String configuratorClassName = getConfiguratorClassName(config, configuratorParamName);
+		String configuratorInterface = ClassUtils.getShortClassName(ISailsApplicationConfigurator.class);
+		if (configuratorClassName == null) throw new IllegalStateException("You must provide the init-param named '" + configuratorParamName
+				+ "' that contains a value that is the fully-qualified class name of the " + configuratorInterface + " to configure your application with.");
+		try {
+			Class configuratorClass = Class.forName(configuratorClassName);
+			configureAndStart(configuratorClass);
+		} catch (ClassNotFoundException e) {
+			throw new SailsException("Could not find the " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property "
+					+ configuratorParamName, e);
+		} catch (InstantiationException e) {
+			throw new SailsException("Could not instantiate the " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property "
+					+ configuratorParamName, e);
+		} catch (IllegalAccessException e) {
+			throw new SailsException("Could not access the " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property "
+					+ configuratorParamName, e);
+		} catch (ClassCastException e) {
+			throw new SailsException("The " + configuratorInterface + " named " + configuratorClassName + " as defined by the configuration property " + configuratorParamName, e);
+		}
+	}
 
-    protected PostEvent createPostEvent(HttpServletRequest req, HttpServletResponse resp) {
-        return new PostEvent(this, req, resp);
-    }
+	protected GetEvent createGetEvent(HttpServletRequest req, HttpServletResponse resp) {
+		return new GetEvent(this, req, resp);
+	}
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        dispatcher.dispatch(createGetEvent(req, resp));
-    }
+	protected PostEvent createPostEvent(HttpServletRequest req, HttpServletResponse resp) {
+		return new PostEvent(this, req, resp);
+	}
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        dispatcher.dispatch(createPostEvent(req, resp));
-    }
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		dispatcher.dispatch(createGetEvent(req, resp));
+	}
 
-    protected String getConfiguratorClassName(ServletConfig config, String configuratorParamName) {
-        String className = System.getProperty(configuratorParamName);
-        if (className != null) return className;
-        return config.getInitParameter(configuratorParamName);
-    }
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		dispatcher.dispatch(createPostEvent(req, resp));
+	}
 
-    /**
-     * Called after the application has been configured
-     */
-    protected void startApplication() {
-        applicationContainer.start();
-    }
+	protected String getConfiguratorClassName(ServletConfig config, String configuratorParamName) {
+		String className = System.getProperty(configuratorParamName);
+		if (className != null) return className;
+		return config.getInitParameter(configuratorParamName);
+	}
+
+	/**
+	 * Called after the application has been configured
+	 */
+	protected void startApplication() {
+		applicationContainer.start();
+	}
 }

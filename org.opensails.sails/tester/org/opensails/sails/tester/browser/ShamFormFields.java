@@ -23,10 +23,19 @@ import org.opensails.sails.util.BleedingEdgeException;
  * @author aiwilliams
  */
 public class ShamFormFields extends FormFields {
-	protected final ContainerAdapterResolver adapterResolver;
-	protected final List<ValueElement> elements;
-	protected final SailsTester tester;
+	protected ContainerAdapterResolver adapterResolver;
+	protected List<ValueElement> elements;
+	
+	@Deprecated
+	protected SailsTester tester;
+	protected Browser browser;
 
+	public ShamFormFields(Browser browser, ContainerAdapterResolver adapterResolver) {
+		this.browser = browser;
+		this.adapterResolver = adapterResolver;
+		this.elements = new ArrayList<ValueElement>();
+	}
+	
 	public ShamFormFields(SailsTester tester, ContainerAdapterResolver adapterResolver) {
 		this.tester = tester;
 		this.adapterResolver = adapterResolver;
@@ -44,7 +53,8 @@ public class ShamFormFields extends FormFields {
 	}
 
 	public ShamFormFields multipart() {
-		tester.nextRequestIsMultipart = true;
+		if (browser != null) browser.nextRequestIsMultipart = true;
+		if (tester != null) tester.nextRequestIsMultipart = true;
 		return this;
 	}
 
