@@ -31,6 +31,14 @@ public class HighlightingTest extends TestCase {
 		t.colors("_____----__$-----$$----$__%++++%%++%_");
 	}
 	
+	public void testQuickBlock() throws Exception {
+		t.viento("asdf$one($line)[>lala"+"\r\n"+"asdf");
+		t.colors("____-------------____"+ "__" +"____");
+		
+		t.viento("asdf$quick[>d");
+		t.colors("____--------_");
+	}
+	
 	public void testLongFile() throws Exception {
 		StringBuilder b1 = new StringBuilder(4540);
 		StringBuilder b2 = new StringBuilder(4540);
@@ -72,6 +80,8 @@ public class HighlightingTest extends TestCase {
 					assertFalse(entry.getKey().equals(c) ^ entry.getValue().similarTo(rangeForPos(ranges, i)));
 			}
 			assertNull("Shouldn't be a range past the end", rangeForPos(ranges, i));
+			for (int j = 1; j < ranges.length; j++)
+				assertEquals("Ranges should touch", ranges[j-1].start + ranges[j-1].length, ranges[j].start);
 		}
 
 		private StyleRange rangeForPos(StyleRange[] ranges, int i) {

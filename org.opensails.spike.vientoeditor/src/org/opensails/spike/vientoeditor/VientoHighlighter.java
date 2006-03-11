@@ -87,8 +87,8 @@ public class VientoHighlighter {
 	}
 
 	private StyleRange valley(Range valley, Range left, Range right) {
-		int leftBound = left == null ? valley.offset() : left.endOffset() + 1;
-		int rightBound = right == null ? valley.endOffset() + 1 : right.offset();
+		int leftBound = left == null ? valley.offset() : left.endOffset();
+		int rightBound = right == null ? valley.endOffset() : right.offset();
 		
 		return configuration.styleFor(valley.element).createRange(leftBound, rightBound - leftBound);
 	}
@@ -149,7 +149,7 @@ public class VientoHighlighter {
 		}
 		
 		public int endOffset() {
-			return node.endOffset();
+			return node.endOffset() + 1;
 		}
 
 		public int length() {
@@ -165,7 +165,7 @@ public class VientoHighlighter {
 		}
 		
 		public boolean touches(Range range) {
-			return range.endOffset() == this.offset() - 1;
+			return range.endOffset() == this.offset();
 		}
 	}
 }
