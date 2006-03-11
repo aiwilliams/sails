@@ -2,7 +2,6 @@ package org.opensails.sails.tester.browser;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.ApplicationScope;
-import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
@@ -16,6 +15,7 @@ import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.Dispatcher;
 import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.tester.Page;
+import org.opensails.sails.tester.TestApplicationContainer;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
@@ -27,6 +27,10 @@ import org.opensails.sails.tester.servletapi.ShamHttpSession;
  * <p>
  * This testing architecture is under development. Please use the SailsTester
  * until further notice.
+ * <p>
+ * If you are writing lots of tests against one application, and only care to
+ * have one Browser (most likely), then it is probably best to create a subclass
+ * of this that initializes itself by creating it's application.
  * 
  * @author aiwilliams
  */
@@ -38,18 +42,15 @@ public class Browser {
 	 */
 	public boolean nextRequestIsMultipart;
 	protected Dispatcher eventDispatcher;
-	// Container used when events are generated
 	protected TestRequestContainer requestContainer;
-
 	protected ShamHttpSession session;
-
 	protected Class<? extends IEventProcessingContext> workingContext;
-	protected ISailsApplication application;
+	protected SailsTestApplication application;
 
-	protected Browser(ISailsApplication application, Dispatcher eventDispatcher) {
-		this.application = application;
-		this.eventDispatcher = eventDispatcher;
-		prepareForNextRequest();
+	protected Browser() {}
+
+	protected Browser(SailsTestApplication application) {
+		initialize(application);
 	}
 
 	/**
@@ -106,6 +107,12 @@ public class Browser {
 		return get(action, parameters);
 	}
 
+	public Page get(GetEvent event) {
+		eventDispatcher.dispatch(event);
+		prepareForNextRequest();
+		return createPage(event);
+	}
+
 	public Page get(String action) {
 		return get(workingContext(), action, ArrayUtils.EMPTY_OBJECT_ARRAY);
 	}
@@ -141,6 +148,20 @@ public class Browser {
 	public Page get(String context, String action, Object... parameters) {
 		TestGetEvent event = createGetEvent(context, action, adaptParameters(parameters));
 		return get(event);
+	}
+
+	/**
+	 * @return the application under test
+	 */
+	public SailsTestApplication getApplication() {
+		return application;
+	}
+
+	/**
+	 * @return the container of the application
+	 */
+	public TestApplicationContainer getApplicationContainer() {
+		return application.getContainer();
 	}
 
 	/**
@@ -353,12 +374,6 @@ public class Browser {
 		return request;
 	}
 
-	protected Page get(GetEvent event) {
-		eventDispatcher.dispatch(event);
-		prepareForNextRequest();
-		return createPage(event);
-	}
-
 	protected Page get(TestGetEvent event) {
 		event.getContainer().registerAll(getContainer());
 		return get((GetEvent) event);
@@ -366,6 +381,12 @@ public class Browser {
 
 	protected ShamHttpSession getHttpSession() {
 		return session == null ? session = new ShamHttpSession() : session;
+	}
+
+	protected void initialize(SailsTestApplication application) {
+		this.application = application;
+		this.eventDispatcher = application.getDispatcher();
+		prepareForNextRequest();
 	}
 
 	protected Page post(PostEvent event) {
@@ -376,8 +397,8 @@ public class Browser {
 
 	// TODO: Bind to lazy created session container
 	protected void prepareForNextRequest() {
-		if (requestContainer != null) requestContainer = new TestRequestContainer(getContainer(), requestContainer.injections);
-		else requestContainer = new TestRequestContainer(getContainer());
+		if (requestContainer != null) requestContainer = new TestRequestContainer(application.getContainer(), requestContainer.injections);
+		else requestContainer = new TestRequestContainer(application.getContainer());
 	}
 
 	protected String toParametersString(String... parameters) {

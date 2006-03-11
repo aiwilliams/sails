@@ -39,7 +39,7 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	public void testFlash() throws Exception {
 		SailsFunctionalTester tester = new SailsFunctionalTester(Flasher.class);
-		tester.registerController(new Flasher());
+		tester.getApplication().registerController(new Flasher());
 		tester.get("flashInRequest");
 		tester.getSession().assertNull();
 		tester.get("flashInSession");
@@ -104,7 +104,7 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	public void testPost_FieldsAdaptedAndSet() {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		tester.registerAdapter(MyDomainModel.class, MyAdapter.class);
+		tester.getApplication().registerAdapter(MyDomainModel.class, MyAdapter.class);
 
 		ShamFormFields formFields = tester.getFormFields();
 		formFields.setValue("stringField", "postedStringFieldValue");
@@ -161,7 +161,7 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	private void registerAsActionListener(SailsFunctionalTester tester) {
 		tester.getContainer().register(this);
-		tester.getRequestContainer().register(this);
+		tester.getApplicationContainer().register(this);
 	}
 
 	public static class Flasher extends BaseController {

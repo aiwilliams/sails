@@ -50,7 +50,7 @@ public class SailsApplicationTest extends TestCase {
         assertFalse(myListener.started);
         assertFalse(myListener.stopped);
         assertFalse(myListener.disposed);
-        t.destroy();
+        t.getApplication().destroy();
         assertTrue(myListener.stopped);
         assertTrue(myListener.disposed);
     }

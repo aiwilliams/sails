@@ -14,6 +14,7 @@ import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.SailsTesterConfigurator;
 import org.opensails.sails.tester.TestApplicationContainer;
 import org.opensails.sails.tester.TestSession;
+import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
 import org.opensails.sails.tester.oem.VirtualControllerResolver;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
@@ -37,18 +38,25 @@ public class SailsTestApplication extends SailsApplication {
 
 	/**
 	 * @see org.opensails.sails.ISailsApplicationConfigurator
-	 * @param configurator the BaseConfigurator used to configure the
-	 *        Application Under Test. Note: if you don't provide a subclass
-	 *        BaseConfigurator, the tester will not find the assets of your
-	 *        project - it will only be able to find those built into Sails.
+	 * @param configurator the configurator to used
 	 */
 	public SailsTestApplication(Class<? extends BaseConfigurator> configurator) {
 		initialize(configurator);
 	}
 
-	protected SailsTestApplication() {
-	// allow subclass control
+	/**
+	 * @see org.opensails.sails.ISailsApplicationConfigurator
+	 * @param configurator the configurator to used
+	 * @param contextRootDirectory
+	 */
+	public SailsTestApplication(Class<? extends BaseConfigurator> configurator, File contextRootDirectory) {
+		initialize(configurator, contextRootDirectory);
 	}
+
+	/**
+	 * Useful for subclassing.
+	 */
+	protected SailsTestApplication() {}
 
 	/**
 	 * @return the application container as a TestApplicationContainer
@@ -119,6 +127,10 @@ public class SailsTestApplication extends SailsApplication {
 		getContainer().instance(VirtualAdapterResolver.class).register(modelType, adapter);
 	}
 
+	public void registerBrowser(Browser browser) {
+		browsers.add(browser);
+	}
+
 	/**
 	 * Allows for the registration of customer IControllerImpls. Very useful
 	 * when you want to test Sails itself ;)
@@ -131,7 +143,11 @@ public class SailsTestApplication extends SailsApplication {
 	}
 
 	protected Browser createBrowser() {
-		return new Browser(this, dispatcher);
+		return new Browser(this);
+	}
+
+	protected TestingDispatcher getDispatcher() {
+		return (TestingDispatcher) dispatcher;
 	}
 
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
