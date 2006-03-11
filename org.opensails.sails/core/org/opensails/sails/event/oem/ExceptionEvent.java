@@ -53,7 +53,7 @@ public class ExceptionEvent extends AbstractEvent {
 
     @Override
     protected void initialize(IScopedContainer parentContainer) {
-        this.url = new EventUrl(req);
+        this.url = new EventUrl(request);
         url.setAction("exception");
         url.setController("error");
 

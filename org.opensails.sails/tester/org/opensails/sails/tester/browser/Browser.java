@@ -358,15 +358,15 @@ public class Browser {
 	 *         is created, we have it
 	 */
 	protected ShamHttpServletRequest createRequest() {
-		ShamHttpServletRequest request = new ShamHttpServletRequest(session) {
+		ShamHttpServletRequest request = new ShamHttpServletRequest(Browser.this.session) {
 			@Override
 			public javax.servlet.http.HttpSession getSession() {
-				return session = (ShamHttpSession) super.getSession();
+				return Browser.this.session = (ShamHttpSession) super.getSession();
 			};
 
 			@Override
 			public javax.servlet.http.HttpSession getSession(boolean create) {
-				return session = (ShamHttpSession) super.getSession(create);
+				return Browser.this.session = (ShamHttpSession) super.getSession(create);
 			};
 		};
 		request.multipart = nextRequestIsMultipart;
@@ -379,8 +379,9 @@ public class Browser {
 		return get((GetEvent) event);
 	}
 
-	protected ShamHttpSession getHttpSession() {
-		return session == null ? session = new ShamHttpSession() : session;
+	protected ShamHttpSession getHttpSession(boolean create) {
+		if (session == null && create) session = new ShamHttpSession();
+		return session;
 	}
 
 	protected void initialize(SailsTestApplication application) {

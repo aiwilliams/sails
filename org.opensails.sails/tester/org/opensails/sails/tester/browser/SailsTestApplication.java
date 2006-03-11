@@ -8,6 +8,7 @@ import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.controller.IControllerImpl;
+import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.SailsApplication;
 import org.opensails.sails.persist.IObjectPersister;
@@ -109,6 +110,17 @@ public class SailsTestApplication extends SailsApplication {
 	public Browser openBrowser() {
 		Browser browser = createBrowser();
 		browsers.add(browser);
+		return browser;
+	}
+
+	/**
+	 * @param <C>
+	 * @param workingContext
+	 * @return new Browser with workingContext
+	 */
+	public <C extends IEventProcessingContext> Browser openBrowser(Class<C> workingContext) {
+		Browser browser = openBrowser();
+		browser.setWorkingContext(workingContext);
 		return browser;
 	}
 

@@ -78,9 +78,11 @@ public class Flash implements Map<Object, Object>, ISailsEventListener {
 	protected Map<Object, Object> expiring = new HashMap<Object, Object>(2);
 
 	public void beginDispatch(ISailsEvent event) {
-		expiring.clear();
-		expiring.putAll(availableInNextAction);
-		availableInNextAction.clear();
+		if (isEventForThis(event)) {
+			expiring.clear();
+			expiring.putAll(availableInNextAction);
+			availableInNextAction.clear();
+		}
 	}
 
 	public void clear() {
@@ -97,7 +99,7 @@ public class Flash implements Map<Object, Object>, ISailsEventListener {
 	}
 
 	public void endDispatch(ISailsEvent event) {
-		expiring.clear();
+		if (isEventForThis(event)) expiring.clear();
 	}
 
 	public Set<Map.Entry<Object, Object>> entrySet() {
@@ -169,5 +171,10 @@ public class Flash implements Map<Object, Object>, ISailsEventListener {
 		for (Object key : keys)
 			values.add(get(key));
 		return values;
+	}
+
+	protected boolean isEventForThis(ISailsEvent event) {
+		HttpSession session = event.getSession(false);
+		return session != null && session.getAttribute(KEY) == this;
 	}
 }

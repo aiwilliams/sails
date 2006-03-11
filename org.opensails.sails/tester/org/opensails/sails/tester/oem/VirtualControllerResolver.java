@@ -8,6 +8,8 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
+import org.opensails.sails.controller.NoImplementationException;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.AbstractActionEventProcessor;
 
 public class VirtualControllerResolver implements IControllerResolver {
@@ -32,13 +34,23 @@ public class VirtualControllerResolver implements IControllerResolver {
 		return IControllerResolver.NAMESPACE.equals(namespace);
 	}
 
+	@SuppressWarnings("unchecked")
 	static class VirtualController<I extends IControllerImpl> extends AbstractActionEventProcessor<I> implements IController {
 		protected IControllerImpl controllerInstance;
 
-		@SuppressWarnings("unchecked")
 		public VirtualController(IControllerImpl controller, IAdapterResolver adapterResolver) {
-			super(null, adapterResolver);
+			super((Class<I>) controller.getClass(), adapterResolver);
 			this.controllerInstance = controller;
+		}
+
+		@Override
+		public I createInstance(ISailsEvent event) throws NoImplementationException {
+			return (I) controllerInstance;
+		}
+
+		@Override
+		protected I createInstance(ISailsEvent event, Class<I> contextImpl) {
+			return (I) controllerInstance;
 		}
 	}
 }

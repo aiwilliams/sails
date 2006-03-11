@@ -16,6 +16,8 @@ import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.FormMeta;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.Page;
+import org.opensails.sails.tester.browser.Browser;
+import org.opensails.sails.tester.browser.SailsTestApplication;
 import org.opensails.sails.tester.browser.ShamFormFields;
 
 public class EventProcessingTests extends TestCase implements IActionListener {
@@ -38,12 +40,25 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 	}
 
 	public void testFlash() throws Exception {
-		SailsFunctionalTester tester = new SailsFunctionalTester(Flasher.class);
-		tester.getApplication().registerController(new Flasher());
-		tester.get("flashInRequest");
-		tester.getSession().assertNull();
-		tester.get("flashInSession");
-		tester.getSession().assertNull();
+		Browser browserOne = new SailsFunctionalTester(Flasher.class);
+		SailsTestApplication application = browserOne.getApplication();
+		Browser browserTwo = application.openBrowser(Flasher.class);
+
+		application.registerController(new Flasher());
+
+		browserOne.get("flashInRequest");
+		browserOne.getSession().assertNull();
+		Page pageBrowserOne = browserOne.get("flashInSession");
+		browserOne.getSession().assertExists();
+		pageBrowserOne.flash().assertContains("something");
+
+		browserTwo.get("flashInRequest");
+		browserTwo.getSession().assertNull();
+		pageBrowserOne.flash().assertContains("something");
+
+		// clincher - make sure browser one still has flash
+		browserTwo.get("flashInRequest");
+		pageBrowserOne.flash().assertContains("something");
 	}
 
 	public void testGet() {

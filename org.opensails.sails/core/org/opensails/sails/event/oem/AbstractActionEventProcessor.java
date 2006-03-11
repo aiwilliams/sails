@@ -17,8 +17,8 @@ public class AbstractActionEventProcessor<C extends IEventProcessingContext> imp
     protected final IAdapterResolver adapterResolver;
     protected final Class<C> processingContext;
 
-    public AbstractActionEventProcessor(Class<C> controller, IAdapterResolver adapterResolver) {
-        this.processingContext = controller;
+    public AbstractActionEventProcessor(Class<C> processingContextClass, IAdapterResolver adapterResolver) {
+        this.processingContext = processingContextClass;
         this.adapterResolver = adapterResolver;
         this.actions = new HashMap<String, Action>();
     }

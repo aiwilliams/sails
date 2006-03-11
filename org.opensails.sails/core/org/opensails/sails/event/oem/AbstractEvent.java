@@ -35,7 +35,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
     protected IEventContextContainer container;
     protected FormFields fields;
     protected ActionParameterList parameters;
-    protected final HttpServletRequest req;
+    protected final HttpServletRequest request;
     protected final HttpServletResponse response;
 
     protected OutputStream responseOutputStream;
@@ -50,7 +50,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
     // allow some control for subclasses
     protected AbstractEvent(HttpServletRequest req, HttpServletResponse resp) {
-        this.req = new EventServletRequest(this, req);
+        this.request = new EventServletRequest(this, req);
         this.response = resp;
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
     }
 
     public HttpServletRequest getRequest() {
-        return req;
+        return request;
     }
 
     public HttpServletResponse getResponse() {
@@ -137,7 +137,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
     }
 
     public HttpSession getSession(boolean create) {
-        return req.getSession(create);
+        return request.getSession(create);
     }
 
     public IUrl resolve(UrlType urlType, String urlFragment) {
@@ -228,9 +228,9 @@ public abstract class AbstractEvent implements ILifecycleEvent {
     }
 
     protected void initialize(IScopedContainer parentContainer) {
-        url = new EventUrl(req);
+        url = new EventUrl(request);
         container = createContainer(parentContainer);
-        fields = createFormFields(req);
+        fields = createFormFields(request);
         container.register(FormFields.class, fields);
         containerSet();
     }

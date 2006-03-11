@@ -21,7 +21,7 @@ public class TestSession implements HttpSession {
 
 	public TestSession(Browser browser, boolean create) {
 		this.browser = browser;
-		if (create) delegate = browser.getHttpSession();
+		delegate = browser.getHttpSession(create);
 	}
 
 	public void assertContains(Class name) {
@@ -117,7 +117,7 @@ public class TestSession implements HttpSession {
 	protected ShamHttpSession getDelegate(boolean create) {
 		if (delegate == null) {
 			if (!create) throw new AssertionFailedError("There is no session available. Nothing has forced it to be created.");
-			delegate = browser.getHttpSession();
+			delegate = browser.getHttpSession(create);
 		}
 		return delegate;
 	}
