@@ -37,7 +37,7 @@ public class CacheControl extends HttpHeader {
 
 	public static final CacheControl NO_CACHE = new CacheControl("no-cache");
 
-	protected CacheControl(String value) {
+	public CacheControl(String value) {
 		super(HEADER_NAME, value);
 	}
 }

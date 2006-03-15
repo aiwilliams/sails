@@ -41,6 +41,10 @@ public class ListSelectModel<T> implements SelectModel<T> {
 		this(Arrays.asList(options));
 	}
 
+	protected ListSelectModel() {
+	// subclass support
+	}
+
 	public boolean contains(T object) {
 		return allOptions().contains(object);
 	}

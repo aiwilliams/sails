@@ -102,6 +102,7 @@ public class MemoryObjectPersister implements IShamObjectPersister {
 	}
 
 	public <T extends IIdentifiable> Collection<T> findAll(Class<T> theClass, Long... ids) throws PersistException {
+		if (ids == null || ids.length == 0) return all(theClass);
 		List<T> all = new ArrayList<T>();
 		for (Long id : ids)
 			all.add(find(theClass, id));
