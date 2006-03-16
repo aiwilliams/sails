@@ -19,18 +19,9 @@ public class ImageLink extends AbstractLink<ImageLink> implements ILink<ImageLin
 		return this;
 	}
 
-	public ImageLink src(String src) {
-		image.src(src);
-		return this;
-	}
-
-	@Override
-	protected void renderLinkBody(HtmlGenerator generator) throws IOException {
-		image.toString(generator);
-	}
-	
 	/**
 	 * Attributes go on the image
+	 * 
 	 * @see #linkAttributes(Map)
 	 */
 	@Override
@@ -38,9 +29,19 @@ public class ImageLink extends AbstractLink<ImageLink> implements ILink<ImageLin
 		image.attributes(attributes);
 		return this;
 	}
-	
+
 	public ImageLink linkAttributes(Map<String, String> attributes) {
 		super.attributes(attributes);
 		return this;
+	}
+
+	public ImageLink src(String src) {
+		image.src(src);
+		return this;
+	}
+
+	@Override
+	protected void renderLinkBody(HtmlGenerator generator) throws IOException {
+		image.render(generator);
 	}
 }

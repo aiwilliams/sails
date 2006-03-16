@@ -35,9 +35,17 @@ public class TextArea extends ValueElement<TextArea> implements Labelable<TextAr
 		return this;
 	}
 
+	/**
+	 * @deprecated Use {@link #renderThyself(Writer)} instead
+	 */
 	@Override
 	public void toString(Writer writer) throws IOException {
-		if (label != null) label.toString(writer);
+		renderThyself(writer);
+	}
+
+	@Override
+	public void renderThyself(Writer writer) throws IOException {
+		if (label != null) label.renderThyself(writer);
 		render(writer);
 	}
 

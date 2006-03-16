@@ -42,9 +42,9 @@ import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.url.IUrlResolver;
 import org.opensails.sails.url.UrlResolver;
 import org.opensails.sails.util.ClassHelper;
-import org.opensails.sails.util.ComponentPackage;
 import org.opensails.sails.validation.IValidationEngine;
 import org.opensails.sails.validation.oem.SailsValidationEngine;
+import org.opensails.spyglass.resolvers.PackageClassResolver;
 import org.opensails.viento.IBinding;
 
 /**
@@ -76,7 +76,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
      * Subclasses override this to add custom IComponentImpl class resolution.
      * 
      * Called after the ComponentResolver has been installed into the
-     * application. All {@link org.opensails.sails.util.IClassResolver}s
+     * application. All {@link org.opensails.spyglass.IClassResolver}s
      * configured by this method will be consulted before the defaults.
      * 
      * @param componentResolver
@@ -87,7 +87,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
      * Subclasses override this to add custom IControllerImpl class resolution.
      * 
      * Called after the ControllerResolver has been installed into the
-     * application. All {@link org.opensails.sails.util.IClassResolver}s
+     * application. All {@link org.opensails.spyglass.IClassResolver}s
      * configured by this method will be consulted before the defaults.
      * 
      * @param controllerResolver
@@ -247,16 +247,16 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
     protected ActionResultProcessorResolver installActionResultProcessorResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
         ActionResultProcessorResolver resolver = new ActionResultProcessorResolver(container);
-        resolver.push(new ComponentPackage<IActionResultProcessor>(getBuitinActionResultProcessorPackage(), "Processor"));
-        resolver.push(new ComponentPackage<IActionResultProcessor>(getDefaultActionResultProcessorPackage(), "Processor"));
+        resolver.push(new PackageClassResolver<IActionResultProcessor>(getBuitinActionResultProcessorPackage(), "Processor"));
+        resolver.push(new PackageClassResolver<IActionResultProcessor>(getDefaultActionResultProcessorPackage(), "Processor"));
         container.register(IActionResultProcessorResolver.class, resolver);
         return resolver;
     }
 
     protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
         AdapterResolver resolver = new AdapterResolver();
-        resolver.push(new ComponentPackage<IAdapter>(getBuiltinAdaptersPackage(), "Adapter"));
-        resolver.push(new ComponentPackage<IAdapter>(getDefaultAdaptersPackage(), "Adapter"));
+        resolver.push(new PackageClassResolver<IAdapter>(getBuiltinAdaptersPackage(), "Adapter"));
+        resolver.push(new PackageClassResolver<IAdapter>(getDefaultAdaptersPackage(), "Adapter"));
         container.register(IAdapterResolver.class, resolver);
         return resolver;
     }
@@ -271,8 +271,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
      */
     protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
         ComponentResolver resolver = (ComponentResolver) container.instance(IComponentResolver.class, ComponentResolver.class);
-        resolver.push(new ComponentPackage<IComponentImpl>(getBuiltinComponentPackage(), "Component"));
-        resolver.push(new ComponentPackage<IComponentImpl>(getDefaultComponentPackage(), "Component"));
+        resolver.push(new PackageClassResolver<IComponentImpl>(getBuiltinComponentPackage(), "Component"));
+        resolver.push(new PackageClassResolver<IComponentImpl>(getDefaultComponentPackage(), "Component"));
         return resolver;
     }
 
@@ -348,8 +348,8 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, ISailsEv
 
     protected MixinResolver installMixinResolver(ISailsEvent event, IEventContextContainer eventContainer) {
         MixinResolver resolver = new MixinResolver(event);
-        resolver.push(new ComponentPackage(getBuiltinMixinPackage(), "Mixin"));
-        resolver.push(new ComponentPackage(getDefaultMixinPackage(), "Mixin"));
+        resolver.push(new PackageClassResolver(getBuiltinMixinPackage(), "Mixin"));
+        resolver.push(new PackageClassResolver(getDefaultMixinPackage(), "Mixin"));
         eventContainer.register(IMixinResolver.class, resolver);
         return resolver;
     }

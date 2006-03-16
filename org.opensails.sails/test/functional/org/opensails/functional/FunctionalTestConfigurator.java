@@ -10,7 +10,7 @@ import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.FileSystemResourceResolver;
 import org.opensails.sails.oem.ResourceResolver;
 import org.opensails.sails.util.ClassHelper;
-import org.opensails.sails.util.ComponentPackage;
+import org.opensails.spyglass.resolvers.PackageClassResolver;
 
 public class FunctionalTestConfigurator extends BaseConfigurator {
 	@Override
@@ -20,7 +20,7 @@ public class FunctionalTestConfigurator extends BaseConfigurator {
 	
 	@Override
 	public void configure(ComponentResolver componentResolver) {
-		componentResolver.push(new ComponentPackage<IComponentImpl>(ClassHelper.getPackage(BasicComponent.class), "Component"));
+		componentResolver.push(new PackageClassResolver<IComponentImpl>(ClassHelper.getPackage(BasicComponent.class), "Component"));
 	}
 
 	@Override

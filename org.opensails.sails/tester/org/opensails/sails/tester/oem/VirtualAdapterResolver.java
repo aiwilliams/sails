@@ -4,17 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.opensails.sails.adapter.IAdapter;
-import org.opensails.sails.util.ClassResolverAdapter;
+import org.opensails.spyglass.ClassResolverAdapter;
 
-public class VirtualAdapterResolver extends ClassResolverAdapter<IAdapter> {
-	protected Map<Class, Class<? extends IAdapter>> registry = new HashMap<Class, Class<? extends IAdapter>>();
+public class VirtualAdapterResolver<A extends IAdapter> extends ClassResolverAdapter<A> {
+	protected Map<Class, Class<A>> registry = new HashMap<Class, Class<A>>();
 
-	public <T> void register(Class<T> modelType, Class<? extends IAdapter<T, ?>> adapter) {
+	public <T> void register(Class<T> modelType, Class<A> adapter) {
 		registry.put(modelType, adapter);
 	}
 
 	@Override
-	public Class<? extends IAdapter> resolve(Class key) {
+	public Class<A> resolve(Class key) {
 		return registry.get(key);
 	}
 }

@@ -35,10 +35,18 @@ public abstract class LabelableInputElement<T extends LabelableInputElement> ext
 		return (T) this;
 	}
 
+	/**
+	 * @deprecated Use {@link #renderThyself(Writer)} instead
+	 */
 	@Override
 	public void toString(Writer writer) throws IOException {
-		if (label != null && labelBefore) label.toString(writer);
+		renderThyself(writer);
+	}
+
+	@Override
+	public void renderThyself(Writer writer) throws IOException {
+		if (label != null && labelBefore) label.renderThyself(writer);
 		render(writer);
-		if (label != null && !labelBefore) label.toString(writer);
+		if (label != null && !labelBefore) label.renderThyself(writer);
 	}
 }

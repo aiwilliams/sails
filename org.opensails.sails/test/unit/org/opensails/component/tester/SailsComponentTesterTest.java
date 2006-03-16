@@ -8,7 +8,7 @@ import org.opensails.sails.component.oem.ComponentResolver;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.template.Require;
 import org.opensails.sails.util.ClassHelper;
-import org.opensails.sails.util.ComponentPackage;
+import org.opensails.spyglass.resolvers.PackageClassResolver;
 
 public class SailsComponentTesterTest extends TestCase {
     public void testIt() throws Exception {
@@ -28,7 +28,7 @@ public class SailsComponentTesterTest extends TestCase {
     public static class Configurator extends BaseConfigurator {
         @Override
         public void configure(ComponentResolver componentResolver) {
-            componentResolver.push(new ComponentPackage<IComponentImpl>(ClassHelper.getPackage(Component.class)));
+            componentResolver.push(new PackageClassResolver<IComponentImpl>(ClassHelper.getPackage(Component.class)));
         }
     }
 }

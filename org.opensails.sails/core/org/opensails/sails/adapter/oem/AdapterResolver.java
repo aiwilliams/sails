@@ -12,7 +12,7 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.Scope;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
-import org.opensails.sails.util.IClassResolver;
+import org.opensails.spyglass.IClassResolver;
 
 public class AdapterResolver implements IAdapterResolver {
     protected final Map<Class, Class<? extends IAdapter>> adapterClassCache;

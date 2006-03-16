@@ -83,23 +83,25 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 		return (T) this;
 	}
 
-	@Override
-	public String toString() {
+	public String renderThyself() {
 		StringWriter writer = new StringWriter(75);
 		try {
-			toString(writer);
+			renderThyself(writer);
 		} catch (IOException e) {
 			onToStringError(e);
 		}
 		return writer.toString();
 	}
 
-	public void toString(HtmlGenerator generator) throws IOException {
-		render(generator);
+	public void renderThyself(Writer writer) throws IOException {
+		render(writer);
 	}
 
+	/**
+	 * @deprecated Use {@link #renderThyself(Writer)} instead
+	 */
 	public void toString(Writer writer) throws IOException {
-		render(writer);
+		renderThyself(writer);
 	}
 
 	protected Map<String, String> attributes() {
@@ -135,7 +137,7 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 
 	/**
 	 * Actual rendering of element is done here. This allows for subclasses to
-	 * define custom algorithms in {@link #toString(Writer)}.
+	 * define custom algorithms in {@link #renderThyself(Writer)}.
 	 * 
 	 * @param writer
 	 * @throws IOException

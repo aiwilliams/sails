@@ -36,7 +36,7 @@ import org.opensails.sails.tester.oem.VirtualControllerResolver;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.persist.MemoryObjectPersister;
-import org.opensails.sails.util.IClassResolver;
+import org.opensails.spyglass.IClassResolver;
 import org.opensails.viento.IBinding;
 
 public class SailsTesterConfigurator extends DelegatingConfigurator {

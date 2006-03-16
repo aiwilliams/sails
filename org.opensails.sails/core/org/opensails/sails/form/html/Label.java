@@ -1,8 +1,3 @@
-/*
- * Created on May 16, 2005
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.form.html;
 
 import java.io.IOException;
@@ -16,6 +11,8 @@ import org.opensails.sails.html.HtmlGenerator;
 
 /**
  * An HTML LABEL.
+ * 
+ * @author aiwilliams
  */
 public class Label extends AbstractHtmlElement<Label> {
 	public static final String FOR = "for";
@@ -87,7 +84,7 @@ public class Label extends AbstractHtmlElement<Label> {
 			return this;
 		}
 
-		public VirtualLabelable attributes(Map attributes) {
+		public VirtualLabelable attributes(Map<String, String> attributes) {
 			// do nothing
 			return this;
 		}
@@ -104,8 +101,14 @@ public class Label extends AbstractHtmlElement<Label> {
 			throw new SailsException("Should be called on this");
 		}
 
-		public void toString(Writer writer) throws IOException {
+		public String renderThyself() {
+			return null;
+		}
+
+		public void renderThyself(Writer writer) throws IOException {
 		// do nothing
 		}
+
+		public void toString(Writer writer) throws IOException {}
 	}
 }

@@ -11,7 +11,7 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.IActionResultProcessorResolver;
-import org.opensails.sails.util.IClassResolver;
+import org.opensails.spyglass.IClassResolver;
 
 public class ActionResultProcessorResolver implements IActionResultProcessorResolver {
     protected final IScopedContainer container;

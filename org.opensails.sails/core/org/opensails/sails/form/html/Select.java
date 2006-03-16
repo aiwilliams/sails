@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.html.HtmlConstants;
 import org.opensails.sails.html.HtmlGenerator;
 
@@ -26,7 +27,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	 * @param name
 	 */
 	public Select(String name) {
-		this(name, new ListSelectModel<Object>());
+		this(name, new ListSelectModel<Object>(ArrayUtils.EMPTY_OBJECT_ARRAY));
 	}
 
 	/**
@@ -77,9 +78,17 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 		return this;
 	}
 
+	/**
+	 * @deprecated Use {@link #renderThyself(Writer)} instead
+	 */
 	@Override
 	public void toString(Writer writer) throws IOException {
-		if (label != null) label.toString(writer);
+		renderThyself(writer);
+	}
+
+	@Override
+	public void renderThyself(Writer writer) throws IOException {
+		if (label != null) label.renderThyself(writer);
 		render(writer);
 	}
 

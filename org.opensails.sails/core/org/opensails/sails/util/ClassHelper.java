@@ -1,9 +1,7 @@
 package org.opensails.sails.util;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,10 +10,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.model.oem.DotPropertyPath;
+import org.opensails.spyglass.SpyGlassy;
 
 /**
  * YAGNI and YARGNI, all in one class.
@@ -30,16 +28,17 @@ import org.opensails.sails.model.oem.DotPropertyPath;
 public class ClassHelper {
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
+	/**
+	 * @deprecated
+	 * @see SpyGlass#invoke(Object, String, Object[])
+	 * 
+	 * @param instance
+	 * @param methodName
+	 * @param args
+	 * @return
+	 */
 	public static Object callMethod(Object instance, String methodName, Object... args) {
-		try {
-			return findMethod(instance.getClass(), methodName, argTypes(args)).invoke(instance, args);
-		} catch (IllegalArgumentException e) {
-			throw new SailsException("Could not instantiate. The arguments were illegal.", e);
-		} catch (IllegalAccessException e) {
-			throw new SailsException("Could not instantiate. Know anything about access?", e);
-		} catch (InvocationTargetException e) {
-			throw new SailsException("Could not instantiate. The constructor threw and exception.", e);
-		}
+		return SpyGlassy.invoke(instance, methodName, args);
 	}
 
 	public static Field[] declaredFieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
@@ -137,20 +136,17 @@ public class ClassHelper {
 		return getPackage(clazz).replaceAll("\\.", "/");
 	}
 
+	/**
+	 * @deprecated
+	 * @see SpyGlassy#instantiate(Class, Object[])
+	 * 
+	 * @param <T>
+	 * @param clazz
+	 * @param args
+	 * @return
+	 */
 	public static <T> T instantiate(Class<? extends T> clazz, Object... args) {
-		try {
-			return findConstructor(clazz, argTypes(args)).newInstance(args);
-		} catch (InstantiationException e) {
-			throw new SailsException(String.format("Could not instantiate a %s. No constructor matching argument types?", clazz), e);
-		} catch (IllegalAccessException e) {
-			throw new SailsException("Could not instantiate. Know anything about access?", e);
-		} catch (IllegalArgumentException e) {
-			throw new SailsException("Could not instantiate. The arguments were illegal.", e);
-		} catch (SecurityException e) {
-			throw new SailsException("Could not instantiate. Know anything about security?", e);
-		} catch (InvocationTargetException e) {
-			throw new SailsException("Could not instantiate. The constructor threw and exception.", e);
-		}
+		return SpyGlassy.instantiate(clazz, args);
 	}
 
 	/**
@@ -235,22 +231,6 @@ public class ClassHelper {
 		return upper + string.substring(1);
 	}
 
-	public static void writeField(Object target, Field field, Object value) {
-		try {
-			field.set(target, value);
-		} catch (Exception e) {
-			throw new SailsException("Could not write field.", e);
-		}
-	}
-	
-	public static void writeField(Object target, String field, Object value) {
-		try {
-			writeField(target, target.getClass().getField(field), value);
-		} catch (Exception e) {
-			throw new SailsException("Could not write field.", e);
-		}
-	}
-	
 	public static void writeDeclaredField(Object target, String field, Object value) {
 		try {
 			Field declaredField = target.getClass().getDeclaredField(field);
@@ -261,34 +241,19 @@ public class ClassHelper {
 		}
 	}
 
-	private static Class[] argTypes(Object... args) {
-		Class[] argTypes = new Class[args.length];
-		for (int i = 0; i < args.length; i++)
-			argTypes[i] = args[i] == null ? null : args[i].getClass();
-		return argTypes;
-	}
-
-	private static boolean argTypesExtendThese(Class[] argTypes, Class<?>[] parameterTypes) {
-		if (argTypes.length != parameterTypes.length) return false;
-
-		for (int i = 0; i < parameterTypes.length; i++)
-			if (!((argTypes[i] == null && Object.class.isAssignableFrom(parameterTypes[i])) || (argTypes[i] != null && parameterTypes[i].isAssignableFrom(argTypes[i])))) return false;
-		return true;
-	}
-
-	private static <T> Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
-		Constructor[] constructors = clazz.getConstructors();
-		for (Constructor<T> constructor : constructors) {
-			if (argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
+	public static void writeField(Object target, Field field, Object value) {
+		try {
+			field.set(target, value);
+		} catch (Exception e) {
+			throw new SailsException("Could not write field.", e);
 		}
-		throw new SailsException("Could not find a constructor accepting " + argTypes);
 	}
 
-	private static Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
-		Method[] methods = clazz.getMethods();
-		for (Method method : methods) {
-			if (method.getName().equals(name) && argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
+	public static void writeField(Object target, String field, Object value) {
+		try {
+			writeField(target, target.getClass().getField(field), value);
+		} catch (Exception e) {
+			throw new SailsException("Could not write field.", e);
 		}
-		throw new SailsException(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
 	}
 }
