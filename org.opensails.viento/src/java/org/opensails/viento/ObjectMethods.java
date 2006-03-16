@@ -14,21 +14,14 @@ public class ObjectMethods {
 		Field field = findField(key.targetClass, key.methodName);
 		if (field != null && key.argClasses.length == 0)
 			return new ObjectField(field);
-		if (field != null && key.argClasses.length == 1 && field.getType().isAssignableFrom(key.argClasses[0]))
+		if (field != null && key.argClasses.length == 1
+				&& field.getType().isAssignableFrom(key.argClasses[0]))
 			return new FieldSetter(field);
 
 		method = findMethodMissing(key.targetClass);
 		if (method != null)
 			return new MethodMissingMethod(method, key.methodName);
 		return null;
-	}
-
-	protected Field findField(Class targetClass, String methodName) {
-		try {
-			return targetClass.getField(methodName);
-		} catch (Exception e) {
-			return null;
-		}
 	}
 
 	protected Method findAppropriateMethod(Class<?> type, String methodName,
@@ -45,13 +38,29 @@ public class ObjectMethods {
 		return theMethod;
 	}
 
-	protected Method findMethodMissing(Class<?> type) {
+	protected Field findField(Class targetClass, String methodName) {
 		try {
-			return type.getDeclaredMethod("methodMissing", new Class[] {
-					String.class, Object[].class });
+			return targetClass.getField(methodName);
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	protected Method findMethodMissing(Class<?> type) {
+		Method found = null;
+		while (found == null && type != Object.class)
+			try {
+				found = type.getDeclaredMethod("methodMissing", new Class[] {
+						String.class, Object[].class });
+			} catch (Exception e) {
+				type = type.getSuperclass();
+			}
+		return found;
+	}
+
+	protected String getter(String methodName) {
+		return "get" + Character.toUpperCase(methodName.charAt(0))
+				+ methodName.substring(1);
 	}
 
 	protected boolean nameMatch(String methodName, Method method) {
@@ -64,17 +73,21 @@ public class ObjectMethods {
 				|| izzer(method, methodName);
 	}
 
-	// You know, isProperty()
-	private boolean izzer(Method method, String methodName) {
-		return method.getReturnType() == boolean.class
-				&& method.getName().equals(
-						"is" + Character.toUpperCase(methodName.charAt(0))
-								+ methodName.substring(1));
+	protected boolean primitiveMatch(Class<?> type, Class arg) {
+		return ((type == boolean.class && arg == Boolean.class)
+				|| (type == char.class && arg == Character.class)
+				|| (type == byte.class && arg == Byte.class)
+				|| (type == short.class && arg == Short.class)
+				|| (type == int.class && arg == Integer.class)
+				|| (type == long.class && arg == Long.class)
+				|| (type == float.class && arg == Float.class) || (type == double.class && arg == Double.class));
 	}
 
-	protected String getter(String methodName) {
-		return "get" + Character.toUpperCase(methodName.charAt(0))
-				+ methodName.substring(1);
+	protected boolean typesMatch(Class<?> parameterType, Class arg) {
+		if (arg == null)
+			return !parameterType.isPrimitive();
+		return parameterType.isAssignableFrom(arg)
+				|| primitiveMatch(parameterType, arg);
 	}
 
 	protected boolean typesMatch(Class<?>[] parameterTypes, Class[] args,
@@ -93,21 +106,29 @@ public class ObjectMethods {
 		return true;
 	}
 
-	protected boolean typesMatch(Class<?> parameterType, Class arg) {
-		if (arg == null)
-			return !parameterType.isPrimitive();
-		return parameterType.isAssignableFrom(arg)
-				|| primitiveMatch(parameterType, arg);
+	// You know, isProperty()
+	private boolean izzer(Method method, String methodName) {
+		return method.getReturnType() == boolean.class
+				&& method.getName().equals(
+						"is" + Character.toUpperCase(methodName.charAt(0))
+								+ methodName.substring(1));
 	}
 
-	protected boolean primitiveMatch(Class<?> type, Class arg) {
-		return ((type == boolean.class && arg == Boolean.class)
-				|| (type == char.class && arg == Character.class)
-				|| (type == byte.class && arg == Byte.class)
-				|| (type == short.class && arg == Short.class)
-				|| (type == int.class && arg == Integer.class)
-				|| (type == long.class && arg == Long.class)
-				|| (type == float.class && arg == Float.class) || (type == double.class && arg == Double.class));
+	public class FieldSetter implements CallableMethod {
+		private final Field field;
+
+		public FieldSetter(Field field) {
+			this.field = field;
+		}
+
+		public Object call(Object target, Object[] args) {
+			try {
+				field.set(target, args[0]);
+				return target;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	public class MethodMissingMethod extends ObjectMethod {
@@ -134,23 +155,6 @@ public class ObjectMethods {
 		public Object call(Object target, Object[] args) {
 			try {
 				return field.get(target);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
-	public class FieldSetter implements CallableMethod {
-		private final Field field;
-		
-		public FieldSetter(Field field) {
-			this.field = field;
-		}
-		
-		public Object call(Object target, Object[] args) {
-			try {
-				field.set(target, args[0]);
-				return target;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
