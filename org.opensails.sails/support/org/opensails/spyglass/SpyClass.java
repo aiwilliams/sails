@@ -5,16 +5,16 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.opensails.sails.SailsException;
 
-public class SpyClassy<T> {
+public class SpyClass<T> {
 	protected final Class<T> type;
 
-	public SpyClassy(Class<T> type) {
+	public SpyClass(Class<T> type) {
 		this.type = type;
 	}
 
 	public T newInstance(Object[] args) {
 		try {
-			return findConstructor(type, SpyGlassy.argTypes(args)).newInstance(args);
+			return findConstructor(type, SpyGlass.argTypes(args)).newInstance(args);
 		} catch (InstantiationException e) {
 			throw new Crack(String.format("Could not instantiate a %s. No constructor matching argument types?", type), e);
 		} catch (IllegalAccessException e) {
@@ -35,7 +35,7 @@ public class SpyClassy<T> {
 	private Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
 		Constructor[] constructors = clazz.getConstructors();
 		for (Constructor<T> constructor : constructors) {
-			if (SpyGlassy.argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
+			if (SpyGlass.argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
 		}
 		throw new SailsException("Could not find a constructor accepting " + argTypes);
 	}

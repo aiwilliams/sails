@@ -1,6 +1,8 @@
 package org.opensails.spyglass;
 
-public class SpyGlassy {
+import org.apache.commons.lang.ClassUtils;
+
+public class SpyGlass {
 
 	/**
 	 * @param args
@@ -26,6 +28,10 @@ public class SpyGlassy {
 		return true;
 	}
 
+	public static String getName(Class clazz) {
+		return ClassUtils.getShortClassName(clazz);
+	}
+
 	/**
 	 * This convenience function will only work with public constructors.
 	 * 
@@ -35,10 +41,36 @@ public class SpyGlassy {
 	 * @return an instance of type using params
 	 */
 	public static <T> T instantiate(Class<T> type, Object[] params) {
-		return new SpyClassy<T>(type).newInstance(params);
+		return new SpyClass<T>(type).newInstance(params);
 	}
 
 	public static Object invoke(Object instance, String methodName, Object[] args) {
 		return new SpyObject<Object>(instance).invoke(methodName, args);
+	}
+
+	public static String lowerCamelName(Class clazz) {
+		return lowerCamelName(ClassUtils.getShortClassName(clazz));
+	}
+
+	public static String lowerCamelName(Object instance) {
+		return lowerCamelName(instance.getClass());
+	}
+
+	public static String lowerCamelName(String name) {
+		char lower = Character.toLowerCase(name.charAt(0));
+		return lower + name.substring(1);
+	}
+
+	public static String upperCamelName(Class clazz) {
+		return upperCamelName(ClassUtils.getShortClassName(clazz));
+	}
+
+	public static String upperCamelName(Object instance) {
+		return upperCamelName(instance.getClass());
+	}
+
+	public static String upperCamelName(String name) {
+		char upper = Character.toUpperCase(name.charAt(0));
+		return upper + name.substring(1);
 	}
 }

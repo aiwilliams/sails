@@ -15,7 +15,7 @@ public class SpyObject<T> {
 
 	public Object invoke(String methodName, Object... args) {
 		try {
-			return findMethod(object.getClass(), methodName, SpyGlassy.argTypes(args)).invoke(object, args);
+			return findMethod(object.getClass(), methodName, SpyGlass.argTypes(args)).invoke(object, args);
 		} catch (IllegalArgumentException e) {
 			throw new Crack("Could not instantiate. The arguments were illegal.", e);
 		} catch (IllegalAccessException e) {
@@ -28,7 +28,7 @@ public class SpyObject<T> {
 	private Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
-			if (method.getName().equals(name) && SpyGlassy.argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
+			if (method.getName().equals(name) && SpyGlass.argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
 		}
 		throw new Crack(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
 	}

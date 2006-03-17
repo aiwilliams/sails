@@ -1,7 +1,7 @@
 package org.opensails.spyglass.resolvers;
 
-import org.apache.commons.lang.StringUtils;
 import org.opensails.spyglass.ClassResolverAdapter;
+import org.opensails.spyglass.SpyGlass;
 
 /**
  * Attempts to resolve classes within a package. The search will be done using
@@ -52,7 +52,7 @@ public class PackageClassResolver<T> extends ClassResolverAdapter<T> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public Class<T> resolve(String key) {
-		String canonicalName = packageRoot + StringUtils.capitalize(key);
+		String canonicalName = packageRoot + SpyGlass.upperCamelName(key);
 		Class<T> classFound = null;
 		try {
 			classFound = (Class<T>) Class.forName(canonicalName);
@@ -74,7 +74,7 @@ public class PackageClassResolver<T> extends ClassResolverAdapter<T> {
 	public String toString() {
 		StringBuilder string = new StringBuilder();
 		string.append(packageRoot);
-		string.append("<componentName>");
+		string.append("<className>");
 		if (suffix != null) string.append(suffix);
 		return string.toString();
 	}
