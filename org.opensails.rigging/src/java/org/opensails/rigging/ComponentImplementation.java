@@ -32,9 +32,13 @@ public class ComponentImplementation implements ComponentResolver {
 
     @SuppressWarnings("unchecked")
     protected <T extends Annotation> T annotation(Class<T> annotationType, Constructor constructor, int parameterIndex) {
-        for (Annotation annotation : constructor.getParameterAnnotations()[parameterIndex])
-            if (annotation.annotationType() == annotationType) return (T) annotation;
-        return null;
+		try { // quick fix for Ticket #161
+			for (Annotation annotation : constructor.getParameterAnnotations()[parameterIndex])
+				if (annotation.annotationType() == annotationType) return (T) annotation;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return null;
+		}        
+		return null;
     }
 
     protected boolean canSatisfy(Constructor constructor) {
