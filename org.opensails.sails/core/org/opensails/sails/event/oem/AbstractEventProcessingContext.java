@@ -21,7 +21,7 @@ import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.model.IModelContext;
 import org.opensails.sails.model.oem.SingleModelContext;
 import org.opensails.sails.oem.Flash;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 import org.opensails.viento.IBinding;
 
 public abstract class AbstractEventProcessingContext<P extends IActionEventProcessor> implements IEventProcessingContext<P> {
@@ -78,7 +78,7 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	 */
 	protected void exposeModel(Object model) {
 		if (model == null) return;
-		exposeModel(ClassHelper.lowerCamelName(model.getClass()), model);
+		exposeModel(SpyGlass.lowerCamelName(model.getClass()), model);
 	}
 
 	/**

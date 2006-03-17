@@ -9,7 +9,7 @@ import org.opensails.sails.action.BeforeFilters;
 import org.opensails.sails.action.oem.ActionInvocation;
 import org.opensails.sails.annotate.BehaviorInstance;
 import org.opensails.sails.annotate.oem.BehaviorHandlerAdapter;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 
 public class ActionFilterHandler extends BehaviorHandlerAdapter {
 	List<Annotation> afterFilters = new ArrayList<Annotation>();
@@ -46,7 +46,7 @@ public class ActionFilterHandler extends BehaviorHandlerAdapter {
 	private IFilter obtainFilter(Annotation filterDeclaration, ActionInvocation invocation) {
 		FilterBuilder builderAnnotation = filterDeclaration.annotationType().getAnnotation(FilterBuilder.class);
 		Class<? extends IFilterBuilder> builderClass = builderAnnotation.value();
-		IFilterBuilder builder = ClassHelper.instantiate(builderClass);
+		IFilterBuilder builder = SpyGlass.instantiate(builderClass);
 		return builder.build(filterDeclaration, invocation);
 	}
 }

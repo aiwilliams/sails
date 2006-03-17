@@ -29,6 +29,7 @@ public class FormValueModel implements IFormValueModel {
 		if (model == null) return null;
 		IPropertyAccessor accessor = new PropertyAccessor(path, true);
 		Class propertyTypeOnTarget = accessor.getPropertyType(model);
+		if (propertyTypeOnTarget == null) return null;
 		IAdapter adapter = adapterResolver.resolve(propertyTypeOnTarget);
 		return adapter.forWeb(propertyTypeOnTarget, accessor.get(model));
 	}

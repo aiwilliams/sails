@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.apache.commons.collections.ListUtils;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.ValueElement;
 import org.opensails.sails.tester.SailsTester;
-import org.opensails.sails.util.BleedingEdgeException;
 
 /**
  * Used to construct the fields to be submitted in a post or get.
@@ -25,7 +25,7 @@ import org.opensails.sails.util.BleedingEdgeException;
 public class ShamFormFields extends FormFields {
 	protected ContainerAdapterResolver adapterResolver;
 	protected List<ValueElement> elements;
-	
+
 	@Deprecated
 	protected SailsTester tester;
 	protected Browser browser;
@@ -35,7 +35,7 @@ public class ShamFormFields extends FormFields {
 		this.adapterResolver = adapterResolver;
 		this.elements = new ArrayList<ValueElement>();
 	}
-	
+
 	public ShamFormFields(SailsTester tester, ContainerAdapterResolver adapterResolver) {
 		this.tester = tester;
 		this.adapterResolver = adapterResolver;
@@ -58,8 +58,18 @@ public class ShamFormFields extends FormFields {
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public ShamFormFields quickSet(Object... keyValuePairs) {
-		throw new BleedingEdgeException("This needs to use the adapters for the values");
+		if (keyValuePairs.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
+		for (int i = 0; i < keyValuePairs.length; i += 2) {
+			String key = (String) keyValuePairs[i];
+			Object value = keyValuePairs[i + 1];
+			Class<? extends Object> valueType = value.getClass();
+			IAdapter adapter = adapterResolver.resolve(valueType);
+			Object adaptedValue = adapter.forWeb(valueType, value);
+			setValue(key, adaptedValue);
+		}
+		return this;
 	}
 
 	/**

@@ -80,7 +80,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 	 * 
 	 * @param componentResolver
 	 */
-	public void configure(ComponentResolver componentResolver) {}
+	public void configure(ComponentResolver<IComponentImpl> componentResolver) {}
 
 	/**
 	 * Subclasses override this to add custom IControllerImpl class resolution.

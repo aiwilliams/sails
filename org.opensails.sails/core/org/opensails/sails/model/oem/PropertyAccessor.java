@@ -23,11 +23,20 @@ public class PropertyAccessor implements IPropertyAccessor {
 	}
 
 	public Object get(Object model) throws AccessorException {
-		return getPropertyAccessor(model, model.getClass()).getProperty(model, path.getProperty());
+		try {
+			// HACK Working through this stuff
+			return getPropertyAccessor(model, model.getClass()).getProperty(model, path.getProperty());
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public Class getPropertyType(Object model) throws AccessorException {
-		return getPropertyAccessor(model, model.getClass()).getPropertyType(path.getProperty());
+		try {
+			return getPropertyAccessor(model, model.getClass()).getPropertyType(path.getProperty());
+		} catch (Exception e) {
+			return null;
+		}		
 	}
 
 	public void set(Object model, Object value) throws AccessorException {

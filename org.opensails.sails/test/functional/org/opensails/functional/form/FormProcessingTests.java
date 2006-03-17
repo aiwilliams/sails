@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 
 import org.opensails.functional.SailsFunctionalTester;
 import org.opensails.functional.controllers.FormTestController;
-import org.opensails.sails.form.FormFields;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.ShamFileUpload;
 import org.opensails.sails.tester.browser.ShamFormFields;
@@ -32,7 +31,7 @@ public class FormProcessingTests extends TestCase {
 
 	public void testPostThenRender() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
-		Page page = t.post("postThenRender", FormFields.quick("model.textProperty", "hello"));
+		Page page = t.post("postThenRender", t.getFormFields().quickSet("model.textProperty", "hello"));
 		Form form = page.form();
 		form.text("model.textProperty").value("hello");
 	}
@@ -50,7 +49,7 @@ public class FormProcessingTests extends TestCase {
 	public void testRender_ModelDoesntHaveProperty() {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
 		Page page = t.get("referenceToMissingProperty");
-		page.assertRenderFails("Will not render if property not supported");
+		page.assertRenders();
 	}
 
 	public void testRender_NoModel() {

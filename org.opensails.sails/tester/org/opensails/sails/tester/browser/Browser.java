@@ -179,7 +179,7 @@ public class Browser {
 	 * @return a new instance of ShamFormFields
 	 */
 	public ShamFormFields getFormFields() {
-		return new ShamFormFields(this, requestContainer.instance(ContainerAdapterResolver.class));
+		return new ShamFormFields(this, adapterResolver());
 	}
 
 	public TestSession getSession() {
@@ -302,8 +302,12 @@ public class Browser {
 		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
 	}
 
+	protected ContainerAdapterResolver adapterResolver() {
+		return new ContainerAdapterResolver(getContainer().instance(IAdapterResolver.class), requestContainer);
+	}
+
 	protected String[] adaptParameters(Object... parameters) {
-		return adaptParameters(parameters, new ContainerAdapterResolver(getContainer().instance(IAdapterResolver.class), requestContainer));
+		return adaptParameters(parameters, adapterResolver());
 	}
 
 	@SuppressWarnings("unchecked")

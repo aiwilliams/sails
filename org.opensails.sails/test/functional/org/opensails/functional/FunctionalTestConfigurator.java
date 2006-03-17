@@ -9,7 +9,7 @@ import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.FileSystemResourceResolver;
 import org.opensails.sails.oem.ResourceResolver;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 import org.opensails.spyglass.resolvers.PackageClassResolver;
 
 public class FunctionalTestConfigurator extends BaseConfigurator {
@@ -17,10 +17,10 @@ public class FunctionalTestConfigurator extends BaseConfigurator {
 	public void configure(ControllerResolver controllerResolver) {
 		controllerResolver.push(new ControllerPackage(EventTestController.class));
 	};
-	
+
 	@Override
-	public void configure(ComponentResolver componentResolver) {
-		componentResolver.push(new PackageClassResolver<IComponentImpl>(ClassHelper.getPackage(BasicComponent.class), "Component"));
+	public void configure(ComponentResolver<IComponentImpl> componentResolver) {
+		componentResolver.push(new PackageClassResolver<IComponentImpl>(SpyGlass.getPackage(BasicComponent.class), "Component"));
 	}
 
 	@Override
