@@ -9,12 +9,12 @@ import org.opensails.sails.action.ActionResultFixture;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.IActionResultProcessorResolver;
+import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.event.oem.ExceptionEvent;
 import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.ILifecycleEvent;
@@ -40,7 +40,7 @@ public class DispatcherTest extends TestCase {
 	public void testDispatch_CallsOnConfigurator() throws Exception {
 		final GetEvent dispatchedEvent = SailsEventFixture.actionGet("controller", "action");
 		ISailsApplication application = SailsApplicationFixture.basic();
-		application.getContainer().register(ISailsEventConfigurator.class, new ISailsEventConfigurator() {
+		application.getContainer().register(IEventConfigurator.class, new IEventConfigurator() {
 			public void configure(ISailsEvent event, IEventContextContainer eventContainer) {
 				configureEventAndContainerCalled = true;
 				assertSame(dispatchedEvent, event);
@@ -164,7 +164,7 @@ public class DispatcherTest extends TestCase {
 	}
 
 	protected Dispatcher createDispatcher(ISailsApplication application) {
-		return new Dispatcher(application, application.getContainer().instance(ISailsEventConfigurator.class), new IControllerResolver() {
+		return new Dispatcher(application, application.getContainer().instance(IEventConfigurator.class), new IControllerResolver() {
 			public IController resolve(String controllerIdentifier) {
 				return controller;
 			}

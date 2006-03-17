@@ -10,10 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
-import org.opensails.sails.model.oem.DotPropertyPath;
-import org.opensails.spyglass.SpyGlassy;
+import org.opensails.spyglass.SpyGlass;
 
 /**
  * YAGNI and YARGNI, all in one class.
@@ -38,7 +36,7 @@ public class ClassHelper {
 	 * @return
 	 */
 	public static Object callMethod(Object instance, String methodName, Object... args) {
-		return SpyGlassy.invoke(instance, methodName, args);
+		return SpyGlass.invoke(instance, methodName, args);
 	}
 
 	public static Field[] declaredFieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
@@ -120,12 +118,17 @@ public class ClassHelper {
 		return fields.toArray(new Field[fields.size()]);
 	}
 
+	/**
+	 * @deprecated
+	 * @see SpyGlass#getName(Class)
+	 */
 	public static String getName(Class clazz) {
-		return ClassUtils.getShortClassName(clazz);
+		return SpyGlass.getName(clazz);
 	}
 
+	@Deprecated
 	public static String getPackage(Class clazz) {
-		return ClassUtils.getPackageName(clazz);
+		return SpyGlass.getPackage(clazz);
 	}
 
 	public static String getPackage(Object instance) {
@@ -138,7 +141,7 @@ public class ClassHelper {
 
 	/**
 	 * @deprecated
-	 * @see SpyGlassy#instantiate(Class, Object[])
+	 * @see SpyGlass#instantiate(Class, Object[])
 	 * 
 	 * @param <T>
 	 * @param clazz
@@ -146,7 +149,7 @@ public class ClassHelper {
 	 * @return
 	 */
 	public static <T> T instantiate(Class<? extends T> clazz, Object... args) {
-		return SpyGlassy.instantiate(clazz, args);
+		return SpyGlass.instantiate(clazz, args);
 	}
 
 	/**
@@ -166,12 +169,15 @@ public class ClassHelper {
 		throw new IllegalArgumentException(String.format("The class does not implement an interface that extends %s", interfaze));
 	}
 
+	/**
+	 * @see SpyGlass#lowerCamelName(Class)
+	 */
+	@Deprecated
 	public static String lowerCamelName(Class clazz) {
-		String className = new DotPropertyPath(getName(clazz)).lastNode();
-		char lower = Character.toLowerCase(className.charAt(0));
-		return lower + className.substring(1);
+		return SpyGlass.lowerCamelName(clazz);
 	}
 
+	@Deprecated
 	public static String lowerCamelName(Object instance) {
 		return lowerCamelName(instance.getClass());
 	}

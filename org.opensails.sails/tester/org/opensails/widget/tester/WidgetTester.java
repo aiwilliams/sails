@@ -26,8 +26,19 @@ public class WidgetTester {
 	 * @param actualUsage
 	 * @throws AssertionFailedError
 	 */
-	public void assertEquals(String expectedRender, String actualUsage) {
+	public void assertRender(String expectedRender, String actualUsage) {
 		VientoTemplate template = new VientoTemplate(actualUsage);
 		Assert.assertEquals(expectedRender, template.render(vientoBinding));
+	}
+
+	/**
+	 * Makes value available as name for use in your actualUsage templates.
+	 * These stick around.
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	public void expose(String name, Object value) {
+		vientoBinding.put(name, value);
 	}
 }

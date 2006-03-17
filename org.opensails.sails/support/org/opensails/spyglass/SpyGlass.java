@@ -32,9 +32,28 @@ public class SpyGlass {
 		return ClassUtils.getShortClassName(clazz);
 	}
 
+	public static <T> String getPackage(Class<T> clazz) {
+		return new SpyClass<T>(clazz).getPackageName();
+	}
+
+	public static String getPackage(Object instance) {
+		return getPackage(instance.getClass());
+	}
+
+	public static String getPackageDirectory(Class<?> clazz) {
+		return getPackage(clazz).replaceAll("\\.", "/");
+	}
+
 	/**
-	 * This convenience function will only work with public constructors.
-	 * 
+	 * @param <T>
+	 * @param type
+	 * @return an instance of type using params
+	 */
+	public static <T> T instantiate(Class<T> type) {
+		return new SpyClass<T>(type).newInstance();
+	}
+
+	/**
 	 * @param <T>
 	 * @param type
 	 * @param params

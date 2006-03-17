@@ -2,16 +2,17 @@ package org.opensails.sails.oem;
 
 import org.opensails.sails.*;
 import org.opensails.sails.action.*;
+import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.event.*;
 import org.opensails.sails.event.oem.*;
 
 public class Dispatcher {
 	protected final ISailsApplication application;
 	protected final IActionEventProcessorResolver eventProcessorResolver;
-	protected final ISailsEventConfigurator eventConfigurator;
+	protected final IEventConfigurator eventConfigurator;
 	protected final IActionResultProcessorResolver resultProcessorResolver;
 
-	public Dispatcher(ISailsApplication application, ISailsEventConfigurator configurator, IActionEventProcessorResolver eventProcessorResolver, IActionResultProcessorResolver resultProcessorResolver) {
+	public Dispatcher(ISailsApplication application, IEventConfigurator configurator, IActionEventProcessorResolver eventProcessorResolver, IActionResultProcessorResolver resultProcessorResolver) {
 		this.application = application;
 		this.eventConfigurator = configurator;
 		this.eventProcessorResolver = eventProcessorResolver;

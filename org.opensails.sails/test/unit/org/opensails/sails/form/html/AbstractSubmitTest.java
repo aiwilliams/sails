@@ -19,15 +19,15 @@ public class AbstractSubmitTest extends TestCase {
 		});
 		AbstractSubmit submit = new AbstractSubmit("whocares", "name", adapterResolver) {};
 		submit.action("myAction", Quick.list("originalValue"));
-		assertEquals("<input id=\"name\" name=\"" + ACTION_PREFIX + "myAction_adapted\" type=\"whocares\" value=\"\" />", submit.toString());
+		assertEquals("<input id=\"name\" name=\"" + ACTION_PREFIX + "myAction_adapted\" type=\"whocares\" value=\"\" />", submit.renderThyself());
 	}
 
-	public void testToString() {
+	public void testRender() {
 		AbstractSubmit submit = new AbstractSubmit("whocares", "name", null) {};
-		assertEquals("<input id=\"name\" name=\"name\" type=\"whocares\" value=\"\" />", submit.toString());
+		assertEquals("<input id=\"name\" name=\"name\" type=\"whocares\" value=\"\" />", submit.renderThyself());
 
 		submit.value("hehe");
-		assertEquals("<input id=\"name\" name=\"name\" type=\"whocares\" value=\"hehe\" />", submit.toString());
+		assertEquals("<input id=\"name\" name=\"name\" type=\"whocares\" value=\"hehe\" />", submit.renderThyself());
 
 		/*
 		 * Here we drop the name that was given and embed the action to execute.
@@ -36,6 +36,6 @@ public class AbstractSubmitTest extends TestCase {
 		 * controller.
 		 */
 		submit.action("myAction");
-		assertEquals("<input id=\"name\" name=\"" + ACTION_PREFIX + "myAction\" type=\"whocares\" value=\"hehe\" />", submit.toString());
+		assertEquals("<input id=\"name\" name=\"" + ACTION_PREFIX + "myAction\" type=\"whocares\" value=\"hehe\" />", submit.renderThyself());
 	}
 }

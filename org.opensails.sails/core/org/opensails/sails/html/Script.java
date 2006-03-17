@@ -2,15 +2,17 @@ package org.opensails.sails.html;
 
 import java.io.IOException;
 
+import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;
+import org.opensails.viento.Block;
 
 /**
  * Script with src or in-line content
  */
-public class Script extends AbstractHtmlElement<Script> implements IInlineContentElement<Script> {
+public class Script extends AbstractHtmlElement<Script> {
 	public static final String NAME = "script";
 
-	protected IInlineContent inlineContent;
+	protected Block inlineContent;
 	protected IUrl src;
 
 	public Script() {
@@ -18,7 +20,7 @@ public class Script extends AbstractHtmlElement<Script> implements IInlineConten
 		type("text/javascript");
 	}
 
-	public Script(IInlineContent inlineContent) {
+	public Script(Block inlineContent) {
 		this();
 		inline(inlineContent);
 	}
@@ -26,6 +28,10 @@ public class Script extends AbstractHtmlElement<Script> implements IInlineConten
 	public Script(IUrl url) {
 		this();
 		src(url);
+	}
+
+	public Script(String url) {
+		this(new ExternalUrl(url));
 	}
 
 	public Script defer(boolean defer) {
@@ -42,7 +48,7 @@ public class Script extends AbstractHtmlElement<Script> implements IInlineConten
 		return src.hashCode();
 	}
 
-	public Script inline(IInlineContent content) {
+	public Script inline(Block content) {
 		this.inlineContent = content;
 		return this;
 	}
@@ -64,7 +70,7 @@ public class Script extends AbstractHtmlElement<Script> implements IInlineConten
 	protected void body(HtmlGenerator generator) throws IOException {
 		if (inlineContent != null) {
 			generator.write("\n");
-			generator.write(inlineContent.render());
+			generator.write(inlineContent.evaluate());
 			generator.write("\n");
 		}
 	}

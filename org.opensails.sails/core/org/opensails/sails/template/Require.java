@@ -1,10 +1,14 @@
 package org.opensails.sails.template;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.opensails.sails.SailsException;
+import org.opensails.sails.html.IHtmlElement;
 import org.opensails.sails.html.Link;
 import org.opensails.sails.html.Script;
 import org.opensails.sails.html.Style;
@@ -25,11 +29,11 @@ public class Require {
 	protected final List<Link> links = new ArrayList<Link>(3);
 	protected final List<Script> scripts = new ArrayList<Script>(3);
 	protected final List<Style> styles = new ArrayList<Style>(3);
-	
+
 	public void componentApplicationScript(Script script) {
 		componentApplicationScripts.add(script);
 	}
-	
+
 	public void componentApplicationStyle(Style style) {
 		componentApplicationStyles.add(style);
 	}
@@ -37,11 +41,11 @@ public class Require {
 	public void componentImplicitScript(Script script) {
 		componentImplicitScripts.add(script);
 	}
-	
+
 	public void componentImplicitStyle(Style style) {
 		componentImplicitStyles.add(style);
 	}
-	
+
 	public void componentRequiredScript(Script script) {
 		componentRequiredScripts.add(script);
 	}
@@ -74,19 +78,19 @@ public class Require {
 		public String componentApplicationStyles() {
 			return toString(componentApplicationStyles);
 		}
-		
+
 		public String componentImplicitScripts() {
 			return toString(componentImplicitScripts);
 		}
-		
+
 		public String componentImplicitStyles() {
 			return toString(componentImplicitStyles);
 		}
-		
+
 		public String componentRequiredScripts() {
 			return toString(componentRequiredScripts);
 		}
-		
+
 		public String componentRequiredStyles() {
 			return toString(componentRequiredStyles);
 		}
@@ -127,13 +131,17 @@ public class Require {
 			return builder.toString();
 		}
 
-		private <T> String toString(List<T> elements) {
-			StringBuilder builder = new StringBuilder();
-			for (Iterator iter = new LinkedHashSet<T>(elements).iterator(); iter.hasNext();) {
-				builder.append(iter.next());
-				if (iter.hasNext()) builder.append("\n");
+		private <T extends IHtmlElement> String toString(List<T> elements) {
+			StringWriter writer = new StringWriter(75);
+			for (Iterator<T> iter = new LinkedHashSet<T>(elements).iterator(); iter.hasNext();) {
+				try {
+					iter.next().renderThyself(writer);
+					if (iter.hasNext()) writer.append("\n");
+				} catch (IOException e) {
+					throw new SailsException("Failure rendering a required element", e);
+				}
 			}
-			return builder.toString();
+			return writer.toString();
 		}
 	}
 }

@@ -2,9 +2,9 @@ package org.opensails.sails.event.oem;
 
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.Sails;
+import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.event.oem.AbstractEvent;
 import org.opensails.sails.event.oem.ExceptionEvent;
 import org.opensails.sails.event.oem.GetEvent;
@@ -46,7 +46,7 @@ public class SailsEventFixture {
 		setControllerAction(request, controller, action);
 		ISailsApplication application = SailsApplicationFixture.basic();
 		GetEvent getEvent = new GetEvent(application, request, new ShamHttpServletResponse());
-		application.getContainer().instance(ISailsEventConfigurator.class).configure(getEvent, getEvent.getContainer());
+		application.getContainer().instance(IEventConfigurator.class).configure(getEvent, getEvent.getContainer());
 		return getEvent;
 	}
 

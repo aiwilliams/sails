@@ -2,7 +2,7 @@ package org.opensails.sails.html;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.url.UrlFixture;
+import org.opensails.sails.url.ExternalUrl;
 
 public class LinkTest extends TestCase {
 	public void testEquals_HashCode() throws Exception {
@@ -10,10 +10,10 @@ public class LinkTest extends TestCase {
 		Link linkTwo = new Link();
 		assertEquals(linkOne, linkTwo);
 
-		linkOne.href(UrlFixture.create("a"));
+		linkOne.href(new ExternalUrl("a"));
 		assertFalse(linkOne.equals(linkTwo));
 
-		linkTwo.href(UrlFixture.create("a"));
+		linkTwo.href(new ExternalUrl("a"));
 		assertEquals(linkOne, linkTwo);
 	}
 }

@@ -1,7 +1,5 @@
 package org.opensails.spyglass;
 
-import org.opensails.sails.util.ClassHelper;
-
 /**
  * Allows for IClassResolver implementations that care only for resolving
  * certain ways.
@@ -16,7 +14,7 @@ public class ClassResolverAdapter<T> implements IClassResolver<T> {
 	 * Class. Useful for resolving Classes based on the name of another Class.
 	 */
 	public Class<T> resolve(Class key) {
-		return resolve(ClassHelper.getName(key));
+		return resolve(SpyGlass.getName(key));
 	}
 
 	public Class<T> resolve(String key) {

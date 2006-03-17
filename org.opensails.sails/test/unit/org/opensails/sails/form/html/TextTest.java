@@ -1,24 +1,12 @@
-/*
- * Created on May 15, 2005
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.form.html;
 
-import junit.framework.TestCase;
+import org.opensails.widget.tester.WidgetTestCase;
 
-public class TextTest extends TestCase {
-    public void testToString() {
-        Text text = new Text("name");
-        assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"\" />", text.toString());
-        
-        text = new Text("name").value("hellomate");
-        assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"hellomate\" />", text.toString());
-
-        text.value("hellomateagain");
-        assertEquals("<input id=\"name\" name=\"name\" type=\"text\" value=\"hellomateagain\" />", text.toString());
-        
-        text = new Text("name", "id");
-        assertEquals("<input id=\"id\" name=\"name\" type=\"text\" value=\"\" />", text.toString());
-    }
+public class TextTest extends WidgetTestCase {
+	public void testRender() {
+		assertRender("<input id=\"name\" name=\"name\" type=\"text\" value=\"\" />", "$text(name)");
+		assertRender("<input id=\"name\" name=\"name\" type=\"text\" value=\"hellomate\" />", "$text(name).value(hellomate)");
+		assertRender("<input id=\"name\" name=\"name\" type=\"text\" value=\"hellomateagain\" />", "$text(name).value(hellomate).value(hellomateagain)");
+		assertRender("<input id=\"id\" name=\"name\" type=\"text\" value=\"\" />", "$text(name).id(id)");
+	}
 }

@@ -4,7 +4,7 @@ import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.oem.Controller;
 import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 
 /*
  * Don't let this become a dumping ground. Methods should be domain specific.
@@ -25,7 +25,7 @@ public class Sails {
 	 * Component's name.
 	 */
 	public static final String componentName(Class<? extends IComponentImpl> componentClass) {
-		return ClassHelper.lowerCamelName(componentClass).replaceFirst("Component$", "");
+		return SpyGlass.lowerCamelName(componentClass).replaceFirst("Component$", "");
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class Sails {
 	 * @see #controllerName(Controller) to avoid getClass() calls
 	 */
 	public static final String controllerName(Class<? extends IControllerImpl> controllerClass) {
-		return ClassHelper.lowerCamelName(controllerClass).replaceFirst("Controller$", "");
+		return SpyGlass.lowerCamelName(controllerClass).replaceFirst("Controller$", "");
 	}
 
 	/**

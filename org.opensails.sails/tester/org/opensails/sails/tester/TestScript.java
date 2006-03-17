@@ -10,4 +10,9 @@ public class TestScript {
 		this.src = src;
 		this.body = body;
 	}
+
+	@Override
+	public String toString() {
+		return source;
+	}
 }

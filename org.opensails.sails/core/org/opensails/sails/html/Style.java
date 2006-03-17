@@ -2,7 +2,9 @@ package org.opensails.sails.html;
 
 import java.io.IOException;
 
+import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;
+import org.opensails.viento.Block;
 
 /**
  * In-line style.
@@ -10,13 +12,13 @@ import org.opensails.sails.url.IUrl;
  * Styles that are linked in are done so with a
  * {@link org.opensails.sails.html.Link}.
  */
-public class Style extends AbstractHtmlElement<Style> implements IInlineContentElement<Style> {
+public class Style extends AbstractHtmlElement<Style> {
 	public static final String NAME = "style";
 
-	protected IInlineContent inlineContent;
+	protected Block inlineContent;
 	protected Link linkedStyle;
 
-	public Style(IInlineContent content) {
+	public Style(Block content) {
 		this();
 		inline(content);
 	}
@@ -28,6 +30,10 @@ public class Style extends AbstractHtmlElement<Style> implements IInlineContentE
 		linkedStyle.rel("stylesheet");
 	}
 
+	public Style(String url) {
+		this(new ExternalUrl(url));
+	}
+
 	protected Style() {
 		super(NAME);
 		type("text/css");
@@ -35,11 +41,11 @@ public class Style extends AbstractHtmlElement<Style> implements IInlineContentE
 
 	@Override
 	public int hashCode() {
-		if (inlineContent != null) return super.hashCode() & inlineContent.render().hashCode();
+		if (inlineContent != null) return super.hashCode() & inlineContent.evaluate().hashCode();
 		return super.hashCode() & linkedStyle.hashCode();
 	}
 
-	public Style inline(IInlineContent content) {
+	public Style inline(Block content) {
 		this.inlineContent = content;
 		return this;
 	}
@@ -51,7 +57,7 @@ public class Style extends AbstractHtmlElement<Style> implements IInlineContentE
 	@Override
 	protected void body(HtmlGenerator generator) throws IOException {
 		generator.write("\n");
-		generator.write(inlineContent.render());
+		generator.write(inlineContent.evaluate());
 		generator.write("\n");
 	}
 

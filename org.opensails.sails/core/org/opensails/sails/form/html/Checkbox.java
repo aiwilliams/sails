@@ -92,16 +92,6 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	/**
 	 * @param writer
 	 * @throws IOException
-	 * @deprecated Use {@link #renderThyself(Writer)} instead
-	 */
-	@Override
-	public void toString(Writer writer) throws IOException {
-		renderThyself(writer);
-	}
-
-	/**
-	 * @param writer
-	 * @throws IOException
 	 */
 	@Override
 	public void renderThyself(Writer writer) throws IOException {

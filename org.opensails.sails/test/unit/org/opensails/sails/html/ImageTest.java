@@ -7,15 +7,15 @@ import org.opensails.sails.event.oem.SailsEventFixture;
 
 public class ImageTest extends TestCase {
 
-	public void testToString() {
+	public void testRender() {
 		ISailsEvent event = SailsEventFixture.actionGet();
 		Image image = new Image(event, "image.jpg");
-		assertEquals("<img src=\"" + SailsEventFixture.getImagePath(event, "image.jpg") + "\" />", image.toString());
+		assertEquals("<img src=\"" + SailsEventFixture.getImagePath(event, "image.jpg") + "\" />", image.renderThyself());
 	}
 
-	public void testToString_Alt() {
+	public void testRender_Alt() {
 		ISailsEvent event = SailsEventFixture.actionGet();
 		Image image = new Image(event, "image.jpg").alt("description");
-		assertEquals("<img src=\"" + SailsEventFixture.getImagePath(event, "image.jpg") + "\" alt=\"description\" />", image.toString());
+		assertEquals("<img src=\"" + SailsEventFixture.getImagePath(event, "image.jpg") + "\" alt=\"description\" />", image.renderThyself());
 	}
 }

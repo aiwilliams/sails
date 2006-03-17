@@ -14,10 +14,5 @@ public interface IHtmlElement<T extends IHtmlElement> extends IRenderable {
 
 	T attributes(Map<String, String> attributes);
 
-	/**
-	 * @deprecated Use {@link #renderThyself(Writer)} instead
-	 */
-	void toString(Writer writer) throws IOException;
-
 	void renderThyself(Writer writer) throws IOException;
 }

@@ -16,7 +16,7 @@ public class SailsTesterTest extends TestCase {
      * When you use a simple SailsTester, it will boot using all the defaults.
      */
     public void testConstructor() throws Exception {
-        SailsTester t = SailsTesterFixture.create();
+        SailsTester t = new SailsTester(BaseConfigurator.class);
         assertNotNull(t.getConfiguration());
         assertNotNull(t.getContainer());
     }
@@ -40,7 +40,7 @@ public class SailsTesterTest extends TestCase {
     }
 
     public void testFollow_TestRedirectUrl() throws Exception {
-        SailsTester t = SailsTesterFixture.create();
+        SailsTester t = new SailsTester(BaseConfigurator.class);
         ShamHttpServletResponse response = response = new ShamHttpServletResponse();
         response.sendRedirect("http://google.com");
         Page page = t.follow(new TestRedirectUrl(response));
@@ -55,14 +55,14 @@ public class SailsTesterTest extends TestCase {
     }
 
     public void testGet() throws Exception {
-        SailsTester t = SailsTesterFixture.create();
+        SailsTester t = new SailsTester(BaseConfigurator.class);
         Page page = t.get();
         assertTrue(page.url().matches("http://"));
         page.assertContains("Welcome to Sails");
     }
 
     public void testGetRequestContainer() {
-        SailsTester t = SailsTesterFixture.create();
+        SailsTester t = new SailsTester(BaseConfigurator.class);
         TestRequestContainer requestContainer = t.getRequestContainer();
         assertNotNull("We can get it before we ever make a request", requestContainer);
         assertSame("Same until request is made", requestContainer, t.getRequestContainer());
@@ -80,7 +80,7 @@ public class SailsTesterTest extends TestCase {
     }
 
     public void testInject_ApplicationScope() throws Exception {
-        SailsTester t = SailsTesterFixture.create();
+        SailsTester t = new SailsTester(BaseConfigurator.class);
         t.inject(ILoveTesting.class, ReallyReallyIDo.class, ApplicationScope.SERVLET);
         ILoveTesting applicationScopeInstance = t.getContainer().instance(ILoveTesting.class);
         assertEquals(ReallyReallyIDo.class, applicationScopeInstance.getClass());

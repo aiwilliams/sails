@@ -97,11 +97,9 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 		render(writer);
 	}
 
-	/**
-	 * @deprecated Use {@link #renderThyself(Writer)} instead
-	 */
-	public void toString(Writer writer) throws IOException {
-		renderThyself(writer);
+	@Override
+	public String toString() {
+		return renderThyself();
 	}
 
 	protected Map<String, String> attributes() {

@@ -10,9 +10,9 @@ import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.persist.IObjectPersister;
@@ -75,7 +75,7 @@ public class SailsTester implements ISailsApplication {
 	 */
 	public TestGetEvent createVirtualEvent(String eventPath, String templateContent) {
 		TestGetEvent event = createGetEvent(eventPath);
-		application.getContainer().instance(ISailsEventConfigurator.class).configure(event, event.getContainer());
+		application.getContainer().instance(IEventConfigurator.class).configure(event, event.getContainer());
 		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
 		resourceResolver.register(eventPath + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, templateContent);
 		return event;

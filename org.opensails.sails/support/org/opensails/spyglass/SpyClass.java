@@ -3,6 +3,8 @@ package org.opensails.spyglass;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
 
 public class SpyClass<T> {
@@ -10,6 +12,14 @@ public class SpyClass<T> {
 
 	public SpyClass(Class<T> type) {
 		this.type = type;
+	}
+
+	public String getPackageName() {
+		return ClassUtils.getPackageName(type);
+	}
+
+	public T newInstance() {
+		return newInstance(ArrayUtils.EMPTY_OBJECT_ARRAY);
 	}
 
 	public T newInstance(Object[] args) {

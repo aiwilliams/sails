@@ -3,22 +3,31 @@ package org.opensails.functional.mixin;
 import junit.framework.TestCase;
 
 import org.opensails.functional.SailsFunctionalTester;
-import org.opensails.sails.tester.Page;
+import org.opensails.sails.tester.ScriptList;
 import org.opensails.sails.tester.browser.TestGetEvent;
 
 public class BuiltinsTest extends TestCase {
-	/*
-	 * Will fail until toString is replaced with renderThyself. BuiltinScript,
-	 * and other things that can be required, must be wrapped in something
-	 * special that will output nothing in the location they are required. That
-	 * is why this test is failing. It is outputing itself and the RequireOutput
-	 * is outputing it - I think.
-	 */
-	public void testRequire() throws Exception {
+	public void testScript() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		TestGetEvent event = t.createVirtualEvent("require/test", "$require.script('applicationScript')$require.script.builtin('prototype')$require.script.builtin('prototype.js')");
-		Page page = t.get(event);
-		page.scripts().assertContains("prototype", 0);
-		page.scripts().assertContains("prototype.js", 1);
+		TestGetEvent event = t.createVirtualEvent("require/test", scriptTemplate());
+		ScriptList scripts = t.get(event).scripts();
+		scripts.assertContains("applicationScript", 0);
+		scripts.assertContains("applicationScript.js", 3);
+		scripts.assertContains("builtinScript", 0);
+		scripts.assertContains("builtinScript.js", 3);
+	}
+
+	private String scriptTemplate() {
+		StringBuilder template = new StringBuilder();
+		template.append("$script('applicationScript')");
+		template.append("$script('applicationScript.js')");
+		template.append("$script.builtin('builtinScript')");
+		template.append("$script.builtin('builtinScript.js')");
+		template.append("$require.script('applicationScript')");
+		template.append("$require.script('applicationScript.js')");
+		template.append("$require.script.builtin('builtinScript')");
+		template.append("$require.script.builtin('builtinScript.js')");
+		template.append("$require.output");
+		return template.toString();
 	}
 }

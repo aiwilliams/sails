@@ -15,12 +15,12 @@ import org.opensails.sails.action.oem.ActionResultProcessorResolver;
 import org.opensails.sails.action.oem.RedirectActionResult;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.event.ISailsEventConfigurator;
 import org.opensails.sails.event.oem.ExceptionEvent;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.DelegatingConfigurator;
@@ -110,7 +110,7 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 	@Override
 	protected ApplicationContainer installContainer(IConfigurableSailsApplication application) {
 		ApplicationContainer container = super.installContainer(application);
-		container.register(ISailsEventConfigurator.class, this);
+		container.register(IEventConfigurator.class, this);
 		return container;
 	}
 

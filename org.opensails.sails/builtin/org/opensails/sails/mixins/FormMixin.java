@@ -7,6 +7,7 @@ import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.IFormValueModel;
 import org.opensails.sails.form.NullFormValueModel;
 import org.opensails.sails.form.html.Checkbox;
+import org.opensails.sails.form.html.FileInput;
 import org.opensails.sails.form.html.FormElement;
 import org.opensails.sails.form.html.Hidden;
 import org.opensails.sails.form.html.Label;
@@ -15,7 +16,7 @@ import org.opensails.sails.form.html.Radio;
 import org.opensails.sails.form.html.Select;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
-import org.opensails.sails.form.html.TextArea;
+import org.opensails.sails.form.html.Textarea;
 
 public class FormMixin {
 	protected final ContainerAdapterResolver adapterResolver;
@@ -93,7 +94,7 @@ public class FormMixin {
 		return new Text(name).value(valueModel.value(name));
 	}
 
-	public TextArea textarea(String name) {
-		return new TextArea(name).id(idGenerator.idForName(name)).value(valueModel.value(name));
+	public Textarea textarea(String name) {
+		return new Textarea(name).id(idGenerator.idForName(name)).value(valueModel.value(name));
 	}
 }

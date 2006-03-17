@@ -1,13 +1,12 @@
 package org.opensails.sails.template;
 
 import org.opensails.rigging.IContainer;
-import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.spyglass.IClassResolver;
 import org.opensails.spyglass.resolvers.CompositeClassResolver;
+import org.opensails.viento.MethodMissing;
 
-public class MixinResolver implements IMixinResolver {
-	protected IControllerImpl controller;
+public class MixinResolver implements MethodMissing {
 	protected final CompositeClassResolver resolvers;
 	private final IContainer container;
 
@@ -21,14 +20,12 @@ public class MixinResolver implements IMixinResolver {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object methodMissing(String methodName, Object[] args) throws NoSuchMethodException {
+	public Object methodMissing(String methodName, Object[] args) {
 		Class clazz = resolvers.resolve(methodName);
-		if (clazz != null) {
-			Object instance = container.instance(clazz, clazz);
-			if (instance instanceof IMixinMethod) return ((IMixinMethod) instance).invoke(args);
-			return instance;
-		}
-		throw new NoSuchMethodException("Could not resolve a mixin for " + methodName);
+		if (clazz == null) return null;
+		Object instance = container.instance(clazz, clazz);
+		if (instance instanceof IMixinMethod) return ((IMixinMethod) instance).invoke(args);
+		return instance;
 	}
 
 	@SuppressWarnings("unchecked")

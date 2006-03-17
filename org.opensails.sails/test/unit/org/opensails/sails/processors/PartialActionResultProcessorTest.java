@@ -7,11 +7,12 @@ import java.util.Set;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
+import org.opensails.rigging.IContainer;
 import org.opensails.sails.action.oem.PartialActionResult;
 import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.SailsEventFixture;
-import org.opensails.sails.template.IMixinResolver;
 import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.url.IUrl;
 import org.opensails.viento.ExceptionHandler;
 import org.opensails.viento.IBinding;
@@ -26,13 +27,17 @@ public class PartialActionResultProcessorTest extends TestCase {
 		GetEvent actionGet = SailsEventFixture.actionGet("controller", "action");
 		actionGet.getContainer().register(IBinding.class, new ShamTemplateBinding());
 		mixinResolver = new ShamMixinResolver();
-		actionGet.getContainer().register(IMixinResolver.class, mixinResolver);
+		actionGet.getContainer().register(MixinResolver.class, mixinResolver);
 		processor.process(new PartialActionResult(actionGet));
 		assertTrue(renderIExpectCalled);
 		assertTrue(mixins.contains(mixinResolver));
 	}
 
-	class ShamMixinResolver implements IMixinResolver {
+	class ShamMixinResolver extends MixinResolver {
+		public ShamMixinResolver() {
+			super((IContainer) null);
+		}
+
 		public Object methodMissing(String methodName, Object[] args) {
 			return null;
 		}
@@ -47,13 +52,17 @@ public class PartialActionResultProcessorTest extends TestCase {
 
 		public void put(String key, Object object) {}
 
-		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
-
 		public void putAll(Map<String, Object> map) {}
+
+		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
 	}
 
 	class ShamTemplateRenderer implements ITemplateRenderer<ShamTemplateBinding> {
 		public ShamTemplateBinding createBinding(ShamTemplateBinding parent) {
+			return null;
+		}
+
+		public StringBuilder render(IUrl templateUrl, ShamTemplateBinding binding) {
 			return null;
 		}
 
@@ -66,16 +75,12 @@ public class PartialActionResultProcessorTest extends TestCase {
 			return target;
 		}
 
-		public boolean templateExists(String templateIdentifier) {
-			return false;
-		}
-
 		public StringBuilder renderString(String templateContent, ShamTemplateBinding binding) {
 			return null;
 		}
 
-		public StringBuilder render(IUrl templateUrl, ShamTemplateBinding binding) {
-			return null;
+		public boolean templateExists(String templateIdentifier) {
+			return false;
 		}
 	}
 }
