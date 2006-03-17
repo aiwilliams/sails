@@ -52,5 +52,10 @@ public class VirtualControllerResolver implements IControllerResolver {
 		protected I createInstance(ISailsEvent event, Class<I> contextImpl) {
 			return (I) controllerInstance;
 		}
+
+		@Override
+		protected I createNullInstance(ISailsEvent event) {
+			throw new UnsupportedOperationException("This should not be called, as the instance certainly exists.");
+		}
 	}
 }

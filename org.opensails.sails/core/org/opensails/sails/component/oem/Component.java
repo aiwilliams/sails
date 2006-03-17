@@ -35,11 +35,20 @@ public class Component<I extends IComponentImpl> extends AbstractActionEventProc
 	}
 
 	@Override
+	protected I createInstance(ISailsEvent event, Class<I> contextImpl) {
+		return isDestination(event) ? event.getContainer().createEventContext(contextImpl, event) : event.getContainer().instance(contextImpl, contextImpl);
+	}
+
+	@Override
 	protected I createInstanceOrNull(ISailsEvent event) {
-		if (!hasImplementation()) return null;
-		I instance = isDestination(event) ? event.getContainer().createEventContext(processingContext, event) : event.getContainer().instance(processingContext, processingContext);
-		instance.setEventContext(event, this);
+		I instance = super.createInstanceOrNull(event);
 		instance.setTemplateRenderer(renderer);
 		return instance;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	protected I createNullInstance(ISailsEvent event) {
+		return (I) new NullComponent();
 	}
 }

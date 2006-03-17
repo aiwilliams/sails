@@ -51,12 +51,12 @@ public class Action implements IAction {
 		beginExecution(invocation);
 		setFields(invocation);
 		if (beforeBehaviors(invocation)) invocation.invoke();
-		else invocation.result = invocation.getContext().getActionResult();
+		else invocation.setResult(invocation.getContext().getActionResult());
 		afterBehaviors(invocation);
 		if (!invocation.hasResult()) setDefaultResult(invocation);
 		registerResult(invocation);
 		endExecution(invocation);
-		return invocation.result;
+		return invocation.getResult();
 	}
 
 	public String getName() {
@@ -105,12 +105,12 @@ public class Action implements IAction {
 
 	protected void registerResult(ActionInvocation invocation) {
 		IEventContextContainer container = invocation.getContainer();
-		container.register(IActionResult.class, invocation.result);
-		container.register(invocation.result);
+		container.register(IActionResult.class, invocation.getResult());
+		container.register(invocation.getResult());
 	}
 
 	protected void setDefaultResult(ActionInvocation invocation) {
-		invocation.result = defaultActionResult(invocation.event);
+		invocation.setResult(defaultActionResult(invocation.event));
 	}
 
 	@SuppressWarnings("unchecked")

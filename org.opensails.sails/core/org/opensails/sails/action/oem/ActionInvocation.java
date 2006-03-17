@@ -17,7 +17,7 @@ import org.opensails.sails.annotate.IBehaviorHandler;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormFields;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 
 /**
  * State related to an Action invocation.
@@ -28,107 +28,108 @@ import org.opensails.sails.util.ClassHelper;
  * @author aiwilliams
  */
 public class ActionInvocation {
-    public Method code;
-    public final ISailsEvent event;
-    public final IActionParameterList parameters;
-    public IActionResult result;
+	public Method code;
+	public final ISailsEvent event;
+	public final IActionParameterList parameters;
 
-    protected final IAction action;
-    protected final IEventProcessingContext context;
-    protected final Map<Class<? extends IBehaviorHandler>, IBehaviorHandler> handlers;
+	protected final IAction action;
+	protected final IEventProcessingContext<?> context;
+	protected final Map<Class<? extends IBehaviorHandler>, IBehaviorHandler> handlers;
 
-    public ActionInvocation(ISailsEvent event, IAction action, IActionParameterList parameters, IEventProcessingContext context) {
-        this.event = event;
-        this.action = action;
-        this.context = context;
-        this.parameters = parameters;
-        this.handlers = new LinkedHashMap<Class<? extends IBehaviorHandler>, IBehaviorHandler>();
-    }
+	public ActionInvocation(ISailsEvent event, IAction action, IActionParameterList parameters, IEventProcessingContext<?> context) {
+		this.event = event;
+		this.action = action;
+		this.context = context;
+		this.parameters = parameters;
+		this.handlers = new LinkedHashMap<Class<? extends IBehaviorHandler>, IBehaviorHandler>();
+	}
 
-    public IAction getAction() {
-        return action;
-    }
+	public IAction getAction() {
+		return action;
+	}
 
-    public String getActionName() {
-        return action.getName();
-    }
+	public String getActionName() {
+		return action.getName();
+	}
 
-    public IEventContextContainer getContainer() {
-        return event.getContainer();
-    }
+	public IEventContextContainer getContainer() {
+		return event.getContainer();
+	}
 
-    public IEventProcessingContext<?> getContext() {
-        return context;
-    }
+	public IEventProcessingContext<?> getContext() {
+		return context;
+	}
 
-    public Class<? extends IEventProcessingContext> getContextClass() {
-        return context.getClass();
-    }
+	public Class<? extends IEventProcessingContext> getContextClass() {
+		return context.getClass();
+	}
 
-    public FormFields getFormFields() {
-        return event.getContainer().instance(FormFields.class);
-    }
+	public FormFields getFormFields() {
+		return event.getContainer().instance(FormFields.class);
+	}
 
-    /**
-     * @param behavior
-     * @return the active handler for the behavior. This will be the same
-     *         instance where the behavior answers equals() to instances that
-     *         have been handled before.
-     */
-    @SuppressWarnings("unchecked")
-    public IBehaviorHandler<?> getHandler(BehaviorInstance behavior) {
-        IBehaviorHandler handler = handlers.get(behavior.getBehaviorHandlerClass());
-        if (handler == null) {
-            handler = (IBehaviorHandler) ClassHelper.instantiate(behavior.getBehaviorHandlerClass());
-            handlers.put(behavior.getBehaviorHandlerClass(), handler);
-        }
-        return handler;
-    }
+	/**
+	 * @param behavior
+	 * @return the active handler for the behavior. This will be the same
+	 *         instance where the behavior answers equals() to instances that
+	 *         have been handled before.
+	 */
+	@SuppressWarnings("unchecked")
+	public IBehaviorHandler<?> getHandler(BehaviorInstance behavior) {
+		IBehaviorHandler handler = handlers.get(behavior.getBehaviorHandlerClass());
+		if (handler == null) {
+			handler = (IBehaviorHandler) SpyGlass.instantiate(behavior.getBehaviorHandlerClass());
+			handlers.put(behavior.getBehaviorHandlerClass(), handler);
+		}
+		return handler;
+	}
 
-    public Set<IBehaviorHandler> getHandlers() {
-        return new HashSet<IBehaviorHandler>(handlers.values());
-    }
+	public Set<IBehaviorHandler> getHandlers() {
+		return new HashSet<IBehaviorHandler>(handlers.values());
+	}
 
-    public boolean hasCode() {
-        return code != null;
-    }
+	public IActionResult getResult() {
+		return context.getActionResult();
+	}
 
-    public boolean hasContext() {
-        return context != null;
-    }
+	public boolean hasCode() {
+		return code != null;
+	}
 
-    public boolean hasResult() {
-        return result != null;
-    }
+	public boolean hasContext() {
+		return context != null;
+	}
 
-    public void invoke() {
-        if (!hasCode()) return;
+	public boolean hasResult() {
+		return getResult() != null;
+	}
 
-        IEventProcessingContext<?> context = getContext();
-        Object[] actionArguments = parameters();
-        try {
-            Object returnValue = code.invoke(context, actionArguments);
-            if (isActionResult(returnValue)) result = (IActionResult) returnValue;
-            else result = context.getActionResult();
-        } catch (IllegalArgumentException e) {
-            throw new ParameterMismatchException(event, code, actionArguments);
-        } catch (IllegalAccessException e) {
-            throw new SailsException("Action methods on an ActionMethodController must be public.", e);
-        } catch (InvocationTargetException e) {
-            throw new SailsException("An exception [" + e.getCause().getClass() + "] occurred in the action " + code, e.getCause());
-        }
-    }
+	public void invoke() {
+		if (!hasCode()) return;
 
-    public Object[] parameters() {
-        return parameters.objects(code.getParameterTypes());
-    }
+		IEventProcessingContext<?> context = getContext();
+		Object[] actionArguments = parameters();
+		try {
+			Object returnValue = code.invoke(context, actionArguments);
+			if (isActionResult(returnValue)) context.setResult((IActionResult) returnValue);
+		} catch (IllegalArgumentException e) {
+			throw new ParameterMismatchException(event, code, actionArguments);
+		} catch (IllegalAccessException e) {
+			throw new SailsException("Action methods on an ActionMethodController must be public.", e);
+		} catch (InvocationTargetException e) {
+			throw new SailsException("An exception [" + e.getCause().getClass() + "] occurred in the action " + code, e.getCause());
+		}
+	}
 
-    public void setResult(TemplateActionResult actionResult) {
-        result = actionResult;
-        getContext().setResult(actionResult);
-    }
+	public Object[] parameters() {
+		return parameters.objects(code.getParameterTypes());
+	}
 
-    private boolean isActionResult(Object returnValue) {
-        return returnValue != null && returnValue instanceof IActionResult;
-    }
+	public void setResult(IActionResult result) {
+		getContext().setResult(result);
+	}
+
+	private boolean isActionResult(Object returnValue) {
+		return returnValue != null && returnValue instanceof IActionResult;
+	}
 }

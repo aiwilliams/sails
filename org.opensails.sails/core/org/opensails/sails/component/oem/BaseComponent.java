@@ -20,7 +20,7 @@ import org.opensails.sails.template.TemplateRenderFailedException;
 import org.opensails.viento.IBinding;
 import org.opensails.viento.IRenderable;
 
-public class BaseComponent extends AbstractEventProcessingContext<IComponent> implements IComponentImpl, IRenderable {
+public abstract class BaseComponent extends AbstractEventProcessingContext<IComponent> implements IComponentImpl, IRenderable {
 	/**
 	 * The id of this component.
 	 * <p>
