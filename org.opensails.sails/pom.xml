@@ -35,8 +35,6 @@
 	      <artifactId>maven-compiler-plugin</artifactId>
 	      <configuration>
 	      	<testExcludes>
-	      	  <exclude>**/FlashTest.java</exclude>
-	      	  <exclude>**/BuiltinsTest.java</exclude>
 	      	</testExcludes>
 	      	<excludes>
 	      	  <exclude>generators/*.java</exclude>
