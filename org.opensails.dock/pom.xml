@@ -44,20 +44,6 @@
       <version>5.1.0</version>
       <scope>provided</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>jetty</groupId>
-      <artifactId>jasper-compiler</artifactId>
-      <version>4.2.20RC0</version>
-      <scope>provided</scope>
-    </dependency>
-  
-    <dependency>
-      <groupId>jetty</groupId>
-      <artifactId>jasper-runtime</artifactId>
-      <version>4.2.20RC0</version>
-      <scope>provided</scope>
-    </dependency>
   
     <dependency>
       <groupId>jetty</groupId>
