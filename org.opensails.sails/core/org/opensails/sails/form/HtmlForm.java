@@ -36,89 +36,92 @@ import org.opensails.sails.validation.IValidationResult;
  * @author aiwilliams
  */
 public class HtmlForm {
-    protected final IAdapterResolver adapterResolver;
-    protected final IEventContextContainer container;
-    protected final FormFields formFields;
-    protected Map<String, IInvalidProperty> invalids;
-    protected final IModelContext modelContext;
-    protected final IValidationEngine validationEngine;
+	protected final IAdapterResolver adapterResolver;
+	protected final IEventContextContainer container;
+	protected final FormFields formFields;
+	protected Map<String, IInvalidProperty> invalids;
+	protected final IModelContext modelContext;
+	protected final IValidationEngine validationEngine;
 
-    public HtmlForm(IEventContextContainer container, IModelContext modelContext, FormFields formFields, IAdapterResolver adapterResolver, IValidationEngine validationEngine) {
-        this.container = container;
-        this.modelContext = modelContext;
-        this.formFields = formFields;
-        this.adapterResolver = adapterResolver;
-        this.validationEngine = validationEngine;
-    }
+	public HtmlForm(IEventContextContainer container, IModelContext modelContext, FormFields formFields, IAdapterResolver adapterResolver, IValidationEngine validationEngine) {
+		this.container = container;
+		this.modelContext = modelContext;
+		this.formFields = formFields;
+		this.adapterResolver = adapterResolver;
+		this.validationEngine = validationEngine;
+	}
 
-    /**
-     * @return the current message for the form, which will be null if the form
-     *         is valid
-     */
-    public String getMessage() {
-        if (isValid()) return null;
+	/**
+	 * @return the current message for the form, which will be null if the form
+	 *         is valid
+	 */
+	public String getMessage() {
+		if (isValid()) return null;
 
-        StringBuilder message = new StringBuilder("Invalid fields:\n");
-        for (Entry invalid : invalids.entrySet()) {
-            message.append(invalid.getKey());
-            message.append(" : ");
-            message.append(invalid.getValue());
-        }
-        return message.toString();
-    }
+		StringBuilder message = new StringBuilder("Invalid fields:\n");
+		for (Entry invalid : invalids.entrySet()) {
+			message.append(invalid.getKey());
+			message.append(" : ");
+			message.append(invalid.getValue());
+		}
+		return message.toString();
+	}
 
-    /**
-     * @return true if there were no problems adapting values and writing them
-     *         to the model
-     */
-    public boolean isValid() {
-        if (invalids == null) {
-            invalids = new WriteOnceHashMap<String, IInvalidProperty>();
-            for (String fieldName : formFields.getNames()) {
-                IPropertyPath path = null;
-                Object model = null;
-                if (!isMetaField(fieldName)) try {
-                    path = fieldPropertyPath(fieldName);
-                    model = modelContext.getModel(path);
-                    IPropertyAccessor accessor = accessor(path);
-                    Class propertyTypeOnTarget = accessor.getPropertyType(model);
-                    IAdapter adapter = adapter(path, propertyTypeOnTarget);
-                    accessor.set(model, adapter.forModel(propertyTypeOnTarget, formFields.valueAs(fieldName, adapter.getFieldType())));
+	/**
+	 * @return true if there were no problems adapting values and writing them
+	 *         to the model
+	 */
+	public boolean isValid() {
+		if (invalids == null) {
+			invalids = new WriteOnceHashMap<String, IInvalidProperty>();
+			for (String fieldName : formFields.getNames()) {
+				IPropertyPath path = null;
+				Object model = null;
+				if (!isMetaField(fieldName)) try {
+					path = fieldPropertyPath(fieldName);
+					model = modelContext.getModel(path);
+					IPropertyAccessor accessor = accessor(path);
+					Class propertyTypeOnTarget = accessor.getPropertyType(model);
 
-                    // now that everything is transferred, validate
-                    IValidationResult validationResult = validationEngine.validate(model);
-                    for (IInvalidProperty invalid : validationResult.getInvalidProperties())
-                        invalids.put(invalid.getProperty(), invalid);
-                } catch (AdaptationException e) {
-                    invalids.put(path.getProperty(), new UnadaptableProperty(fieldName, path, model, e));
-                } catch (AccessorException e) {
-                    invalids.put(path.getProperty(), new InaccessibleProperty(fieldName, path, model, e));
-                } catch (PropertyPathException e) {
-                    invalids.put(fieldName, new InvalidProperty(fieldName, path, model, e));
-                }
-            }
-        }
-        return invalids.isEmpty();
-    }
+					if (propertyTypeOnTarget == null) continue;
+					IAdapter adapter = adapter(path, propertyTypeOnTarget);
 
-    public void resetValidation() {
-        invalids = null;
-    }
+					accessor.set(model, adapter.forModel(propertyTypeOnTarget, formFields.valueAs(fieldName, adapter.getFieldType())));
 
-    protected IPropertyAccessor accessor(IPropertyPath path) {
-        return new PropertyAccessor(path, true);
-    }
+					// now that everything is transferred, validate
+					IValidationResult validationResult = validationEngine.validate(model);
+					for (IInvalidProperty invalid : validationResult.getInvalidProperties())
+						invalids.put(invalid.getProperty(), invalid);
+				} catch (AdaptationException e) {
+					invalids.put(path.getProperty(), new UnadaptableProperty(fieldName, path, model, e));
+				} catch (AccessorException e) {
+					invalids.put(path.getProperty(), new InaccessibleProperty(fieldName, path, model, e));
+				} catch (PropertyPathException e) {
+					invalids.put(fieldName, new InvalidProperty(fieldName, path, model, e));
+				}
+			}
+		}
+		return invalids.isEmpty();
+	}
 
-    protected IAdapter adapter(IPropertyPath path, Class propertyTypeOnTarget) {
-        return adapterResolver.resolve(propertyTypeOnTarget, container);
-    }
+	public void resetValidation() {
+		invalids = null;
+	}
 
-    protected IPropertyPath fieldPropertyPath(String fieldName) {
-        if (fieldName.indexOf('.') == -1) return new DotPropertyPath(fieldName, "undefined");
-        else return new DotPropertyPath(fieldName);
-    }
+	protected IPropertyAccessor accessor(IPropertyPath path) {
+		return new PropertyAccessor(path, true);
+	}
 
-    protected boolean isMetaField(String fieldName) {
-        return fieldName != null && fieldName.startsWith(FormMeta.META_PREFIX);
-    }
+	protected IAdapter adapter(IPropertyPath path, Class propertyTypeOnTarget) {
+		return adapterResolver.resolve(propertyTypeOnTarget, container);
+	}
+
+	protected IPropertyPath fieldPropertyPath(String fieldName) {
+		if (fieldName.indexOf('.') == -1) return new DotPropertyPath(fieldName, "undefined");
+		else return new DotPropertyPath(fieldName);
+	}
+
+	protected boolean isMetaField(String fieldName) {
+		return fieldName != null && fieldName.startsWith(FormMeta.META_PREFIX);
+	}
 }
