@@ -46,6 +46,10 @@ public class LinkMixin {
 		return new ActionLink(event).controller(controller);
 	}
 
+	public ILink href(String url) {
+		return new ActionLink(event).href(url);
+	}
+
 	/**
 	 * @return an ILink to the index action of the controller for the event
 	 */
