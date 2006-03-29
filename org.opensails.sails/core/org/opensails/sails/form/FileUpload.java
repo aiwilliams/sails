@@ -10,11 +10,11 @@ import org.opensails.sails.SailsException;
 public class FileUpload {
 	private FileItem item;
 
+	protected FileUpload() {}
+
 	public FileUpload(FileItem item) {
 		this.item = item;
 	}
-
-	protected FileUpload() {}
 
 	public byte[] byteContent() {
 		return item.get();
@@ -22,6 +22,10 @@ public class FileUpload {
 
 	public String filename() {
 		return item.getName();
+	}
+
+	public String getContentType() {
+		return item.getContentType();
 	}
 
 	public String getFileName() {
