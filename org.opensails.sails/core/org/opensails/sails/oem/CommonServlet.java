@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
  * used by SailsApplications.
  */
 public class CommonServlet extends HttpServlet {
+	private static final long serialVersionUID = 3250177208235729822L;
+
 	protected ClasspathResourceResolver resolver = new ClasspathResourceResolver("common");
 
 	@Override

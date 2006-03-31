@@ -14,7 +14,6 @@ import org.opensails.sails.oem.SailsApplication;
 import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.SailsTesterConfigurator;
 import org.opensails.sails.tester.TestApplicationContainer;
-import org.opensails.sails.tester.TestSession;
 import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
 import org.opensails.sails.tester.oem.VirtualControllerResolver;
@@ -135,6 +134,7 @@ public class SailsTestApplication extends SailsApplication {
 	 * @param modelType
 	 * @param adapter
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> void registerAdapter(Class<T> modelType, Class<? extends IAdapter<T, ?>> adapter) {
 		getContainer().instance(VirtualAdapterResolver.class).register(modelType, adapter);
 	}

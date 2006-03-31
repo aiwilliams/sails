@@ -10,31 +10,19 @@ import org.opensails.generators.IGeneratorArguments;
 import org.opensails.generators.IGeneratorTarget;
 import org.opensails.generators.oem.GeneratorContext;
 import org.opensails.generators.oem.MemoryGeneratorTarget;
-import org.opensails.sails.util.ClassHelper;
 import org.opensails.sails.util.RegexHelper;
+import org.opensails.spyglass.SpyGlass;
 
 public class GeneratorTester<G extends IGenerator> {
+	protected final Class<G> generatorClass;
 	private G generator;
-
 	private IGeneratorTarget target;
 	private GeneratorContext context;
-
-	protected final Class<G> generatorClass;
 
 	public GeneratorTester(Class<G> generatorClass) {
 		this.generatorClass = generatorClass;
 		this.target = new MemoryGeneratorTarget();
 		this.context = new GeneratorContext(new RealEzFileSystem("generators/project"));
-	}
-
-	public void execute() {
-		execute(IGeneratorArguments.NULL);
-	}
-
-	public void execute(IGeneratorArguments args) {
-		generator = ClassHelper.instantiate(generatorClass, args);
-		generator.execute(target, context);
-		target.reset();
 	}
 
 	public void assertCreatedIn(String targetRelativeRoot, String... expected) {
@@ -49,5 +37,16 @@ public class GeneratorTester<G extends IGenerator> {
 		EzFile file = target.file(targetRelativeFile);
 		assertTrue(String.format("File does not exist to ensure match [%s]", file), file.exists());
 		assertTrue(String.format("File content does not match [%s]", file), RegexHelper.containsMatch(file.text(), regex));
+	}
+
+	public void execute() {
+		execute(IGeneratorArguments.NULL);
+	}
+
+	public void execute(IGeneratorArguments args) {
+		Object[] args1 = { args };
+		generator = SpyGlass.instantiate(generatorClass, args1);
+		generator.execute(target, context);
+		target.reset();
 	}
 }

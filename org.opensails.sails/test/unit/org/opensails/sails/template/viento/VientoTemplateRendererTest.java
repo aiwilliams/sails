@@ -7,6 +7,7 @@ import org.opensails.sails.event.oem.SailsEventFixture;
 import org.opensails.sails.oem.ClasspathResourceResolver;
 import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 import org.opensails.spyglass.resolvers.PackageClassResolver;
 
 public class VientoTemplateRendererTest extends TestCase {
@@ -15,7 +16,7 @@ public class VientoTemplateRendererTest extends TestCase {
 		VientoTemplateRenderer renderer = new VientoTemplateRenderer(new ClasspathResourceResolver(ClassHelper.getPackageDirectory(VientoTemplateRendererTest.class)));
 		VientoBinding vientoBinding = new VientoBinding();
 		MixinResolver resolver = new MixinResolver(SailsEventFixture.actionGet());
-		resolver.push(new PackageClassResolver(ClassHelper.getPackage(Sails.class) + ".mixins", "Mixin"));
+		resolver.push(new PackageClassResolver(SpyGlass.getPackage(Sails.class) + ".mixins", "Mixin"));
 		vientoBinding.mixin(resolver);
 		renderer.render("VientoTemplateRendererTest", vientoBinding);
 	}

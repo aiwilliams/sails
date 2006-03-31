@@ -8,9 +8,13 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.action.BeforeFilter;
 import org.opensails.sails.action.IActionFilter;
 import org.opensails.sails.action.oem.ActionInvocation;
-import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 
 public class BeforeFilterBuilder implements IFilterBuilder<BeforeFilter> {
+	public IFilter build(BeforeFilter filterDeclaration, ActionInvocation invocation) {
+		return new BeforeFilterFilter(filterDeclaration, invocation);
+	}
+
 	static class BeforeFilterFilter implements IFilter {
 		private final BeforeFilter filterDeclaration;
 		private final ActionInvocation invocation;
@@ -26,7 +30,8 @@ public class BeforeFilterBuilder implements IFilterBuilder<BeforeFilter> {
 		public Object before() {
 			if (hasActionFilters(filterDeclaration)) {
 				if (!excepted(invocation, filterDeclaration) && inclusive(invocation, filterDeclaration)) {
-					IActionFilter actionFilter = ClassHelper.instantiate(filterDeclaration.filter());
+					Object[] args = {};
+					IActionFilter actionFilter = SpyGlass.instantiate(filterDeclaration.filter(), args);
 					if (!actionFilter.beforeAction(invocation.getAction(), invocation.getContext())) return false;
 				}
 			}
@@ -62,9 +67,5 @@ public class BeforeFilterBuilder implements IFilterBuilder<BeforeFilter> {
 		private boolean inclusive(ActionInvocation invocation, BeforeFilter filter) {
 			return (filter.only().length == 1 && filter.only()[0].equals("")) || ArrayUtils.contains(filter.only(), invocation.getActionName());
 		}
-	}
-
-	public IFilter build(BeforeFilter filterDeclaration, ActionInvocation invocation) {
-		return new BeforeFilterFilter(filterDeclaration, invocation);
 	}
 }

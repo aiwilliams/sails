@@ -277,7 +277,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 	 * @return the installed resolver
 	 */
 	protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
-		ComponentResolver resolver = (ComponentResolver) container.instance(IComponentResolver.class, ComponentResolver.class);
+		ComponentResolver<IComponentImpl> resolver = (ComponentResolver<IComponentImpl>) container.instance(IComponentResolver.class, ComponentResolver.class);
 		resolver.push(new PackageClassResolver<IComponentImpl>(getBuiltinComponentPackage(), "Component"));
 		resolver.push(new PackageClassResolver<IComponentImpl>(getDefaultComponentPackage(), "Component"));
 		return resolver;

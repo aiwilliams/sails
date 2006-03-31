@@ -26,19 +26,6 @@ import org.opensails.spyglass.SpyGlass;
 public class ClassHelper {
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
-	/**
-	 * @deprecated
-	 * @see SpyGlass#invoke(Object, String, Object[])
-	 * 
-	 * @param instance
-	 * @param methodName
-	 * @param args
-	 * @return
-	 */
-	public static Object callMethod(Object instance, String methodName, Object... args) {
-		return SpyGlass.invoke(instance, methodName, args);
-	}
-
 	public static Field[] declaredFieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
 		Field[] declaredFields = clazz.getDeclaredFields();
 		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
@@ -126,30 +113,12 @@ public class ClassHelper {
 		return SpyGlass.getName(clazz);
 	}
 
-	@Deprecated
-	public static String getPackage(Class clazz) {
-		return SpyGlass.getPackage(clazz);
-	}
-
 	public static String getPackage(Object instance) {
-		return getPackage(instance.getClass());
+		return SpyGlass.getPackage(instance.getClass());
 	}
 
 	public static String getPackageDirectory(Class<?> clazz) {
-		return getPackage(clazz).replaceAll("\\.", "/");
-	}
-
-	/**
-	 * @deprecated
-	 * @see SpyGlass#instantiate(Class, Object[])
-	 * 
-	 * @param <T>
-	 * @param clazz
-	 * @param args
-	 * @return
-	 */
-	public static <T> T instantiate(Class<? extends T> clazz, Object... args) {
-		return SpyGlass.instantiate(clazz, args);
+		return SpyGlass.getPackage(clazz).replaceAll("\\.", "/");
 	}
 
 	/**

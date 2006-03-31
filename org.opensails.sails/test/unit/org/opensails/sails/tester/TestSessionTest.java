@@ -1,13 +1,14 @@
 package org.opensails.sails.tester;
 
-import org.opensails.sails.oem.BaseConfigurator;
-
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
+import org.opensails.functional.SailsFunctionalTester;
+import org.opensails.sails.tester.browser.TestSession;
+
 public class TestSessionTest extends TestCase {
 	public void testAssertContains() {
-		TestSession testSession = new TestSession(new SailsTester(BaseConfigurator.class));
+		TestSession testSession = new TestSession(new SailsFunctionalTester());
 		try {
 			testSession.assertContains("heloo");
 			throw new RuntimeException("session doesn't have entry for key");
@@ -18,10 +19,10 @@ public class TestSessionTest extends TestCase {
 	}
 
 	public void testAssertExcludes() {
-		TestSession testSession = new TestSession(new SailsTester(BaseConfigurator.class));
+		TestSession testSession = new TestSession(new SailsFunctionalTester());
 		testSession.assertExcludes("heloo");
 
-		testSession = new TestSession(new SailsTester(BaseConfigurator.class));
+		testSession = new TestSession(new SailsFunctionalTester());
 		testSession.setAttribute("heloo", "goodbye");
 		try {
 			testSession.assertExcludes("heloo");
@@ -30,7 +31,7 @@ public class TestSessionTest extends TestCase {
 	}
 
 	public void testNullSession() {
-		TestSession testSession = new TestSession(new SailsTester(BaseConfigurator.class));
+		TestSession testSession = new TestSession(new SailsFunctionalTester());
 		try {
 			testSession.assertContains("xxx");
 			throw new RuntimeException("no session");

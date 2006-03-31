@@ -9,7 +9,6 @@ import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.ValueElement;
-import org.opensails.sails.tester.SailsTester;
 
 /**
  * Used to construct the fields to be submitted in a post or get.
@@ -25,19 +24,10 @@ import org.opensails.sails.tester.SailsTester;
 public class ShamFormFields extends FormFields {
 	protected ContainerAdapterResolver adapterResolver;
 	protected List<ValueElement> elements;
-
-	@Deprecated
-	protected SailsTester tester;
 	protected Browser browser;
 
 	public ShamFormFields(Browser browser, ContainerAdapterResolver adapterResolver) {
 		this.browser = browser;
-		this.adapterResolver = adapterResolver;
-		this.elements = new ArrayList<ValueElement>();
-	}
-
-	public ShamFormFields(SailsTester tester, ContainerAdapterResolver adapterResolver) {
-		this.tester = tester;
 		this.adapterResolver = adapterResolver;
 		this.elements = new ArrayList<ValueElement>();
 	}
@@ -54,7 +44,6 @@ public class ShamFormFields extends FormFields {
 
 	public ShamFormFields multipart() {
 		if (browser != null) browser.nextRequestIsMultipart = true;
-		if (tester != null) tester.nextRequestIsMultipart = true;
 		return this;
 	}
 

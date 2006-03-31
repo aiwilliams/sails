@@ -1,13 +1,14 @@
 package org.opensails.sails.util;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Thanks to RoleModel Software for the implementation.
  */
-public class DoubleKeyedMap<K, K2, V> extends HashMap<K, Map<K2, V>> implements Serializable {
+public class DoubleKeyedMap<K, K2, V> extends HashMap<K, Map<K2, V>> {
+	private static final long serialVersionUID = 3541275398862261789L;
+
 	public DoubleKeyedMap() {
 		super();
 	}
