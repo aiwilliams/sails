@@ -4,6 +4,7 @@ public interface HtmlConstants {
 	String ANCHOR = "a";
 	String CHECKED = "checked";
 	String CHECKED_ATTRIBUTE = "checked";
+	String CLASS_ATTRIBUTE = "class";
 	String DISABLED_ATTRIBUTE = "disabled";
 	String FALSE = Boolean.FALSE.toString();
 	String HREF_ATTRIBUTE = "href";

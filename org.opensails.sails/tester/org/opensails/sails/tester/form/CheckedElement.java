@@ -6,66 +6,69 @@ import java.util.regex.Pattern;
 import junit.framework.AssertionFailedError;
 
 import org.opensails.sails.tester.html.HtmlPattern;
+import org.opensails.sails.tester.html.MultipleElementOccurrencesException;
 import org.opensails.sails.tester.html.NoSuchElementError;
+import org.opensails.sails.tester.html.TestElementError;
 
 public abstract class CheckedElement<T extends CheckedElement> extends TestFormElement<T> {
 	public static final Pattern CHECKED_PATTERN = Pattern.compile(" checked=[\"|'](.*?)[\"|']", Pattern.CASE_INSENSITIVE);
 
-	protected String activeElementSource;
-	protected int elementCount;
-
 	public CheckedElement(String containerSource, String name) {
-		super(containerSource, name);
+		super(name);
+		this.containerSource = containerSource;
+
+		Matcher matcher = getPattern().matcher(containerSource);
+		while (matcher.find())
+			if (HtmlPattern.matchesName(matcher.group(), name)) {
+				if (elementSource != null) throw new MultipleElementOccurrencesException(getClass(), containerSource, name);
+				elementSource = matcher.group();
+			}
+		if (elementSource == null) throw new NoSuchElementError(getClass(), containerSource, String.format("name=\"%s\"", name));
+		this.id = HtmlPattern.readId(elementSource);
 	}
 
+	public CheckedElement(String containerSource, String name, String value) {
+		super(name);
+		this.containerSource = containerSource;
+
+		Matcher matcher = getPattern().matcher(containerSource);
+		while (matcher.find())
+			if (HtmlPattern.matchesName(matcher.group(), name) && HtmlPattern.matchesValue(matcher.group(), value)) {
+				elementSource = matcher.group();
+				break;
+			}
+		if (elementSource == null) throw new NoSuchElementError(getClass(), containerSource, String.format("name=\"%s\" and value=\"%s\"", name, value));
+		this.id = HtmlPattern.readId(elementSource);
+	}
+
+	public T assertChecked() {
+		return assertChecked(true);
+	}
+
+	/**
+	 * @param expected checked state
+	 * @return this for more asserting
+	 * @see #assertChecked()
+	 * @see #assertUnchecked()
+	 */
 	@SuppressWarnings("unchecked")
-	public T checked(boolean expected) {
-		if (activeElementSource == null) throw new NoSuchElementError(this.getClass(), containerSource, elementSource);
-		assertChecked(expected, CHECKED_PATTERN.matcher(activeElementSource).find());
+	public T assertChecked(boolean expected) {
+		assertChecked(expected, CHECKED_PATTERN.matcher(elementSource).find());
 		return (T) this;
 	}
 
+	public T assertUnchecked() {
+		return assertChecked(false);
+	}
+
 	@SuppressWarnings("unchecked")
-	public T value(String expected) {
-		if (elementCount > 0) {
-			activeElementSource = null;
-			Matcher matcher = getPattern().matcher(elementSource);
-			while (matcher.find() && activeElementSource == null) {
-				String element = matcher.group();
-				if (HtmlPattern.matchesValue(element, expected)) {
-					activeElementSource = element;
-					return (T) this;
-				}
-			}
-		}
-		throw new NoSuchElementError(this.getClass(), containerSource, expected);
+	public T assertValue(String expected) {
+		if (!HtmlPattern.matchesValue(elementSource, expected)) throw new TestElementError(getClass(), elementSource, String.format("Value of [%s] did not match [%s]", getName(), expected));
+		return (T) this;
 	}
 
 	protected void assertChecked(boolean expected, boolean isChecked) throws AssertionFailedError {
 		if (expected && !isChecked) throw new AssertionFailedError("Expected " + getName() + " to be checked but was not. Source is:\n" + elementSource);
 		else if (!expected && isChecked) throw new AssertionFailedError("Expected " + getName() + " not to be checked but was. Source is:\n" + elementSource);
-	}
-
-	/**
-	 * @inheritDoc
-	 * 
-	 * Checked elements may have more than one source element. These get
-	 * combined to form the 'complete' element source.
-	 */
-	@Override
-	protected String elementSource(String matchCriteria) {
-		StringBuilder source = new StringBuilder();
-		Matcher matcher = getPattern().matcher(containerSource);
-		while (matcher.find() && elementSource == null) {
-			String element = matcher.group();
-			if (elementSourceMatch(element, matchCriteria)) {
-				source.append(element);
-				elementCount++;
-			}
-		}
-		if (elementCount > 0) {
-			if (elementCount == 1) activeElementSource = source.toString();
-			return source.toString();
-		} else throw new NoSuchElementError(this.getClass(), containerSource, matchCriteria);
 	}
 }

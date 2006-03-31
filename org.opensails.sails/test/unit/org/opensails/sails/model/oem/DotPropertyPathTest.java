@@ -41,8 +41,8 @@ public class DotPropertyPathTest extends TestCase {
     }
 
     public void testGetProperty() {
-        assertEquals("level4", path.getProperty());
-        assertEquals("level1", shortPath.getProperty());
+        assertEquals("level4", path.getPropertyName());
+        assertEquals("level1", shortPath.getPropertyName());
     }
 
     public void testGetProperty_AtIndex() {
@@ -62,7 +62,7 @@ public class DotPropertyPathTest extends TestCase {
     }
 
     public void testGetTargetIdentifier() {
-        assertEquals("level1", path.getTargetIdentifier());
-        assertEquals("level1", shortPath.getTargetIdentifier());
+        assertEquals("level1", path.getModelName());
+        assertEquals("level1", shortPath.getModelName());
     }
 }

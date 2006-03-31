@@ -1,14 +1,10 @@
-/*
- * Created on May 15, 2005
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.form.html;
 
 /**
  * FormElements that have a value attribute or whose content is it's value.
+ * 
+ * @author aiwilliams
  */
-@SuppressWarnings("unchecked")
 public abstract class ValueElement<T extends ValueElement> extends FormElement<T> {
 	protected String value;
 
@@ -24,12 +20,9 @@ public abstract class ValueElement<T extends ValueElement> extends FormElement<T
 		return value;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T value(Object value) {
-		// HACK: we need to be able to ask FormValueModel for a specific type (String vs. String[])
-		if (value instanceof String[])
-			this.value = ((String[])value)[0];
-		else
-			this.value = value == null ? null : value.toString();
+		this.value = String.valueOf(value);
 		return (T) this;
 	}
 }

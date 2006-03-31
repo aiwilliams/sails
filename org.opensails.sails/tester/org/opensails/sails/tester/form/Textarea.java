@@ -12,8 +12,9 @@ public class Textarea extends TestFormElement<Textarea> {
 		super(containerSource, name);
 	}
 
-	public void value(String expected) {
+	public Textarea assertValue(String expected) {
 		if (!HtmlPattern.matchesBody(elementSource, expected)) throw new TestElementError(Textarea.class, elementSource, String.format("Value of textarea [%s] did not match [%s]", getName(), expected));
+		return this;
 	}
 
 	@Override

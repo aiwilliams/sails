@@ -13,7 +13,7 @@ import java.util.List;
  * desires to use an alternate value for the property. It is up to the
  * application to fulfill that request.
  */
-public class AlternativeSelectModel extends ListSelectModel<Object> {
+public class AlternativeSelectModel extends ListSelectModel {
 	public static final String DEFAULT_ALTERNATIVE_OPTION_LABEL = "--- Other ---";
 	public static final String DEFAULT_ALTERNATIVE_OPTION_VALUE = "_alternative_option_value_";
 

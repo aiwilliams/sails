@@ -12,11 +12,10 @@ public abstract class TestElement<T extends TestElement> {
 	 * @param containerSource
 	 * @param matchCriteria used to select the correct source for this element
 	 *        when the pattern from {@link #getPattern()} matches multiple
-	 *        times. This can and will be subclass specific.
+	 *        times. This will be subclass specific.
 	 */
 	public TestElement(String containerSource, String matchCriteria) {
-		this.containerSource = containerSource;
-		this.elementSource = elementSource(matchCriteria);
+		initialize(containerSource, matchCriteria);
 		this.id = HtmlPattern.readId(elementSource);
 	}
 
@@ -24,14 +23,18 @@ public abstract class TestElement<T extends TestElement> {
 	 * @param containerSource
 	 * @param matchCriteria used to select the correct source for this element
 	 *        when the pattern from {@link #getPattern()} matches multiple
-	 *        times. This can and will be subclass specific.
+	 *        times. This will be subclass specific.
 	 * @param id expected id
 	 */
 	public TestElement(String containerSource, String matchCriteria, String id) {
-		this.containerSource = containerSource;
-		this.elementSource = elementSource(matchCriteria);
+		initialize(containerSource, matchCriteria);
 		this.id = id;
 	}
+
+	/**
+	 * For subclasses that have unique ways of finding themselves.
+	 */
+	protected TestElement() {}
 
 	/**
 	 * Finds the element source in the container source where the name attribute
@@ -55,16 +58,21 @@ public abstract class TestElement<T extends TestElement> {
 	 * of matching the name works fine. For a submit, the matchCriteria is the
 	 * label on the button, which is found in the input value attribute.
 	 * 
-	 * @param element
+	 * @param elementSource
 	 * @param matchCriteria
 	 * @return true if the element source matches the given matchCriteria
 	 */
-	protected boolean elementSourceMatch(String element, String matchCriteria) {
-		return HtmlPattern.matchesName(element, matchCriteria);
+	protected boolean elementSourceMatch(String elementSource, String matchCriteria) {
+		return new NameAttributeMatcher(elementSource).matches(matchCriteria);
 	}
 
 	/**
 	 * @return the Pattern that describes this element in it's container
 	 */
 	protected abstract Pattern getPattern();
+
+	protected void initialize(String containerSource, String matchCriteria) {
+		this.containerSource = containerSource;
+		this.elementSource = elementSource(matchCriteria);
+	}
 }

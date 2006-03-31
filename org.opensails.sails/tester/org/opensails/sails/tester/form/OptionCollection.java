@@ -2,13 +2,15 @@ package org.opensails.sails.tester.form;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.opensails.sails.tester.html.SourceContentError;
+import org.opensails.sails.tester.util.CollectionAssert;
 
-public class OptionCollection {
+public class OptionCollection implements Iterable<Option> {
 	public static final Pattern PATTERN = Pattern.compile("<option.*?>.*?</option>", Pattern.CASE_INSENSITIVE);
 
 	protected String containerSource;
@@ -26,7 +28,7 @@ public class OptionCollection {
 			options.add(new Option(matcher.group()));
 	}
 
-	public OptionCollection labels(String... expected) {
+	public OptionCollection assertLabels(String... expected) {
 		List<String> labelsPresent = new ArrayList<String>();
 		for (Option option : options)
 			labelsPresent.add(option.getLabel());
@@ -35,12 +37,23 @@ public class OptionCollection {
 		return this;
 	}
 
-	public int size() {
-		return options.size();
+	public void assertLabelsSelected(String... expected) {
+		List<String> selected = new ArrayList<String>();
+		for (Option option : options)
+			if (option.isSelected()) selected.add(option.getLabel());
+		CollectionAssert.containsOnlyOrdered(expected, selected);
 	}
 
-	public void size(int expected) {
+	public void assertSize(int expected) {
 		int actualSize = size();
 		if (expected != actualSize) throw new SourceContentError(containerSource, String.format("Expected %s labels but there were %s", expected, actualSize));
+	}
+
+	public Iterator<Option> iterator() {
+		return options.iterator();
+	}
+
+	public int size() {
+		return options.size();
 	}
 }

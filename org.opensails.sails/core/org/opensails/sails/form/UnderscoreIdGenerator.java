@@ -1,6 +1,7 @@
 package org.opensails.sails.form;
 
 import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.html.AbstractHtmlElement;
 
 public class UnderscoreIdGenerator implements IFormElementIdGenerator {
 	public String idForLabel(String label) {
@@ -9,6 +10,11 @@ public class UnderscoreIdGenerator implements IFormElementIdGenerator {
 
 	public String idForName(String name) {
 		return name.replace('.', '_');
+	}
+
+	// TODO Make this the only place this happens
+	public String idForNameValue(String name, String value) {
+		return AbstractHtmlElement.idForNameAndValue(name, value);
 	}
 
 	public String idForStrings(String... strings) {

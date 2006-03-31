@@ -13,9 +13,9 @@ import java.util.List;
  * 
  * Override the appropriate methods to render in a specific way.
  */
-public class ListSelectModel<T> implements SelectModel<T> {
-	protected List<T> list;
-	protected T selected;
+public class ListSelectModel implements SelectModel {
+	protected List<? extends Object> list;
+	protected Object selected;
 
 	/**
 	 * Convenience ctor for Collections.
@@ -25,19 +25,19 @@ public class ListSelectModel<T> implements SelectModel<T> {
 	 * 
 	 * @param options
 	 */
-	public ListSelectModel(Collection<T> options) {
-		this(new ArrayList<T>(options));
+	public ListSelectModel(Collection<? extends Object> options) {
+		this(new ArrayList<Object>(options));
 	}
 
 	/**
 	 * @param options
 	 */
-	public ListSelectModel(List<T> options) {
-		if (options == null) options = new ArrayList<T>(0);
-		this.list = new ArrayList<T>(options);
+	public ListSelectModel(List<? extends Object> options) {
+		if (options == null) options = new ArrayList<Object>(0);
+		this.list = new ArrayList<Object>(options);
 	}
 
-	public ListSelectModel(T... options) {
+	public ListSelectModel(Object... options) {
 		this(Arrays.asList(options));
 	}
 
@@ -45,7 +45,7 @@ public class ListSelectModel<T> implements SelectModel<T> {
 	// subclass support
 	}
 
-	public boolean contains(T object) {
+	public boolean contains(Object object) {
 		return allOptions().contains(object);
 	}
 
@@ -54,11 +54,11 @@ public class ListSelectModel<T> implements SelectModel<T> {
 		throw new IndexOutOfBoundsException(String.valueOf(index) + " is out of range: 0 to " + getOptionCount());
 	}
 
-	public String getLabel(T object) {
+	public String getLabel(Object object) {
 		return object == null ? NULL_OPTION_LABEL : object.toString();
 	}
 
-	public T getOption(int index) {
+	public Object getOption(int index) {
 		return allOptions().get(index);
 	}
 
@@ -66,7 +66,7 @@ public class ListSelectModel<T> implements SelectModel<T> {
 		return allOptions().size();
 	}
 
-	public T getSelected() {
+	public Object getSelected() {
 		return selected;
 	}
 
@@ -75,7 +75,7 @@ public class ListSelectModel<T> implements SelectModel<T> {
 		throw new IndexOutOfBoundsException(index + " is out of range: 0 to " + getOptionCount());
 	}
 
-	public String getValue(T object) {
+	public String getValue(Object object) {
 		return object == null ? NULL_OPTION_VALUE : object.toString();
 	}
 
@@ -83,18 +83,18 @@ public class ListSelectModel<T> implements SelectModel<T> {
 		return selected != null;
 	}
 
-	public SelectModel select(T option) {
+	public SelectModel select(Object option) {
 		selected = option;
 		return this;
 	}
 
-	public T translateValue(String value) {
-		for (T option : allOptions())
+	public Object translateValue(String value) {
+		for (Object option : allOptions())
 			if (getValue(option).equals(value)) return option;
 		throw new IllegalArgumentException("The option " + value + " is not legal");
 	}
 
-	protected List<T> allOptions() {
+	protected List<? extends Object> allOptions() {
 		return list;
 	}
 
@@ -102,7 +102,7 @@ public class ListSelectModel<T> implements SelectModel<T> {
 		return index >= 0 && index < getOptionCount();
 	}
 
-	protected int indexOf(T object) {
+	protected int indexOf(Object object) {
 		return allOptions().indexOf(object);
 	}
 }

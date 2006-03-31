@@ -47,30 +47,19 @@ public class Action implements IAction {
 		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(contextClass, name);
 	}
 
-	public IActionResult execute(ActionInvocation invocation) {
-		beginExecution(invocation);
-		setFields(invocation);
-		if (beforeBehaviors(invocation)) invocation.invoke();
-		else invocation.setResult(invocation.getContext().getActionResult());
-		afterBehaviors(invocation);
-		if (!invocation.hasResult()) setDefaultResult(invocation);
-		registerResult(invocation);
-		endExecution(invocation);
-		return invocation.getResult();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public String toString() {
-		return contextClass + "#" + name;
-	}
-
 	protected void afterBehaviors(ActionInvocation invocation) {
 		for (IBehaviorHandler handler : invocation.getHandlers())
 			handler.afterAction(invocation);
+	}
+
+	private BehaviorInstance[] allBehaviors(ActionInvocation invocation) {
+		if (!invocation.hasContext()) return EMPTY_BEHAVIOR_INSTANCES;
+
+		List<BehaviorInstance> instances = new ArrayList<BehaviorInstance>();
+
+		if (invocation.hasCode()) collectBehaviorsWhenActionCode(instances, invocation);
+		else collectBehaviorsWhenNoActionCode(instances, invocation);
+		return instances.toArray(new BehaviorInstance[instances.size()]);
 	}
 
 	protected boolean beforeBehaviors(ActionInvocation invocation) {
@@ -83,62 +72,6 @@ public class Action implements IAction {
 		getActionListeners(invocation.event).beginExecution(this);
 		invocation.code = methodHavingArgCount(invocation.parameters.size());
 		initializeHandlers(invocation);
-	}
-
-	protected IActionResult defaultActionResult(ISailsEvent event) {
-		return new TemplateActionResult(event);
-	}
-
-	protected void endExecution(ActionInvocation invocation) {
-		getActionListeners(invocation.event).endExecution(this);
-	}
-
-	protected IActionListener getActionListeners(ISailsEvent event) {
-		return event.getApplication().getContainer().broadcast(IActionListener.class, false);
-	}
-
-	protected Method methodHavingArgCount(int i) {
-		for (Method method : actionMethods)
-			if (method.getParameterTypes().length <= i) return method;
-		return null;
-	}
-
-	protected void registerResult(ActionInvocation invocation) {
-		IEventContextContainer container = invocation.getContainer();
-		container.register(IActionResult.class, invocation.getResult());
-		container.register(invocation.getResult());
-	}
-
-	protected void setDefaultResult(ActionInvocation invocation) {
-		invocation.setResult(defaultActionResult(invocation.event));
-	}
-
-	@SuppressWarnings("unchecked")
-	protected void setFields(ActionInvocation invocation) {
-		IEventProcessingContext context = invocation.getContext();
-		if (context == null) return;
-		FormFields formFields = invocation.getFormFields();
-		for (Field field : context.getClass().getFields()) {
-			if (formFields.contains(field.getName())) {
-				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
-				// Instead of asking the FormFields for the value of the field
-				// as X, make FieldType be a class with behavior that can read
-				// the value from FormFields for use in the IAdapter.
-				Object fromWeb = formFields.valueAs(field.getName(), adapter.getFieldType());
-				Object forModel = adapter.forModel(field.getType(), fromWeb);
-				ClassHelper.writeField(context, field, forModel);
-			}
-		}
-	}
-
-	private BehaviorInstance[] allBehaviors(ActionInvocation invocation) {
-		if (!invocation.hasContext()) return EMPTY_BEHAVIOR_INSTANCES;
-
-		List<BehaviorInstance> instances = new ArrayList<BehaviorInstance>();
-
-		if (invocation.hasCode()) collectBehaviorsWhenActionCode(instances, invocation);
-		else collectBehaviorsWhenNoActionCode(instances, invocation);
-		return instances.toArray(new BehaviorInstance[instances.size()]);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -179,6 +112,34 @@ public class Action implements IAction {
 			if (annotation.annotationType().isAnnotationPresent(Behavior.class)) instances.add(new BehaviorInstance(annotation, ElementType.TYPE));
 	}
 
+	protected IActionResult defaultActionResult(ISailsEvent event) {
+		return new TemplateActionResult(event);
+	}
+
+	protected void endExecution(ActionInvocation invocation) {
+		getActionListeners(invocation.event).endExecution(this);
+	}
+
+	public IActionResult execute(ActionInvocation invocation) {
+		beginExecution(invocation);
+		setFields(invocation);
+		if (beforeBehaviors(invocation)) invocation.invoke();
+		else invocation.setResult(invocation.getContext().getActionResult());
+		afterBehaviors(invocation);
+		if (!invocation.hasResult()) setDefaultResult(invocation);
+		registerResult(invocation);
+		endExecution(invocation);
+		return invocation.getResult();
+	}
+
+	protected IActionListener getActionListeners(ISailsEvent event) {
+		return event.getApplication().getContainer().broadcast(IActionListener.class, false);
+	}
+
+	public String getName() {
+		return name;
+	}
+
 	@SuppressWarnings("unchecked")
 	private void initializeHandlers(ActionInvocation invocation) {
 		Set<IBehaviorHandler> satisfiedHandlers = new LinkedHashSet<IBehaviorHandler>();
@@ -189,6 +150,12 @@ public class Action implements IAction {
 		}
 	}
 
+	protected Method methodHavingArgCount(int i) {
+		for (Method method : actionMethods)
+			if (method.getParameterTypes().length <= i) return method;
+		return null;
+	}
+
 	private Method overriddenAction(Class controller, Method action) {
 		Class<?> controllerSuperclass = controller.getSuperclass();
 		if (controllerSuperclass == Object.class) return null;
@@ -197,5 +164,35 @@ public class Action implements IAction {
 		} catch (Exception possibleAndIgnored) {
 			return null;
 		}
+	}
+
+	protected void registerResult(ActionInvocation invocation) {
+		IEventContextContainer container = invocation.getContainer();
+		container.register(IActionResult.class, invocation.getResult());
+		container.register(invocation.getResult());
+	}
+
+	protected void setDefaultResult(ActionInvocation invocation) {
+		invocation.setResult(defaultActionResult(invocation.event));
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void setFields(ActionInvocation invocation) {
+		IEventProcessingContext context = invocation.getContext();
+		if (context == null) return;
+		FormFields formFields = invocation.getFormFields();
+		for (Field field : context.getClass().getFields()) {
+			if (formFields.contains(field.getName())) {
+				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
+				Object fromWeb = adapter.getFieldType().getValue(formFields, field.getName());
+				Object forModel = adapter.forModel(field.getType(), fromWeb);
+				ClassHelper.writeField(context, field, forModel);
+			}
+		}
+	}
+
+	@Override
+	public String toString() {
+		return contextClass + "#" + name;
 	}
 }

@@ -1,5 +1,7 @@
 package org.opensails.sails.adapter.oem;
 
+import java.util.Collection;
+
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.spyglass.ClassResolverAdapter;
@@ -14,6 +16,7 @@ public class DefaultAdapterResolver<A extends IAdapter> extends ClassResolverAda
 			else return (Class<A>) ArrayAdapter.class;
 		} else if (IIdentifiable.class.isAssignableFrom(key)) return (Class<A>) IdentifiableAdapter.class;
 		else if (key.isEnum()) return (Class<A>) EnumAdapter.class;
+		else if (Collection.class.isAssignableFrom(key)) return (Class<A>) CollectionAdapter.class;
 		return null;
 	}
 

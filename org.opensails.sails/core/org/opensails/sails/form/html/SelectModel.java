@@ -5,7 +5,7 @@ package org.opensails.sails.form.html;
  * well as methods that know how to adapt the options for rendering the HTML and
  * that can turn the HTML OPTION value attributes back into Objects.
  */
-public interface SelectModel<T> {
+public interface SelectModel {
 	/**
 	 * When the 'null' option is selected, this label is displayed to the user.
 	 */
@@ -21,7 +21,7 @@ public interface SelectModel<T> {
 	 * @param object
 	 * @return true if object is one of the options
 	 */
-	boolean contains(T object);
+	boolean contains(Object object);
 
 	/**
 	 * @return the label of the option at index
@@ -31,12 +31,12 @@ public interface SelectModel<T> {
 	/**
 	 * @return the label of the Object option
 	 */
-	String getLabel(T option);
+	String getLabel(Object option);
 
 	/**
 	 * @return the Object of the option at index
 	 */
-	T getOption(int index);
+	Object getOption(int index);
 
 	/**
 	 * @return the number of options for this select
@@ -46,7 +46,7 @@ public interface SelectModel<T> {
 	/**
 	 * @return the selected option
 	 */
-	T getSelected();
+	Object getSelected();
 
 	/**
 	 * @return the value of the option at index
@@ -56,7 +56,7 @@ public interface SelectModel<T> {
 	/**
 	 * @return the value of the Object option
 	 */
-	String getValue(T object);
+	String getValue(Object object);
 
 	/**
 	 * @return true if an option is selected
@@ -68,5 +68,5 @@ public interface SelectModel<T> {
 	 *        selection
 	 * @return this for convenience
 	 */
-	SelectModel select(T option);
+	SelectModel select(Object option);
 }

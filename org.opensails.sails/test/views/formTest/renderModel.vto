@@ -1,6 +1,14 @@
 $form.start
 	$form.text('differentModel.textProperty')
-	$form.text('model.textProperty')
-	$form.textarea('model.textareaProperty')
-	$form.checkbox('model.checkboxProperty').value('checkboxValue')
+	$form.text('model.textProperty').label('Text')
+	$form.text('model.subModel.textProperty')
+	$form.textarea('model.textareaProperty').label('Textarea')
+	$form.checkbox('model.checkboxProperty').label('Checkbox')
+	$form.checkbox('model.checkboxListProperty', 'one').label('One')
+	$form.checkbox('model.checkboxListProperty', 'two').label('Two')
+	$form.radio('model.radioProperty', 'one').label('One')
+	$form.radio('model.radioProperty', 'two').label('Two')
+	$form.select('model.selectProperty', ['first', 'selectValue', 'third', 'fourth']).label('Select')
+	$form.password('model.passwordProperty').label('Password')
+	$form.hidden('model.hiddenProperty')
 $form.end

@@ -27,7 +27,7 @@ import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpSession;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
 import org.opensails.sails.tester.servletapi.ShamServletContext;
-import org.opensails.sails.util.ClassInstanceAccessor;
+import org.opensails.spyglass.SpyObject;
 
 /**
  * Think of this as being a browser. Through it you request pages, and it
@@ -443,7 +443,7 @@ public class SailsTester implements ISailsApplication {
 
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
 		this.application = new TestSailsApplication();
-		new ClassInstanceAccessor(TestSailsApplication.class, true).setProperty(application, "config", config);
+		new SpyObject<TestSailsApplication>(application).write("config", config);
 		this.application.configure(instrumentedConfigurator(configuratorClass));
 		prepareForNextRequest();
 	}

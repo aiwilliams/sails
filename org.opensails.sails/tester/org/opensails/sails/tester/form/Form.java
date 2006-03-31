@@ -7,20 +7,12 @@ import junit.framework.AssertionFailedError;
 
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.tester.html.FieldSet;
-import org.opensails.sails.tester.html.SourceContentError;
 
 public class Form {
 	public static final Pattern PATTERN = Pattern.compile("<form.*?>.*?</form>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
 	protected final HtmlForm form;
 	protected final String source;
-
-	public Form(String pageContent) {
-		Matcher matcher = Form.PATTERN.matcher(pageContent);
-		if (!matcher.find()) throw new SourceContentError(pageContent, "There is not a form in the content");
-		this.source = matcher.group();
-		this.form = null;
-	}
 
 	public Form(String pageContent, HtmlForm form) {
 		this.form = form;
@@ -33,16 +25,32 @@ public class Form {
 		return new Checkbox(getSource(), named);
 	}
 
+	public Checkbox checkbox(String named, String value) {
+		return new Checkbox(getSource(), named, value);
+	}
+
+	/**
+	 * @param id
+	 * @return a FieldSet limited to the scope of this form
+	 */
+	public FieldSet fieldSet(String id) {
+		return new FieldSet(getSource(), id);
+	}
+
 	public String getSource() {
 		return source;
 	}
-	
+
+	public Hidden hidden(String named) {
+		return new Hidden(getSource(), named);
+	}
+
 	public Password password(String named) {
 		return new Password(getSource(), named);
 	}
 
-	public Radio radio(String named) {
-		return new Radio(getSource(), named);
+	public Radio radio(String named, String value) {
+		return new Radio(getSource(), named, value);
 	}
 
 	public Select select(String named) {
@@ -67,15 +75,7 @@ public class Form {
 	}
 
 	public Form validated() {
-		if (!form.isValid()) throw new AssertionFailedError(form.getMessage());
+		if (!form.isValid()) throw new AssertionFailedError(form.getErrorMessages());
 		return this;
-	}
-
-	/**
-	 * @param id
-	 * @return a FieldSet limited to the scope of this form
-	 */
-	public FieldSet fieldSet(String id) {
-		return new FieldSet(getSource(), id);
 	}
 }

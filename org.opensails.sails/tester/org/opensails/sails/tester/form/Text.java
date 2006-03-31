@@ -12,8 +12,9 @@ public class Text extends TestFormElement<Text> {
 		super(formSource, named);
 	}
 
-	public void value(String expected) {
+	public Text assertValue(String expected) {
 		if (!HtmlPattern.matchesValue(elementSource, expected)) throw new TestElementError(Text.class, elementSource, String.format("Value of text [%s] did not match [%s]", getName(), expected));
+		return this;
 	}
 
 	@Override

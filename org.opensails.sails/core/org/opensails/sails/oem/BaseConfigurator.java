@@ -29,10 +29,13 @@ import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.IActionEventProcessorResolver;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.FormValueModel;
+import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
-import org.opensails.sails.form.IFormValueModel;
 import org.opensails.sails.form.UnderscoreIdGenerator;
+import org.opensails.sails.form.ValidationContext;
+import org.opensails.sails.model.IPropertyFactory;
+import org.opensails.sails.model.ModelContext;
+import org.opensails.sails.model.oem.DefaultPropertyFactory;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.Require;
@@ -147,17 +150,22 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 
 		eventContainer.register(Require.class);
 		eventContainer.registerResolver(Flash.class, new FlashComponentResolver(event));
-
 		provideEventScopedContainerAccess(eventContainer);
 
 		eventContainer.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
 		eventContainer.register(IBinding.class, VientoBinding.class);
-		eventContainer.register(IFormValueModel.class, FormValueModel.class);
 		eventContainer.registerInstantiationListener(IBinding.class, new InstantiationListener<IBinding>() {
 			public void instantiated(IBinding newInstance) {
 				configure(event, newInstance);
 			}
 		});
+
+		// TODO: Move form stuff to more configurable location, as framework is
+		// fleshed out
+		eventContainer.register(ModelContext.class);
+		eventContainer.register(ValidationContext.class);
+		eventContainer.register(HtmlForm.class);
+		eventContainer.register(IPropertyFactory.class, DefaultPropertyFactory.class);
 	}
 
 	/**

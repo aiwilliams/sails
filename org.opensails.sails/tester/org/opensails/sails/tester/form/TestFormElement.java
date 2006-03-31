@@ -24,8 +24,15 @@ public abstract class TestFormElement<T extends TestFormElement> extends TestEle
 		this.name = name;
 	}
 
-	public String getName() {
-		return name;
+	/**
+	 * For subclasses that have unique ways of finding themselves. Name is
+	 * always needed for a form element.
+	 * 
+	 * @param name
+	 * @see CheckedElement
+	 */
+	protected TestFormElement(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -36,7 +43,7 @@ public abstract class TestFormElement<T extends TestFormElement> extends TestEle
 	 * @return this
 	 */
 	@SuppressWarnings("unchecked")
-	public T labeled(String expected) {
+	public T assertLabeled(String expected) {
 		if (id == null) throw new TestElementError(getClass(), containerSource, "Cannot find label for form element without id");
 		Matcher matcher = HtmlPattern.LABEL.matcher(containerSource);
 		while (matcher.find()) {
@@ -46,5 +53,9 @@ public abstract class TestFormElement<T extends TestFormElement> extends TestEle
 			}
 		}
 		throw new TestElementError(getClass(), containerSource, String.format("Label for %s does not exist", id));
+	}
+
+	public String getName() {
+		return name;
 	}
 }

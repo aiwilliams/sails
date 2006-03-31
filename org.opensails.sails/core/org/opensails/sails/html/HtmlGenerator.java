@@ -10,7 +10,7 @@ import java.util.Map;
  * around between elements. This is useful when one element uses another and
  * performs its render by calling on that other element.
  * 
- * @author Adam Williams
+ * @author aiwilliams
  */
 public class HtmlGenerator {
 	protected final Writer writer;
@@ -44,6 +44,15 @@ public class HtmlGenerator {
 		return this;
 	}
 
+	public HtmlGenerator beginTag(String tagName) throws IOException {
+		openTag(tagName);
+		return closeTag();
+	}
+
+	public HtmlGenerator classAttribute(String classValue) throws IOException {
+		return attribute(HtmlConstants.CLASS_ATTRIBUTE, classValue);
+	}
+
 	public HtmlGenerator closeTag() throws IOException {
 		return closeTag(false);
 	}
@@ -72,8 +81,7 @@ public class HtmlGenerator {
 	 * @return the underlying Writer
 	 */
 	public Writer getWriter() {
-		// TODO Auto-generated method stub
-		return null;
+		return writer;
 	}
 
 	/**
@@ -106,8 +114,7 @@ public class HtmlGenerator {
 	public HtmlGenerator openTag(String tagName, String id) throws IOException {
 		writer.write("<");
 		writer.write(tagName);
-		idAttribute(id);
-		return this;
+		return idAttribute(id);
 	}
 
 	/**
@@ -120,10 +127,7 @@ public class HtmlGenerator {
 	 * @throws IOException
 	 */
 	public HtmlGenerator openTag(String tagName, String id, String name) throws IOException {
-		openTag(tagName);
-		nameAttribute(name);
-		idAttribute(id);
-		return this;
+		return openTag(tagName).nameAttribute(name).idAttribute(id);
 	}
 
 	/**
@@ -137,6 +141,10 @@ public class HtmlGenerator {
 	public HtmlGenerator optionalAttribute(String name, String value) throws IOException {
 		if (value != null) attribute(name, value);
 		return this;
+	}
+
+	public HtmlGenerator tag(String tagName, String content) throws IOException {
+		return beginTag(tagName).write(content).endTag(tagName);
 	}
 
 	/**
@@ -155,6 +163,16 @@ public class HtmlGenerator {
 	 */
 	public HtmlGenerator valueAttribute(String valueValue) throws IOException {
 		return attribute(HtmlConstants.VALUE_ATTRIBUTE, valueValue);
+	}
+
+	/**
+	 * @param content
+	 * @return this
+	 * @throws IOException
+	 */
+	public HtmlGenerator write(Object content) throws IOException {
+		writer.write(String.valueOf(content));
+		return this;
 	}
 
 	/**

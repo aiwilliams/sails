@@ -18,11 +18,11 @@ public class SelectTest extends TestCase {
 
 	public void testLabeled() {
 		Select element = new Select("<form>  <label for=\"select.id\">label</label>  <select name=\"select.name\" id=\"select.id\"></select> </form>", "select.name");
-		element.labeled("label");
+		element.assertLabeled("label");
 
 		element = new Select("<form>  <select name=\"select.name\" id=\"select.id\"></select> </form>", "select.name");
 		try {
-			element.labeled("label");
+			element.assertLabeled("label");
 			throw new RuntimeException("expected failure");
 		} catch (AssertionFailedError expected) {}
 	}

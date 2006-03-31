@@ -2,11 +2,8 @@ package org.opensails.sails.form;
 
 /**
  * Creates valid HTML element ids.
- * <p>
- * This is pluggable because I believe there are people out there who don't
- * think we do it correctly.
  * 
- * @author aiw10802
+ * @author aiwilliams
  */
 public interface IFormElementIdGenerator {
 	/**
@@ -20,6 +17,14 @@ public interface IFormElementIdGenerator {
 	 * @return a useable id from a name
 	 */
 	String idForName(String name);
+
+	/**
+	 * @param name
+	 * @param value
+	 * @return an id built from the name and value, providing for unique ids
+	 *         where multiple elements can have the same name
+	 */
+	String idForNameValue(String name, String value);
 
 	/**
 	 * @param strings that will be converted

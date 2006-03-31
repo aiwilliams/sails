@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import javax.servlet.http.HttpSession;
 
-import org.opensails.rigging.IContainer;
 import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.FileSendActionResult;
@@ -16,10 +15,8 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.form.IFormValueModel;
 import org.opensails.sails.mixins.UrlforMixin;
-import org.opensails.sails.model.IModelContext;
-import org.opensails.sails.model.oem.SingleModelContext;
+import org.opensails.sails.model.ModelContext;
 import org.opensails.sails.oem.Flash;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.viento.IBinding;
@@ -28,37 +25,6 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	protected ISailsEvent event;
 	protected P processor;
 	protected IActionResult result;
-
-	public IActionResult getActionResult() {
-		return result;
-	}
-
-	public IEventContextContainer getContainer() {
-		return event.getContainer();
-	}
-
-	public ISailsEvent getEvent() {
-		return event;
-	}
-
-	public P getEventProcessor() {
-		return processor;
-	}
-
-	public String getTemplatePath(String identifier) {
-		if (TemplateActionResult.CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
-		else return String.format("%s/%s", event.getProcessorName(), identifier);
-	}
-
-	public void setEventContext(ISailsEvent event, P processor) {
-		this.event = event;
-		this.processor = processor;
-	}
-
-	public <T extends IActionResult> T setResult(T result) {
-		this.result = result;
-		return result;
-	}
 
 	/**
 	 * Exposes the object as key for use in the rendered template
@@ -92,7 +58,7 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	 */
 	protected void exposeModel(String name, Object model) {
 		expose(name, model);
-		getContainer().instance(IFormValueModel.class).expose(name, model);
+		getContainer().instance(ModelContext.class).expose(name, model);
 	}
 
 	protected String field(String name) {
@@ -133,11 +99,27 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		flash(key, value);
 	}
 
+	public IActionResult getActionResult() {
+		return result;
+	}
+
 	/**
 	 * @return the IBinding appropriate to the scope of this
 	 */
 	protected IBinding getBinding() {
 		return getContainer().instance(IBinding.class);
+	}
+
+	public IEventContextContainer getContainer() {
+		return event.getContainer();
+	}
+
+	public ISailsEvent getEvent() {
+		return event;
+	}
+
+	public P getEventProcessor() {
+		return processor;
 	}
 
 	/**
@@ -158,6 +140,11 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		HttpSession session = event.getSession(false);
 		if (session != null) return session.getAttribute(name);
 		return null;
+	}
+
+	public String getTemplatePath(String identifier) {
+		if (TemplateActionResult.CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
+		else return String.format("%s/%s", event.getProcessorName(), identifier);
 	}
 
 	protected TemplateActionResult getTemplateResult() {
@@ -235,6 +222,16 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		return setResult(new FileSendActionResult(event, path));
 	}
 
+	public void setEventContext(ISailsEvent event, P processor) {
+		this.event = event;
+		this.processor = processor;
+	}
+
+	public <T extends IActionResult> T setResult(T result) {
+		this.result = result;
+		return result;
+	}
+
 	/**
 	 * @param clazz full name is used as attribute name
 	 * @param value can be null
@@ -271,15 +268,16 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		return existing;
 	}
 
-	// TODO: Don't make child - use factory see
-	// http://trac.opensails.org/sails/ticket/79
-	// TODO: Write tests outside of Dock
-	protected boolean updateModel(Object modelInstance) {
-		exposeModel(modelInstance);
-		IContainer formContainer = event.getContainer().makeChildUnscoped();
-		formContainer.register(IModelContext.class, new SingleModelContext(modelInstance));
-		HtmlForm formInstance = formContainer.instance(HtmlForm.class, HtmlForm.class);
-		return formInstance.isValid();
+	/**
+	 * Updates the given model from the posted form (or query parameters).
+	 * <p>
+	 * This is really just a convenience method. Please look at {@link HtmlForm}
+	 * to learn more about ways to extend form processing.
+	 */
+	protected boolean updateModel(Object model) {
+		exposeModel(model);
+		HtmlForm formInstance = getContainer().instance(HtmlForm.class, HtmlForm.class);
+		return formInstance.updateModels(getEvent().getFormFields());
 	}
 
 	protected UrlforMixin urlfor() {

@@ -58,6 +58,11 @@ public class ShamFormFields extends FormFields {
 		return this;
 	}
 
+	/**
+	 * @param keyValuePairs values will be adapted using IAdapter instances from
+	 *        the IAdapterResolver of the application
+	 * @return this
+	 */
 	@SuppressWarnings("unchecked")
 	public ShamFormFields quickSet(Object... keyValuePairs) {
 		if (keyValuePairs.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");

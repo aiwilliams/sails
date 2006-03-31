@@ -41,7 +41,7 @@ public class CollectionAssert {
 
 	public static void containsOnlyOrdered(Collection expected, Collection actual) {
 		Assert.assertEquals("Actual should contain expected number of items.", expected.size(), actual.size());
-		Assert.assertTrue("Expected to contain all in exact order", expected.equals(actual));
+		Assert.assertTrue(String.format("Expected to contain all in exact order. Expected %s but was %s", expected, actual), expected.equals(actual));
 	}
 
 	public static void containsOnlyOrdered(Object[] expected, Collection actual) {

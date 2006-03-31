@@ -269,6 +269,16 @@ public class Browser {
 	}
 
 	/**
+	 * A super-handy way to render arbitrary templates with no action code.
+	 * 
+	 * @param templateContent
+	 * @return the resulting Page
+	 */
+	public Page render(String templateContent) {
+		return get(createVirtualEvent("browser/render", templateContent));
+	}
+
+	/**
 	 * Allows placement of <em>non-null</em> object into HttpSession.
 	 * 
 	 * @param value full name of getClass is used as attribute name

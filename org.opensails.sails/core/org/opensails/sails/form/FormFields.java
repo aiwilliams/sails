@@ -2,18 +2,19 @@ package org.opensails.sails.form;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.SetUtils;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.SailsException;
-import org.opensails.sails.adapter.FieldType;
 import org.opensails.sails.tester.SailsTester;
 
 /**
@@ -93,12 +94,51 @@ public class FormFields {
 		return (FileUpload) backingMap.get(name);
 	}
 
-	public String[] getNames() {
-		return (String[]) backingMap.keySet().toArray(new String[backingMap.keySet().size()]);
+	/**
+	 * @return all current field names
+	 * @see #getNames()
+	 * @see #getNamesPrefixed(String)
+	 */
+	public Set<String> getAllNames() {
+		return backingMap.keySet();
 	}
 
-	public Set getNamesSet() {
+	/**
+	 * @return field names that are FormMetas, minus the prefix itself
+	 */
+	public Set<String> getMetaNames() {
+		return getNamesPrefixed(FormMeta.META_PREFIX);
+	}
+
+	/**
+	 * @return field names that are not FormMetas
+	 * @see #getMetaNames()
+	 * @see #getNamesPrefixed(String)
+	 */
+	public Set<String> getNames() {
 		return backingMap.keySet();
+	}
+
+	/**
+	 * @param prefix
+	 * @return all field names with prefix, minus the prefix itself, includes
+	 *         FormMetas
+	 */
+	@SuppressWarnings("unchecked")
+	public Set<String> getNamesPrefixed(String prefix) {
+		if (isEmpty()) return SetUtils.EMPTY_SET;
+		Set<String> fieldNames = new HashSet<String>(5);
+		for (String key : getAllNames())
+			if (key.startsWith(prefix)) fieldNames.add(key.substring(prefix.length()));
+		return fieldNames;
+	}
+
+	/**
+	 * @param name
+	 * @return the value for name
+	 */
+	public Object getValue(String name) {
+		return backingMap.get(name);
 	}
 
 	public Collection<?> getValues() {
@@ -161,19 +201,6 @@ public class FormFields {
 		if (value instanceof FileUpload) value = ((FileUpload) value).stringContent();
 		else value = stringValue(value);
 		return (String) value;
-	}
-
-	public Object valueAs(String fieldName, FieldType fieldType) {
-		switch (fieldType) {
-		case STRING:
-			return value(fieldName);
-		case STRING_ARRAY:
-			return values(fieldName);
-		case FILE_UPLOAD:
-			return file(fieldName);
-		default:
-			throw new SailsException(String.format("Could not provide the value of %s as %s", fieldName, fieldType));
-		}
 	}
 
 	/**

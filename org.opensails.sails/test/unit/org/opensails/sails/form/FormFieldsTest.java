@@ -1,11 +1,9 @@
 package org.opensails.sails.form;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.opensails.sails.adapter.FieldType;
 import org.opensails.sails.tester.browser.ShamFileUpload;
 import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.util.ClassHelper;
@@ -23,17 +21,12 @@ public class FormFieldsTest extends TestCase {
 		String string = "value";
 		String[] array = new String[] { string };
 
-		FormFields map = FormFields.quick("stringArray", array);
+		FormFields map = new FormFields();
+		map.setValues("stringArray", array);
 		assertEquals(string, map.value("stringArray"));
 		assertNull(map.value("somethingNotThere"));
 		assertEquals(array, map.values("stringArray"));
 		assertNull(map.values("somethingNotThere"));
-	}
-
-	public void testQuick() {
-		FormFields fields = FormFields.quick("one", "one");
-		assertEquals("one", fields.value("one"));
-		assertTrue(Arrays.equals(new String[] { "one" }, fields.values("one")));
 	}
 
 	public void testSet_EachOfThem() throws Exception {
@@ -49,8 +42,7 @@ public class FormFieldsTest extends TestCase {
 		ClassHelper.writeDeclaredField(fields, "multipartContent", true);
 		Map<String, Object> backingMap = (Map<String, Object>) ClassHelper.readField(fields, "backingMap", false);
 		backingMap.put("myFileUpload", upload);
-		assertEquals("content", fields.valueAs("myFileUpload", FieldType.STRING));
-		assertSame(upload, fields.valueAs("myFileUpload", FieldType.FILE_UPLOAD));
+		assertSame(upload, fields.getValue("myFileUpload"));
 		assertEquals("content", fields.value("myFileUpload"));
 	}
 }

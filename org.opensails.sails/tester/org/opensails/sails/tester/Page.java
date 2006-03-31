@@ -150,9 +150,7 @@ public class Page {
 	}
 
 	public Form form() {
-		HtmlForm htmlForm = container().instance(HtmlForm.class);
-		if (htmlForm != null) return new Form(source(), htmlForm);
-		else return new Form(source());
+		return new Form(source(), container().instance(HtmlForm.class));
 	}
 
 	public boolean matches(String regex) {

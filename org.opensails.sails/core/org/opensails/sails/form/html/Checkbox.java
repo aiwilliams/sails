@@ -4,11 +4,8 @@ import static org.opensails.sails.form.FormMeta.CHECKBOX_PREFIX;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 
-import org.opensails.sails.html.HtmlConstants;
 import org.opensails.sails.html.HtmlGenerator;
-import org.opensails.sails.util.Quick;
 
 /**
  * An HTML INPUT of type CHECKBOX.
@@ -35,23 +32,17 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	public static final String CHECKED = "checked";
 
 	protected boolean checked;
-	protected List<String> checkedValues;
 	protected Hidden hiddenForBoolean;
 
 	public Checkbox(String name) {
-		this(name, null);
+		this(name, "1", "0");
 	}
 
-	/**
-	 * @param name
-	 * @param checkedValues final output of checked attribute is determined by
-	 *        whether the value of this checkbox is in checkedValues.
-	 *        checkedValues can be null.
-	 */
-	public Checkbox(String name, String[] checkedValues) {
+	public Checkbox(String name, String checkedValue, String uncheckedValue) {
 		super(RENDER_LABEL_AFTER, CHECKBOX, name);
-		if (checkedValues != null) this.checkedValues = Quick.list(checkedValues);
-		value = Boolean.TRUE.toString();
+		value(checkedValue);
+		hiddenForBoolean = new Hidden(CHECKBOX_PREFIX + name);
+		hiddenForBoolean.value(uncheckedValue);
 	}
 
 	/**
@@ -76,27 +67,13 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	}
 
 	/**
-	 * If called, the Checkbox is rendered with a Hidden. This technology allows
-	 * for non-JavaScript maintenance of the checked state of a boolean property
-	 * on an object. It is named with 'get' because boolean is a keyword. Has no
-	 * effect if called multiple times.
-	 */
-	public Checkbox getBoolean() {
-		if (hiddenForBoolean == null) {
-			hiddenForBoolean = new Hidden(CHECKBOX_PREFIX + name);
-			hiddenForBoolean.value(HtmlConstants.FALSE);
-		}
-		return this;
-	}
-
-	/**
 	 * @param writer
 	 * @throws IOException
 	 */
 	@Override
 	public void renderThyself(Writer writer) throws IOException {
 		super.renderThyself(writer);
-		if (hiddenForBoolean != null) hiddenForBoolean.renderThyself(writer);
+		hiddenForBoolean.renderThyself(writer);
 	}
 
 	@Override
@@ -104,23 +81,14 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 		return super.value(value);
 	}
 
-	/**
-	 * Generates the id using the name and value, as there may be multiple
-	 * checkboxes on the page with the same name. This gives them a unique
-	 * identifier within the document.
-	 */
 	@Override
 	protected String guessId() {
-		return FormElement.idForNameAndValue(getName(), getValue());
+		return FormElement.idForName(getName());
 	}
 
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
 		super.writeAttributes(generator);
-		if (isActuallyChecked()) generator.attribute(CHECKED, CHECKED);
-	}
-
-	private boolean isActuallyChecked() {
-		return checkedValues == null ? checked : checkedValues.contains(value);
+		if (checked) generator.attribute(CHECKED, CHECKED);
 	}
 }

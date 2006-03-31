@@ -8,7 +8,9 @@ import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.model.IPropertyPath;
 
 /**
- * Represents a the path to a property as a dot (.) separated node path.
+ * Represents a path to a property as dot(.) separated nodes.
+ * 
+ * @author aiwilliams
  */
 public class DotPropertyPath implements IPropertyPath {
 	protected String path;
@@ -44,17 +46,25 @@ public class DotPropertyPath implements IPropertyPath {
 		return path;
 	}
 
+	public String getModelName() {
+		if (path.startsWith(".")) return ".";
+		int delimiterIndex = path.indexOf(".");
+		if (delimiterIndex == -1) return path;
+		return path.substring(0, delimiterIndex);
+	}
+
 	public int getNodeCount() {
 		return getAllNodes().length;
 	}
 
 	public String[] getNodes() {
-		return null;
-	}
-
-	public String getProperty() {
-		int lastDelimiter = path.lastIndexOf(".");
-		return path.substring(lastDelimiter + 1);
+		String[] allNodes = getAllNodes();
+		String[] nodes = allNodes;
+		if (allNodes.length > 1) {
+			nodes = new String[allNodes.length - 1];
+			System.arraycopy(allNodes, 1, nodes, 0, nodes.length);
+		}
+		return nodes;
 	}
 
 	public String getProperty(int index) {
@@ -68,11 +78,9 @@ public class DotPropertyPath implements IPropertyPath {
 		return path.substring(delimiterIndex);
 	}
 
-	public String getTargetIdentifier() {
-		if (path.startsWith(".")) return ".";
-		int delimiterIndex = path.indexOf(".");
-		if (delimiterIndex == -1) return path;
-		return path.substring(0, delimiterIndex);
+	public String getPropertyName() {
+		int lastDelimiter = path.lastIndexOf(".");
+		return path.substring(lastDelimiter + 1);
 	}
 
 	public String lastNode() {

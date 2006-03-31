@@ -12,8 +12,9 @@ public class Password extends TestFormElement<Password> {
 		super(formSource, named);
 	}
 
-	public void value(String expected) {
+	public Password assertValue(String expected) {
 		if (!HtmlPattern.matchesValue(elementSource, expected)) throw new TestElementError(Password.class, elementSource, String.format("Value of password [%s] did not match [%s]", getName(), expected));
+		return this;
 	}
 
 	@Override
@@ -22,4 +23,3 @@ public class Password extends TestFormElement<Password> {
 	}
 
 }
-

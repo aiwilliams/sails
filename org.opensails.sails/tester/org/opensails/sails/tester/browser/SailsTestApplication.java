@@ -22,7 +22,7 @@ import org.opensails.sails.tester.persist.IShamObjectPersister;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
 import org.opensails.sails.tester.servletapi.ShamServletContext;
 import org.opensails.sails.util.BleedingEdgeException;
-import org.opensails.sails.util.ClassInstanceAccessor;
+import org.opensails.spyglass.SpyObject;
 
 /**
  * Makes a Sails application testable to a high degree.
@@ -171,7 +171,7 @@ public class SailsTestApplication extends SailsApplication {
 	}
 
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
-		new ClassInstanceAccessor(getClass(), true).setProperty(this, "config", config);
+		new SpyObject<SailsTestApplication>(this).write("config", config);
 		configureAndStart(instrumentedConfigurator(configuratorClass));
 	}
 

@@ -1,40 +1,39 @@
-/*
- * Created on May 14, 2005, flying into OHare
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.form.html;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.html.HtmlConstants;
 import org.opensails.sails.html.HtmlGenerator;
 
 /**
  * An HTML SELECT
+ * 
+ * @author aiwilliams
+ * 
+ * @param <M> The type of SelectModel
  */
 public class Select extends FormElement<Select> implements Labelable<Select> {
 	public static final String SELECT = "select";
 
 	protected Label label;
-	protected SelectModel<Object> selectModel;
+	protected SelectModel selectModel;
 
 	/**
 	 * @param name
 	 */
 	public Select(String name) {
-		this(name, new ListSelectModel<Object>(ArrayUtils.EMPTY_OBJECT_ARRAY));
+		this(name, new ListSelectModel(new ArrayList<Object>()));
 	}
 
 	/**
 	 * @param name
 	 * @param selectModel
 	 */
-	public Select(String name, SelectModel<Object> selectModel) {
+	public Select(String name, SelectModel selectModel) {
 		super(SELECT, name);
 		this.selectModel = selectModel;
 	}
@@ -44,7 +43,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	 * @param selectModel
 	 * @param attributes
 	 */
-	public Select(String name, SelectModel<Object> selectModel, Map<String, String> attributes) {
+	public Select(String name, SelectModel selectModel, Map<String, String> attributes) {
 		this(name, selectModel);
 		this.attributes = attributes;
 	}
@@ -59,22 +58,12 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 		return this;
 	}
 
-	public Select model(Collection<Object> model) {
-		selectModel = new ListSelectModel<Object>(model);
-		return this;
+	public Select model(Collection<? extends Object> model) {
+		return model(new ListSelectModel(model));
 	}
 
-	public Select model(SelectModel<Object> model) {
+	public Select model(SelectModel model) {
 		selectModel = model;
-		return this;
-	}
-
-	/**
-	 * @param options the selected Object. It will be run through the
-	 *        SelectModel on render.
-	 */
-	public Select selected(Object options) {
-		selectModel.select(options);
 		return this;
 	}
 
@@ -82,6 +71,15 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	public void renderThyself(Writer writer) throws IOException {
 		if (label != null) label.renderThyself(writer);
 		render(writer);
+	}
+
+	/**
+	 * @param option the selected Object. It will be run through the SelectModel
+	 *        on render.
+	 */
+	public Select selected(Object option) {
+		selectModel.select(option);
+		return this;
 	}
 
 	@Override

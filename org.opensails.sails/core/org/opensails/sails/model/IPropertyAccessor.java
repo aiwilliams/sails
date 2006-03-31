@@ -1,24 +1,25 @@
 package org.opensails.sails.model;
 
+import org.opensails.sails.adapter.AdaptationTarget;
+
 /**
- * Can read and write a property on something, to any depth, using an
- * IPropertyPath.
- * 
- * These support reading properties from a {@link java.beans.PropertyDescriptor}
- * and {@link java.lang.reflect.Field}. Of course, you can make them do more,
- * too.
+ * Wraps an {@link IPropertyPath} to support reading and writing the property
+ * represented by that path.
+ * <p>
+ * IPropertyAccessors are coupled to a particular type of IPropertyPath. This
+ * allows you to create custom types of paths and accessors that understand
+ * them.
  */
 public interface IPropertyAccessor {
-	Object get(Object model) throws AccessorException;
+	Object get(Object model) throws PropertyAccessException;
 
 	/**
-	 * @param model
 	 * @return the parameter type on the model. Useful because get may return
 	 *         null, which leaves you with no knowledge of which IAdapter to
 	 *         use.
-	 * @throws AccessorException
+	 * @throws PropertyAccessException
 	 */
-	Class getPropertyType(Object model) throws AccessorException;
+	AdaptationTarget getPropertyType(Object model) throws PropertyAccessException;
 
-	void set(Object model, Object value) throws AccessorException;
+	void set(Object model, Object value) throws PropertyAccessException;
 }

@@ -1,28 +1,23 @@
 package org.opensails.sails.form;
 
-import org.opensails.sails.model.IPropertyPath;
-import org.opensails.sails.model.PropertyPathException;
+import org.opensails.sails.model.UnknownPropertyException;
 import org.opensails.sails.validation.IInvalidProperty;
 
 public class InvalidProperty implements IInvalidProperty {
 	protected final String fieldName;
-	protected final Object model;
-	protected final IPropertyPath path;
-	protected final PropertyPathException propertyPathException;
+	protected final UnknownPropertyException propertyPathException;
 
-	public InvalidProperty(String fieldName, IPropertyPath path, Object model, PropertyPathException e) {
+	public InvalidProperty(String fieldName, UnknownPropertyException e) {
 		this.fieldName = fieldName;
-		this.path = path;
-		this.model = model;
 		this.propertyPathException = e;
 	}
 
 	public String getProperty() {
-		return path.getProperty();
+		return fieldName;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Invalid property path of [%s] on model [%s] for field %s:\n%s", path, model, fieldName, propertyPathException);
+		return String.format("Invalid field [%s]:\n%s", fieldName, propertyPathException);
 	}
 }
