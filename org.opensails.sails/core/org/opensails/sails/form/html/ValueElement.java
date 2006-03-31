@@ -22,7 +22,7 @@ public abstract class ValueElement<T extends ValueElement> extends FormElement<T
 
 	@SuppressWarnings("unchecked")
 	public T value(Object value) {
-		this.value = String.valueOf(value);
+		this.value = value == null ? "" : String.valueOf(value);
 		return (T) this;
 	}
 }

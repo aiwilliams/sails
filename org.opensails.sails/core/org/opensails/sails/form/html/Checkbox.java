@@ -5,6 +5,7 @@ import static org.opensails.sails.form.FormMeta.CHECKBOX_PREFIX;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.opensails.sails.html.HtmlConstants;
 import org.opensails.sails.html.HtmlGenerator;
 
 /**
@@ -29,7 +30,6 @@ import org.opensails.sails.html.HtmlGenerator;
  */
 public class Checkbox extends LabelableInputElement<Checkbox> {
 	public static final String CHECKBOX = "checkbox";
-	public static final String CHECKED = "checked";
 
 	protected boolean checked;
 	protected Hidden hiddenForBoolean;
@@ -89,6 +89,6 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
 		super.writeAttributes(generator);
-		if (checked) generator.attribute(CHECKED, CHECKED);
+		if (checked) generator.attribute(HtmlConstants.CHECKED, HtmlConstants.CHECKED);
 	}
 }

@@ -3,6 +3,7 @@ package org.opensails.sails.mixins;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
@@ -43,10 +44,16 @@ public class FormMixin {
 		return new Checkbox(propertyPath).checked(Boolean.valueOf((String) modelValue));
 	}
 
-	public Checkbox checkbox(String propertyPath, String value) {
+	public Checkbox checkbox(String propertyPath, Object value) {
+		// TODO support generics
 		Object modelValue = form.value(propertyPath);
-		boolean checked = value.equals(modelValue);
-		return new Checkbox(propertyPath).value(value).id(idGenerator.idForNameValue(propertyPath, value)).checked(checked);
+		try {
+			String stringValue = (String) adapterResolver.resolve(value.getClass()).forWeb(value.getClass(), value);
+			boolean checked = stringValue.equals(modelValue);
+			return new Checkbox(propertyPath).value(value).id(idGenerator.idForNameValue(propertyPath, stringValue)).checked(checked);
+		} catch (ClassCastException e) {
+			throw new SailsException("A checkbox value must resolve to a String");
+		}
 	}
 
 	public String end() {
@@ -106,8 +113,16 @@ public class FormMixin {
 		return new Password(name);
 	}
 
-	public Radio radio(String name) {
-		return new Radio(name, name);
+	public Radio radio(String name, Object value) {
+		// TODO support generics
+		Object modelValue = form.value(name);
+		try {
+			String stringValue = (String) adapterResolver.resolve(value.getClass()).forWeb(value.getClass(), value);
+			boolean checked = stringValue.equals(modelValue);
+			return new Radio(name, stringValue, idGenerator.idForNameValue(name, stringValue)).checked(checked);
+		} catch (ClassCastException e) {
+			throw new SailsException("A checkbox value must resolve to a String");
+		}
 	}
 
 	/**

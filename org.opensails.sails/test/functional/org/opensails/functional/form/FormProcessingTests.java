@@ -68,16 +68,17 @@ public class FormProcessingTests extends TestCase {
 		assertModelRendered(form);
 	}
 
-	public void off_testRender_ModelDoesntHaveProperty() {
+	public void testRender_ModelDoesntHaveProperty() {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
 		Page page = t.get("referenceToMissingProperty");
 		page.assertRenders();
 	}
 
 	public void testRender_NoModel() {
-		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
-		Page page = t.get("renderNoModel");
-		page.assertRenders();
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		Page page = t.render("$form.start;$form.text('model.propertyOne');$form.textarea('model.propertyTwo');$form.end;");
+		page.form().text("model.propertyOne").assertValue("");
+		page.form().textarea("model.propertyTwo").assertValue("");
 	}
 
 	public void testSubmit() throws Exception {
