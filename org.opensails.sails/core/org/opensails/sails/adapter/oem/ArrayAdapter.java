@@ -5,9 +5,11 @@ import java.lang.reflect.Array;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.Scope;
 import org.opensails.sails.adapter.AdaptationException;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.FieldType;
 import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.util.BleedingEdgeException;
 
 @Scope(ApplicationScope.REQUEST)
 public class ArrayAdapter implements IAdapter<Object[], String[]> {
@@ -17,6 +19,10 @@ public class ArrayAdapter implements IAdapter<Object[], String[]> {
 		this.adapterResolver = adapterResolver;
 	}
 
+	public Object[] forModel(AdaptationTarget adaptationTarget, String[] fromWeb) throws AdaptationException {
+		throw new BleedingEdgeException("implement");
+	}
+
 	@SuppressWarnings("unchecked")
 	public Object[] forModel(Class<? extends Object[]> modelType, String[] fromWeb) throws AdaptationException {
 		Class<?> arrayType = modelType.getComponentType();
@@ -24,6 +30,10 @@ public class ArrayAdapter implements IAdapter<Object[], String[]> {
 		for (int i = 0; i < fromWeb.length; i++)
 			forModel[i] = adapterResolver.resolve(arrayType).forModel(arrayType, fromWeb[i]);
 		return forModel;
+	}
+
+	public String[] forWeb(AdaptationTarget adaptationTarget, Object[] fromModel) throws AdaptationException {
+		throw new BleedingEdgeException("implement");
 	}
 
 	@SuppressWarnings("unchecked")

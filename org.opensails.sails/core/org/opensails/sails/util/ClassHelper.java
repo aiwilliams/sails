@@ -241,23 +241,7 @@ public class ClassHelper {
 		try {
 			Field declaredField = target.getClass().getDeclaredField(field);
 			declaredField.setAccessible(true);
-			writeField(target, declaredField, value);
-		} catch (Exception e) {
-			throw new SailsException("Could not write field.", e);
-		}
-	}
-
-	public static void writeField(Object target, Field field, Object value) {
-		try {
-			field.set(target, value);
-		} catch (Exception e) {
-			throw new SailsException("Could not write field.", e);
-		}
-	}
-
-	public static void writeField(Object target, String field, Object value) {
-		try {
-			writeField(target, target.getClass().getField(field), value);
+			SpyGlass.write(target, declaredField, value);
 		} catch (Exception e) {
 			throw new SailsException("Could not write field.", e);
 		}

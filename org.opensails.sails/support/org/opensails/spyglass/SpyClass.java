@@ -35,8 +35,8 @@ public class SpyClass<T> {
 
 	private HashMap<String, SpyProperty<T>> propertiesMap = new HashMap<String, SpyProperty<T>>();
 
-	public SpyClass(Class<T> name) {
-		this(name, SpyPolicy.WIDEOPEN);
+	public SpyClass(Class<T> type) {
+		this(type, SpyPolicy.WIDEOPEN);
 	}
 
 	public SpyClass(Class<T> type, SpyPolicy policy) {

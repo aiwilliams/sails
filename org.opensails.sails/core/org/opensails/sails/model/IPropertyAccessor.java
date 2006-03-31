@@ -19,7 +19,7 @@ public interface IPropertyAccessor {
 	 *         use.
 	 * @throws PropertyAccessException
 	 */
-	AdaptationTarget getPropertyType(Object model) throws PropertyAccessException;
+	AdaptationTarget getAdaptationTarget(Object model) throws PropertyAccessException;
 
 	void set(Object model, Object value) throws PropertyAccessException;
 }

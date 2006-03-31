@@ -23,6 +23,7 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 
 /**
  * An Action as seen by the Sails framework.
@@ -186,7 +187,7 @@ public class Action implements IAction {
 				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
 				Object fromWeb = adapter.getFieldType().getValue(formFields, field.getName());
 				Object forModel = adapter.forModel(field.getType(), fromWeb);
-				ClassHelper.writeField(context, field, forModel);
+				SpyGlass.write(context, field, forModel);
 			}
 		}
 	}

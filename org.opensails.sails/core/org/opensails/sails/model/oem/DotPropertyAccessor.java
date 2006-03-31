@@ -40,7 +40,7 @@ public class DotPropertyAccessor<T> implements IPropertyAccessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	public AdaptationTarget getPropertyType(Object model) throws PropertyAccessException {
+	public AdaptationTarget getAdaptationTarget(Object model) throws PropertyAccessException {
 		SpyClass result = new SpyClass<Object>((Class<Object>) model.getClass(), accessPolicy);
 		for (String node : path.getNodes()) {
 			result = result.getSpyPropertyType(node);

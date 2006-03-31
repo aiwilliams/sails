@@ -15,7 +15,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.SailsException;
-import org.opensails.sails.tester.SailsTester;
 
 /**
  * Encapsulates the values of successful controls from a form submission. See
@@ -50,22 +49,6 @@ public class FormFields {
 	 * liking.
 	 */
 	public static String[] NULL_OR_EMPTY_STRING_ARRAY_VALUE = null;
-
-	/**
-	 * @deprecated this will be going away once ShamFormFields supports it.
-	 * @see SailsTester#getFormFields()
-	 */
-	public static FormFields quick(Object... objects) {
-		if (objects.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
-		Map<String, Object> map = new HashMap<String, Object>();
-		for (int i = 0; i < objects.length; i += 2) {
-			String key = (String) objects[i];
-			Object value = objects[i + 1];
-			if (value instanceof String[]) map.put(key, (String[]) value);
-			else map.put(key, new String[] { String.valueOf(value) });
-		}
-		return new FormFields(map);
-	}
 
 	protected Map<String, Object> backingMap;
 	protected boolean multipartContent;

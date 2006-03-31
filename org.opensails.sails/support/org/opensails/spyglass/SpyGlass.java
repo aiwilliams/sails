@@ -1,5 +1,7 @@
 package org.opensails.spyglass;
 
+import java.lang.reflect.Field;
+
 import org.apache.commons.lang.ClassUtils;
 
 public class SpyGlass {
@@ -91,5 +93,10 @@ public class SpyGlass {
 	public static String upperCamelName(String name) {
 		char upper = Character.toUpperCase(name.charAt(0));
 		return upper + name.substring(1);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static void write(Object instance, Field field, Object value) {
+		new SpyField<Object>(new SpyClass(field.getDeclaringClass()), field).set(instance, value);
 	}
 }

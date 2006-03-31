@@ -109,9 +109,9 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 	}
 
 	public void testPost() {
-		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		registerAsActionListener(tester);
-		Page page = tester.post("simplePost", FormFields.quick("postedField", "postedValue"));
+		SailsFunctionalTester t = new SailsFunctionalTester(EventTestController.class);
+		registerAsActionListener(t);
+		Page page = t.post("simplePost", t.getFormFields().quickSet("postedField", "postedValue"));
 		page.assertTemplate("eventTest/simplePost");
 		page.assertContains("postedValue");
 		assertHeardActionEvents();
@@ -145,24 +145,24 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		fields.setValue(FormMeta.action("parameterPost.x"), "45");
 		fields.setValue(FormMeta.action("parameterPost.y"), "23");
 
-		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		Page page = tester.post("notTheActionInTheMeta", FormFields.quick("postedField", "postedValue", FormMeta.action("parameterPost", "one", "2"), "Submit Label"), "three", "four", "areIgnored");
+		SailsFunctionalTester t = new SailsFunctionalTester(EventTestController.class);
+		Page page = t.post("notTheActionInTheMeta", t.getFormFields().quickSet("postedField", "postedValue", FormMeta.action("parameterPost", "one", "2"), "Submit Label"), "three", "four", "areIgnored");
 		page.assertContains("postedValue");
 		page.assertContains("one");
 		page.assertContains("2");
 	}
 
 	public void testPost_MetaAction_Parameters() {
-		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		Page page = tester.post("notTheActionInTheMeta", FormFields.quick("postedField", "postedValue", FormMeta.action("parameterPost", "one", "2"), "Submit Label"), "three", "four", "areIgnored");
+		SailsFunctionalTester t = new SailsFunctionalTester(EventTestController.class);
+		Page page = t.post("notTheActionInTheMeta", t.getFormFields().quickSet("postedField", "postedValue", FormMeta.action("parameterPost", "one", "2"), "Submit Label"), "three", "four", "areIgnored");
 		page.assertContains("postedValue");
 		page.assertContains("one");
 		page.assertContains("2");
 	}
 
 	public void testPost_Parameters() {
-		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
-		Page page = tester.post("parameterPost", FormFields.quick("postedField", "postedValue"), "one", "2");
+		SailsFunctionalTester t = new SailsFunctionalTester(EventTestController.class);
+		Page page = t.post("parameterPost", t.getFormFields().quickSet("postedField", "postedValue"), "one", "2");
 		page.assertContains("postedValue");
 		page.assertContains("one");
 		page.assertContains("2");

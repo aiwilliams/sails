@@ -76,10 +76,9 @@ public class HtmlForm {
 			if (model == null) continue;
 
 			IPropertyAccessor accessor = propertyFactory.createAccessor(path);
-			AdaptationTarget propertyTypeOnTarget = accessor.getPropertyType(model);
+			AdaptationTarget propertyTypeOnTarget = accessor.getAdaptationTarget(model);
 			IAdapter adapter = adapter(path, model, propertyTypeOnTarget);
-			// TODO Adapters will take the adaptation target to support generics
-			accessor.set(model, adapter.forModel(propertyTypeOnTarget.getTargetClass(), adapter.getFieldType().getValue(formFields, name)));
+			accessor.set(model, adapter.forModel(propertyTypeOnTarget, adapter.getFieldType().getValue(formFields, name)));
 		}
 		return isValid();
 	}
@@ -91,10 +90,9 @@ public class HtmlForm {
 		if (model == null) return null;
 
 		IPropertyAccessor accessor = propertyFactory.createAccessor(path);
-		AdaptationTarget propertyTypeOnTarget = accessor.getPropertyType(model);
+		AdaptationTarget propertyTypeOnTarget = accessor.getAdaptationTarget(model);
 		IAdapter adapter = adapter(path, model, propertyTypeOnTarget);
-		// TODO Adapters will take the adaptation target to support generics
-		return adapter.forWeb(propertyTypeOnTarget.getTargetClass(), accessor.get(model));
+		return adapter.forWeb(propertyTypeOnTarget, accessor.get(model));
 	}
 
 	protected IAdapter adapter(IPropertyPath path, Object model, AdaptationTarget adaptationTarget) {
