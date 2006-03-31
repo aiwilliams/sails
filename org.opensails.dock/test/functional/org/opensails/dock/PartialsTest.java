@@ -5,11 +5,10 @@ import junit.framework.TestCase;
 import org.opensails.dock.controllers.PartialsController;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.Page;
-import org.opensails.sails.tester.SailsTester;
 
 public class PartialsTest extends TestCase {
 	public void testPartialResult() throws Exception {
-		SailsTester tester = new DockTester();
+		DockTester tester = new DockTester();
 		Page page = tester.get(PartialsController.class, "renderPartial");
 		page.assertContentType(ContentType.TEXT_HTML);
 		page.assertContains("partial content");
