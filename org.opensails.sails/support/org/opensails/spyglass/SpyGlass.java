@@ -82,6 +82,11 @@ public class SpyGlass {
 		return lower + name.substring(1);
 	}
 
+	@SuppressWarnings("unchecked")
+	public static Object read(Object instance, Field field) {
+		return new SpyField<Object>(new SpyClass(field.getDeclaringClass()), field).get(instance);
+	}
+
 	public static String upperCamelName(Class clazz) {
 		return upperCamelName(ClassUtils.getShortClassName(clazz));
 	}

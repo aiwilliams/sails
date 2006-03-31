@@ -22,26 +22,12 @@ public interface IAdapter<M, W> {
 	M forModel(AdaptationTarget adaptationTarget, W fromWeb) throws AdaptationException;
 
 	/**
-	 * @param fromWeb value from web to be adapted
-	 * @return value for model
-	 * @throws AdaptationException
-	 */
-	M forModel(Class<? extends M> modelType, W fromWeb) throws AdaptationException;
-
-	/**
 	 * @param adaptationTarget
 	 * @param fromModel value from model to be adapted
 	 * @return value for web
 	 * @throws AdaptationException
 	 */
 	W forWeb(AdaptationTarget adaptationTarget, M fromModel) throws AdaptationException;
-
-	/**
-	 * @param fromModel value from model to be adapted
-	 * @return value for web
-	 * @throws AdaptationException
-	 */
-	W forWeb(Class<? extends M> modelType, M fromModel) throws AdaptationException;
 
 	/**
 	 * @return the 'web type' the adapter converts to and from

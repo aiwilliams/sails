@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.Sails;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.component.Callback;
@@ -17,6 +18,7 @@ import org.opensails.sails.html.HtmlGenerator;
 import org.opensails.sails.html.Script;
 import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.util.ClassHelper;
+import org.opensails.spyglass.SpyGlass;
 
 public class ComponentScript extends Script {
 	private final BaseComponent component;
@@ -42,7 +44,7 @@ public class ComponentScript extends Script {
 		for (Field field : fields) {
 			// TODO: Don't quote non strings
 			IAdapter adapter = adapterResolver.resolve(field.getType());
-			Object forWeb = adapter.forWeb(field.getType(), ClassHelper.readField(component, field));
+			Object forWeb = adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) field.getType()), SpyGlass.read(component, field));
 			parameters.add(new Parameter(field.getName(), "'" + forWeb + "'"));
 			if (field.isAnnotationPresent(Remembered.class)) rememberedFields.add(field.getName() + "=" + forWeb);
 		}

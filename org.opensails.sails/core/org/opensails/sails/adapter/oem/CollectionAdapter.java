@@ -23,15 +23,7 @@ public class CollectionAdapter implements IAdapter<Collection<? extends Object>,
 		throw new BleedingEdgeException("implement");
 	}
 
-	public Collection<? extends Object> forModel(Class<? extends Collection<? extends Object>> modelType, String[] fromWeb) throws AdaptationException {
-		throw new BleedingEdgeException("implement");
-	}
-
 	public String[] forWeb(AdaptationTarget adaptationTarget, Collection<? extends Object> fromModel) throws AdaptationException {
-		throw new BleedingEdgeException("implement");
-	}
-
-	public String[] forWeb(Class<? extends Collection<? extends Object>> modelType, Collection<? extends Object> fromModel) throws AdaptationException {
 		throw new BleedingEdgeException("implement");
 	}
 

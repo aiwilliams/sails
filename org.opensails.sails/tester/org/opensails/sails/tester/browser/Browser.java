@@ -3,6 +3,7 @@ package org.opensails.sails.tester.browser;
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.Sails;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
@@ -327,7 +328,7 @@ public class Browser {
 			for (int i = 0; i < parameters.length; i++) {
 				Object object = parameters[i];
 				IAdapter adapter = resolver.resolve(object.getClass());
-				params[i] = String.valueOf(adapter.forWeb(object.getClass(), object));
+				params[i] = String.valueOf(adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) object.getClass()), object));
 			}
 			return params;
 		}

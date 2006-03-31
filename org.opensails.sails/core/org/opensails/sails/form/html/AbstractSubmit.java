@@ -4,6 +4,7 @@ import static org.opensails.sails.form.FormMeta.ACTION_PREFIX;
 
 import java.util.List;
 
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.html.AbstractHtmlElement;
@@ -63,7 +64,7 @@ public abstract class AbstractSubmit<T extends AbstractSubmit> extends InputElem
 				for (Object parameter : parameters) {
 					IAdapter adapter = adapterResolver.resolve(parameter.getClass());
 					name.append("_");
-					name.append(adapter.forWeb(parameter.getClass(), parameter));
+					name.append(adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) parameter.getClass()), parameter));
 				}
 			}
 			return name.toString();

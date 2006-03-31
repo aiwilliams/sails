@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.ListUtils;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.form.FormFields;
@@ -60,7 +61,7 @@ public class ShamFormFields extends FormFields {
 			Object value = keyValuePairs[i + 1];
 			Class<? extends Object> valueType = value.getClass();
 			IAdapter adapter = adapterResolver.resolve(valueType);
-			Object adaptedValue = adapter.forWeb(valueType, value);
+			Object adaptedValue = adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) valueType), value);
 			setValue(key, adaptedValue);
 		}
 		return this;

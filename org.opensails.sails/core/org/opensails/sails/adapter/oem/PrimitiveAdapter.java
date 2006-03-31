@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.IAdapter;
 
 /**
@@ -42,17 +43,17 @@ public class PrimitiveAdapter extends AbstractAdapter<Object, Object> {
 
 	@SuppressWarnings("unchecked")
 	public Object forModel(Class<? extends Object> modelType, Object fromWeb) throws AdaptationException {
-        return ADAPTERS.get(modelType).forModel(modelType, fromWeb);
+        return ADAPTERS.get(modelType).forModel(new AdaptationTarget<Object>((Class<Object>) modelType), fromWeb);
     }
 
     @SuppressWarnings("unchecked")
 	public Object forWeb(Class modelType, Object fromModel) throws AdaptationException {
-        return ADAPTERS.get(modelType).forWeb(modelType, fromModel);
+        return ADAPTERS.get(modelType).forWeb(new AdaptationTarget<Object>(modelType), fromModel);
     }
 
     public static class BooleanAdapter extends AbstractAdapter<Boolean, String> {
     	final static String CHECKBOX_VALUE = "checked";
-        public Boolean forModel(Class<? extends Boolean> modelType, String fromWeb) throws AdaptationException {
+         public Boolean forModel(Class<? extends Boolean> modelType, String fromWeb) throws AdaptationException {
         	if (CHECKBOX_VALUE.equals(fromWeb) || "1".equals(fromWeb)) return true;
             return Boolean.valueOf(fromWeb);
         }

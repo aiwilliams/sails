@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.event.ISailsEvent;
@@ -68,7 +69,7 @@ public class ActionUrl extends AbstractUrl<ActionUrl> {
 	protected String adapt(Object parameter) {
 		IAdapterResolver resolver = event.getContainer().instance(IAdapterResolver.class);
 		IAdapter adapter = resolver.resolve(parameter.getClass(), event.getContainer());
-		return String.valueOf(adapter.forWeb(parameter.getClass(), parameter));
+		return String.valueOf(adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) parameter.getClass()), parameter));
 	}
 
 	@Override

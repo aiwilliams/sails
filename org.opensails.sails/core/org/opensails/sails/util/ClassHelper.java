@@ -138,19 +138,6 @@ public class ClassHelper {
 		throw new IllegalArgumentException(String.format("The class does not implement an interface that extends %s", interfaze));
 	}
 
-	/**
-	 * @see SpyGlass#lowerCamelName(Class)
-	 */
-	@Deprecated
-	public static String lowerCamelName(Class clazz) {
-		return SpyGlass.lowerCamelName(clazz);
-	}
-
-	@Deprecated
-	public static String lowerCamelName(Object instance) {
-		return lowerCamelName(instance.getClass());
-	}
-
 	public static Method[] methodsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
 		Method[] declaredMethods = clazz.getDeclaredMethods();
 		List<Method> annotatedMethods = new ArrayList<Method>(declaredMethods.length);
@@ -182,14 +169,6 @@ public class ClassHelper {
 		return matches.toArray(new Method[matches.size()]);
 	}
 
-	public static Object readField(Object target, Field field) {
-		try {
-			return field.get(target);
-		} catch (Throwable t) {
-			return null;
-		}
-	}
-
 	public static Object readField(Object target, String name) {
 		return readField(target, name, true);
 	}
@@ -198,7 +177,7 @@ public class ClassHelper {
 	public static Object readField(Object target, String name, boolean publicOnly) {
 		Field field = fieldNamed(target.getClass(), name);
 		if (!publicOnly) field.setAccessible(true);
-		return readField(target, field);
+		return SpyGlass.read(target, field);
 	}
 
 	public static String upperCamel(String string) {

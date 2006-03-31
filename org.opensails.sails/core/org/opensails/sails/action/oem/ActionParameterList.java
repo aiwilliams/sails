@@ -1,6 +1,7 @@
 package org.opensails.sails.action.oem;
 
 import org.opensails.sails.action.IActionParameterList;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 
@@ -23,7 +24,7 @@ public class ActionParameterList implements IActionParameterList {
 			adaptedParameters = new Object[targetTypes.length];
 			for (int i = 0; i < targetTypes.length; i++) {
 				IAdapter adapter = adapterResolver.resolve(targetTypes[i]);
-				Object adapted = adapter.forModel(targetTypes[i], urlParameters[i]);
+				Object adapted = adapter.forModel(new AdaptationTarget<Object>((Class<Object>) targetTypes[i]), urlParameters[i]);
 				adaptedParameters[i] = adapted;
 			}
 		}

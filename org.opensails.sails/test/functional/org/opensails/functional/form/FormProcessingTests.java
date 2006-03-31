@@ -29,7 +29,7 @@ public class FormProcessingTests extends TestCase {
 		} catch (Exception expected) {}
 	}
 
-	public void off_testPostThenRender() throws Exception {
+	public void testPostThenRender() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
 
 		ShamFormFields formFields = t.getFormFields();
@@ -58,7 +58,7 @@ public class FormProcessingTests extends TestCase {
 		form.hidden("model.hiddenProperty").assertValue("newHiddenValue");
 	}
 
-	public void off_testRender_Model() {
+	public void testRender_Model() {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
 		Page page = t.get("explicitExpose");
 		Form form = page.form();

@@ -15,4 +15,18 @@ public abstract class AbstractAdapter<M, W> implements IAdapter<M, W> {
 	public FieldType getFieldType() {
 		return FieldType.STRING;
 	}
+
+	/**
+	 * @param fromWeb value from web to be adapted
+	 * @return value for model
+	 * @throws AdaptationException
+	 */
+	protected abstract M forModel(Class<? extends M> modelType, W fromWeb) throws AdaptationException;
+
+	/**
+	 * @param fromModel value from model to be adapted
+	 * @return value for web
+	 * @throws AdaptationException
+	 */
+	protected abstract W forWeb(Class<? extends M> modelType, M fromModel) throws AdaptationException;
 }
