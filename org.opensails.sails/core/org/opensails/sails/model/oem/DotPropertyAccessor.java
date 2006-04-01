@@ -4,7 +4,7 @@ import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.model.IPropertyAccessor;
 import org.opensails.sails.model.IPropertyPath;
 import org.opensails.sails.model.PropertyAccessException;
-import org.opensails.spyglass.SpyClass;
+import org.opensails.spyglass.InstanceProperty;
 import org.opensails.spyglass.SpyObject;
 import org.opensails.spyglass.policy.SpyPolicy;
 
@@ -41,12 +41,13 @@ public class DotPropertyAccessor<T> implements IPropertyAccessor {
 
 	@SuppressWarnings("unchecked")
 	public AdaptationTarget getAdaptationTarget(Object model) throws PropertyAccessException {
-		SpyClass result = new SpyClass<Object>((Class<Object>) model.getClass(), accessPolicy);
+		SpyObject<Object> spyModel = new SpyObject<Object>(model, accessPolicy);
+		InstanceProperty<Object> spyProperty = null;
 		for (String node : path.getNodes()) {
-			result = result.getSpyPropertyType(node);
-			if (result == null) return null;
+			spyProperty = spyModel.getProperty(node);
+			if (spyProperty.isResolved()) spyModel = new SpyObject(spyProperty.get(), accessPolicy);
 		}
-		return new AdaptationTarget(result.getType());
+		return new AdaptationTarget(spyProperty.getType(), spyProperty.getGenericType());
 	}
 
 	public void set(Object model, Object value) throws PropertyAccessException {

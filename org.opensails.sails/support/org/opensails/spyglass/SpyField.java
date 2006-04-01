@@ -1,6 +1,7 @@
 package org.opensails.spyglass;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 /**
  * Adds useful behavior to a Field.
@@ -29,6 +30,11 @@ public class SpyField<T> extends SpyProperty<T> {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public Type getGenericType() {
+		return field.getGenericType();
 	}
 
 	@Override

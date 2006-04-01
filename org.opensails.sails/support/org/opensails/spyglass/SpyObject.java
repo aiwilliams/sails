@@ -14,7 +14,7 @@ public class SpyObject<T> {
 	protected final SpyClass<T> spyClass;
 	protected final SpyPolicy policy;
 
-	protected HashMap<String, InstanceProperty> propertiesMap = new HashMap<String, InstanceProperty>();
+	protected HashMap<String, InstanceProperty<T>> propertiesMap = new HashMap<String, InstanceProperty<T>>();
 
 	@SuppressWarnings("unchecked")
 	public SpyObject(T object) {
@@ -33,6 +33,16 @@ public class SpyObject<T> {
 	 */
 	public T getObject() {
 		return object;
+	}
+
+	/**
+	 * @param name
+	 * @return a non-null property. Check isResolved() to see if available.
+	 */
+	public InstanceProperty<T> getProperty(String name) {
+		InstanceProperty<T> property = propertiesMap.get(name);
+		if (property == null) property = new InstanceProperty<T>(getSpyClass().findProperty(name), object);
+		return property;
 	}
 
 	public SpyClass<T> getSpyClass() {
@@ -55,24 +65,19 @@ public class SpyObject<T> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public SpyObject<?> read(Field property) {
 		return new SpyObject<Object>(new SpyField(getSpyClass(), property).get(object), policy);
 	}
 
 	public SpyObject<?> read(String property) {
-		Object value = findProperty(property).get();
+		Object value = getProperty(property).get();
 		if (value == null) return null;
-		return new SpyObject(value);
+		return new SpyObject<Object>(value);
 	}
 
 	public void write(String property, Object value) {
-		findProperty(property).set(value);
-	}
-
-	protected InstanceProperty findProperty(String name) {
-		InstanceProperty property = propertiesMap.get(name);
-		if (property == null) property = new InstanceProperty(getSpyClass().findProperty(name), object);
-		return property;
+		getProperty(property).set(value);
 	}
 
 	private Method findMethod(Class<?> clazz, String name, Class[] argTypes) {

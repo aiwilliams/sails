@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.html.Checkbox;
@@ -21,6 +22,7 @@ import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.Textarea;
 import org.opensails.sails.util.BleedingEdgeException;
+import org.opensails.sails.util.Quick;
 
 public class FormMixin {
 	protected IFormElementIdGenerator idGenerator;
@@ -46,13 +48,17 @@ public class FormMixin {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Checkbox checkbox(String propertyPath, Object value) {
-		// TODO support generics
-		Object modelValue = form.value(propertyPath);
+	public Checkbox checkbox(String propertyPath, Object checkedValue) {
 		try {
-			String stringValue = (String) adapterResolver.resolve(value.getClass()).forWeb(new AdaptationTarget<Object>((Class<Object>) value.getClass()), value);
-			boolean checked = stringValue.equals(modelValue);
-			return new Checkbox(propertyPath).value(value).id(idGenerator.idForNameValue(propertyPath, stringValue)).checked(checked);
+			IAdapter valueAdapter = adapterResolver.resolve(checkedValue.getClass());
+			Object modelValue = form.value(propertyPath);
+			String checkedValueString = (String) valueAdapter.forWeb(new AdaptationTarget<Object>((Class<Object>) checkedValue.getClass()), checkedValue);
+			boolean checked = false;
+			if (modelValue instanceof String) checked = checkedValueString.equals(modelValue);
+			else if (modelValue instanceof String[]) {
+				checked = Quick.list((String[]) modelValue).contains(checkedValueString);
+			}
+			return new Checkbox(propertyPath).value(checkedValue).id(idGenerator.idForNameValue(propertyPath, checkedValueString)).checked(checked);
 		} catch (ClassCastException e) {
 			throw new SailsException("A checkbox value must resolve to a String");
 		}

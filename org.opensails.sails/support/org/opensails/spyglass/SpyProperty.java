@@ -1,5 +1,7 @@
 package org.opensails.spyglass;
 
+import java.lang.reflect.Type;
+
 public abstract class SpyProperty<T> {
 	protected final SpyClass<T> spyClass;
 	protected final String name;
@@ -10,6 +12,13 @@ public abstract class SpyProperty<T> {
 	}
 
 	public abstract <X extends T> Object get(X target);
+
+	/**
+	 * @return the generic type of this property
+	 * @see SpyField
+	 * @see BeanProperty
+	 */
+	public abstract Type getGenericType();
 
 	public String getName() {
 		return name;

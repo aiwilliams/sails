@@ -68,6 +68,7 @@ public class HtmlForm {
 	/**
 	 * @param formFields the fields for updating the models
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean updateModels(FormFields formFields) {
 		this.formFields = formFields;
 		for (String name : formFields.getNames()) {
@@ -76,9 +77,10 @@ public class HtmlForm {
 			if (model == null) continue;
 
 			IPropertyAccessor accessor = propertyFactory.createAccessor(path);
-			AdaptationTarget propertyTypeOnTarget = accessor.getAdaptationTarget(model);
-			IAdapter adapter = adapter(path, model, propertyTypeOnTarget);
-			accessor.set(model, adapter.forModel(propertyTypeOnTarget, adapter.getFieldType().getValue(formFields, name)));
+			AdaptationTarget adaptationTarget = accessor.getAdaptationTarget(model);
+			if (!adaptationTarget.exists()) continue;
+			IAdapter adapter = adapter(path, model, adaptationTarget);
+			accessor.set(model, adapter.forModel(adaptationTarget, adapter.getFieldType().getValue(formFields, name)));
 		}
 		return isValid();
 	}
@@ -90,9 +92,9 @@ public class HtmlForm {
 		if (model == null) return null;
 
 		IPropertyAccessor accessor = propertyFactory.createAccessor(path);
-		AdaptationTarget propertyTypeOnTarget = accessor.getAdaptationTarget(model);
-		IAdapter adapter = adapter(path, model, propertyTypeOnTarget);
-		return adapter.forWeb(propertyTypeOnTarget, accessor.get(model));
+		AdaptationTarget adaptationTarget = accessor.getAdaptationTarget(model);
+		IAdapter adapter = adapter(path, model, adaptationTarget);
+		return adapter.forWeb(adaptationTarget, accessor.get(model));
 	}
 
 	protected IAdapter adapter(IPropertyPath path, Object model, AdaptationTarget adaptationTarget) {

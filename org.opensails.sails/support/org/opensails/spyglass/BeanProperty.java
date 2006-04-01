@@ -2,6 +2,7 @@ package org.opensails.spyglass;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -25,6 +26,11 @@ public class BeanProperty<T> extends SpyProperty<T> {
 		} catch (InvocationTargetException e) {
 			throw new Crack("Exception occurred reading a bean property", e);
 		}
+	}
+
+	@Override
+	public Type getGenericType() {
+		return descriptor.getReadMethod().getGenericReturnType();
 	}
 
 	@Override
