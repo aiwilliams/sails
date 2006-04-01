@@ -4,7 +4,15 @@ import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.persist.PersistException;
 
-public interface IShamObjectPersister extends IObjectPersister {
+/**
+ * An extension of the IObjectPersister interface that adds methods to allow for
+ * easier persistence testing.
+ * 
+ * @see MemoryObjectPersister
+ * 
+ * @author aiwilliams
+ */
+public interface ITestObjectPersister extends IObjectPersister {
 	/**
 	 * Saves the object, but does not mark it as saved with respect to the
 	 * question {@link #wasSaved(IIdentifiable)}. Great for setting up!

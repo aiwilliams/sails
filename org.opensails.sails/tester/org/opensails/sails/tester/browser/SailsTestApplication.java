@@ -11,23 +11,20 @@ import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.SailsApplication;
+import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.persist.IObjectPersister;
-import org.opensails.sails.tester.SailsTesterConfigurator;
+import org.opensails.sails.tester.TestApplicationConfigurator;
 import org.opensails.sails.tester.TestApplicationContainer;
 import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
 import org.opensails.sails.tester.oem.VirtualControllerResolver;
-import org.opensails.sails.tester.persist.IShamObjectPersister;
+import org.opensails.sails.tester.persist.ITestObjectPersister;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
 import org.opensails.sails.tester.servletapi.ShamServletContext;
-import org.opensails.sails.util.BleedingEdgeException;
 import org.opensails.spyglass.SpyObject;
 
 /**
  * Makes a Sails application testable to a high degree.
- * <p>
- * This testing architecture is under development. Please use the SailsTester
- * until further notice.
  * 
  * @author aiwilliams
  */
@@ -68,33 +65,88 @@ public class SailsTestApplication extends SailsApplication {
 	/**
 	 * Provides access to the IObjectPersister of the application under test.
 	 * <p>
-	 * This is written to return an IShamObjectPersister on purpose. If you are
-	 * using a non-sham, please write a wrapper to place your non-sham in.
+	 * This is written to return an ITestObjectPersister on purpose. If you are
+	 * using a non-test persister, please write a wrapper to place your non-test
+	 * persister in.
 	 * 
-	 * @return the current IShamObjectPersister
+	 * @return the current ITestObjectPersister
 	 */
-	public IShamObjectPersister getObjectPersister() {
-		return (IShamObjectPersister) getContainer().instance(IObjectPersister.class);
+	public ITestObjectPersister getObjectPersister() {
+		return (ITestObjectPersister) getContainer().instance(IObjectPersister.class);
 	}
 
+	/**
+	 * @return active sessions from the current application browsers
+	 */
 	public List<TestSession> getSessions() {
-		throw new BleedingEdgeException("you should still be using SailsTester");
+		List<TestSession> sessions = new ArrayList<TestSession>(browsers.size());
+		for (Browser browser : browsers) {
+			TestSession session = browser.getSession();
+			if (session != null) sessions.add(session);
+		}
+		return sessions;
 	}
 
-	public <T> void inject(Class<? super T> key, Class<T> implementation) {
-		inject(key, implementation, ApplicationScope.REQUEST);
+	/**
+	 * Places the component implementation into the application dependency
+	 * injection container.
+	 * <p>
+	 * This is handy when writing tests where you want to control the
+	 * implementation class for a particular component. Note that you may also
+	 * provide an instance.
+	 * 
+	 * @see #inject(Class, Object)
+	 * 
+	 * @param <T> the class type of the implementation
+	 * @param component
+	 * @param implementation
+	 */
+	public <T> void inject(Class<? super T> component, Class<T> implementation) {
+		inject(component, implementation, ApplicationScope.REQUEST);
 	}
 
-	public <T> void inject(Class<? super T> key, Class<T> implementation, ApplicationScope scope) {
-		getContainer().getContainerInHierarchy(scope).inject(key, implementation);
+	/**
+	 * Places the component implementation into the dependency injection
+	 * container at the specified scope.
+	 * 
+	 * @see #inject(Class, Class)
+	 * 
+	 * @param <T> the class type of the implementation
+	 * @param component
+	 * @param implementation
+	 * @param scope
+	 */
+	public <T> void inject(Class<? super T> component, Class<T> implementation, ApplicationScope scope) {
+		getContainer().getContainerInHierarchy(scope).inject(component, implementation);
 	}
 
-	public <T> void inject(Class<? super T> key, T instance) {
-		inject(key, instance, ApplicationScope.REQUEST);
+	/**
+	 * Places the component instance into the application dependency injection
+	 * container.
+	 * 
+	 * @see #inject(Class, Class)
+	 * 
+	 * @param <T> the class type of the implementation
+	 * @param component
+	 * @param instance
+	 */
+	public <T> void inject(Class<? super T> component, T instance) {
+		inject(component, instance, ApplicationScope.REQUEST);
 	}
 
-	public <T> void inject(Class<? super T> key, T instance, ApplicationScope scope) {
-		getContainer().getContainerInHierarchy(scope).inject(key, instance);
+	/**
+	 * Places the component instance into the dependency injection container at
+	 * the specified scope.
+	 * 
+	 * @see #inject(Class, Class)
+	 * 
+	 * @param <T> the class type of the implementation
+	 * @param component
+	 * @param instance
+	 * @param scope
+	 */
+	public <T> void inject(Class<? super T> component, T instance, ApplicationScope scope) {
+		getContainer().getContainerInHierarchy(scope).inject(component, instance);
 	}
 
 	/**
@@ -106,6 +158,15 @@ public class SailsTestApplication extends SailsApplication {
 			browser.invalidateSession();
 	}
 
+	/**
+	 * A Browser provides an API for testing a Sails application 'out of
+	 * container'.
+	 * <p>
+	 * You can open as many as you like. Each one will have it's own session,
+	 * etc.
+	 * 
+	 * @return new Browser for this
+	 */
 	public Browser openBrowser() {
 		Browser browser = createBrowser();
 		browsers.add(browser);
@@ -121,6 +182,17 @@ public class SailsTestApplication extends SailsApplication {
 		Browser browser = openBrowser();
 		browser.setWorkingContext(workingContext);
 		return browser;
+	}
+
+	/**
+	 * Places models into current {@link ITestObjectPersister} for use in
+	 * testing interactions with persistence.
+	 * 
+	 * @see #getObjectPersister()
+	 * @param models
+	 */
+	public void provides(IIdentifiable... models) {
+		getObjectPersister().provides(models);
 	}
 
 	/**
@@ -175,8 +247,8 @@ public class SailsTestApplication extends SailsApplication {
 		configureAndStart(instrumentedConfigurator(configuratorClass));
 	}
 
-	protected SailsTesterConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
-		return new SailsTesterConfigurator(configuratorClass);
+	protected TestApplicationConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
+		return new TestApplicationConfigurator(configuratorClass);
 	}
 
 }

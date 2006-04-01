@@ -8,6 +8,7 @@ import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.ShamFileUpload;
 import org.opensails.sails.tester.browser.ShamFormFields;
 import org.opensails.sails.tester.form.Form;
+import org.opensails.sails.tester.util.CollectionAssert;
 
 public class FormProcessingTests extends TestCase {
 	public void testPost_FileUpload() throws Exception {
@@ -30,7 +31,10 @@ public class FormProcessingTests extends TestCase {
 	}
 
 	public void testPostThenRender() throws Exception {
+		Model model = new Model();
+
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		t.getApplication().provides(model);
 
 		ShamFormFields formFields = t.getFormFields();
 		formFields.setValue("model.textProperty", "newTextValue");
@@ -43,7 +47,7 @@ public class FormProcessingTests extends TestCase {
 		formFields.setValue("model.passwordProperty", "newPasswordValue");
 		formFields.setValue("model.hiddenProperty", "newHiddenValue");
 
-		Page page = t.post("postThenRender", formFields);
+		Page page = t.post("postThenRender", formFields, model);
 		Form form = page.form();
 		form.text("model.textProperty").assertValue("newTextValue");
 		form.text("model.subModel.textProperty").assertValue("newTextValue");
@@ -56,6 +60,16 @@ public class FormProcessingTests extends TestCase {
 		form.select("model.selectProperty").assertLabelsSelected("third");
 		form.password("model.passwordProperty").assertValue("");
 		form.hidden("model.hiddenProperty").assertValue("newHiddenValue");
+
+		assertEquals("newTextValue", model.textProperty);
+		assertEquals("newTextValue", model.subModel.textProperty);
+		assertEquals("newTextareaValue", model.textareaProperty);
+		assertTrue(model.checkboxProperty);
+		CollectionAssert.containsOnly("one", model.checkboxListProperty);
+		assertEquals("two", model.radioProperty);
+		assertEquals("third", model.selectProperty);
+		assertEquals("newPasswordValue", model.passwordProperty);
+		assertEquals("newHiddenValue", model.hiddenProperty);
 	}
 
 	public void testRender_Model() {

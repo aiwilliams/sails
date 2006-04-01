@@ -127,7 +127,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 		ControllerResolver controllerResolver = installControllerResolver(application, container);
 		configure(controllerResolver);
 
-		ComponentResolver componentResolver = installComponentResolver(application, container);
+		ComponentResolver<IComponentImpl> componentResolver = installComponentResolver(application, container);
 		configure(componentResolver);
 
 		installEventProcessorResolver(application, container);
@@ -276,7 +276,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 	 * @param container
 	 * @return the installed resolver
 	 */
-	protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+	protected ComponentResolver<IComponentImpl> installComponentResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
 		ComponentResolver<IComponentImpl> resolver = (ComponentResolver<IComponentImpl>) container.instance(IComponentResolver.class, ComponentResolver.class);
 		resolver.push(new PackageClassResolver<IComponentImpl>(getBuiltinComponentPackage(), "Component"));
 		resolver.push(new PackageClassResolver<IComponentImpl>(getDefaultComponentPackage(), "Component"));
@@ -302,7 +302,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 	 * 
 	 * @param application
 	 * @see DelegatingConfigurator
-	 * @see org.opensails.sails.tester.SailsTesterConfigurator
+	 * @see org.opensails.sails.tester.TestApplicationConfigurator
 	 * @return
 	 */
 	protected ApplicationContainer installContainer(IConfigurableSailsApplication application) {

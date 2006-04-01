@@ -15,7 +15,7 @@ import org.opensails.sails.util.FieldAccessor;
 import org.opensails.sails.util.IIdGenerator;
 import org.opensails.sails.util.TimeUniqueIdGenerator;
 
-public class MemoryObjectPersister implements IShamObjectPersister {
+public class MemoryObjectPersister implements ITestObjectPersister {
 	protected Collection<IIdentifiable> destroyedInTransaction;
 	protected PersistException exceptionOnSave;
 	protected FieldAccessor idFieldAccessor;

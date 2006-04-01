@@ -6,7 +6,7 @@ import org.opensails.sails.oem.SailsApplication;
 
 @SuppressWarnings("serial")
 public class TestSailsApplication extends SailsApplication {
-    public void configure(SailsTesterConfigurator configurator) {
+    public void configure(TestApplicationConfigurator configurator) {
         configureAndStart(configurator);
     }
 

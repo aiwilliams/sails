@@ -27,8 +27,8 @@ public class FormTestController extends BaseController {
 		renderString("made it here");
 	}
 
-	public void postThenRender() {
-		updateModel(new Model());
+	public void postThenRender(Model model) {
+		updateModel(model);
 		renderTemplate("renderModel");
 	}
 

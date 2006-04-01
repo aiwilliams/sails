@@ -3,19 +3,19 @@ package org.opensails.sails;
 import javax.servlet.ServletConfig;
 
 import org.opensails.sails.oem.BaseConfigurator;
-import org.opensails.sails.tester.SailsTesterConfigurator;
+import org.opensails.sails.tester.TestApplicationConfigurator;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
 import org.opensails.spyglass.SpyObject;
 
 public class SailsApplicationConfiguratorFixture {
 	/**
 	 * Configure a SailsApplication for testing using an instance of
-	 * {@link SailsTesterConfigurator}
+	 * {@link TestApplicationConfigurator}
 	 * 
 	 * @param application
 	 */
 	public static void configure(IConfigurableSailsApplication application) {
-		configure(application, new SailsTesterConfigurator(BaseConfigurator.class));
+		configure(application, new TestApplicationConfigurator(BaseConfigurator.class));
 	}
 
 	/**

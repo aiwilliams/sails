@@ -2,9 +2,10 @@ package org.opensails.functional.form;
 
 import java.util.Collection;
 
+import org.opensails.sails.persist.AbstractIdentifiable;
 import org.opensails.sails.util.Quick;
 
-public class Model {
+public class Model extends AbstractIdentifiable {
 	protected String hiddenProperty = "hiddenValue";
 	protected String passwordProperty = "passwordValue";
 	protected String textProperty = "textValue";

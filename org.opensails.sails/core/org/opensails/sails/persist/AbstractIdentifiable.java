@@ -14,13 +14,15 @@ package org.opensails.sails.persist;
 public class AbstractIdentifiable implements IIdentifiable {
 	private Long id;
 
-	public Long getId() {
-		return id;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj.getClass() != getClass()) return false;
 		return getId() != null && getId().equals(getClass().cast(obj).getId());
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	@Override

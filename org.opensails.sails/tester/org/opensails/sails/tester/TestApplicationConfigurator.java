@@ -13,6 +13,7 @@ import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.IActionResultProcessorResolver;
 import org.opensails.sails.action.oem.ActionResultProcessorResolver;
 import org.opensails.sails.action.oem.RedirectActionResult;
+import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.configurator.IEventConfigurator;
@@ -34,15 +35,15 @@ import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
 import org.opensails.sails.tester.oem.VirtualControllerResolver;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
-import org.opensails.sails.tester.persist.IShamObjectPersister;
+import org.opensails.sails.tester.persist.ITestObjectPersister;
 import org.opensails.sails.tester.persist.MemoryObjectPersister;
 import org.opensails.spyglass.IClassResolver;
 import org.opensails.viento.IBinding;
 
-public class SailsTesterConfigurator extends DelegatingConfigurator {
+public class TestApplicationConfigurator extends DelegatingConfigurator {
 	protected List<ISailsEvent> configured = new ArrayList<ISailsEvent>();
 
-	public SailsTesterConfigurator(Class<? extends BaseConfigurator> delegateClass) {
+	public TestApplicationConfigurator(Class<? extends BaseConfigurator> delegateClass) {
 		super(delegateClass);
 	}
 
@@ -96,7 +97,7 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 	@Override
 	protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
 		AdapterResolver adapterResolver = super.installAdapterResolver(application, container);
-		VirtualAdapterResolver virtualAdapterResolver = new VirtualAdapterResolver();
+		VirtualAdapterResolver<IAdapter> virtualAdapterResolver = new VirtualAdapterResolver<IAdapter>();
 		adapterResolver.push(virtualAdapterResolver);
 		container.register(virtualAdapterResolver);
 		return adapterResolver;
@@ -144,9 +145,9 @@ public class SailsTesterConfigurator extends DelegatingConfigurator {
 
 	@Override
 	protected void installObjectPersister(IConfigurableSailsApplication application, ApplicationContainer container) {
-		IShamObjectPersister persister = new MemoryObjectPersister();
+		ITestObjectPersister persister = new MemoryObjectPersister();
 		container.register(IObjectPersister.class, persister);
-		container.register(IShamObjectPersister.class, persister);
+		container.register(ITestObjectPersister.class, persister);
 		super.installObjectPersister(application, container);
 	}
 
