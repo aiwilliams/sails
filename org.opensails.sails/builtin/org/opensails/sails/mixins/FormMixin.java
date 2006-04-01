@@ -123,9 +123,8 @@ public class FormMixin {
 
 	@SuppressWarnings("unchecked")
 	public Radio radio(String name, Object value) {
-		// TODO support generics
-		Object modelValue = form.value(name);
 		try {
+			Object modelValue = form.value(name);
 			String stringValue = (String) adapterResolver.resolve(value.getClass()).forWeb(new AdaptationTarget<Object>((Class<Object>) value.getClass()), value);
 			boolean checked = stringValue.equals(modelValue);
 			return new Radio(name, stringValue, idGenerator.idForNameValue(name, stringValue)).checked(checked);
