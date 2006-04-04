@@ -30,6 +30,16 @@ public class SpyGlass {
 		return true;
 	}
 
+	/**
+	 * @param clazz
+	 * @param name
+	 * @return the declared field in class heirarchy with name or null
+	 */
+	@SuppressWarnings("unchecked")
+	public static Field getField(Class clazz, String name) {
+		return new SpyClass(clazz).getField(name);
+	}
+
 	public static String getName(Class clazz) {
 		return ClassUtils.getShortClassName(clazz);
 	}

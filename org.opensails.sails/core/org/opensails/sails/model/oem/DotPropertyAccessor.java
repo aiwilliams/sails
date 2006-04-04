@@ -43,9 +43,9 @@ public class DotPropertyAccessor<T> implements IPropertyAccessor {
 	public AdaptationTarget getAdaptationTarget(Object model) throws PropertyAccessException {
 		SpyObject<Object> spyModel = new SpyObject<Object>(model, accessPolicy);
 		InstanceProperty<Object> spyProperty = null;
-		for (String node : path.getNodes()) {
-			spyProperty = spyModel.getProperty(node);
-			if (spyProperty.isResolved()) spyModel = new SpyObject(spyProperty.get(), accessPolicy);
+		for (int i = 0; i < path.getNodeCount() - 1; i++) {
+			spyProperty = spyModel.getProperty(path.getNodes()[i]);
+			if (spyProperty.isResolved() && i < path.getNodeCount() - 2) spyModel = new SpyObject(spyProperty.get(), accessPolicy);
 		}
 		return new AdaptationTarget(spyProperty.getType(), spyProperty.getGenericType());
 	}

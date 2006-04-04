@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.opensails.sails.SailsException;
 import org.opensails.spyglass.SpyGlass;
+import org.opensails.spyglass.SpyObject;
 
 /**
  * YAGNI and YARGNI, all in one class.
@@ -71,25 +71,6 @@ public class ClassHelper {
 		return matches.toArray(new Method[matches.size()]);
 	}
 
-	/**
-	 * @param clazz
-	 * @param name
-	 * @return the Field with name or null. Searches up class heirarchy.
-	 */
-	public static Field fieldNamed(Class clazz, String name) {
-		try {
-			Class lookingAt = clazz;
-			while (lookingAt != null) {
-				for (Field field : lookingAt.getDeclaredFields())
-					if (field.getName().equals(name)) return field;
-				lookingAt = lookingAt.getSuperclass();
-			}
-			throw new RuntimeException(String.format("Could not find a field named %s on %s", name, clazz));
-		} catch (Throwable t) {
-			throw new RuntimeException(String.format("Could not access fields on %s", clazz), t);
-		}
-	}
-
 	public static Field[] fieldsAnnotated(Class<?> clazz, Class<? extends Annotation> annotation) {
 		Field[] declaredFields = clazz.getFields();
 		List<Field> annotatedFields = new ArrayList<Field>(declaredFields.length);
@@ -101,20 +82,8 @@ public class ClassHelper {
 	public static Field[] fieldsNamed(Class clazz, String... names) {
 		List<Field> fields = new ArrayList<Field>();
 		for (String name : names)
-			fields.add(fieldNamed(clazz, name));
+			fields.add(SpyGlass.getField(clazz, name));
 		return fields.toArray(new Field[fields.size()]);
-	}
-
-	/**
-	 * @deprecated
-	 * @see SpyGlass#getName(Class)
-	 */
-	public static String getName(Class clazz) {
-		return SpyGlass.getName(clazz);
-	}
-
-	public static String getPackage(Object instance) {
-		return SpyGlass.getPackage(instance.getClass());
 	}
 
 	public static String getPackageDirectory(Class<?> clazz) {
@@ -175,9 +144,7 @@ public class ClassHelper {
 
 	@SuppressWarnings("unchecked")
 	public static Object readField(Object target, String name, boolean publicOnly) {
-		Field field = fieldNamed(target.getClass(), name);
-		if (!publicOnly) field.setAccessible(true);
-		return SpyGlass.read(target, field);
+		return new SpyObject<Object>(target).read(name).getObject();
 	}
 
 	public static String upperCamel(String string) {
@@ -186,12 +153,6 @@ public class ClassHelper {
 	}
 
 	public static void writeDeclaredField(Object target, String field, Object value) {
-		try {
-			Field declaredField = target.getClass().getDeclaredField(field);
-			declaredField.setAccessible(true);
-			SpyGlass.write(target, declaredField, value);
-		} catch (Exception e) {
-			throw new SailsException("Could not write field.", e);
-		}
+		new SpyObject<Object>(target).write(field, value);
 	}
 }

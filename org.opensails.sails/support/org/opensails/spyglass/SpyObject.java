@@ -16,6 +16,11 @@ public class SpyObject<T> {
 
 	protected HashMap<String, InstanceProperty<T>> propertiesMap = new HashMap<String, InstanceProperty<T>>();
 
+	/**
+	 * Create a SpyObject of object using SpyPolicy.WIDEOPEN.
+	 * 
+	 * @param object
+	 */
 	@SuppressWarnings("unchecked")
 	public SpyObject(T object) {
 		this(object, SpyPolicy.WIDEOPEN);

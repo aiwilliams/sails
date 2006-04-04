@@ -13,13 +13,13 @@ public abstract class FieldAccessPolicy {
 	public static FieldAccessPolicy PROTECTED = new FieldAccessPolicy() {
 		@Override
 		public boolean canAccess(Field field) {
-			return field.isAccessible() || Modifier.isProtected(field.getModifiers());
+			return Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers());
 		}
 	};
 	public static FieldAccessPolicy PUBLIC = new FieldAccessPolicy() {
 		@Override
 		public boolean canAccess(Field field) {
-			return field.isAccessible();
+			return Modifier.isPublic(field.getModifiers());
 		}
 	};
 
