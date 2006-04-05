@@ -9,6 +9,28 @@ import org.apache.commons.lang.ArrayUtils;
 import org.opensails.spyglass.policy.SpyPolicy;
 
 public class SpyObject<T> {
+	/**
+	 * So you don't have to do new SpyObject<Object>(obj) everywhere.
+	 * 
+	 * @param <T>
+	 * @param object
+	 * @return a SpyObject for instance
+	 */
+	public static <T> SpyObject<T> create(T object) {
+		return new SpyObject<T>(object);
+	}
+
+	/**
+	 * So you don't have to do new SpyObject<Object>(obj) everywhere.
+	 * 
+	 * @param <T>
+	 * @param object
+	 * @param policy
+	 * @return a SpyObject for instance
+	 */
+	public static <T> SpyObject<T> create(T object, SpyPolicy policy) {
+		return new SpyObject<T>(object, policy);
+	}
 
 	protected final T object;
 	protected final SpyClass<T> spyClass;
@@ -20,12 +42,18 @@ public class SpyObject<T> {
 	 * Create a SpyObject of object using SpyPolicy.WIDEOPEN.
 	 * 
 	 * @param object
+	 * @see #create(Object)
 	 */
 	@SuppressWarnings("unchecked")
 	public SpyObject(T object) {
 		this(object, SpyPolicy.WIDEOPEN);
 	}
 
+	/**
+	 * @param object
+	 * @param policy
+	 * @see #create(Object, SpyPolicy)
+	 */
 	@SuppressWarnings("unchecked")
 	public SpyObject(T object, SpyPolicy policy) {
 		this.object = object;

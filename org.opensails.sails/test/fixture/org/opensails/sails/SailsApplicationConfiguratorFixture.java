@@ -36,7 +36,7 @@ public class SailsApplicationConfiguratorFixture {
 	 */
 	public static void configure(IConfigurableSailsApplication application, ISailsApplicationConfigurator configurator, ServletConfig config) {
 		// config is on GenericServlet
-		SpyObject<IConfigurableSailsApplication> applicationSpy = new SpyObject<IConfigurableSailsApplication>(application);
+		SpyObject<IConfigurableSailsApplication> applicationSpy = SpyObject.create(application);
 		applicationSpy.write("config", config);
 		configurator.configure(application);
 		applicationSpy.invoke("startApplication");

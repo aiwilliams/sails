@@ -142,9 +142,8 @@ public class ClassHelper {
 		return readField(target, name, true);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static Object readField(Object target, String name, boolean publicOnly) {
-		return new SpyObject<Object>(target).read(name).getObject();
+		return SpyObject.create(target).read(name).getObject();
 	}
 
 	public static String upperCamel(String string) {
@@ -153,6 +152,6 @@ public class ClassHelper {
 	}
 
 	public static void writeDeclaredField(Object target, String field, Object value) {
-		new SpyObject<Object>(target).write(field, value);
+		SpyObject.create(target).write(field, value);
 	}
 }

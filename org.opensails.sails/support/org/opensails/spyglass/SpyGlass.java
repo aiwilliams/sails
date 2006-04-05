@@ -76,7 +76,7 @@ public class SpyGlass {
 	}
 
 	public static Object invoke(Object instance, String methodName, Object[] args) {
-		return new SpyObject<Object>(instance).invoke(methodName, args);
+		return SpyObject.create(instance).invoke(methodName, args);
 	}
 
 	public static String lowerCamelName(Class clazz) {

@@ -243,7 +243,7 @@ public class SailsTestApplication extends SailsApplication {
 	}
 
 	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
-		new SpyObject<SailsTestApplication>(this).write("config", config);
+		SpyObject.create(this).write("config", config);
 		configureAndStart(instrumentedConfigurator(configuratorClass));
 	}
 
