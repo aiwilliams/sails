@@ -16,6 +16,7 @@ public class AbstractIdentifiable implements IIdentifiable {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) return true;
 		if (obj == null) return false;
 		if (obj.getClass() != getClass()) return false;
 		return getId() != null && getId().equals(getClass().cast(obj).getId());
