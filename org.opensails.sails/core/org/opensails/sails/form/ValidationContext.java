@@ -24,11 +24,11 @@ public class ValidationContext {
 		failures = new ArrayList<IValidationFailure>();
 	}
 
-	public IValidationEntry getEntry(String modelName) {
+	public IValidationErrors getEntry(String modelName) {
 		throw new BleedingEdgeException("implement");
 	}
 
-	public Collection<IValidationFailure> getFailures() {
+	public Collection<IValidationFailure> getErrors() {
 		return failures;
 	}
 

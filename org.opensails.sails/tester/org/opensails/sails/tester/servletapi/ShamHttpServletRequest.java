@@ -358,7 +358,7 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	 */
 	public void setParameter(String parameterName, FileUpload parameterValue) {
 		if (parameterValue == null) parameters.put(parameterName, parameterValue);
-		else parameters.put(parameterName, parameterValue.getFileName());
+		else parameters.put(parameterName, parameterValue.filename());
 		fileUploads.put(parameterName, parameterValue);
 	}
 

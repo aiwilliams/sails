@@ -50,7 +50,7 @@ public class HtmlForm {
 	 */
 	public String getErrorMessages() {
 		StringBuilder messages = new StringBuilder();
-		Collection<IValidationFailure> failures = validationContext.getFailures();
+		Collection<IValidationFailure> failures = validationContext.getErrors();
 		for (IValidationFailure failure : failures) {
 			messages.append(failure.getMessage());
 			messages.append("\n");
@@ -62,7 +62,7 @@ public class HtmlForm {
 	 * @return true if the last updateModels() was completed without errors
 	 */
 	public boolean isValid() {
-		return validationContext.getFailures().isEmpty();
+		return validationContext.getErrors().isEmpty();
 	}
 
 	/**

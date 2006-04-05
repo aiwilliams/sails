@@ -20,12 +20,16 @@ public class FileUpload {
 		return item.get();
 	}
 
+	public String contentType() {
+		return item.getContentType();
+	}
+
 	public String filename() {
 		return item.getName();
 	}
 
-	public String getFileName() {
-		return String.format("FileUpload: %s", item.getName());
+	public long size() {
+		return item.getSize();
 	}
 
 	public InputStream streamContent() {

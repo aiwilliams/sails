@@ -36,4 +36,10 @@ public class FormTestController extends BaseController {
 		exposeModel("model", new Object());
 		renderTemplate("renderModel");
 	}
+	
+	public void validationInAction() {
+//		errors("model").addToBase("This should be a complete sentence.");
+//		errors("model").add("someProperty", "this is a message");
+//		renderString(errors("model"));
+	}
 }

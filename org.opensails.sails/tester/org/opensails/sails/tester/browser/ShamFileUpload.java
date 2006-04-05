@@ -30,11 +30,6 @@ public class ShamFileUpload extends FileUpload {
 	}
 
 	@Override
-	public String getFileName() {
-		return name;
-	}
-
-	@Override
 	public InputStream streamContent() {
 		return new ByteArrayInputStream(content.getBytes());
 	}
