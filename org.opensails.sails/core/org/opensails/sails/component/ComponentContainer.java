@@ -16,7 +16,7 @@ public class ComponentContainer extends ScopedContainer implements IEventContext
 
 	public <T extends IEventProcessingContext> T createEventContext(Class<T> key, ISailsEvent event) {
 		T context = instance(key, key);
-		instance(IBinding.class).mixin(this);
+		instance(IBinding.class).mixin(context);
 		instance(IBinding.class).mixin(instance(MixinResolver.class));
 		return context;
 	}

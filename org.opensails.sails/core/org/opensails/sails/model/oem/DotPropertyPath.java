@@ -92,4 +92,16 @@ public class DotPropertyPath implements IPropertyPath {
 	public String toString() {
 		return path;
 	}
+
+	public int getPropertyCount() {
+		return getNodeCount() - 1;
+	}
+
+	public String getFirstProperty() {
+		return getAllNodes()[1];
+	}
+
+	public IPropertyPath dropModelNode() {
+		return new DotPropertyPath(path.substring(path.indexOf('.') + 1));
+	}
 }

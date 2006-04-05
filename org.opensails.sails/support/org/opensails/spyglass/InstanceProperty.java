@@ -21,6 +21,12 @@ public class InstanceProperty<T> {
 	public Object get() {
 		return property.get(object);
 	}
+	
+	public SpyObject<Object> getSpy() {
+		Object value = get();
+		if (value == null) return null;
+		return new SpyObject<Object>(value);
+	}
 
 	public Type getGenericType() {
 		return property.getGenericType();
@@ -30,8 +36,8 @@ public class InstanceProperty<T> {
 		return property.getType();
 	}
 
-	public boolean isResolved() {
-		return property.getClass() != UnresolvableProperty.class;
+	public boolean isReadable() {
+		return property.isReadable();
 	}
 
 	public void set(Object value) {

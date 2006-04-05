@@ -12,17 +12,17 @@ import java.lang.reflect.Type;
  * 
  * @author aiwilliams
  */
-public class SpyField<T> extends SpyProperty<T> {
+public class SpyField<T> {
 	protected final Field field;
+	protected final SpyClass<T> spyClass;
 
 	protected SpyField(SpyClass<T> spyClass, Field field) {
-		super(spyClass, field.getName());
+		this.spyClass = spyClass;
 		this.field = field;
 	}
 
-	@Override
 	public <X extends T> Object get(X target) {
-		if (spyClass.policy.getFieldAccessPolicy().canAccess(field)) field.setAccessible(true);
+		if (isAccessible()) field.setAccessible(true);
 		try {
 			return field.get(target);
 		} catch (IllegalArgumentException e) {
@@ -32,19 +32,16 @@ public class SpyField<T> extends SpyProperty<T> {
 		}
 	}
 
-	@Override
 	public Type getGenericType() {
 		return field.getGenericType();
 	}
 
-	@Override
 	public Class<?> getType() {
 		return field.getType();
 	}
 
-	@Override
 	public <X extends T> void set(X target, Object value) {
-		if (spyClass.policy.getFieldAccessPolicy().canAccess(field)) field.setAccessible(true);
+		if (isAccessible()) field.setAccessible(true);
 		try {
 			field.set(target, value);
 		} catch (IllegalArgumentException e) {
@@ -52,5 +49,9 @@ public class SpyField<T> extends SpyProperty<T> {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public boolean isAccessible() {
+		return spyClass.policy.getFieldAccessPolicy().canAccess(field);
 	}
 }

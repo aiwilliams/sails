@@ -143,7 +143,7 @@ public class ClassHelper {
 	}
 
 	public static Object readField(Object target, String name, boolean publicOnly) {
-		return SpyObject.create(target).read(name).getObject();
+		return SpyObject.create(target).readSpy(name).getObject();
 	}
 
 	public static String upperCamel(String string) {

@@ -28,4 +28,19 @@ public interface IPropertyPath {
 	 * @return the name of the property on the target
 	 */
 	String getPropertyName();
+
+	/**
+	 * @return the number of nodes not counting the model node.
+	 */
+	int getPropertyCount();
+
+	/**
+	 * @return the first node after the model node.
+	 */
+	String getFirstProperty();
+
+	/**
+	 * @return a new path without the model node.
+	 */
+	IPropertyPath dropModelNode();
 }

@@ -34,4 +34,8 @@ public class AdaptationTarget<TC> {
 		return targetGenericType;
 	}
 
+	public boolean isReadable() {
+		return targetClass != null;
+	}
+
 }

@@ -59,12 +59,21 @@ public class ShamFormFields extends FormFields {
 		for (int i = 0; i < keyValuePairs.length; i += 2) {
 			String key = (String) keyValuePairs[i];
 			Object value = keyValuePairs[i + 1];
-			Class<? extends Object> valueType = value.getClass();
-			IAdapter adapter = adapterResolver.resolve(valueType);
-			Object adaptedValue = adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) valueType), value);
-			setValue(key, adaptedValue);
+			setValue(key, value);
 		}
 		return this;
+	}
+
+	/**
+	 * Overrides to use adapters.
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public void setValue(String name, Object value) {
+		Class<? extends Object> valueType = value.getClass();
+		IAdapter adapter = adapterResolver.resolve(valueType);
+		Object adaptedValue = adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) valueType), value);
+		super.setValue(name, adaptedValue);
 	}
 
 	/**

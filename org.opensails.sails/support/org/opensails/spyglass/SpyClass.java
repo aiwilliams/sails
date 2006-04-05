@@ -44,22 +44,6 @@ public class SpyClass<T> {
 		this.policy = policy;
 	}
 
-	/**
-	 * Find the property using PropertyDescriptors. Only called when not in
-	 * cache.
-	 * 
-	 * @param name
-	 * @return the property or null if not found
-	 */
-	private SpyProperty<T> findBeanProperty(String name) {
-		for (PropertyDescriptor descriptor : getPropertyDescriptors()) {
-			SpyProperty<T> property = new BeanProperty<T>(this, descriptor);
-			propertiesMap.put(name, property);
-			if (descriptor.getName().equals(name)) return property;
-		}
-		return null;
-	}
-
 	private Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
 		Constructor[] constructors = clazz.getConstructors();
 		for (Constructor<T> constructor : constructors) {
@@ -68,34 +52,10 @@ public class SpyClass<T> {
 		throw new SailsException("Could not find a constructor accepting " + argTypes);
 	}
 
-	/**
-	 * Find the property as a field. Only called when not in cache. Caches
-	 * accessible and inaccessible field properties.
-	 * 
-	 * @param name
-	 * @return the property or null if not found
-	 */
-	private SpyProperty<T> findFieldProperty(String name) {
-		for (Field field : getFields()) {
-			String fieldName = field.getName();
-			// not the instance of containing class when anonymous innerclass
-			if (fieldName.indexOf('$') == -1) {
-				SpyProperty<T> property = null;
-				if (policy.canAccess(field)) property = new SpyField<T>(this, field);
-				else property = new InaccessibleFieldProperty<T>(this, field);
-				propertiesMap.put(name, property);
-				if (fieldName.equals(name)) return property;
-			}
-		}
-		return null;
-	}
-
 	public SpyProperty<T> findProperty(String name) {
 		SpyProperty<T> property = propertiesMap.get(name);
 		if (property == null) {
-			property = findBeanProperty(name);
-			if (property == null) property = findFieldProperty(name);
-			if (property == null) property = new UnresolvableProperty<T>(this, name);
+			property = new SpyProperty<T>(this, name);
 			propertiesMap.put(name, property);
 		}
 		return property;
@@ -146,22 +106,6 @@ public class SpyClass<T> {
 			nextClass = nextClass.getSuperclass();
 		}
 		return methods;
-	}
-
-	/**
-	 * @param name
-	 * @param argTypes
-	 * @return a method taking the argTypes or subclasses thereof, or null if
-	 *         not found
-	 */
-	public Method getMethodTaking(String name, Class[] argTypes) {
-		Class nextClass = type;
-		while (nextClass != null) {
-			for (Method method : nextClass.getDeclaredMethods())
-				if (method.getName().equals(name) && SpyGlass.argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
-			nextClass = nextClass.getSuperclass();
-		}
-		return null;
 	}
 
 	public String getPackageName() {
@@ -230,6 +174,10 @@ public class SpyClass<T> {
 
 	public SpyObject<T> spyInstance(Object[] args) {
 		return new SpyObject<T>(newInstance(args), policy);
+	}
+
+	public SpyPolicy getPolicy() {
+		return policy;
 	}
 
 }

@@ -276,8 +276,17 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	 */
 	protected boolean updateModel(Object model) {
 		exposeModel(model);
+		return updateModels();
+	}
+
+	protected boolean updateModels() {
 		HtmlForm formInstance = getContainer().instance(HtmlForm.class, HtmlForm.class);
 		return formInstance.updateModels(getEvent().getFormFields());
+	}
+
+	protected boolean updateModel(String name, Object model) {
+		exposeModel(name, model);
+		return updateModels();
 	}
 
 	protected UrlforMixin urlfor() {

@@ -14,12 +14,9 @@ public interface IPropertyAccessor {
 	Object get(Object model) throws PropertyAccessException;
 
 	/**
-	 * @return the parameter type on the model. Useful because get may return
-	 *         null, which leaves you with no knowledge of which IAdapter to
-	 *         use.
-	 * @throws PropertyAccessException
+	 * @return the AdaptationTarget of this property on the model
 	 */
-	AdaptationTarget getAdaptationTarget(Object model) throws PropertyAccessException;
+	AdaptationTarget getAdaptationTarget(Object model);
 
 	void set(Object model, Object value) throws PropertyAccessException;
 }

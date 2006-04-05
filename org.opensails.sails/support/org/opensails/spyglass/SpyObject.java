@@ -1,11 +1,8 @@
 package org.opensails.spyglass;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.opensails.spyglass.policy.SpyPolicy;
 
 public class SpyObject<T> {
@@ -70,7 +67,7 @@ public class SpyObject<T> {
 
 	/**
 	 * @param name
-	 * @return a non-null property. Check isResolved() to see if available.
+	 * @return a non-null property. Check isReadable() to see if available.
 	 */
 	public InstanceProperty<T> getProperty(String name) {
 		InstanceProperty<T> property = propertiesMap.get(name);
@@ -83,27 +80,15 @@ public class SpyObject<T> {
 	}
 
 	public Object invoke(String methodName, Object... args) {
-		try {
-			Method method = findMethod(object.getClass(), methodName, SpyGlass.argTypes(args));
-			if (policy.canInvoke(method)) {
-				method.setAccessible(true);
-				return method.invoke(object, args);
-			} else throw new InnaccessibleMethodException(methodName, args, policy.getMethodInvocationPolicy());
-		} catch (IllegalArgumentException e) {
-			throw new Crack("Could not invoke. The arguments were illegal.", e);
-		} catch (IllegalAccessException e) {
-			throw new Crack("Could not invoke. Know anything about access?", e);
-		} catch (InvocationTargetException e) {
-			throw new Crack("Could not invoke. The constructor threw and exception.", e);
-		}
+		return new SpyMethod<T>(spyClass, methodName).invoke(object, args);
 	}
 
 	@SuppressWarnings("unchecked")
-	public SpyObject<?> read(Field property) {
+	public SpyObject<?> readSpy(Field property) {
 		return new SpyObject<Object>(new SpyField(getSpyClass(), property).get(object), policy);
 	}
 
-	public SpyObject<?> read(String property) {
+	public SpyObject<?> readSpy(String property) {
 		Object value = getProperty(property).get();
 		if (value == null) return null;
 		return new SpyObject<Object>(value);
@@ -113,9 +98,8 @@ public class SpyObject<T> {
 		getProperty(property).set(value);
 	}
 
-	private Method findMethod(Class<?> clazz, String name, Class[] argTypes) {
-		Method method = getSpyClass().getMethodTaking(name, argTypes);
-		if (method != null) return method;
-		throw new Crack(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
+	public Object read(String property) {
+		return getProperty(property).get();
 	}
+
 }

@@ -33,7 +33,7 @@ public class DotPropertyAccessor<T> implements IPropertyAccessor {
 	public Object get(Object model) throws PropertyAccessException {
 		SpyObject result = new SpyObject<Object>(model, accessPolicy);
 		for (String node : path.getNodes()) {
-			result = result.read(node);
+			result = result.readSpy(node);
 			if (result == null) return null;
 		}
 		return result.getObject();
@@ -42,19 +42,23 @@ public class DotPropertyAccessor<T> implements IPropertyAccessor {
 	@SuppressWarnings("unchecked")
 	public AdaptationTarget getAdaptationTarget(Object model) throws PropertyAccessException {
 		SpyObject<Object> spyModel = new SpyObject<Object>(model, accessPolicy);
-		InstanceProperty<Object> spyProperty = null;
-		for (int i = 0; i < path.getNodeCount() - 1; i++) {
-			spyProperty = spyModel.getProperty(path.getNodes()[i]);
-			if (spyProperty.isResolved() && i < path.getNodeCount() - 2) spyModel = new SpyObject(spyProperty.get(), accessPolicy);
-		}
+		InstanceProperty<Object> spyProperty = getProperty(spyModel, path);
+		if (spyProperty == null) return new AdaptationTarget(null, null);
 		return new AdaptationTarget(spyProperty.getType(), spyProperty.getGenericType());
+	}
+
+	protected InstanceProperty<Object> getProperty(SpyObject<Object> model, IPropertyPath path) {
+		if (model == null) return null;
+		InstanceProperty<Object> property = model.getProperty(path.getFirstProperty());
+		if (path.getPropertyCount() > 1) return getProperty(property.getSpy(), path.dropModelNode());
+		return property;
 	}
 
 	public void set(Object model, Object value) throws PropertyAccessException {
 		SpyObject target = new SpyObject<Object>(model, accessPolicy);
 		String[] nodes = path.getNodes();
 		for (int i = 0; i < nodes.length - 1; i++)
-			target = target.read(nodes[i]);
+			target = target.readSpy(nodes[i]);
 		target.write(nodes[nodes.length - 1], value);
 	}
 }
