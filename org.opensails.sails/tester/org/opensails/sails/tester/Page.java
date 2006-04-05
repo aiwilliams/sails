@@ -17,9 +17,11 @@ import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.http.ContentType;
+import org.opensails.sails.http.HttpHeader;
 import org.opensails.sails.oem.Flash;
 import org.opensails.sails.tester.form.Form;
 import org.opensails.sails.tester.html.FieldSet;
+import org.opensails.sails.tester.oem.LazyActionResultProcessor;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.tester.util.CollectionAssert;
@@ -58,11 +60,23 @@ public class Page {
 	}
 
 	public void assertContentType(ContentType expected) throws AssertionFailedError {
-		Assert.assertEquals(expected.value(), response.getContentType());
+		assertHeaderEquals(expected);
 	}
 
 	public void assertExcludes(String exactString) {
 		assertPageExpectation("Expected " + url() + " not to contain <" + exactString + ">", !contains(exactString));
+	}
+
+	public void assertHeaderEquals(HttpHeader expected) {
+		String header = expected.name();
+		String expectedValue = expected.value();
+		String headerValue = response.getHeader(header);
+		assertHeaderEquals(header, expectedValue, headerValue);
+	}
+
+	public void assertHeaderEquals(String header, String expected, String actual) {
+		ensureProcessingComplete();
+		Assert.assertEquals(String.format("Expected header %s to match value %s but was ", header, expected, actual), expected, actual);
 	}
 
 	public void assertLayout(String expected) throws AssertionFailedError {
@@ -211,6 +225,14 @@ public class Page {
 
 	protected void ensureNotRedirected(String message) throws AssertionFailedError {
 		if (response.wasRedirected()) throw new AssertionFailedError(message);
+	}
+
+	protected void ensureProcessingComplete() {
+		processor().doProcess();
+	}
+
+	protected LazyActionResultProcessor processor() {
+		return event.getContainer().instance(LazyActionResultProcessor.class);
 	}
 
 	public class ExposedObject {
