@@ -52,4 +52,8 @@ public class LinkMixin {
 	public ILink index() {
 		return new ActionLink(event);
 	}
+
+	public ILink href(String url) {
+		return new ActionLink(event).href(url);
+	}
 }
