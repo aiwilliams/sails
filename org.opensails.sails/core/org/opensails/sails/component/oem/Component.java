@@ -1,6 +1,7 @@
 package org.opensails.sails.component.oem;
 
 import org.opensails.sails.adapter.IAdapterResolver;
+import org.opensails.sails.component.ComponentContainer;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.event.ISailsEvent;
@@ -34,9 +35,28 @@ public class Component<I extends IComponentImpl> extends AbstractActionEventProc
 		return event.getProcessorName().equals(String.format("component_%s", getName()));
 	}
 
+	/**
+	 * Components live a double life as a type of Controller and as a reusable
+	 * 'component'. Depending on what it is presently acting as, the container
+	 * of the component will be one of two possibilities:
+	 * <ol>
+	 * <li>The container of the event</li>
+	 * <li>A new, instance/component scoped container</li>
+	 * </ol>
+	 */
 	@Override
 	protected I createInstance(ISailsEvent event, Class<I> contextImpl) {
-		return isDestination(event) ? event.getContainer().createEventContext(contextImpl, event) : event.getContainer().instance(contextImpl, contextImpl);
+		I instance = null;
+		if (isDestination(event)) {
+			instance = event.getContainer().createEventContext(contextImpl, event);
+			instance.setContainer(event.getContainer());
+		} else {
+			ComponentContainer componentContainer = new ComponentContainer(event.getContainer());
+			instance = componentContainer.createEventContext(contextImpl, event);
+			instance.setContainer(componentContainer);
+			instance.configureContainer(componentContainer);
+		}
+		return instance;
 	}
 
 	@Override

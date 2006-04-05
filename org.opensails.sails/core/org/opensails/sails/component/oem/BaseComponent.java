@@ -3,7 +3,6 @@ package org.opensails.sails.component.oem;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.opensails.rigging.IScopedContainer;
 import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.component.ComponentContainer;
@@ -14,7 +13,6 @@ import org.opensails.sails.event.oem.AbstractEventProcessingContext;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.mixins.BuiltinScript;
 import org.opensails.sails.template.ITemplateRenderer;
-import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.Require;
 import org.opensails.sails.template.TemplateRenderFailedException;
 import org.opensails.viento.IBinding;
@@ -34,31 +32,17 @@ public abstract class BaseComponent extends AbstractEventProcessingContext<IComp
 	protected IFormElementIdGenerator idGenerator;
 	protected ITemplateRenderer<IBinding> renderer;
 
+	/**
+	 * Conveniently implemented to do nothing. Override if you like.
+	 */
+	public void configureContainer(ComponentContainer container) {}
+
 	public String getComponentName() {
 		return processor.getName();
 	}
 
-	/**
-	 * <ol>
-	 * <li>When acting as an IEventProcessingContext, the invoked action will
-	 * want to reference the container of the event</li>
-	 * <li>When acting as a generator in the render of the template of another
-	 * action, should be a component-scoped container</li>
-	 * </ol>
-	 */
 	@Override
 	public IEventContextContainer getContainer() {
-		if (container == null) {
-			container = event.getContainer();
-			if (!processor.isDestination(event)) {
-				container = new ComponentContainer(container);
-				container.makeLocal(IBinding.class);
-				configureContainer(container);
-				IBinding binding = getBinding();
-				binding.mixin(this);
-				binding.mixin(container.instance(MixinResolver.class));
-			}
-		}
 		return container;
 	}
 
@@ -95,6 +79,10 @@ public abstract class BaseComponent extends AbstractEventProcessingContext<IComp
 		return new ComponentScript(this, getContainer().instance(ContainerAdapterResolver.class));
 	}
 
+	public void setContainer(IEventContextContainer container) {
+		this.container = container;
+	}
+
 	public void setIdGenerator(IFormElementIdGenerator generator) {
 		this.idGenerator = generator;
 	}
@@ -102,11 +90,4 @@ public abstract class BaseComponent extends AbstractEventProcessingContext<IComp
 	public void setTemplateRenderer(ITemplateRenderer<IBinding> renderer) {
 		this.renderer = renderer;
 	}
-
-	/**
-	 * Override to configure the component container after creation.
-	 * 
-	 * @param container
-	 */
-	protected void configureContainer(IScopedContainer container) {}
 }

@@ -1,5 +1,6 @@
 package org.opensails.sails.component;
 
+import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.template.ITemplateRenderer;
@@ -33,30 +34,54 @@ import org.opensails.viento.IRenderable;
  * @author aiwilliams
  */
 public interface IComponentImpl extends IEventProcessingContext<IComponent>, IRenderable {
-    /*
-     * Called getComponentName() to avoid collisions with component properties.
-     */
-    /**
-     * @return the name of the component
-     */
-    String getComponentName();
+	/**
+	 * Configure the ComponentContainer after creation.
+	 * <p>
+	 * This is only called when the component is not acting as an
+	 * {@link IEventProcessingContext}. Called after the container is set.
+	 * 
+	 * @param container
+	 */
+	void configureContainer(ComponentContainer container);
 
-    /**
-     * Called after creation, before initialize.
-     * 
-     * @param generator that the component should use to create ids for
-     *        elements.
-     */
-    void setIdGenerator(IFormElementIdGenerator generator);
+	/*
+	 * Called getComponentName() to avoid collisions with component properties.
+	 */
+	/**
+	 * @return the name of the component
+	 */
+	String getComponentName();
 
-    /**
-     * Called after creation, after
-     * {@link IEventProcessingContext#setEventContext(org.opensails.sails.event.ISailsEvent, org.opensails.sails.event.oem.IActionEventProcessor)}.
-     * <p>
-     * This method is here to prevent component developers from having to take
-     * it in their constructor.
-     * 
-     * @param renderer
-     */
-    void setTemplateRenderer(ITemplateRenderer<IBinding> renderer);
+	/**
+	 * Called after creation.
+	 * <p>
+	 * <ol>
+	 * <li>When acting as an IEventProcessingContext, the invoked action will
+	 * want to reference the container of the event</li>
+	 * <li>When acting as a generator in the render of the template of another
+	 * action, should be a component-scoped container</li>
+	 * </ol>
+	 * 
+	 * @param container for this component
+	 */
+	void setContainer(IEventContextContainer container);
+
+	/**
+	 * Called after creation, before initialize.
+	 * 
+	 * @param generator that the component should use to create ids for
+	 *        elements.
+	 */
+	void setIdGenerator(IFormElementIdGenerator generator);
+
+	/**
+	 * Called after creation, after
+	 * {@link IEventProcessingContext#setEventContext(org.opensails.sails.event.ISailsEvent, org.opensails.sails.event.oem.IActionEventProcessor)}.
+	 * <p>
+	 * This method is here to prevent component developers from having to take
+	 * it in their constructor.
+	 * 
+	 * @param renderer
+	 */
+	void setTemplateRenderer(ITemplateRenderer<IBinding> renderer);
 }
