@@ -46,8 +46,15 @@ public class InputStreamActionResult extends AbstractActionResult {
 		try {
 			OutputStream outputStream = getEvent().getResponseOutputStream();
 			byte[] buffer = new byte[bufferSize];
-			while (contentStream.read(buffer) != -1)
-				outputStream.write(buffer);
+			int readCount = -1;
+			while ((readCount = contentStream.read(buffer)) != -1) {
+				byte[] whatToWrite = buffer;
+				if (readCount < buffer.length) {
+					whatToWrite = new byte[readCount];
+					System.arraycopy(buffer, 0, whatToWrite, 0, readCount);
+				}
+				outputStream.write(whatToWrite);
+			}
 		} catch (IOException e) {
 			throw new SailsException("Failure writing content of InputStream to client", e);
 		}
