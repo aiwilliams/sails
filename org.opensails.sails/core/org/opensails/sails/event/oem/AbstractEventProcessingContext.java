@@ -26,6 +26,37 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	protected P processor;
 	protected IActionResult result;
 
+	public IActionResult getActionResult() {
+		return result;
+	}
+
+	public IEventContextContainer getContainer() {
+		return event.getContainer();
+	}
+
+	public ISailsEvent getEvent() {
+		return event;
+	}
+
+	public P getEventProcessor() {
+		return processor;
+	}
+
+	public String getTemplatePath(String identifier) {
+		if (TemplateActionResult.CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
+		else return String.format("%s/%s", event.getProcessorName(), identifier);
+	}
+
+	public void setEventContext(ISailsEvent event, P processor) {
+		this.event = event;
+		this.processor = processor;
+	}
+
+	public <T extends IActionResult> T setResult(T result) {
+		this.result = result;
+		return result;
+	}
+
 	/**
 	 * Exposes the object as key for use in the rendered template
 	 * 
@@ -99,27 +130,11 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		flash(key, value);
 	}
 
-	public IActionResult getActionResult() {
-		return result;
-	}
-
 	/**
 	 * @return the IBinding appropriate to the scope of this
 	 */
 	protected IBinding getBinding() {
 		return getContainer().instance(IBinding.class);
-	}
-
-	public IEventContextContainer getContainer() {
-		return event.getContainer();
-	}
-
-	public ISailsEvent getEvent() {
-		return event;
-	}
-
-	public P getEventProcessor() {
-		return processor;
 	}
 
 	/**
@@ -140,11 +155,6 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		HttpSession session = event.getSession(false);
 		if (session != null) return session.getAttribute(name);
 		return null;
-	}
-
-	public String getTemplatePath(String identifier) {
-		if (TemplateActionResult.CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
-		else return String.format("%s/%s", event.getProcessorName(), identifier);
 	}
 
 	protected TemplateActionResult getTemplateResult() {
@@ -222,16 +232,6 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		return setResult(new FileSendActionResult(event, path));
 	}
 
-	public void setEventContext(ISailsEvent event, P processor) {
-		this.event = event;
-		this.processor = processor;
-	}
-
-	public <T extends IActionResult> T setResult(T result) {
-		this.result = result;
-		return result;
-	}
-
 	/**
 	 * @param clazz full name is used as attribute name
 	 * @param value can be null
@@ -279,14 +279,20 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		return updateModels();
 	}
 
-	protected boolean updateModels() {
-		HtmlForm formInstance = getContainer().instance(HtmlForm.class, HtmlForm.class);
-		return formInstance.updateModels(getEvent().getFormFields());
-	}
-
 	protected boolean updateModel(String name, Object model) {
 		exposeModel(name, model);
 		return updateModels();
+	}
+
+	/**
+	 * Assumes there are models in the current ModelContext that need to be
+	 * updated from the FormFields of the current event.
+	 * 
+	 * @return true if their were no validation errors
+	 */
+	protected boolean updateModels() {
+		HtmlForm formInstance = getContainer().instance(HtmlForm.class, HtmlForm.class);
+		return formInstance.updateModels(getEvent().getFormFields());
 	}
 
 	protected UrlforMixin urlfor() {

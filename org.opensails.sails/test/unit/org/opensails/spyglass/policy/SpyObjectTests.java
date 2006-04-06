@@ -23,7 +23,11 @@ public class SpyObjectTests extends TestCase {
 		SpyObject<MyObject> spy = SpyObject.create(myObject);
 		spy.write("getterOnly", "newValue");
 		assertEquals("newValue", myObject.getterOnly);
+		spy.write("getterOnly", null);
+		assertEquals(null, myObject.getterOnly);
 		
 		assertEquals("originalValue", spy.read("setterOnly"));
+		myObject.setterOnly = null;
+		assertEquals(null, spy.read("setterOnly"));
 	}
 }

@@ -24,7 +24,8 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.util.ClassHelper;
-import org.opensails.spyglass.SpyGlass;
+import org.opensails.spyglass.SpyClass;
+import org.opensails.spyglass.SpyField;
 
 /**
  * An Action as seen by the Sails framework.
@@ -124,8 +125,10 @@ public class Action implements IAction {
 			if (formFields.contains(field.getName())) {
 				IAdapter adapter = adapterResolver.resolve(field.getType(), invocation.getContainer());
 				Object fromWeb = adapter.getFieldType().getValue(formFields, field.getName());
-				Object forModel = adapter.forModel(new AdaptationTarget<Object>((Class<Object>) field.getType()), fromWeb);
-				SpyGlass.write(context, field, forModel);
+
+				SpyField<IEventProcessingContext> contextField = new SpyField<IEventProcessingContext>(new SpyClass<IEventProcessingContext>((Class<IEventProcessingContext>) context.getClass()), field);
+				Object forModel = adapter.forModel(new AdaptationTarget<Object>((Class<Object>) contextField.getType(), contextField.getGenericType()), fromWeb);
+				contextField.set(context, forModel);
 			}
 		}
 	}

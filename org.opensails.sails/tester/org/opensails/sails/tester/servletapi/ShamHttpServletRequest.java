@@ -32,7 +32,6 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 
 	protected Map<String, Object> attributes = new HashMap<String, Object>();
 	protected String contextPath = "/shamcontext";
-	protected Map<String, FileUpload> fileUploads = new HashMap<String, FileUpload>();
 
 	protected Map<String, String> headers = new HashMap<String, String>();
 	protected HttpSession httpSession;
@@ -155,8 +154,8 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	public Map<String, Object> getMultipartParameters() {
 		if (!isMultipartRequest()) throw new IllegalStateException("Not a multipart request. You must have a FileUpload parameter to cause this to be multipart.");
 		Map<String, Object> multipartParams = new HashMap<String, Object>(parameters);
-		for (Map.Entry<String, FileUpload> fileUploadEntry : fileUploads.entrySet())
-			multipartParams.put(fileUploadEntry.getKey(), fileUploadEntry.getValue());
+		for (Map.Entry<String, Object> entry : parameters.entrySet())
+			if (entry.getValue() instanceof FileUpload) multipartParams.put(entry.getKey(), entry.getValue());
 		return multipartParams;
 	}
 
@@ -290,12 +289,18 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 		return principal;
 	}
 
+	public boolean hasMultipartParameters() {
+		for (Map.Entry<String, Object> entry : parameters.entrySet())
+			if (entry.getValue() instanceof FileUpload) return true;
+		return false;
+	}
+
 	/**
 	 * @return true if there are any FileUploads in this request or if multipart ==
 	 *         true
 	 */
 	public boolean isMultipartRequest() {
-		return multipart == true || !fileUploads.isEmpty();
+		return multipart == true || hasMultipartParameters();
 	}
 
 	public boolean isRequestedSessionIdFromCookie() {
@@ -329,7 +334,6 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	public void reset() {
 		attributes.clear();
 		parameters.clear();
-		fileUploads.clear();
 		headers.clear();
 		servletPath = null;
 		contextPath = null;
@@ -357,9 +361,7 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	 * Gaurds the contract of getParameter() and getParameterMap()
 	 */
 	public void setParameter(String parameterName, FileUpload parameterValue) {
-		if (parameterValue == null) parameters.put(parameterName, parameterValue);
-		else parameters.put(parameterName, parameterValue.filename());
-		fileUploads.put(parameterName, parameterValue);
+		parameters.put(parameterName, parameterValue);
 	}
 
 	/**
@@ -368,7 +370,6 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	public void setParameter(String parameterName, String parameterValue) {
 		if (parameterValue == null) parameters.put(parameterName, parameterValue);
 		else parameters.put(parameterName, new String[] { parameterValue });
-		fileUploads.remove(parameterName);
 	}
 
 	/**
@@ -385,11 +386,10 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	/**
 	 * Gaurds the contract of getParameters() and getParameterMap()
 	 */
-	public void setParameters(String parameterName, String[] parameterValues) {
+	public void setParameters(String parameterName, String... parameterValues) {
 		Object valueToSet = null;
 		if (parameterValues != null && parameterValues.length != 0) valueToSet = parameterValues;
 		parameters.put(parameterName, valueToSet);
-		fileUploads.remove(parameterName);
 	}
 
 	/**

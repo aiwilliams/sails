@@ -74,7 +74,8 @@ public class SpyProperty<T> {
 	}
 
 	public <X extends T> void set(X target, Object value) {
-		if (setter.exists(value.getClass())) setter.invoke(target, value);
+		Class argClass = value == null ? Object.class : value.getClass();
+		if (setter.exists(argClass)) setter.invoke(target, value);
 		else field.set(target, value);
 	}
 

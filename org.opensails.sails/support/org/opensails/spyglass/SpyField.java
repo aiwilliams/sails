@@ -16,7 +16,7 @@ public class SpyField<T> {
 	protected final Field field;
 	protected final SpyClass<T> spyClass;
 
-	protected SpyField(SpyClass<T> spyClass, Field field) {
+	public SpyField(SpyClass<T> spyClass, Field field) {
 		this.spyClass = spyClass;
 		this.field = field;
 	}

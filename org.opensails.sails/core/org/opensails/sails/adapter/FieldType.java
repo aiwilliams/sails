@@ -20,7 +20,8 @@ public abstract class FieldType<T> {
 	public static final FieldType<String> STRING = new FieldType<String>() {
 		@Override
 		public String getValue(FormFields formFields, String name) {
-			return formFields.value(name);
+			if (formFields.isFile(name)) return formFields.file(name).stringContent();
+			else return formFields.value(name);
 		}
 	};
 	public static final FieldType<String[]> STRING_ARRAY = new FieldType<String[]>() {

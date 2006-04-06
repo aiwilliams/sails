@@ -139,13 +139,14 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 	}
 
 	public void testPost_MetaAction_ImageSubmit_Parameters() {
-		FormFields fields = new FormFields();
+		SailsFunctionalTester t = new SailsFunctionalTester(EventTestController.class);
+
+		ShamFormFields fields = t.getFormFields();
 		fields.setValue("postedField", "postedValue");
 		fields.setValue(FormMeta.action("parameterPost", "one", "2"), "Submit Label");
 		fields.setValue(FormMeta.action("parameterPost.x"), "45");
 		fields.setValue(FormMeta.action("parameterPost.y"), "23");
 
-		SailsFunctionalTester t = new SailsFunctionalTester(EventTestController.class);
 		Page page = t.post("notTheActionInTheMeta", t.getFormFields().quickSet("postedField", "postedValue", FormMeta.action("parameterPost", "one", "2"), "Submit Label"), "three", "four", "areIgnored");
 		page.assertContains("postedValue");
 		page.assertContains("one");

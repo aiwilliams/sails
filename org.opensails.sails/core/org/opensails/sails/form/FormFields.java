@@ -1,6 +1,5 @@
 package org.opensails.sails.form;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,24 +43,26 @@ public class FormFields {
 	/**
 	 * The value to use when a field has a null or empty String[].
 	 * <p>
-	 * If you desire #values() to return something other than null, like an
-	 * empty String[], for non-extant or zero-length values, set this to your
-	 * liking.
+	 * If you desire #values() to return something other than an empty String[],
+	 * like null, for non-extant or zero-length values, set this to your liking.
 	 */
-	public static String[] NULL_OR_EMPTY_STRING_ARRAY_VALUE = null;
+	public static String[] NULL_OR_EMPTY_STRING_ARRAY_VALUE = new String[0];
 
 	protected Map<String, Object> backingMap;
 	protected boolean multipartContent;
-
-	public FormFields() {
-		this(new HashMap<String, Object>());
-	}
 
 	@SuppressWarnings("unchecked")
 	public FormFields(HttpServletRequest request) {
 		multipartContent = isMultipartRequest(request);
 		if (multipartContent) initializeFromMultipart(request);
 		else backingMap = new HashMap<String, Object>(request.getParameterMap());
+	}
+
+	/**
+	 * For subclassing
+	 */
+	protected FormFields() {
+		this(new HashMap<String, Object>());
 	}
 
 	private FormFields(Map<String, Object> backingMap) {
@@ -116,20 +117,13 @@ public class FormFields {
 		return fieldNames;
 	}
 
-	/**
-	 * @param name
-	 * @return the value for name
-	 */
-	public Object getValue(String name) {
-		return backingMap.get(name);
-	}
-
-	public Collection<?> getValues() {
-		return backingMap.values();
-	}
-
 	public boolean isEmpty() {
 		return backingMap.isEmpty();
+	}
+
+	public boolean isFile(String name) {
+		Object object = backingMap.get(name);
+		return object != null && object instanceof FileUpload;
 	}
 
 	/**
@@ -143,7 +137,9 @@ public class FormFields {
 	}
 
 	public void setValue(String name, Object value) {
-		backingMap.put(name, new String[] { String.valueOf(value) });
+		if (value == null) return;
+		if (value.getClass() != String.class) throw new IllegalArgumentException("Parameters can only be Strings");
+		backingMap.put(name, new String[] { (String) value });
 	}
 
 	public void setValues(String name, String... values) {
@@ -181,7 +177,7 @@ public class FormFields {
 	public String value(String fieldName) {
 		Object value = backingMap.get(fieldName);
 		if (value == null) return null;
-		if (value instanceof FileUpload) value = ((FileUpload) value).stringContent();
+		if (value instanceof FileUpload) value = ((FileUpload) value).filename();
 		else value = stringValue(value);
 		return (String) value;
 	}
@@ -195,13 +191,13 @@ public class FormFields {
 	 */
 	public String[] values(String fieldName) {
 		Object value = backingMap.get(fieldName);
-		if (value == null) return null;
+		if (value == null) return NULL_OR_EMPTY_STRING_ARRAY_VALUE;
 
 		String[] values = null;
 		if (value.getClass().isArray()) {
 			values = (String[]) value;
 			if (values.length == 0) return NULL_OR_EMPTY_STRING_ARRAY_VALUE;
-		} else values = new String[] { (String) value };
+		} else values = new String[] { value(fieldName) };
 		return values;
 	}
 
