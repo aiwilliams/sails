@@ -44,6 +44,13 @@ public class HtmlGenerator {
 		return this;
 	}
 
+	/**
+	 * Write an opening element '&lt;tagName&gt;'
+	 * 
+	 * @param tagName
+	 * @return this
+	 * @throws IOException
+	 */
 	public HtmlGenerator beginTag(String tagName) throws IOException {
 		openTag(tagName);
 		return closeTag();
@@ -105,12 +112,27 @@ public class HtmlGenerator {
 		return attribute(HtmlConstants.NAME_ATTRIBUTE, nameValue);
 	}
 
+	/**
+	 * Writes '&lt;tagName' to the writer.
+	 * 
+	 * @param tagName
+	 * @return this
+	 * @throws IOException
+	 */
 	public HtmlGenerator openTag(String tagName) throws IOException {
 		writer.write("<");
 		writer.write(tagName);
 		return this;
 	}
 
+	/**
+	 * Writes '&lt;tagName id="id"' to the writer.
+	 * 
+	 * @param tagName
+	 * @param id
+	 * @return this
+	 * @throws IOException
+	 */
 	public HtmlGenerator openTag(String tagName, String id) throws IOException {
 		writer.write("<");
 		writer.write(tagName);

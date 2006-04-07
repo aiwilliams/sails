@@ -95,10 +95,18 @@ public class FormProcessingTests extends TestCase {
 		page.form().textarea("model.propertyTwo").assertValue("");
 	}
 
-	public void testSubmit() throws Exception {
+	public void testSubmit() {
 		SailsFunctionalTester t = new SailsFunctionalTester();
 		Page page = t.render("$form.start;$form.submit('Submit Value');$form.end");
 		page.form().submit("Submit Value");
+	}
+
+	public void testValidation() {
+		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
+		Page page = t.get("validationInAction");
+		page.assertContains("This should be a complete sentence.");
+		// not going to test how sentences are built here
+		page.assertContains("this is a message");
 	}
 
 	private void assertModelRendered(Form form) {

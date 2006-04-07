@@ -1,10 +1,16 @@
 package org.opensails.sails.form;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.opensails.sails.SailsException;
+import org.opensails.sails.html.HtmlGenerator;
 import org.opensails.sails.model.ModelContext;
-import org.opensails.sails.util.BleedingEdgeException;
+import org.opensails.viento.IRenderable;
 
 /**
  * The context within which all validation information is maintained during form
@@ -17,19 +23,62 @@ import org.opensails.sails.util.BleedingEdgeException;
  * 
  * @author aiwilliams
  */
-public class ValidationContext {
-	protected Collection<IValidationFailure> failures;
+public class ValidationContext implements IRenderable {
+	protected final Map<String, ValidationErrors> errors;
+	protected final ModelContext modelContext;
 
-	public ValidationContext() {
-		failures = new ArrayList<IValidationFailure>();
+	public ValidationContext(ModelContext modelContext) {
+		this.modelContext = modelContext;
+		errors = new HashMap<String, ValidationErrors>();
 	}
 
-	public IValidationErrors getEntry(String modelName) {
-		throw new BleedingEdgeException("implement");
+	/**
+	 * @return all IValidationError instances from all ValidationErrors, grouped
+	 *         by model.
+	 */
+	public List<IValidationError> allErrors() {
+		if (errors.isEmpty()) return Collections.emptyList();
+
+		List<IValidationError> all = new ArrayList<IValidationError>();
+		for (ValidationErrors errorsForModel : errors.values())
+			all.addAll(errorsForModel.getErrors());
+		return all;
 	}
 
-	public Collection<IValidationFailure> getErrors() {
-		return failures;
+	public ValidationErrors errorsFor(String modelName) {
+		ValidationErrors validationErrors = errors.get(modelName);
+		if (validationErrors == null) {
+			Object model = modelContext.getModel(modelName);
+			validationErrors = new ValidationErrors(modelName, model);
+			errors.put(modelName, validationErrors);
+		}
+		return validationErrors;
+	}
+
+	public boolean hasErrors() {
+		return allErrors().isEmpty();
+	}
+
+	public String renderThyself() {
+		if (!hasErrors()) return "";
+
+		StringWriter output = new StringWriter();
+		HtmlGenerator html = new HtmlGenerator(output);
+		try {
+			html.beginTag("div").idAttribute("errorExplanation").classAttribute("errorExplanation");
+			for (ValidationErrors error : errors.values()) {
+				html.write(error.renderThyself());
+			}
+			html.endTag("div");
+		} catch (Exception e) {
+			throw new SailsException("Failure rendering validation errors", e);
+		}
+		return output.toString();
+	}
+
+	@Override
+	public String toString() {
+		return renderThyself();
 	}
 
 }

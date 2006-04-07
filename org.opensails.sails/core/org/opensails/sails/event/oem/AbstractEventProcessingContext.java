@@ -15,9 +15,13 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.form.IValidationError;
+import org.opensails.sails.form.ValidationContext;
+import org.opensails.sails.form.ValidationErrors;
 import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.model.ModelContext;
 import org.opensails.sails.oem.Flash;
+import org.opensails.sails.validation.IValidationEngine;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.viento.IBinding;
 
@@ -25,6 +29,24 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	protected ISailsEvent event;
 	protected P processor;
 	protected IActionResult result;
+
+	/**
+	 * Provides access to the ValidationErrors of a model.
+	 * <p>
+	 * Every model instance that is exposed can have multiple
+	 * {@link IValidationError}s associated with it. These may be added by the
+	 * {@link IValidationEngine} during {@link #updateModels()}, or an action
+	 * may obtain the ValidationErrors and add some.
+	 * <p>
+	 * The errors for a model may be displayed in views using the
+	 * {@link HtmlForm#getErrorMessages()} and other methods on that class.
+	 * 
+	 * @param modelName
+	 * @return the ValidationErrors for modelName
+	 */
+	public ValidationErrors errors(String modelName) {
+		return getContainer().instance(ValidationContext.class).errorsFor(modelName);
+	}
 
 	public IActionResult getActionResult() {
 		return result;
@@ -45,6 +67,37 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	public String getTemplatePath(String identifier) {
 		if (TemplateActionResult.CONTROLLER_ACTION_PATTERN.matcher(identifier).find()) return identifier;
 		else return String.format("%s/%s", event.getProcessorName(), identifier);
+	}
+
+	/**
+	 * @param index
+	 * @return the value of the action parameter at index
+	 * @see #params()
+	 */
+	public String param(int index) {
+		return event.getActionParameters().stringAt(index);
+	}
+
+	/**
+	 * Provides access to the raw action parameters.
+	 * <p>
+	 * You may obtain these this way if you like, but the best way is to declare
+	 * them in your action method signature, like so:
+	 * 
+	 * <pre>
+	 * public void myActionMethod(String one, String two, String etc) {}
+	 * </pre>
+	 * 
+	 * Of course, you can declare those as any type for which there is an
+	 * IAdapterAvailable, including all primitives and primitive arrays.
+	 * Remember, action parameters are not url parameters: they are the 'slash
+	 * values' after the controller/action. Url query parameters are named, and
+	 * therefore available as {@link #field(String) fields}.
+	 * 
+	 * @return the action parameters before typecasting
+	 */
+	public String[] params() {
+		return event.getActionParameters().strings();
 	}
 
 	public void setEventContext(ISailsEvent event, P processor) {
@@ -162,37 +215,6 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 			if (TemplateActionResult.class.isAssignableFrom(result.getClass())) return (TemplateActionResult) result;
 		}
 		return setResult(new TemplateActionResult(event));
-	}
-
-	/**
-	 * @param index
-	 * @return the value of the action parameter at index
-	 * @see #params()
-	 */
-	protected String param(int index) {
-		return event.getActionParameters().stringAt(index);
-	}
-
-	/**
-	 * Provides access to the raw action parameters.
-	 * <p>
-	 * You may obtain these this way if you like, but the best way is to declare
-	 * them in your action method signature, like so:
-	 * 
-	 * <pre>
-	 * public void myActionMethod(String one, String two, String etc) {}
-	 * </pre>
-	 * 
-	 * Of course, you can declare those as any type for which there is an
-	 * IAdapterAvailable, including all primitives and primitive arrays.
-	 * Remember, action parameters are not url parameters: they are the 'slash
-	 * values' after the controller/action. Url query parameters are named, and
-	 * therefore available as {@link #field(String) fields}.
-	 * 
-	 * @return the action parameters before typecasting
-	 */
-	protected String[] params() {
-		return event.getActionParameters().strings();
 	}
 
 	/**

@@ -1,6 +1,6 @@
 package org.opensails.sails.form;
 
-public interface IValidationFailure {
+public interface IValidationError {
 
 	String getMessage();
 

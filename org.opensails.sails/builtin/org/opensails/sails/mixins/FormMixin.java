@@ -80,7 +80,7 @@ public class FormMixin {
 		throw new BleedingEdgeException("implement");
 		// StringWriter writer = new StringWriter();
 		// HtmlGenerator messages = new HtmlGenerator(writer);
-		// IValidationErrors entry = validationContext.getEntry(name);
+		// ValidationErrors entry = validationContext.getEntry(name);
 		// if (!entry.getFailures().isEmpty()) {
 		// messages.openTag("div", "errorExplanation");
 		// messages.classAttribute("errorExplanation");
@@ -95,7 +95,7 @@ public class FormMixin {
 		// messages.endTag("h2");
 		//
 		// messages.beginTag("ul");
-		// for (IValidationFailure failure : entry.getFailures())
+		// for (IValidationError failure : entry.getFailures())
 		// messages.tag("li", failure.getMessage());
 		// messages.endTag("ul");
 		//
