@@ -1,6 +1,7 @@
 package org.opensails.sails.form;
 
 import org.opensails.sails.model.UnknownPropertyException;
+import org.opensails.sails.util.BleedingEdgeException;
 import org.opensails.sails.validation.IInvalidProperty;
 
 public class InvalidProperty implements IInvalidProperty {
@@ -10,6 +11,10 @@ public class InvalidProperty implements IInvalidProperty {
 	public InvalidProperty(String fieldName, UnknownPropertyException e) {
 		this.fieldName = fieldName;
 		this.propertyPathException = e;
+	}
+
+	public String getMessage() {
+		throw new BleedingEdgeException("implement");
 	}
 
 	public String getProperty() {

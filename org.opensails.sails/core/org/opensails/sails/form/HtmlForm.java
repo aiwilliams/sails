@@ -59,30 +59,23 @@ public class HtmlForm {
 	}
 
 	/**
-	 * @return true if their are no IValidationErrors
+	 * @return true if the ValidationContext has no errors
 	 */
 	public boolean isValid() {
-		return validationContext.hasErrors();
+		return !validationContext.hasErrors();
 	}
 
 	/**
 	 * @param formFields the fields for updating the models
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean updateModels(FormFields formFields) {
 		this.formFields = formFields;
-		for (String name : formFields.getNames()) {
-			IPropertyPath path = propertyFactory.createPath(name);
-			Object model = modelContext.getModel(path);
-			if (model == null) continue;
+		transferFormIntoModels(formFields);
+		return validateModels();
+	}
 
-			IPropertyAccessor accessor = propertyFactory.createAccessor(path);
-			AdaptationTarget adaptationTarget = accessor.getAdaptationTarget(model);
-			if (!adaptationTarget.exists()) continue;
-			IAdapter adapter = adapter(path, model, adaptationTarget);
-			accessor.set(model, adapter.forModel(adaptationTarget, adapter.getFieldType().getValue(formFields, name)));
-		}
-		return isValid();
+	public boolean validateModels() {
+		return validationContext.validate();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -102,5 +95,20 @@ public class HtmlForm {
 	protected IAdapter adapter(IPropertyPath path, Object model, AdaptationTarget adaptationTarget) {
 		if (adaptationTarget.getTargetClass() == void.class) return new PrimitiveAdapter.StringAdapter();
 		else return adapterResolver.resolve(adaptationTarget.getTargetClass());
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void transferFormIntoModels(FormFields formFields) {
+		for (String name : formFields.getNames()) {
+			IPropertyPath path = propertyFactory.createPath(name);
+			Object model = modelContext.getModel(path);
+			if (model == null) continue;
+
+			IPropertyAccessor accessor = propertyFactory.createAccessor(path);
+			AdaptationTarget adaptationTarget = accessor.getAdaptationTarget(model);
+			if (!adaptationTarget.exists()) continue;
+			IAdapter adapter = adapter(path, model, adaptationTarget);
+			accessor.set(model, adapter.forModel(adaptationTarget, adapter.getFieldType().getValue(formFields, name)));
+		}
 	}
 }

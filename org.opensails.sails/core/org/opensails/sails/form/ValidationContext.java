@@ -10,6 +10,9 @@ import java.util.Map;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.html.HtmlGenerator;
 import org.opensails.sails.model.ModelContext;
+import org.opensails.sails.validation.IInvalidProperty;
+import org.opensails.sails.validation.IValidationEngine;
+import org.opensails.sails.validation.IValidationResult;
 import org.opensails.viento.IRenderable;
 
 /**
@@ -26,9 +29,11 @@ import org.opensails.viento.IRenderable;
 public class ValidationContext implements IRenderable {
 	protected final Map<String, ValidationErrors> errors;
 	protected final ModelContext modelContext;
+	protected final IValidationEngine validationEngine;
 
-	public ValidationContext(ModelContext modelContext) {
+	public ValidationContext(ModelContext modelContext, IValidationEngine validationEngine) {
 		this.modelContext = modelContext;
+		this.validationEngine = validationEngine;
 		errors = new HashMap<String, ValidationErrors>();
 	}
 
@@ -66,9 +71,8 @@ public class ValidationContext implements IRenderable {
 		HtmlGenerator html = new HtmlGenerator(output);
 		try {
 			html.beginTag("div").idAttribute("errorExplanation").classAttribute("errorExplanation");
-			for (ValidationErrors error : errors.values()) {
+			for (ValidationErrors error : errors.values())
 				html.write(error.renderThyself());
-			}
 			html.endTag("div");
 		} catch (Exception e) {
 			throw new SailsException("Failure rendering validation errors", e);
@@ -81,4 +85,12 @@ public class ValidationContext implements IRenderable {
 		return renderThyself();
 	}
 
+	public boolean validate() {
+		for (Map.Entry<String, Object> modelEntry : modelContext.getModelEntries()) {
+			IValidationResult validationResult = validationEngine.validate(modelEntry.getValue());
+			for (IInvalidProperty invalidProperty : validationResult.getInvalidProperties())
+				errorsFor(modelEntry.getKey()).add(invalidProperty.getProperty(), invalidProperty.getMessage());
+		}
+		return !hasErrors();
+	}
 }

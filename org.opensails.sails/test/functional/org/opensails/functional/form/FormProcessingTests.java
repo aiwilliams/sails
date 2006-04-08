@@ -107,6 +107,12 @@ public class FormProcessingTests extends TestCase {
 		page.assertContains("This should be a complete sentence.");
 		// not going to test how sentences are built here
 		page.assertContains("this is a message");
+
+		Model model = new Model();
+		model.lengthValidated = "";
+		t.getApplication().provides(model);
+		page = t.get("validationOnModel", model);
+		page.assertContains("Custom message should be used for length");
 	}
 
 	private void assertModelRendered(Form form) {

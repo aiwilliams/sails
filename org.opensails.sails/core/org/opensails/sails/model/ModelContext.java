@@ -2,6 +2,7 @@ package org.opensails.sails.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.opensails.spyglass.SpyGlass;
 
@@ -63,6 +64,10 @@ public class ModelContext {
 	 */
 	public Object getModel(String name) {
 		return context.get(name);
+	}
+
+	public Set<Map.Entry<String, Object>> getModelEntries() {
+		return context.entrySet();
 	}
 
 }

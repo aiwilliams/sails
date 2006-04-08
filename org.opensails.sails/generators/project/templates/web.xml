@@ -59,13 +59,4 @@
 		</web-resource-collection>
 		<auth-constraint/> <!-- necessary -->
 	</security-constraint>
-
-    <servlet>
-		<servlet-name>Common</servlet-name>
-		<servlet-class>org.opensails.sails.oem.CommonServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-		<servlet-name>Common</servlet-name>
-		<url-pattern>/common/*</url-pattern>
-    </servlet-mapping>
 </web-app>

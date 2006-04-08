@@ -7,10 +7,12 @@ import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FileInput;
+import org.opensails.sails.form.html.Form;
 import org.opensails.sails.form.html.Hidden;
 import org.opensails.sails.form.html.Label;
 import org.opensails.sails.form.html.ListSelectModel;
@@ -21,6 +23,8 @@ import org.opensails.sails.form.html.SelectModel;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.Textarea;
+import org.opensails.sails.url.ActionUrl;
+import org.opensails.sails.url.IUrl;
 import org.opensails.sails.util.BleedingEdgeException;
 import org.opensails.sails.util.Quick;
 
@@ -28,6 +32,7 @@ public class FormMixin {
 	protected IFormElementIdGenerator idGenerator;
 	protected HtmlForm form;
 	protected ContainerAdapterResolver adapterResolver;
+	protected ISailsEvent event;
 
 	/**
 	 * @param idGenerator
@@ -36,10 +41,23 @@ public class FormMixin {
 	 *        and adapt parameters
 	 * @param form
 	 */
-	public FormMixin(IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
+	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
+		this.event = event;
 		this.idGenerator = idGenerator;
 		this.adapterResolver = adapterResolver;
 		this.form = form;
+	}
+
+	public Form action(String action) {
+		return actionUrl(new ActionUrl(event, action));
+	}
+
+	public Form action(String controller, String action) {
+		return actionUrl(new ActionUrl(event, controller, action));
+	}
+
+	public Form actionUrl(IUrl actionUrl) {
+		return new Form().actionUrl(actionUrl);
 	}
 
 	public Checkbox checkbox(String propertyPath) {
@@ -154,8 +172,8 @@ public class FormMixin {
 		return new Select(name).id(idGenerator.idForName(name)).model(model).selected(form.value(name));
 	}
 
-	public String start() {
-		return "<form method=\"post\">";
+	public Form start() {
+		return new Form();
 	}
 
 	public Submit submit() {

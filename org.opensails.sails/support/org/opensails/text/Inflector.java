@@ -12,7 +12,7 @@ public class Inflector {
 	protected static final List<Inflection> PLURALS = new ArrayList<Inflection>();
 
 	static {
-		plural("^(.*)$", "\\1s");
+		plural("^(.*)$", "$1s");
 	}
 
 	public static void plural(String regex, String replacement) {
@@ -20,7 +20,7 @@ public class Inflector {
 	}
 
 	public static String pluralize(int count, String singular) {
-		if (count == 1) return String.format("1 %s", count, singular);
+		if (count == 1) return String.format("1 %s", singular);
 		return String.format("%d %s", count, pluralize(singular));
 	}
 

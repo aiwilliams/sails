@@ -2,7 +2,6 @@ package org.opensails.sails.validation.oem;
 
 import java.lang.reflect.Field;
 
-import org.opensails.sails.util.BleedingEdgeException;
 import org.opensails.sails.validation.IInvalidProperty;
 import org.opensails.sails.validation.IValidator;
 
@@ -17,8 +16,12 @@ public class InvalidFieldProperty implements IInvalidProperty {
 		this.validator = validator;
 	}
 
+	public String getMessage() {
+		return validator.getConstraintMessage();
+	}
+
 	public String getProperty() {
-		throw new BleedingEdgeException("implement");
+		return annotatedField.getName();
 	}
 
 }

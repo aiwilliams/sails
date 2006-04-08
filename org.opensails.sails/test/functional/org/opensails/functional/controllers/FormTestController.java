@@ -42,4 +42,9 @@ public class FormTestController extends BaseController {
 		errors("model").add("someProperty", "this is a message");
 		renderString(errors("model"));
 	}
+
+	public void validationOnModel(Model model) {
+		updateModel(model);
+		renderString(errors("model"));
+	}
 }

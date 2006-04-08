@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opensails.sails.SailsException;
 import org.opensails.sails.validation.IInvalidProperty;
 import org.opensails.sails.validation.IValidator;
 import org.opensails.sails.validation.ValidatorClass;
@@ -22,8 +23,12 @@ public class ModelValidator {
 	public IInvalidProperty[] invalidProperties(Object model) {
 		List<IInvalidProperty> invalidProperties = new ArrayList<IInvalidProperty>();
 		for (IPropertyValidator propertyValidator : fieldValidators) {
-			IInvalidProperty invalid = propertyValidator.validate(model);
-			if (invalid != null) invalidProperties.add(invalid);
+			try {
+				IInvalidProperty invalid = propertyValidator.validate(model);
+				if (invalid != null) invalidProperties.add(invalid);
+			} catch (Exception e) {
+				throw new SailsException("Failure validating model", e);
+			}
 		}
 		return invalidProperties.toArray(new IInvalidProperty[invalidProperties.size()]);
 	}

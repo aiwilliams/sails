@@ -10,10 +10,14 @@ import org.opensails.sails.validation.ValidatorClass;
 
 @Documented
 @ValidatorClass(LengthValidator.class)
-@Target({ElementType.FIELD, ElementType.METHOD}) 
+@Target( { ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Length {
-    int min();
-    int max() default Integer.MAX_VALUE;
-    String message() default "invalid length";
+	String DEFAULT_MESSAGE = "Invalid length";
+
+	int max() default Integer.MAX_VALUE;
+
+	String message() default DEFAULT_MESSAGE;
+
+	int min();
 }

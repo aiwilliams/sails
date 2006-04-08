@@ -18,6 +18,10 @@ public class ActionUrl extends AbstractUrl<ActionUrl> {
 		super(event);
 	}
 
+	public ActionUrl(ISailsEvent event, String action) {
+		this(event, event.getProcessorName(), action);
+	}
+
 	public ActionUrl(ISailsEvent event, String controller, String action) {
 		this(event);
 		this.controller = controller;

@@ -68,7 +68,7 @@ public class ValidationErrors implements IRenderable {
 		HtmlGenerator html = new HtmlGenerator(output);
 
 		try {
-			html.beginTag("h2").write(Inflector.pluralize(errors.size(), "error")).write(" prohibited this").write(modelName).write(" from being saved").endTag("h2");
+			html.beginTag("h2").write(Inflector.pluralize(errors.size(), "error")).write(" prohibited this ").write(modelName).write(" from being saved.").endTag("h2");
 			html.beginTag("p").write("There were problems with the following fields:").endTag("p");
 			html.beginTag("ul");
 			for (IValidationError error : getErrors()) {

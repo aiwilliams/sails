@@ -12,6 +12,10 @@ public class RedirectActionResult extends AbstractActionResult {
 
 	protected ActionUrl redirectUrl;
 
+	public RedirectActionResult(ISailsEvent event, Class<? extends IControllerImpl> redirectToController) {
+		this(event, redirectToController, null, null);
+	}
+
 	public RedirectActionResult(ISailsEvent event, Class<? extends IControllerImpl> redirectToController, String redirectToAction) {
 		this(event, redirectToController, redirectToAction, null);
 	}
