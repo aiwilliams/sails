@@ -61,7 +61,7 @@ public class ValidationContext implements IRenderable {
 	}
 
 	public boolean hasErrors() {
-		return allErrors().isEmpty();
+		return !allErrors().isEmpty();
 	}
 
 	public String renderThyself() {

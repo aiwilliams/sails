@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.html.HtmlGenerator;
 import org.opensails.text.Inflector;
@@ -15,6 +16,16 @@ import org.opensails.viento.IRenderable;
  * @author aiwilliams
  */
 public class ValidationErrors implements IRenderable {
+	/**
+	 * Returned to view when there are no error for a model
+	 */
+	public static final ValidationErrors NULL = new ValidationErrors("NULL", null) {
+		@Override
+		public String renderThyself() {
+			return StringUtils.EMPTY;
+		}
+	};
+
 	protected String modelName;
 	protected Object model;
 	protected List<IValidationError> errors;
@@ -61,6 +72,10 @@ public class ValidationErrors implements IRenderable {
 
 	public String getModelName() {
 		return modelName;
+	}
+
+	public boolean isEmpty() {
+		return errors.isEmpty();
 	}
 
 	public String renderThyself() {

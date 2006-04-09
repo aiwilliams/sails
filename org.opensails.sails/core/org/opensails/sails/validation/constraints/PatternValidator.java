@@ -8,7 +8,7 @@ public class PatternValidator implements IValidator<Pattern> {
 	private Pattern constraint;
 
 	public String getConstraintMessage() {
-		if (constraint.message() != Pattern.DEFAULT_MESSAGE) return constraint.message();
+		if (!constraint.message().equals(Pattern.DEFAULT_MESSAGE)) return constraint.message();
 		return String.format("must match the pattern %s", pattern);
 	}
 

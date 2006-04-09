@@ -4,6 +4,8 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import org.opensails.sails.form.HtmlForm;
+import org.opensails.sails.form.ValidationContext;
+import org.opensails.sails.model.ModelContext;
 
 public class FormTest extends TestCase {
 	public void testConstructor() throws Exception {
@@ -18,12 +20,7 @@ public class FormTest extends TestCase {
 		});
 		form.validated();
 
-		form = new Form("page after processing", new HtmlForm(null, null, null, null) {
-			@Override
-			public String getErrorMessages() {
-				return "messages";
-			}
-
+		form = new Form("page after processing", new HtmlForm(new ValidationContext(new ModelContext(), null), null, null, null) {
 			@Override
 			public boolean isValid() {
 				return false;

@@ -6,7 +6,7 @@ public class NotNullValidator implements IValidator<NotNull> {
 	protected String customMessage;
 
 	public String getConstraintMessage() {
-		if (customMessage != NotNull.DEFAULT_MESSAGE) return customMessage;
+		if (!customMessage.equals(NotNull.DEFAULT_MESSAGE)) return customMessage;
 		return NotNull.DEFAULT_MESSAGE;
 	}
 

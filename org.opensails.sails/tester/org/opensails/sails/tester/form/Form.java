@@ -75,7 +75,7 @@ public class Form {
 	}
 
 	public Form validated() {
-		if (!form.isValid()) throw new AssertionFailedError(form.getErrorMessages());
+		if (!form.isValid()) throw new AssertionFailedError(form.getValidationContext().renderThyself());
 		return this;
 	}
 }

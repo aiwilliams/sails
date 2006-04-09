@@ -9,7 +9,7 @@ public class LengthValidator implements IValidator<Length> {
 	protected String customMessage;
 
 	public String getConstraintMessage() {
-		if (customMessage != Length.DEFAULT_MESSAGE) return customMessage;
+		if (!customMessage.equals(Length.DEFAULT_MESSAGE)) return customMessage;
 
 		if (max == Integer.MAX_VALUE) return String.format("must contain at least %d characters", min);
 		return String.format("must contain %d to %d characters", min, max);

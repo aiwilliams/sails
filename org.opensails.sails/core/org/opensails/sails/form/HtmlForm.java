@@ -1,8 +1,5 @@
 package org.opensails.sails.form;
 
-import java.io.IOException;
-import java.util.Collection;
-
 import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
@@ -44,18 +41,8 @@ public class HtmlForm {
 		this.adapterResolver = adapterResolver;
 	}
 
-	/**
-	 * @return all error messages
-	 * @throws IOException
-	 */
-	public String getErrorMessages() {
-		StringBuilder messages = new StringBuilder();
-		Collection<IValidationError> failures = validationContext.allErrors();
-		for (IValidationError failure : failures) {
-			messages.append(failure.getMessage());
-			messages.append("\n");
-		}
-		return messages.toString();
+	public ValidationContext getValidationContext() {
+		return validationContext;
 	}
 
 	/**

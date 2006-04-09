@@ -1,6 +1,5 @@
 package org.opensails.sails.mixins;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import org.opensails.sails.SailsException;
@@ -10,6 +9,7 @@ import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.ValidationErrors;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FileInput;
 import org.opensails.sails.form.html.Form;
@@ -25,10 +25,11 @@ import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.Textarea;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.IUrl;
-import org.opensails.sails.util.BleedingEdgeException;
 import org.opensails.sails.util.Quick;
+import org.opensails.spyglass.SpyObject;
+import org.opensails.viento.MethodMissing;
 
-public class FormMixin {
+public class FormMixin implements MethodMissing {
 	protected IFormElementIdGenerator idGenerator;
 	protected HtmlForm form;
 	protected ContainerAdapterResolver adapterResolver;
@@ -86,40 +87,13 @@ public class FormMixin {
 		return "</form>";
 	}
 
+	public ValidationErrors errorsFor(String modelName) {
+		ValidationErrors errorsFor = form.getValidationContext().errorsFor(modelName);
+		return errorsFor.isEmpty() ? ValidationErrors.NULL : errorsFor;
+	}
+
 	public FileInput file(String name) {
 		return new FileInput(name).value(form.value(name));
-	}
-
-	public String getErrorMessageOn(String name, String propertyPath) {
-		throw new BleedingEdgeException("implement: delegate to ValidationContext");
-	}
-
-	public String getErrorMessagesFor(String name) throws IOException {
-		throw new BleedingEdgeException("implement");
-		// StringWriter writer = new StringWriter();
-		// HtmlGenerator messages = new HtmlGenerator(writer);
-		// ValidationErrors entry = validationContext.getEntry(name);
-		// if (!entry.getFailures().isEmpty()) {
-		// messages.openTag("div", "errorExplanation");
-		// messages.classAttribute("errorExplanation");
-		// messages.closeTag();
-		//
-		// messages.beginTag("h2");
-		// messages.write(Inflector.pluralize(entry.getFailures().size(),
-		// "error"));
-		// messages.write(" prohibited this ");
-		// messages.write(SpyGlass.getName(entry.getModel().getClass()));
-		// messages.write(" from being saved");
-		// messages.endTag("h2");
-		//
-		// messages.beginTag("ul");
-		// for (IValidationError failure : entry.getFailures())
-		// messages.tag("li", failure.getMessage());
-		// messages.endTag("ul");
-		//
-		// messages.endTag("div");
-		// }
-		// return writer.toString();
 	}
 
 	public Hidden hidden(String name) {
@@ -132,6 +106,10 @@ public class FormMixin {
 
 	public Label label(String forId, String text) {
 		return new Label(forId).text(text);
+	}
+
+	public Object methodMissing(String methodName, Object[] args) {
+		return new SpyObject<HtmlForm>(form).invoke(methodName, args);
 	}
 
 	public Password password(String name) {

@@ -39,7 +39,7 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	 * may obtain the ValidationErrors and add some.
 	 * <p>
 	 * The errors for a model may be displayed in views using the
-	 * {@link HtmlForm#getErrorMessages()} and other methods on that class.
+	 * {@link HtmlForm#errorsFor(String)} and other methods on that class.
 	 * 
 	 * @param modelName
 	 * @return the ValidationErrors for modelName
