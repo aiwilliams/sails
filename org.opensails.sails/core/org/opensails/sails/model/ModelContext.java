@@ -70,4 +70,8 @@ public class ModelContext {
 		return context.entrySet();
 	}
 
+	@Override
+	public String toString() {
+		return context.toString();
+	}
 }

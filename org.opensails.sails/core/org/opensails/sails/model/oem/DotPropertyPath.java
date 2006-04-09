@@ -34,6 +34,10 @@ public class DotPropertyPath implements IPropertyPath {
 		this(targetIdentifier + "." + path);
 	}
 
+	public IPropertyPath dropModelNode() {
+		return new DotPropertyPath(path.substring(path.indexOf('.') + 1));
+	}
+
 	public String[] getAllNodes() {
 		StringTokenizer tokens = new StringTokenizer(path, ".");
 		List<String> nodes = new ArrayList<String>();
@@ -42,8 +46,17 @@ public class DotPropertyPath implements IPropertyPath {
 		return nodes.toArray(new String[nodes.size()]);
 	}
 
+	public String getFirstProperty() {
+		return getAllNodes()[1];
+	}
+
 	public String getFullName() {
 		return path;
+	}
+
+	public String getLastProperty() {
+		String[] allNodes = getAllNodes();
+		return allNodes[allNodes.length - 1];
 	}
 
 	public String getModelName() {
@@ -78,6 +91,10 @@ public class DotPropertyPath implements IPropertyPath {
 		return path.substring(delimiterIndex);
 	}
 
+	public int getPropertyCount() {
+		return getNodeCount() - 1;
+	}
+
 	public String getPropertyName() {
 		int lastDelimiter = path.lastIndexOf(".");
 		return path.substring(lastDelimiter + 1);
@@ -91,17 +108,5 @@ public class DotPropertyPath implements IPropertyPath {
 	@Override
 	public String toString() {
 		return path;
-	}
-
-	public int getPropertyCount() {
-		return getNodeCount() - 1;
-	}
-
-	public String getFirstProperty() {
-		return getAllNodes()[1];
-	}
-
-	public IPropertyPath dropModelNode() {
-		return new DotPropertyPath(path.substring(path.indexOf('.') + 1));
 	}
 }

@@ -7,9 +7,24 @@ public interface IPropertyPath {
 	public int getNodeCount();
 
 	/**
+	 * @return a new path without the model node.
+	 */
+	IPropertyPath dropModelNode();
+
+	/**
 	 * @return the path nodes, including the target identifier
 	 */
 	String[] getAllNodes();
+
+	/**
+	 * @return the first node after the model node.
+	 */
+	String getFirstProperty();
+
+	/**
+	 * @return the last node
+	 */
+	String getLastProperty();
 
 	/**
 	 * The model name is used to identify which Object this should be used on.
@@ -25,22 +40,12 @@ public interface IPropertyPath {
 	String[] getNodes();
 
 	/**
-	 * @return the name of the property on the target
-	 */
-	String getPropertyName();
-
-	/**
 	 * @return the number of nodes not counting the model node.
 	 */
 	int getPropertyCount();
 
 	/**
-	 * @return the first node after the model node.
+	 * @return the name of the property on the target
 	 */
-	String getFirstProperty();
-
-	/**
-	 * @return a new path without the model node.
-	 */
-	IPropertyPath dropModelNode();
+	String getPropertyName();
 }

@@ -3,6 +3,7 @@ package org.opensails.spyglass;
 import java.lang.reflect.Field;
 
 import org.apache.commons.lang.ClassUtils;
+import org.opensails.sails.model.oem.DotPropertyPath;
 
 public class SpyGlass {
 
@@ -41,7 +42,15 @@ public class SpyGlass {
 	}
 
 	public static String getName(Class clazz) {
-		return ClassUtils.getShortClassName(clazz);
+		if (clazz == null) return null;
+		
+		DotPropertyPath namePath = new DotPropertyPath(clazz.getName());
+		String name = namePath.getLastProperty();
+		int innerClassSeparatorIndex = name.indexOf('$');
+		if (innerClassSeparatorIndex > 0)
+			name = name.substring(innerClassSeparatorIndex + 1);
+		
+		return name;
 	}
 
 	public static <T> String getPackage(Class<T> clazz) {
@@ -80,7 +89,7 @@ public class SpyGlass {
 	}
 
 	public static String lowerCamelName(Class clazz) {
-		return lowerCamelName(ClassUtils.getShortClassName(clazz));
+		return lowerCamelName(getName(clazz));
 	}
 
 	public static String lowerCamelName(Object instance) {
