@@ -10,6 +10,10 @@ public class HibernateInvalidProperty implements IInvalidProperty {
 		this.value = value;
 	}
 
+	public String getMessage() {
+		return value.getMessage();
+	}
+
 	public String getProperty() {
 		return value.getPropertyName();
 	}

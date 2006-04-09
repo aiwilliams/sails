@@ -1,12 +1,14 @@
 package org.opensails.hibernate;
 
 import org.hibernate.Session;
+import org.opensails.hibernate.validation.HibernateValidationEngine;
 import org.opensails.sails.ApplicationContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.persist.IObjectPersister;
+import org.opensails.sails.validation.IValidationEngine;
 
 /**
  * An ISailsApplicationConfigurator the makes using Hibernate as the
@@ -30,6 +32,12 @@ public abstract class HibernateApplicationConfigurator extends BaseConfigurator 
 		super.configure(event, eventContainer);
 		eventContainer.register(IObjectPersister.class, HibernateObjectPersister.class);
 		eventContainer.registerResolver(Session.class, new SessionResolver(eventContainer));
+	}
+
+	@Override
+	protected void configure(IConfigurableSailsApplication application, ApplicationContainer container) {
+		super.configure(application, container);
+		container.register(IValidationEngine.class, HibernateValidationEngine.class);
 	}
 
 	protected abstract Class<? extends IHibernateDatabaseConfiguration> getDefaultDatabaseConfiguration();

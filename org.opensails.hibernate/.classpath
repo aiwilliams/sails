@@ -13,6 +13,6 @@
 	<classpathentry exported="true" sourcepath="vendor/src/hibernate-annotations.zip" kind="lib" path="vendor/required/hibernate-annotations.jar"/>
 	<classpathentry sourcepath="vendor/src/hsqldb_1_8_0_2.zip" kind="lib" path="vendor/optional/hsqldb.jar"/>
 	<classpathentry kind="lib" path="vendor/optional/ehcache-1.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/org.opensails.sails"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/org.opensails.sails"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>
