@@ -9,6 +9,7 @@ import org.opensails.sails.tester.browser.ShamFileUpload;
 import org.opensails.sails.tester.browser.ShamFormFields;
 import org.opensails.sails.tester.form.Form;
 import org.opensails.sails.tester.util.CollectionAssert;
+import org.opensails.sails.validation.constraints.NotNull;
 
 public class FormProcessingTests extends TestCase {
 	public void testPost_FileUpload() throws Exception {
@@ -103,16 +104,18 @@ public class FormProcessingTests extends TestCase {
 
 	public void testValidation() {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
-		Page page = t.get("validationInAction");
-		page.assertContains("This should be a complete sentence.");
-		// not going to test how sentences are built here
-		page.assertContains("this is a message");
 
 		Model model = new Model();
 		model.lengthValidated = "";
+		model.nullAndlengthValidated = null;
 		t.getApplication().provides(model);
-		page = t.get("validationOnModel", model);
+
+		Page page = t.get("validation", model);
+		page.assertContains("This should be a complete sentence.");
+		// not going to test how sentences are built here
+		page.assertContains("this is a message");
 		page.assertContains("Custom message should be used for length");
+		page.assertContains(NotNull.DEFAULT_MESSAGE);
 	}
 
 	private void assertModelRendered(Form form) {

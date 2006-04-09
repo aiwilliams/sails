@@ -5,19 +5,27 @@ import java.lang.annotation.Annotation;
 import org.opensails.sails.validation.IValidator;
 
 public class TruthValidator implements IValidator {
-	private Annotation constraint;
+	protected Boolean expected;
+	protected String customMessage;
 
 	public String getConstraintMessage() {
-		return String.format("Value must be %s.", constraint.annotationType() == AssertTrue.class);
+		if (customMessage != null) return customMessage;
+		return String.format("must have the value of %s.", expected);
 	}
 
 	public void init(Annotation constraint) {
-		this.constraint = constraint;
+		if (constraint.annotationType() == AssertTrue.class) {
+			expected = Boolean.TRUE;
+			customMessage = ((AssertTrue) constraint).message();
+			if (customMessage == AssertTrue.DEFAULT_MESSAGE) customMessage = null;
+		} else if (constraint.annotationType() == AssertFalse.class) {
+			expected = Boolean.FALSE;
+			customMessage = ((AssertFalse) constraint).message();
+			if (customMessage == AssertFalse.DEFAULT_MESSAGE) customMessage = null;
+		}
 	}
 
 	public boolean validate(Object value) {
-		if (constraint.annotationType() == AssertTrue.class & Boolean.FALSE.equals(value)) return false;
-		else if (constraint.annotationType() == AssertFalse.class & Boolean.TRUE.equals(value)) return false;
-		else return true;
+		return expected.equals(value);
 	}
 }

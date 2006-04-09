@@ -13,5 +13,7 @@ import org.opensails.sails.validation.ValidatorClass;
 @Target( { ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AssertFalse {
-	String message() default "expected to be false";
+	String DEFAULT_MESSAGE = "expected to be false";
+
+	String message() default DEFAULT_MESSAGE;
 }

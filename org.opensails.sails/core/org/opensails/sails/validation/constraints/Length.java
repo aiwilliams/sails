@@ -13,7 +13,7 @@ import org.opensails.sails.validation.ValidatorClass;
 @Target( { ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Length {
-	String DEFAULT_MESSAGE = "Invalid length";
+	String DEFAULT_MESSAGE = "has an invalid length";
 
 	int max() default Integer.MAX_VALUE;
 

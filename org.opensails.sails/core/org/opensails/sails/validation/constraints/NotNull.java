@@ -13,5 +13,7 @@ import org.opensails.sails.validation.ValidatorClass;
 @Target( { ElementType.FIELD, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NotNull {
-	String message() default "cannot be null";
+	String DEFAULT_MESSAGE = "must have a value";
+
+	String message() default DEFAULT_MESSAGE;
 }

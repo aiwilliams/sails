@@ -37,14 +37,10 @@ public class FormTestController extends BaseController {
 		renderTemplate("renderModel");
 	}
 
-	public void validationInAction() {
+	public void validation(Model model) {
+		updateModel(model);
 		errors("model").addToBase("This should be a complete sentence.");
 		errors("model").add("someProperty", "this is a message");
-		renderString(errors("model"));
-	}
-
-	public void validationOnModel(Model model) {
-		updateModel(model);
 		renderString(errors("model"));
 	}
 }

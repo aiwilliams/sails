@@ -1,16 +1,17 @@
 package org.opensails.sails.validation.constraints;
 
-import java.lang.annotation.Annotation;
-
 import org.opensails.sails.validation.IValidator;
 
-public class NotNullValidator implements IValidator {
+public class NotNullValidator implements IValidator<NotNull> {
+	protected String customMessage;
+
 	public String getConstraintMessage() {
-		return "Value cannot be null.";
+		if (customMessage != NotNull.DEFAULT_MESSAGE) return customMessage;
+		return NotNull.DEFAULT_MESSAGE;
 	}
 
-	public void init(Annotation constraint) {
-	// Don't need any information
+	public void init(NotNull constraint) {
+		customMessage = constraint.message();
 	}
 
 	public boolean validate(Object value) {

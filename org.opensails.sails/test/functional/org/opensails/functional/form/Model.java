@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.opensails.sails.persist.AbstractIdentifiable;
 import org.opensails.sails.util.Quick;
 import org.opensails.sails.validation.constraints.Length;
+import org.opensails.sails.validation.constraints.NotNull;
 
 public class Model extends AbstractIdentifiable {
 	protected String hiddenProperty = "hiddenValue";
@@ -18,6 +19,10 @@ public class Model extends AbstractIdentifiable {
 
 	@Length(min = 3, message = "Custom message should be used for length")
 	protected String lengthValidated;
+
+	@Length(min = 2)
+	@NotNull
+	protected String nullAndlengthValidated;
 
 	protected SubModel subModel = new SubModel();
 
