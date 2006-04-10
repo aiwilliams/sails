@@ -12,6 +12,10 @@ public class BaseValidationError implements IValidationError {
 		this.errorMessage = errorMessage;
 	}
 
+	public String getFullMessage() {
+		return errorMessage;
+	}
+
 	public String getMessage() {
 		return errorMessage;
 	}

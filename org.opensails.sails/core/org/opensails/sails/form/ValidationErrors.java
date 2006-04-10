@@ -88,7 +88,7 @@ public class ValidationErrors implements IRenderable {
 			html.beginTag("ul");
 			for (IValidationError error : getErrors()) {
 				html.beginTag("li");
-				html.write(error.getMessage());
+				html.write(error.getFullMessage());
 				html.endTag("li");
 			}
 			html.endTag("ul");

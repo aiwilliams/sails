@@ -14,6 +14,10 @@ public class PropertyError implements IValidationError {
 		this.errorMessage = errorMessage;
 	}
 
+	public String getFullMessage() {
+		return String.format("%s %s", property, errorMessage);
+	}
+
 	public String getMessage() {
 		return errorMessage;
 	}
