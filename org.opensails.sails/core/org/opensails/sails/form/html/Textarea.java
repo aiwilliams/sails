@@ -13,7 +13,7 @@ import org.opensails.sails.html.HtmlGenerator;
 /**
  * An HTML TEXTAREA.
  */
-public class Textarea extends ValueElement<Textarea> implements Labelable<Textarea> {
+public class Textarea extends ValueElement<Textarea> implements ILabelable<Textarea> {
 	public static final String TEXTAREA = "textarea";
 
 	protected Label label;

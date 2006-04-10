@@ -5,7 +5,7 @@ package org.opensails.sails.form.html;
  * well as methods that know how to adapt the options for rendering the HTML and
  * that can turn the HTML OPTION value attributes back into Objects.
  */
-public interface SelectModel {
+public interface ISelectModel {
 	/**
 	 * When the 'null' option is selected, this label is displayed to the user.
 	 */
@@ -13,7 +13,7 @@ public interface SelectModel {
 
 	/**
 	 * When the 'null' option is selected, this value is found in the post for
-	 * the property of this SelectModel.
+	 * the property of this ISelectModel.
 	 */
 	String NULL_OPTION_VALUE = "_null_option_value_";
 
@@ -68,5 +68,5 @@ public interface SelectModel {
 	 *        selection
 	 * @return this for convenience
 	 */
-	SelectModel select(Object option);
+	ISelectModel select(Object option);
 }

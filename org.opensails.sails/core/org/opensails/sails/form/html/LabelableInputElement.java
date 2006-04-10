@@ -3,7 +3,7 @@ package org.opensails.sails.form.html;
 import java.io.IOException;
 import java.io.Writer;
 
-public abstract class LabelableInputElement<T extends LabelableInputElement> extends InputElement<T> implements Labelable<T> {
+public abstract class LabelableInputElement<T extends LabelableInputElement> extends InputElement<T> implements ILabelable<T> {
 	protected static final boolean RENDER_LABEL_AFTER = false;
 	protected static final boolean RENDER_LABEL_BEFORE = true;
 

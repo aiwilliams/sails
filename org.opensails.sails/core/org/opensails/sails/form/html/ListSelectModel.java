@@ -6,14 +6,13 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A basic implementation of a
- * {@link org.javaonsails.sails.form.SelectModel SelectModel} where each item in
- * the provided List has it's toString result rendered as the value and label of
- * the HTML OPTION.
+ * A basic implementation of a {@link ISelectModel} where each item in the
+ * provided List has it's toString result rendered as the value and label of the
+ * HTML OPTION.
  * 
  * Override the appropriate methods to render in a specific way.
  */
-public class ListSelectModel implements SelectModel {
+public class ListSelectModel implements ISelectModel {
 	protected List<? extends Object> list;
 	protected Object selected;
 
@@ -83,7 +82,7 @@ public class ListSelectModel implements SelectModel {
 		return selected != null;
 	}
 
-	public SelectModel select(Object option) {
+	public ISelectModel select(Object option) {
 		selected = option;
 		return this;
 	}

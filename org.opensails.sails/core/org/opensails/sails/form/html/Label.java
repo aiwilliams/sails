@@ -18,13 +18,13 @@ public class Label extends AbstractHtmlElement<Label> {
 	public static final String FOR = "for";
 	public static final String LABEL = "label";
 
-	protected Labelable<? extends Labelable> labelable;
+	protected ILabelable<? extends ILabelable> labelable;
 	protected String labelText;
 
 	/**
 	 * @param labelable
 	 */
-	public Label(Labelable<? extends Labelable> labelable) {
+	public Label(ILabelable<? extends ILabelable> labelable) {
 		super(LABEL);
 		this.labelable = labelable;
 	}
@@ -72,7 +72,7 @@ public class Label extends AbstractHtmlElement<Label> {
 		super.writeAttributes(generator);
 	}
 
-	protected static class VirtualLabelable implements Labelable<VirtualLabelable> {
+	protected static class VirtualLabelable implements ILabelable<VirtualLabelable> {
 		private final String forId;
 
 		protected VirtualLabelable(String forId) {

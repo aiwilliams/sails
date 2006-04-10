@@ -47,7 +47,7 @@ public class AlternativeSelectModelTest extends TestCase {
     }
 
     public void testGetValue_Object() {
-        assertEquals(SelectModel.NULL_OPTION_VALUE, model.getValue(null));
+        assertEquals(ISelectModel.NULL_OPTION_VALUE, model.getValue(null));
         assertEquals("otherValue", modelWithAlternative.getValue("otherValue"));
         assertEquals("1", model.getValue(list.get(0)));
         assertEquals("2", model.getValue(list.get(1)));

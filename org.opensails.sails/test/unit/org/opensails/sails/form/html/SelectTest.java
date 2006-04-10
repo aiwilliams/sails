@@ -10,7 +10,7 @@ public class SelectTest extends WidgetTestCase {
 
 	public void testRender_Attributes() {
 		expose("model", new ListSelectModel(new Object[] { "one", "two" }));
-		String expected = "<select id=\"id\" name=\"name\" myattr=\"myvalue\" myattrempty=\" \"><option value=\"" + SelectModel.NULL_OPTION_VALUE
+		String expected = "<select id=\"id\" name=\"name\" myattr=\"myvalue\" myattrempty=\" \"><option value=\"" + ISelectModel.NULL_OPTION_VALUE
 				+ "\" selected=\"true\"></option><option value=\"one\">one</option><option value=\"two\">two</option></select>";
 		// Viento seems to have the map reversed...
 		assertRender(expected, "$select(name).model($model).attributes({myattrempty:' ', myattrnull:null, myattr:myvalue}).id(id)");
@@ -18,7 +18,7 @@ public class SelectTest extends WidgetTestCase {
 
 	public void testRender_SelectModel() {
 		expose("model", new ListSelectModel(new Object[] { "one", "two" }));
-		String expected = "<select id=\"id\" name=\"name\"><option value=\"" + SelectModel.NULL_OPTION_VALUE
+		String expected = "<select id=\"id\" name=\"name\"><option value=\"" + ISelectModel.NULL_OPTION_VALUE
 				+ "\" selected=\"true\"></option><option value=\"one\">one</option><option value=\"two\">two</option></select>";
 		assertRender(expected, "$select(name).model($model).id(id)");
 

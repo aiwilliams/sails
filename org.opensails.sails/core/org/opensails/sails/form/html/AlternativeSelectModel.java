@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Provides a SelectModel based on a List where there is an alternative option -
+ * Provides a ISelectModel based on a List where there is an alternative option -
  * that is, one not in the provided List.
  * 
  * The alternative option is not a real object - how would it be converted if it

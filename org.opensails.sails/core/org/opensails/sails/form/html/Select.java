@@ -14,13 +14,13 @@ import org.opensails.sails.html.HtmlGenerator;
  * 
  * @author aiwilliams
  * 
- * @param <M> The type of SelectModel
+ * @param <M> The type of ISelectModel
  */
-public class Select extends FormElement<Select> implements Labelable<Select> {
+public class Select extends FormElement<Select> implements ILabelable<Select> {
 	public static final String SELECT = "select";
 
 	protected Label label;
-	protected SelectModel selectModel;
+	protected ISelectModel selectModel;
 
 	/**
 	 * @param name
@@ -33,7 +33,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	 * @param name
 	 * @param selectModel
 	 */
-	public Select(String name, SelectModel selectModel) {
+	public Select(String name, ISelectModel selectModel) {
 		super(SELECT, name);
 		this.selectModel = selectModel;
 	}
@@ -43,7 +43,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	 * @param selectModel
 	 * @param attributes
 	 */
-	public Select(String name, SelectModel selectModel, Map<String, String> attributes) {
+	public Select(String name, ISelectModel selectModel, Map<String, String> attributes) {
 		this(name, selectModel);
 		this.attributes = attributes;
 	}
@@ -62,7 +62,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 		return model(new ListSelectModel(model));
 	}
 
-	public Select model(SelectModel model) {
+	public Select model(ISelectModel model) {
 		selectModel = model;
 		return this;
 	}
@@ -74,7 +74,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 	}
 
 	/**
-	 * @param option the selected Object. It will be run through the SelectModel
+	 * @param option the selected Object. It will be run through the ISelectModel
 	 *        on render.
 	 */
 	public Select selected(Object option) {
@@ -87,7 +87,7 @@ public class Select extends FormElement<Select> implements Labelable<Select> {
 		if (!hasOptions()) return;
 
 		String selectedValue = null;
-		if (!selectModel.contains(selectModel.getSelected())) option(generator, SelectModel.NULL_OPTION_VALUE, SelectModel.NULL_OPTION_LABEL, true);
+		if (!selectModel.contains(selectModel.getSelected())) option(generator, ISelectModel.NULL_OPTION_VALUE, ISelectModel.NULL_OPTION_LABEL, true);
 		else selectedValue = selectModel.getValue(selectModel.getSelected());
 		for (int count = 0; count < selectModel.getOptionCount(); count++) {
 			String value = selectModel.getValue(count);

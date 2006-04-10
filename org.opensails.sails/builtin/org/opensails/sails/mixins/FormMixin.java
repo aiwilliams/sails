@@ -19,7 +19,7 @@ import org.opensails.sails.form.html.ListSelectModel;
 import org.opensails.sails.form.html.Password;
 import org.opensails.sails.form.html.Radio;
 import org.opensails.sails.form.html.Select;
-import org.opensails.sails.form.html.SelectModel;
+import org.opensails.sails.form.html.ISelectModel;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.Textarea;
@@ -133,7 +133,7 @@ public class FormMixin implements MethodMissing {
 	 * If you call one of the {@link Select#model()} methods after creating this
 	 * Select, the value in the model, as obtained through the HtmlForm, will no
 	 * longer be selected. You may want to use the
-	 * {@link #select(String, SelectModel)} helper instead.
+	 * {@link #select(String, ISelectModel)} helper instead.
 	 * 
 	 * @param name
 	 * @return a new Select
@@ -146,7 +146,7 @@ public class FormMixin implements MethodMissing {
 		return select(name, new ListSelectModel(model));
 	}
 
-	public Select select(String name, SelectModel model) {
+	public Select select(String name, ISelectModel model) {
 		return new Select(name).id(idGenerator.idForName(name)).model(model).selected(form.value(name));
 	}
 
