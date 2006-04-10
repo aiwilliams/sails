@@ -14,12 +14,12 @@ import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FileInput;
 import org.opensails.sails.form.html.Form;
 import org.opensails.sails.form.html.Hidden;
+import org.opensails.sails.form.html.ISelectModel;
 import org.opensails.sails.form.html.Label;
 import org.opensails.sails.form.html.ListSelectModel;
 import org.opensails.sails.form.html.Password;
 import org.opensails.sails.form.html.Radio;
 import org.opensails.sails.form.html.Select;
-import org.opensails.sails.form.html.ISelectModel;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.Textarea;
@@ -138,16 +138,18 @@ public class FormMixin implements MethodMissing {
 	 * @param name
 	 * @return a new Select
 	 */
-	public Select select(String name) {
-		return new Select(name).id(idGenerator.idForName(name)).selected(form.value(name));
+	@SuppressWarnings("unchecked")
+	public <M, W> Select<M> select(String name) {
+		return new Select<M>(name).id(idGenerator.idForName(name)).selected(form.<M, W> value(name));
 	}
 
-	public Select select(String name, Collection<? extends Object> model) {
-		return select(name, new ListSelectModel(model));
+	public <M, W> Select<M> select(String name, Collection<M> model) {
+		return select(name, new ListSelectModel<M>(model));
 	}
 
-	public Select select(String name, ISelectModel model) {
-		return new Select(name).id(idGenerator.idForName(name)).model(model).selected(form.value(name));
+	@SuppressWarnings("unchecked")
+	public <M, W> Select<M> select(String name, ISelectModel<M> model) {
+		return new Select<M>(name).id(idGenerator.idForName(name)).model(model).selected(form.<M, W> value(name));
 	}
 
 	public Form start() {

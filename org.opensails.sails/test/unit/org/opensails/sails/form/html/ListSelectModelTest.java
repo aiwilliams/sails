@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 public class ListSelectModelTest extends TestCase {
 	protected List<Integer> list;
-	protected ListSelectModel model;
+	protected ListSelectModel<Integer> model;
 
 	public void testGetLabel_int() {
 		assertEquals("1", model.getLabel(0));
@@ -56,6 +56,6 @@ public class ListSelectModelTest extends TestCase {
 	@Override
 	protected void setUp() {
 		list = Arrays.asList(new Integer[] { new Integer(1), new Integer(2), new Integer(3) });
-		model = new ListSelectModel(list);
+		model = new ListSelectModel<Integer>(list);
 	}
 }

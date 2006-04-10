@@ -66,7 +66,7 @@ public class HtmlForm {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object value(String propertyPath) {
+	public <M, W> W value(String propertyPath) {
 		IPropertyPath path = propertyFactory.createPath(propertyPath);
 		Object model = modelContext.getModel(path);
 		if (model == null) return null;
@@ -75,8 +75,8 @@ public class HtmlForm {
 		AdaptationTarget adaptationTarget = accessor.getAdaptationTarget(model);
 		if (!adaptationTarget.isReadable()) return null;
 
-		IAdapter adapter = adapter(path, model, adaptationTarget);
-		return adapter.forWeb(adaptationTarget, accessor.get(model));
+		IAdapter<M, W> adapter = adapter(path, model, adaptationTarget);
+		return adapter.forWeb(adaptationTarget, (M) accessor.get(model));
 	}
 
 	protected IAdapter adapter(IPropertyPath path, Object model, AdaptationTarget adaptationTarget) {

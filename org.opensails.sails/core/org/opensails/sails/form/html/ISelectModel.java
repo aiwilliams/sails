@@ -5,7 +5,7 @@ package org.opensails.sails.form.html;
  * well as methods that know how to adapt the options for rendering the HTML and
  * that can turn the HTML OPTION value attributes back into Objects.
  */
-public interface ISelectModel {
+public interface ISelectModel<T> {
 	/**
 	 * When the 'null' option is selected, this label is displayed to the user.
 	 */
@@ -21,7 +21,7 @@ public interface ISelectModel {
 	 * @param object
 	 * @return true if object is one of the options
 	 */
-	boolean contains(Object object);
+	boolean contains(T object);
 
 	/**
 	 * @return the label of the option at index
@@ -31,12 +31,12 @@ public interface ISelectModel {
 	/**
 	 * @return the label of the Object option
 	 */
-	String getLabel(Object option);
+	String getLabel(T option);
 
 	/**
 	 * @return the Object of the option at index
 	 */
-	Object getOption(int index);
+	T getOption(int index);
 
 	/**
 	 * @return the number of options for this select
@@ -46,7 +46,7 @@ public interface ISelectModel {
 	/**
 	 * @return the selected option
 	 */
-	Object getSelected();
+	T getSelected();
 
 	/**
 	 * @return the value of the option at index
@@ -56,7 +56,7 @@ public interface ISelectModel {
 	/**
 	 * @return the value of the Object option
 	 */
-	String getValue(Object object);
+	String getValue(T object);
 
 	/**
 	 * @return true if an option is selected
@@ -68,5 +68,5 @@ public interface ISelectModel {
 	 *        selection
 	 * @return this for convenience
 	 */
-	ISelectModel select(Object option);
+	ISelectModel select(T option);
 }

@@ -16,24 +16,24 @@ import org.opensails.sails.html.HtmlGenerator;
  * 
  * @param <M> The type of ISelectModel
  */
-public class Select extends FormElement<Select> implements ILabelable<Select> {
+public class Select<M> extends FormElement<Select> implements ILabelable<Select> {
 	public static final String SELECT = "select";
 
 	protected Label label;
-	protected ISelectModel selectModel;
+	protected ISelectModel<M> selectModel;
 
 	/**
 	 * @param name
 	 */
 	public Select(String name) {
-		this(name, new ListSelectModel(new ArrayList<Object>()));
+		this(name, new ListSelectModel<M>(new ArrayList<M>()));
 	}
 
 	/**
 	 * @param name
 	 * @param selectModel
 	 */
-	public Select(String name, ISelectModel selectModel) {
+	public Select(String name, ISelectModel<M> selectModel) {
 		super(SELECT, name);
 		this.selectModel = selectModel;
 	}
@@ -43,7 +43,7 @@ public class Select extends FormElement<Select> implements ILabelable<Select> {
 	 * @param selectModel
 	 * @param attributes
 	 */
-	public Select(String name, ISelectModel selectModel, Map<String, String> attributes) {
+	public Select(String name, ISelectModel<M> selectModel, Map<String, String> attributes) {
 		this(name, selectModel);
 		this.attributes = attributes;
 	}
@@ -53,16 +53,16 @@ public class Select extends FormElement<Select> implements ILabelable<Select> {
 		return id;
 	}
 
-	public Select label(String text) {
+	public Select<M> label(String text) {
 		label = new Label(this).text(text);
 		return this;
 	}
 
-	public Select model(Collection<? extends Object> model) {
-		return model(new ListSelectModel(model));
+	public Select<M> model(Collection<M> model) {
+		return model(new ListSelectModel<M>(model));
 	}
 
-	public Select model(ISelectModel model) {
+	public Select<M> model(ISelectModel<M> model) {
 		selectModel = model;
 		return this;
 	}
@@ -74,10 +74,10 @@ public class Select extends FormElement<Select> implements ILabelable<Select> {
 	}
 
 	/**
-	 * @param option the selected Object. It will be run through the ISelectModel
-	 *        on render.
+	 * @param option the selected Object. It will be run through the
+	 *        ISelectModel on render.
 	 */
-	public Select selected(Object option) {
+	public Select<M> selected(M option) {
 		selectModel.select(option);
 		return this;
 	}
