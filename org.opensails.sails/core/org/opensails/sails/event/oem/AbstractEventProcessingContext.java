@@ -218,6 +218,21 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	}
 
 	/**
+	 * Adds the mixin to the Viento binding of the current event.
+	 * <p>
+	 * Mixins allow you to extend the template language! Create public methods
+	 * that return Strings or other objects on your mixin, make them take
+	 * instances of the type target. In your templates, you can then do things
+	 * like $anInstanceOfTarget.someMixinMethod.
+	 * 
+	 * @param target
+	 * @param mixin
+	 */
+	protected void mixin(Class target, Object mixin) {
+		getBinding().mixin(target, mixin);
+	}
+
+	/**
 	 * Renders content to the client. A template will not be rendered, of
 	 * course.
 	 * 
