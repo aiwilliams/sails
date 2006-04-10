@@ -2,8 +2,8 @@ package org.opensails.dock.controllers;
 
 import org.opensails.dock.model.User;
 import org.opensails.sails.controller.oem.BaseController;
+import org.opensails.sails.form.html.ISelectModel;
 import org.opensails.sails.form.html.ListSelectModel;
-import org.opensails.sails.form.html.SelectModel;
 
 public class FormController extends BaseController {
 	public void actionOne() {
@@ -14,8 +14,8 @@ public class FormController extends BaseController {
 		if (!updateModel(user)) renderTemplate("basic");
 	}
 
-	public SelectModel exampleSelectModel() {
-		return new ListSelectModel("option one", "option two");
+	public ISelectModel exampleSelectModel() {
+		return new ListSelectModel<String>("option one", "option two");
 	}
 
 	public void multipartPost() {
