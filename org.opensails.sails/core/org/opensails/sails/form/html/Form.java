@@ -7,10 +7,19 @@ public class Form extends AbstractHtmlElement<Form> {
 
 	public Form() {
 		super("form");
+		method("post");
 	}
 
-	public Form actionUrl(IUrl actionUrl) {
-		return attribute("action", actionUrl.render());
+	public Form action(IUrl actionUrl) {
+		return action(actionUrl.render());
+	}
+
+	public Form action(String actionUrl) {
+		return attribute("action", actionUrl);
+	}
+
+	public Form method(String httpMethod) {
+		return attribute("method", httpMethod);
 	}
 
 }

@@ -25,6 +25,7 @@ import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.Textarea;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.IUrl;
+import org.opensails.sails.url.UrlType;
 import org.opensails.sails.util.Quick;
 import org.opensails.spyglass.SpyObject;
 import org.opensails.viento.MethodMissing;
@@ -49,16 +50,16 @@ public class FormMixin implements MethodMissing {
 		this.form = form;
 	}
 
+	public Form action(IUrl actionUrl) {
+		return new Form().action(actionUrl);
+	}
+
 	public Form action(String action) {
-		return actionUrl(new ActionUrl(event, action));
+		return action(new ActionUrl(event, action));
 	}
 
 	public Form action(String controller, String action) {
-		return actionUrl(new ActionUrl(event, controller, action));
-	}
-
-	public Form actionUrl(IUrl actionUrl) {
-		return new Form().actionUrl(actionUrl);
+		return action(new ActionUrl(event, controller, action));
 	}
 
 	public Checkbox checkbox(String propertyPath) {
@@ -152,8 +153,13 @@ public class FormMixin implements MethodMissing {
 		return new Select<M>(name).id(idGenerator.idForName(name)).model(model).selected(form.<M, W> value(name));
 	}
 
+	/**
+	 * @return A form that is programmed to post back to the action of the event
+	 *         present at render. &lt;form method="post"
+	 *         action="/context/servlet/currentController/currentAction"&gt;
+	 */
 	public Form start() {
-		return new Form();
+		return action(event.resolve(UrlType.CONTROLLER, String.format("%s/%s", event.getProcessorName(), event.getActionName())));
 	}
 
 	public Submit submit() {

@@ -3,14 +3,22 @@ package org.opensails.functional.mixin;
 import junit.framework.TestCase;
 
 import org.opensails.functional.SailsFunctionalTester;
+import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.ScriptList;
 import org.opensails.sails.tester.browser.TestGetEvent;
 
 public class BuiltinsTest extends TestCase {
+	public void testForm() {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		TestGetEvent event = t.createVirtualEvent("mc/ma", "$form.start");
+		Page page = t.get(event);
+		page.assertContains("method=\"post\"");
+		page.assertMatches("action=\"http://.*?/mc/ma\"");
+	}
+
 	public void testScript() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		TestGetEvent event = t.createVirtualEvent("require/test", scriptTemplate());
-		ScriptList scripts = t.get(event).scripts();
+		ScriptList scripts = t.getTemplated(scriptTemplate()).scripts();
 		scripts.assertContains("applicationScript", 0);
 		scripts.assertContains("applicationScript.js", 3);
 		scripts.assertContains("builtinScript", 0);
