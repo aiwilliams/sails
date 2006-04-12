@@ -26,7 +26,7 @@ public class TestApplicationContainer extends ApplicationContainer implements IT
     }
 
     public <T> void inject(Class<? super T> key, Class<T> implementation) {
-        ComponentImplementation resolver = new ComponentImplementation(implementation, this);
+        ComponentImplementation resolver = new ComponentImplementation(key, implementation, this);
         injections.put(key, resolver);
         injectionsSinceLastStart.put(key, resolver);
     }

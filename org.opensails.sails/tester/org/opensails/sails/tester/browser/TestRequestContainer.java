@@ -47,7 +47,7 @@ public class TestRequestContainer extends RequestContainer implements ITestScope
 	}
 
 	public <T> void inject(Class<? super T> key, Class<T> implementation) {
-		ComponentImplementation resolver = new ComponentImplementation(implementation, this);
+		ComponentImplementation resolver = new ComponentImplementation(key, implementation, this);
 		super.registerResolver(key, resolver);
 		injections.put(key, resolver);
 	}

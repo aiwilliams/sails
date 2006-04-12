@@ -53,8 +53,14 @@ public class TestApplicationConfigurator extends DelegatingConfigurator {
 
 		super.configure(event, eventContainer);
 
-		// Expose the same instance as two types
-		ComponentImplementation bindingComponent = new ComponentImplementation(TestingBinding.class, eventContainer);
+		/*
+		 * Expose the same instance as two types.
+		 * 
+		 * As far as instantiation listeners go, no application code should be
+		 * listening for the TestingBinding, but those that do care about the
+		 * IBinding should hear.
+		 */
+		ComponentImplementation bindingComponent = new ComponentImplementation(IBinding.class, TestingBinding.class, eventContainer);
 		eventContainer.registerResolver(IBinding.class, bindingComponent);
 		eventContainer.registerResolver(TestingBinding.class, bindingComponent);
 
