@@ -69,7 +69,7 @@ public class SimpleContainer implements IContainer {
     }
 
     public <T> void register(Class<T> key, Class<? extends T> implementation) {
-        registerResolver(key, new ComponentImplementation(implementation, this));
+        registerResolver(key, new ComponentImplementation(key, implementation, this));
     }
 
     public <T> void register(T instance) {

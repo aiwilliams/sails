@@ -118,6 +118,18 @@ public class SimpleContainerTest extends TestCase {
 		});
 		container.instance(ShamSubclassingComponent.class);
 		assertFalse(listenerCalled);
+    }
+    
+    public void testInstantiationListeners_HearAboutKey() throws Exception {
+		listenerCalled = false;
+		container.register(ShamComponent.class, ShamSubclassingComponent.class);
+		container.registerInstantiationListener(ShamComponent.class, new InstantiationListener<ShamComponent>() {
+			public void instantiated(ShamComponent newInstance) {
+				listenerCalled = true;
+			}
+		});
+		container.instance(ShamComponent.class);
+		assertTrue(listenerCalled);
 	}
 
     public void testRegister_ComponentResolver() throws Exception {
