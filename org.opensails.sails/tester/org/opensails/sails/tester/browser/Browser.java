@@ -26,12 +26,25 @@ import org.opensails.sails.tester.servletapi.ShamHttpSession;
  * Simulates a browser connected to a Sails application. These are obtained from
  * a SailsTestApplication.
  * <p>
- * This testing architecture is under development. Please use the SailsTester
- * until further notice.
+ * It is intended that a Browser be obtained in one of two ways:
+ * <ul>
+ * <li> If you are writing lots of tests against one application, and only care
+ * to have one Browser (most likely), then it is probably best to create a
+ * subclass of this that initializes itself by creating it's application. For
+ * example:
  * <p>
- * If you are writing lots of tests against one application, and only care to
- * have one Browser (most likely), then it is probably best to create a subclass
- * of this that initializes itself by creating it's application.
+ * <code><pre>
+ * public class MyApplicationBrowser extends Browser {
+ * 	public MyApplicationBrowser() {
+ * 		super(new SailsTestApplication(MyApplicationConfigurator.class));
+ * 	}
+ * }
+ * </pre></code>
+ * </p>
+ * </li>
+ * <li> Create an instance of SailsTestApplication, then tell it to
+ * {@link SailsTestApplication#openBrowser()} </li>
+ * </ul>
  * 
  * @author aiwilliams
  */

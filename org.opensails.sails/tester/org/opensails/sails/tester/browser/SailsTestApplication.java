@@ -26,6 +26,7 @@ import org.opensails.spyglass.SpyObject;
 /**
  * Makes a Sails application testable to a high degree.
  * 
+ * @see Browser to understand how to use this class
  * @author aiwilliams
  */
 public class SailsTestApplication extends SailsApplication {
