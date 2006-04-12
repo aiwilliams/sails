@@ -218,6 +218,11 @@ public class Browser {
 		return get(createVirtualEvent("dynamicallyGeneratedInSailsTester/getTemplated", templateContent));
 	}
 
+	@SuppressWarnings("unchecked")
+	public void inject(Class keyAndImplementation) {
+		inject(keyAndImplementation, keyAndImplementation, ApplicationScope.REQUEST);
+	}
+
 	public <T> void inject(Class<? super T> key, Class<T> implementation) {
 		inject(key, implementation, ApplicationScope.REQUEST);
 	}
@@ -232,6 +237,15 @@ public class Browser {
 
 	public <T> void inject(Class<? super T> key, T instance, ApplicationScope scope) {
 		getContainer().getContainerInHierarchy(scope).inject(key, instance);
+	}
+
+	/**
+	 * @param <T>
+	 * @param key
+	 * @return the instance registered in the container for key
+	 */
+	public <T> T instance(Class<T> key) {
+		return getContainer().instance(key);
 	}
 
 	/**

@@ -4,15 +4,16 @@ import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.functional.SailsFunctionalTester;
+import org.opensails.functional.ShamApplicationStartable;
 import org.opensails.functional.controllers.EventTestController;
 import org.opensails.functional.controllers.EventTestSubclassController;
 import org.opensails.functional.controllers.ExampleEnum;
+import org.opensails.rigging.Startable;
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionListener;
 import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.controller.oem.BaseController;
-import org.opensails.sails.form.FormFields;
 import org.opensails.sails.form.FormMeta;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.Page;
@@ -169,6 +170,15 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		page.assertContains("2");
 	}
 
+	public void testStartables() throws Exception {
+		SailsFunctionalTester tester = new SailsFunctionalTester();
+		tester.instance(ShamApplicationStartable.class).assertStarted();
+
+		tester.inject(MyStartableThing.class);
+		tester.get();
+		tester.instance(MyStartableThing.class).assertStarted();
+	}
+
 	private void assertHeardActionEvents() {
 		// Once for application container, once for event container
 		assertEquals(2, beginExecutionCallCount);
@@ -206,5 +216,19 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		public MyDomainModel(String fromWeb) {
 			this.web = fromWeb;
 		}
+	}
+
+	public static class MyStartableThing implements Startable {
+
+		private boolean wasStarted;
+
+		public void assertStarted() {
+			assertTrue(wasStarted);
+		}
+
+		public void start() {
+			wasStarted = true;
+		}
+
 	}
 }
