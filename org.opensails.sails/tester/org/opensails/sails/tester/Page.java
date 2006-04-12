@@ -172,7 +172,7 @@ public class Page {
 	}
 
 	public TestRedirectUrl redirectUrl() {
-		return new TestRedirectUrl(response);
+		return new TestRedirectUrl(event, response);
 	}
 
 	public ScriptList scripts() {
@@ -180,7 +180,15 @@ public class Page {
 	}
 
 	/**
-	 * @return the html source
+	 * Provides access to the written content.
+	 * <p>
+	 * This method makes no assertions. It is intended to support the many
+	 * assertions on this class. If you find yourself accessing the source
+	 * directly, please do consider whether any of the existing assertions will
+	 * give you what you need. If they don't, we would appreciate you sharing
+	 * your struggles on the user mailing list.
+	 * 
+	 * @return the html source, empty String if nothing has been written
 	 */
 	public String source() {
 		return response.getWrittenContent();

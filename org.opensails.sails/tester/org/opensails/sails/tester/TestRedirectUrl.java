@@ -5,6 +5,7 @@ import junit.framework.Assert;
 import org.opensails.ezfile.EzPath;
 import org.opensails.sails.Sails;
 import org.opensails.sails.event.IEventProcessingContext;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
 import org.opensails.sails.util.RegexHelper;
@@ -12,14 +13,25 @@ import org.opensails.sails.util.RegexHelper;
 public class TestRedirectUrl {
 
 	protected ShamHttpServletResponse response;
+	protected ISailsEvent originatingEvent;
 
-	public TestRedirectUrl(ShamHttpServletResponse response) {
+	public TestRedirectUrl(ISailsEvent originatingEvent, ShamHttpServletResponse response) {
 		Assert.assertTrue("response.sendRedirect() should have been called.", response.wasRedirected());
+
+		this.originatingEvent = originatingEvent;
 		this.response = response;
 	}
 
 	public void assertActionEquals(Class<? extends IEventProcessingContext> context, String action) {
 		assertMatches(EzPath.join(Sails.eventContextName(context), action));
+	}
+
+	public void assertActionEquals(String actionOnCurrentController) {
+		assertMatches(EzPath.join(originatingEvent.getProcessorName(), actionOnCurrentController));
+	}
+
+	public void assertControllerEquals(Class<? extends IEventProcessingContext> context) {
+		assertMatches(EzPath.join(Sails.eventContextName(context)));
 	}
 
 	public void assertMatches(String regex) {
