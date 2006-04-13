@@ -219,8 +219,8 @@ public class Browser {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void inject(Class keyAndImplementation) {
-		inject(keyAndImplementation, keyAndImplementation, ApplicationScope.REQUEST);
+	public <T> void inject(Class<? super T> keyAndImplementation) {
+		inject(keyAndImplementation, (Class<T>)keyAndImplementation, ApplicationScope.REQUEST);
 	}
 
 	public <T> void inject(Class<? super T> key, Class<T> implementation) {
