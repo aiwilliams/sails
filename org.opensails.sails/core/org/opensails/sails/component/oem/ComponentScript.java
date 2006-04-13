@@ -13,6 +13,7 @@ import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.component.Callback;
+import org.opensails.sails.component.LiteralJs;
 import org.opensails.sails.component.Remembered;
 import org.opensails.sails.html.HtmlGenerator;
 import org.opensails.sails.html.Script;
@@ -45,7 +46,7 @@ public class ComponentScript extends Script {
 			// TODO: Don't quote non strings
 			IAdapter adapter = adapterResolver.resolve(field.getType());
 			Object forWeb = adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) field.getType()), SpyGlass.read(component, field));
-			parameters.add(new Parameter(field.getName(), "'" + forWeb + "'"));
+			parameters.add(new Parameter(field.getName(), field.isAnnotationPresent(LiteralJs.class) ? forWeb : "'" + forWeb + "'"));
 			if (field.isAnnotationPresent(Remembered.class)) rememberedFields.add(field.getName() + "=" + forWeb);
 		}
 		String stringRemeberedFields = StringUtils.join(rememberedFields.iterator(), "&");
