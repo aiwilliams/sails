@@ -5,9 +5,10 @@ var Component = {
 			this.initialize();
 		}
 	},
-	callback: function(name, url, options) {
+	callback: function(name, baseUrl, options) {
 		options = options || {}
 		return function() {
+			var url = baseUrl;
 			$A(arguments).each(function(arg) {
 				url += '/' + arg;
 			});
