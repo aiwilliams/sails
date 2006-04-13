@@ -14,4 +14,6 @@ public interface IBinding {
 
 	void putAll(Map<String, Object> map);
 
+	IBinding createChild();
+
 }

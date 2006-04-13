@@ -180,4 +180,8 @@ public class Binding implements IBinding {
 	public void setExceptionHandler(ExceptionHandler exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
 	}
+
+	public Binding createChild() {
+		return new Binding(this);
+	}
 }

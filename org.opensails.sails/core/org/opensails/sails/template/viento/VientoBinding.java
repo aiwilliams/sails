@@ -23,4 +23,9 @@ public class VientoBinding extends Binding {
 		mixin(Throwable.class, new ThrowableMixin());
 		mixin(String.class, new HtmlMixin());
 	}
+	
+	@Override
+	public VientoBinding createChild() {
+		return new VientoBinding(this);
+	}
 }

@@ -11,7 +11,7 @@ import org.opensails.viento.IBinding;
 public class ComponentContainer extends ScopedContainer implements IEventContextContainer {
 	public ComponentContainer(IEventContextContainer requestContainer) {
 		super(requestContainer, ApplicationScope.COMPONENT);
-		makeLocal(IBinding.class);
+		register(IBinding.class, instance(IBinding.class).createChild());
 	}
 
 	public <T extends IEventProcessingContext> T createEventContext(Class<T> key, ISailsEvent event) {

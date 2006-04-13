@@ -72,6 +72,10 @@ public class TemplateActionResultProcessorTest extends TestCase {
 		public void putAll(Map<String, Object> map) {}
 
 		public void setExceptionHandler(ExceptionHandler exceptionHandler) {}
+
+		public IBinding createChild() {
+			return null;
+		}
 	}
 
 	class ShamTemplateRenderer implements ITemplateRenderer<ShamTemplateBinding> {
