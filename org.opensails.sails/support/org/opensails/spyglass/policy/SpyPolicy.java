@@ -40,4 +40,13 @@ public class SpyPolicy {
 	public void setMethodInvocationPolicy(MethodInvocationPolicy methodInvocationPolicy) {
 		this.methodInvocationPolicy = methodInvocationPolicy;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		s.append(fieldAccessPolicy);
+		s.append("\n");
+		s.append(methodInvocationPolicy);
+		return s.toString();
+	}
 }

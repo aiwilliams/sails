@@ -1,6 +1,7 @@
 package org.opensails.spyglass;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.model.oem.DotPropertyPath;
@@ -38,18 +39,22 @@ public class SpyGlass {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Field getField(Class clazz, String name) {
-		return new SpyClass(clazz).getField(name);
+		return new SpyClass<Object>(clazz).getField(name);
 	}
 
-	public static String getName(Class clazz) {
+	@SuppressWarnings("unchecked")
+	public static Method getMethod(Class clazz, String name) {
+		return new SpyClass<Object>(clazz).getMethod(name);
+	}
+
+	public static String getName(Class<? extends Object> clazz) {
 		if (clazz == null) return null;
-		
+
 		DotPropertyPath namePath = new DotPropertyPath(clazz.getName());
 		String name = namePath.getLastProperty();
 		int innerClassSeparatorIndex = name.indexOf('$');
-		if (innerClassSeparatorIndex > 0)
-			name = name.substring(innerClassSeparatorIndex + 1);
-		
+		if (innerClassSeparatorIndex > 0) name = name.substring(innerClassSeparatorIndex + 1);
+
 		return name;
 	}
 
@@ -88,7 +93,7 @@ public class SpyGlass {
 		return SpyObject.create(instance).invoke(methodName, args);
 	}
 
-	public static String lowerCamelName(Class clazz) {
+	public static String lowerCamelName(Class<? extends Object> clazz) {
 		return lowerCamelName(getName(clazz));
 	}
 
@@ -106,7 +111,7 @@ public class SpyGlass {
 		return new SpyField<Object>(new SpyClass(field.getDeclaringClass()), field).get(instance);
 	}
 
-	public static String upperCamelName(Class clazz) {
+	public static String upperCamelName(Class<? extends Object> clazz) {
 		return upperCamelName(ClassUtils.getShortClassName(clazz));
 	}
 

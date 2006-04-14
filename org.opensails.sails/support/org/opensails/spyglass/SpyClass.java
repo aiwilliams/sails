@@ -44,14 +44,6 @@ public class SpyClass<T> {
 		this.policy = policy;
 	}
 
-	private Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
-		Constructor[] constructors = clazz.getConstructors();
-		for (Constructor<T> constructor : constructors) {
-			if (SpyGlass.argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
-		}
-		throw new SailsException("Could not find a constructor accepting " + argTypes);
-	}
-
 	public SpyProperty<T> findProperty(String name) {
 		SpyProperty<T> property = propertiesMap.get(name);
 		if (property == null) {
@@ -63,7 +55,8 @@ public class SpyClass<T> {
 
 	/**
 	 * @param name
-	 * @return the declared field in class heirarchy, null if not present
+	 * @return the declared field in class heirarchy having name, null if not
+	 *         present
 	 */
 	public Field getField(String name) {
 		for (Field field : getFields())
@@ -85,13 +78,15 @@ public class SpyClass<T> {
 		return fields;
 	}
 
-	protected Collection<Class> getInterfaces(Class testClass) {
-		List<Class> list = new ArrayList<Class>();
-		Class[] testClassInterfaces = testClass.getInterfaces();
-		for (Class interfaze : testClassInterfaces)
-			list.addAll(getInterfaces(interfaze));
-		list.add(testClass);
-		return list;
+	/**
+	 * @param name
+	 * @return the declared method in class hierarchy having name, null if not
+	 *         present
+	 */
+	public Method getMethod(String name) {
+		for (Method method : getMethods())
+			if (method.getName().equals(name)) return method;
+		return null;
 	}
 
 	/**
@@ -112,21 +107,13 @@ public class SpyClass<T> {
 		return ClassUtils.getPackageName(type);
 	}
 
+	public SpyPolicy getPolicy() {
+		return policy;
+	}
+
 	public Collection<PropertyDescriptor> getPropertyDescriptors() {
 		if (type.isInterface()) return getPropertyDescriptorsForInterfaces();
 		else return getPropertyDescriptorsForConcreteClasses();
-	}
-
-	protected Collection<PropertyDescriptor> getPropertyDescriptorsForConcreteClasses() {
-		return rawGetPropertyDescriptors(type);
-	}
-
-	protected Collection<PropertyDescriptor> getPropertyDescriptorsForInterfaces() {
-		Collection<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>();
-		Collection<Class> interfaceList = getInterfaces(type);
-		for (Class interfaze : interfaceList)
-			list.addAll(rawGetPropertyDescriptors(interfaze));
-		return list;
 	}
 
 	public Class<?> getPropertyType(String property) {
@@ -162,6 +149,31 @@ public class SpyClass<T> {
 		}
 	}
 
+	public SpyObject<T> spyInstance(Object[] args) {
+		return new SpyObject<T>(newInstance(args), policy);
+	}
+
+	protected Collection<Class> getInterfaces(Class testClass) {
+		List<Class> list = new ArrayList<Class>();
+		Class[] testClassInterfaces = testClass.getInterfaces();
+		for (Class interfaze : testClassInterfaces)
+			list.addAll(getInterfaces(interfaze));
+		list.add(testClass);
+		return list;
+	}
+
+	protected Collection<PropertyDescriptor> getPropertyDescriptorsForConcreteClasses() {
+		return rawGetPropertyDescriptors(type);
+	}
+
+	protected Collection<PropertyDescriptor> getPropertyDescriptorsForInterfaces() {
+		Collection<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>();
+		Collection<Class> interfaceList = getInterfaces(type);
+		for (Class interfaze : interfaceList)
+			list.addAll(rawGetPropertyDescriptors(interfaze));
+		return list;
+	}
+
 	protected Collection<PropertyDescriptor> rawGetPropertyDescriptors(Class testClass) {
 		Collection<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>();
 		try {
@@ -172,12 +184,12 @@ public class SpyClass<T> {
 		return list;
 	}
 
-	public SpyObject<T> spyInstance(Object[] args) {
-		return new SpyObject<T>(newInstance(args), policy);
-	}
-
-	public SpyPolicy getPolicy() {
-		return policy;
+	private Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
+		Constructor[] constructors = clazz.getConstructors();
+		for (Constructor<T> constructor : constructors) {
+			if (SpyGlass.argTypesExtendThese(argTypes, constructor.getParameterTypes())) return constructor;
+		}
+		throw new SailsException("Could not find a constructor accepting " + argTypes);
 	}
 
 }
