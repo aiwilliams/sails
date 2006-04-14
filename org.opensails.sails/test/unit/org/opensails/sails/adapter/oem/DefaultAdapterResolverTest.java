@@ -6,7 +6,7 @@ import org.opensails.sails.adapter.IAdapter;
 
 public class DefaultAdapterResolverTest extends TestCase {
 	public void testResolveClass() {
-		DefaultAdapterResolver resolver = new DefaultAdapterResolver();
+		DefaultAdapterResolver<IAdapter> resolver = new DefaultAdapterResolver<IAdapter>();
 		assertPrimitiveAdapter(boolean.class, resolver);
 		assertPrimitiveAdapter(Boolean.class, resolver);
 		assertPrimitiveAdapter(int.class, resolver);
@@ -26,7 +26,7 @@ public class DefaultAdapterResolverTest extends TestCase {
 		assertPrimitiveAdapter(String.class, resolver);
 	}
 
-	void assertPrimitiveAdapter(Class<?> classToAdapt, DefaultAdapterResolver resolver) {
+	void assertPrimitiveAdapter(Class<?> classToAdapt, DefaultAdapterResolver<IAdapter> resolver) {
 		Class<? extends IAdapter> adapter = resolver.resolve(classToAdapt);
 		assertEquals(PrimitiveAdapter.class, adapter);
 	}

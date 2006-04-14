@@ -71,7 +71,11 @@ public class ActionLink extends AbstractLink<ActionLink> {
 	}
 
 	public ActionLink parameters(List<? extends Object> parameters) {
-		getUrl().setParameters(parameters.toArray(new Object[parameters.size()]));
+		return parameters(parameters.toArray(new Object[parameters.size()]));
+	}
+
+	public ActionLink parameters(Object... parameters) {
+		getUrl().setParameters(parameters);
 		return this;
 	}
 

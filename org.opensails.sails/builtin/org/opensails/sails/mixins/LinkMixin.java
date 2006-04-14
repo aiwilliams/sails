@@ -25,6 +25,10 @@ public class LinkMixin {
 		return action(action).parameters(parameters);
 	}
 
+	public ActionLink action(String action, Object... parameters) {
+		return action(action).parameters(parameters);
+	}
+
 	/**
 	 * @param controller
 	 * @param action
@@ -38,6 +42,10 @@ public class LinkMixin {
 		return action(controller, action).parameters(parameters);
 	}
 
+	public ActionLink action(String controller, String action, Object... parameters) {
+		return action(controller, action).parameters(parameters);
+	}
+
 	public ILink controller() {
 		return new ActionLink(event);
 	}
@@ -46,14 +54,14 @@ public class LinkMixin {
 		return new ActionLink(event).controller(controller);
 	}
 
+	public ILink href(String url) {
+		return new ActionLink(event).href(url);
+	}
+
 	/**
 	 * @return an ILink to the index action of the controller for the event
 	 */
 	public ILink index() {
 		return new ActionLink(event);
-	}
-
-	public ILink href(String url) {
-		return new ActionLink(event).href(url);
 	}
 }

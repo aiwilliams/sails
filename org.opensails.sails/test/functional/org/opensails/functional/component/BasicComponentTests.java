@@ -18,15 +18,9 @@ import org.opensails.sails.template.Require;
 import org.opensails.sails.tester.Page;
 
 public class BasicComponentTests extends TestCase {
-	public void testRequires() throws Exception {
-		SailsFunctionalTester t = new SailsFunctionalTester();
-		Page page = t.get("componentTest", "requires", ArrayUtils.EMPTY_STRING_ARRAY);
-		page.assertMatches(expectedAssetRequirements());
-	}
-
 	public void testBasic() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		Page page = t.get("componentTest", "basic", ArrayUtils.EMPTY_STRING_ARRAY);
+		Page page = t.get("componentTest", "basic", (Object) ArrayUtils.EMPTY_STRING_ARRAY);
 		page.assertRenders();
 		page.assertContains("both from controller");
 		page.assertContains("hello from controller");
@@ -51,7 +45,13 @@ public class BasicComponentTests extends TestCase {
 		TestComponent<BasicComponent> c = t.component(BasicComponent.class);
 		c.initialize(new Object[] { null });
 	}
-	
+
+	public void testRequires() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		Page page = t.get("componentTest", "requires", (Object) ArrayUtils.EMPTY_STRING_ARRAY);
+		page.assertMatches(expectedAssetRequirements());
+	}
+
 	public void testScriptInit() throws Exception {
 		SailsComponentTester t = new SailsComponentTester(FunctionalTestConfigurator.class);
 		TestComponent<ScriptInitComponent> c = t.component(ScriptInitComponent.class);
