@@ -3,7 +3,7 @@ package org.opensails.sails.form;
 import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.html.AbstractHtmlElement;
 
-public class UnderscoreIdGenerator implements IFormElementIdGenerator {
+public class UnderscoreIdGenerator implements IElementIdGenerator {
 	public String idForLabel(String label) {
 		return label.replace(' ', '_');
 	}

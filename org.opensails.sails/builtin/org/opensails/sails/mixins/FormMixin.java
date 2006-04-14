@@ -8,7 +8,7 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.IElementIdGenerator;
 import org.opensails.sails.form.ValidationErrors;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FileInput;
@@ -31,7 +31,7 @@ import org.opensails.spyglass.SpyObject;
 import org.opensails.viento.MethodMissing;
 
 public class FormMixin implements MethodMissing {
-	protected IFormElementIdGenerator idGenerator;
+	protected IElementIdGenerator idGenerator;
 	protected HtmlForm form;
 	protected ContainerAdapterResolver adapterResolver;
 	protected ISailsEvent event;
@@ -43,7 +43,7 @@ public class FormMixin implements MethodMissing {
 	 *        and adapt parameters
 	 * @param form
 	 */
-	public FormMixin(ISailsEvent event, IFormElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
+	public FormMixin(ISailsEvent event, IElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
 		this.event = event;
 		this.idGenerator = idGenerator;
 		this.adapterResolver = adapterResolver;

@@ -30,7 +30,7 @@ import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.IActionEventProcessorResolver;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.IElementIdGenerator;
 import org.opensails.sails.form.UnderscoreIdGenerator;
 import org.opensails.sails.form.ValidationContext;
 import org.opensails.sails.model.IPropertyFactory;
@@ -310,7 +310,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 		provideApplicationScopedContainerAccess(applicationContainer);
 		applicationContainer.register(IEventConfigurator.class, this);
 		applicationContainer.register(IValidationEngine.class, SailsValidationEngine.class);
-		applicationContainer.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
+		applicationContainer.register(IElementIdGenerator.class, UnderscoreIdGenerator.class);
 		applicationContainer.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
 		applicationContainer.register(ISailsApplication.class, application);
 		application.setContainer(applicationContainer);

@@ -10,7 +10,7 @@ import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.component.Remembered;
 import org.opensails.sails.event.oem.AbstractEventProcessingContext;
-import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.IElementIdGenerator;
 import org.opensails.sails.mixins.BuiltinScript;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.Require;
@@ -29,7 +29,7 @@ public abstract class BaseComponent extends AbstractEventProcessingContext<IComp
 	public String id;
 	protected IEventContextContainer container;
 	protected Map<String, String> domNodes = new HashMap<String, String>();
-	protected IFormElementIdGenerator idGenerator;
+	protected IElementIdGenerator idGenerator;
 	protected ITemplateRenderer<IBinding> renderer;
 
 	/**
@@ -83,7 +83,7 @@ public abstract class BaseComponent extends AbstractEventProcessingContext<IComp
 		this.container = container;
 	}
 
-	public void setIdGenerator(IFormElementIdGenerator generator) {
+	public void setIdGenerator(IElementIdGenerator generator) {
 		this.idGenerator = generator;
 	}
 

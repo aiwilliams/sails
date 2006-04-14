@@ -5,7 +5,7 @@ package org.opensails.sails.form;
  * 
  * @author aiwilliams
  */
-public interface IFormElementIdGenerator {
+public interface IElementIdGenerator {
 	/**
 	 * @param label that is shown in UI
 	 * @return a useable id from a label

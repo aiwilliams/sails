@@ -4,7 +4,7 @@ import org.opensails.sails.component.ComponentInitializationException;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.IFormElementIdGenerator;
+import org.opensails.sails.form.IElementIdGenerator;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.viento.Name;
 
@@ -26,7 +26,7 @@ public class ComponentFactory {
 	@Name("new")
 	public IComponentImpl create(Object... args) {
 		IComponentImpl impl = component.createInstance(event);
-		impl.setIdGenerator(event.getContainer().instance(IFormElementIdGenerator.class));
+		impl.setIdGenerator(event.getContainer().instance(IElementIdGenerator.class));
 		try {
 			SpyGlass.invoke(impl, "initialize", args);
 		} catch (Throwable e) {

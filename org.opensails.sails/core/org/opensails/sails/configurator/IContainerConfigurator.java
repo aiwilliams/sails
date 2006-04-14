@@ -9,7 +9,7 @@ public interface IContainerConfigurator {
 	void configure(ApplicationContainer applicationContainer);
 	
 //	applicationContainer.register(IValidationEngine.class, SailsValidationEngine.class);
-//	applicationContainer.register(IFormElementIdGenerator.class, UnderscoreIdGenerator.class);
+//	applicationContainer.register(IElementIdGenerator.class, UnderscoreIdGenerator.class);
 
 	void configure(RequestContainer requestContainer);
 
