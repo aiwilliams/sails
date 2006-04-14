@@ -16,6 +16,7 @@ import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.controller.oem.BaseController;
 import org.opensails.sails.form.FormMeta;
 import org.opensails.sails.http.ContentType;
+import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.Browser;
 import org.opensails.sails.tester.browser.SailsTestApplication;
@@ -23,7 +24,6 @@ import org.opensails.sails.tester.browser.ShamFormFields;
 
 public class EventProcessingTests extends TestCase implements IActionListener {
 	private int beginExecutionCallCount = 0;
-
 	private int endExecutionCallCount;
 
 	public void beginExecution(IAction action) {
@@ -38,6 +38,17 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		SailsFunctionalTester tester = new SailsFunctionalTester(EventTestController.class);
 		Page page = tester.get("actionReturnsResult");
 		page.assertContains("string rendered");
+	}
+
+	/**
+	 * This tests the
+	 * {@link BaseConfigurator#configure(org.opensails.sails.event.ISailsEvent, org.opensails.viento.IBinding)}
+	 * method. It makes sure that the Text type mixin works.
+	 */
+	public void testConfigureBinding_Mixins() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		Page page = t.getTemplated("$form.text('thename').decorated");
+		page.assertContains("<span class=\"decorated\"><input");
 	}
 
 	public void testFlash() throws Exception {
