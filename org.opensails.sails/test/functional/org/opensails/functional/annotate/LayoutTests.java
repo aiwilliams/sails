@@ -41,4 +41,9 @@ public class LayoutTests extends TestCase {
 		page = tester.get("seven");
 		page.assertLayout(null);
 	}
+
+	public void testRealRender() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester(LayoutTestController.class);
+		t.get().assertEquals("layout top\r\ncontent of index\r\nlayout bottom");
+	}
 }

@@ -4,6 +4,9 @@ import org.opensails.sails.template.Layout;
 import org.opensails.sails.template.NoLayout;
 
 public class LayoutTestController extends LayoutSuperController {
+	@Layout("layoutTest/layout")
+	public void index() {}
+
 	@Layout("actionLayout")
 	public void layoutNoneMethod() {
 		layout(null);

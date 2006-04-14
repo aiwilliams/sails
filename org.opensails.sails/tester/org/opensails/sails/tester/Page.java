@@ -63,6 +63,15 @@ public class Page {
 		assertHeaderEquals(expected);
 	}
 
+	/**
+	 * Asserts that the content matches completely and exactly
+	 * 
+	 * @param expected
+	 */
+	public void assertEquals(String expected) {
+		Assert.assertEquals("Page content should match exactly", expected, source());
+	}
+
 	public void assertExcludes(String exactString) {
 		assertPageExpectation("Expected " + url() + " not to contain <" + exactString + ">", !contains(exactString));
 	}
