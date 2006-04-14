@@ -4,7 +4,7 @@ import org.opensails.sails.component.ComponentInitializationException;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.form.IElementIdGenerator;
+import org.opensails.sails.html.IElementIdGenerator;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.viento.Name;
 

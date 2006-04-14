@@ -9,7 +9,7 @@ import org.opensails.sails.IResourceResolver;
 import org.opensails.sails.url.IUrl;
 
 public class VirtualResourceResolver implements IResourceResolver {
-	protected Map<String, String> contentMap = new HashMap<String, String>();
+	protected Map<String, CharSequence> contentMap = new HashMap<String, CharSequence>();
 
 	public boolean exists(IUrl applicationUrl) {
 		return false;
@@ -19,7 +19,7 @@ public class VirtualResourceResolver implements IResourceResolver {
 		return contentMap.containsKey(identifier);
 	}
 
-	public void register(String identifier, String content) {
+	public void register(String identifier, CharSequence content) {
 		contentMap.put(identifier, content);
 	}
 
@@ -28,6 +28,6 @@ public class VirtualResourceResolver implements IResourceResolver {
 	}
 
 	public InputStream resolve(String identifier) {
-		return new ByteArrayInputStream(contentMap.get(identifier).getBytes());
+		return new ByteArrayInputStream(contentMap.get(identifier).toString().getBytes());
 	}
 }

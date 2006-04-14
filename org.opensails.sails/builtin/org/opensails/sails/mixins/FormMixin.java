@@ -1,6 +1,7 @@
 package org.opensails.sails.mixins;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.AdaptationTarget;
@@ -8,7 +9,6 @@ import org.opensails.sails.adapter.ContainerAdapterResolver;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.form.IElementIdGenerator;
 import org.opensails.sails.form.ValidationErrors;
 import org.opensails.sails.form.html.Checkbox;
 import org.opensails.sails.form.html.FileInput;
@@ -23,6 +23,7 @@ import org.opensails.sails.form.html.Select;
 import org.opensails.sails.form.html.Submit;
 import org.opensails.sails.form.html.Text;
 import org.opensails.sails.form.html.Textarea;
+import org.opensails.sails.html.IElementIdGenerator;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
@@ -30,11 +31,12 @@ import org.opensails.sails.util.Quick;
 import org.opensails.spyglass.SpyObject;
 import org.opensails.viento.MethodMissing;
 
-public class FormMixin implements MethodMissing {
+public class FormMixin implements MethodMissing /* , IMixinMethod<Form> */{
 	protected IElementIdGenerator idGenerator;
 	protected HtmlForm form;
 	protected ContainerAdapterResolver adapterResolver;
 	protected ISailsEvent event;
+	protected List<String> ids;
 
 	/**
 	 * @param idGenerator
@@ -51,7 +53,7 @@ public class FormMixin implements MethodMissing {
 	}
 
 	public Form action(IUrl actionUrl) {
-		return new Form().action(actionUrl);
+		return new Form("unnamed").action(actionUrl);
 	}
 
 	public Form action(String action) {
@@ -62,9 +64,19 @@ public class FormMixin implements MethodMissing {
 		return action(new ActionUrl(event, controller, action));
 	}
 
-	public Checkbox checkbox(String propertyPath) {
-		Object modelValue = form.value(propertyPath);
-		return new Checkbox(propertyPath).checked(Boolean.valueOf((String) modelValue));
+	/**
+	 * Creates a checkbox having name and the value of '1', indicating checked.
+	 * <p>
+	 * So, the id is generated from the provided name. If you would like the id
+	 * to be generated from a value, you must provide that when creating your
+	 * checkbox. That is, see {@link #checkbox(String, Object)}.
+	 * 
+	 * @param name
+	 * @return a checkbox having name and checked if model property is true or 1
+	 */
+	public Checkbox checkbox(String name) {
+		Object modelValue = form.value(name);
+		return new Checkbox(name).checked(Boolean.valueOf((String) modelValue)).id(idGenerator.idForName(name));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,16 +106,42 @@ public class FormMixin implements MethodMissing {
 	}
 
 	public FileInput file(String name) {
-		return new FileInput(name).value(form.value(name));
+		return new FileInput(name).value(form.value(name)).id(idGenerator.idForName(name));
 	}
 
+	/**
+	 * Creates a hidden having name.
+	 * <p>
+	 * This id is not set as manipulating them in JavaScript is not usually
+	 * needed. If you want one, just call {@link Hidden#id(String)}.
+	 * 
+	 * @param name
+	 * @return a hidden having name and it's value in the model
+	 */
 	public Hidden hidden(String name) {
 		return new Hidden(name).value(form.value(name));
 	}
 
+	/**
+	 * @param name
+	 * @param value
+	 * @return a unique id for name and value
+	 */
 	public String idFor(String name, String value) {
 		return idGenerator.idForNameValue(name, value);
 	}
+
+	// For supporting $form('name', 'id'), but not until l8r
+	// public Form invoke(Object... args) {
+	// if (args == null || args.length == 0) return start();
+	// if (args.length == 1 & args[0].getClass() == String.class) return new
+	// Form((String) args[0]);
+	// else if (args.length == 2 & args[0].getClass() == String.class &
+	// args[1].getClass() == String.class) return new Form((String)
+	// args[0]).id((String) args[1]);
+	// throw new IllegalArgumentException("You may construct a form using $form,
+	// $form('name'), $form('name', 'value'), or $form.start");
+	// }
 
 	public Label label(String forId, String text) {
 		return new Label(forId).text(text);
@@ -115,7 +153,7 @@ public class FormMixin implements MethodMissing {
 
 	public Password password(String name) {
 		// It's probably a security error to return the value in the response.
-		return new Password(name);
+		return new Password(name).id(idGenerator.idForName(name));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -167,11 +205,11 @@ public class FormMixin implements MethodMissing {
 	}
 
 	public Submit submit(String valueAttribute) {
-		return new Submit(valueAttribute, adapterResolver).value(valueAttribute);
+		return new Submit(valueAttribute, adapterResolver).value(valueAttribute).id(idGenerator.idForLabel(valueAttribute));
 	}
 
 	public Text text(String name) {
-		return new Text(name).value(form.value(name));
+		return new Text(name).value(form.value(name)).id(idGenerator.idForName(name));
 	}
 
 	public Textarea textarea(String name) {

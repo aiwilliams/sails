@@ -1,12 +1,11 @@
 package org.opensails.sails.form.html;
 
-import org.opensails.sails.html.AbstractHtmlElement;
 import org.opensails.sails.url.IUrl;
 
-public class Form extends AbstractHtmlElement<Form> {
+public class Form extends FormElement<Form> {
 
-	public Form() {
-		super("form");
+	public Form(String name) {
+		super("form", name);
 		method("post");
 	}
 

@@ -21,12 +21,11 @@ import org.opensails.sails.html.HtmlGenerator;
  * course, if you are exposing every property for an object, then there is no
  * problem to solve.
  * <p>
- * Anywho, the {@link #getBoolean()} call will cause this to render a hidden
- * 'meta' field that the {@link org.opensails.sails.form.HtmlForm} class uses
- * when binding an HTTP form post to a model. If the checkbox is bound to a
- * boolean property, unchecking will remove that field from the posted form, but
- * the hidden will come back, indicating the the checkbox was rendered, but
- * unchecked.
+ * Anywho, this will render a hidden 'meta' field that the
+ * {@link org.opensails.sails.form.HtmlForm} class uses when binding an HTTP
+ * form post to a model. If the checkbox is bound to a boolean property,
+ * unchecking will remove that field from the posted form, but the hidden will
+ * come back, indicating the the checkbox was rendered, but unchecked.
  */
 public class Checkbox extends LabelableInputElement<Checkbox> {
 	public static final String CHECKBOX = "checkbox";
@@ -79,11 +78,6 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	@Override
 	public Checkbox value(Object value) {
 		return super.value(value);
-	}
-
-	@Override
-	protected String guessId() {
-		return FormElement.idForName(getName());
 	}
 
 	@Override

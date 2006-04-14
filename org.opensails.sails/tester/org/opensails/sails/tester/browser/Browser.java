@@ -78,7 +78,7 @@ public class Browser {
 	 * @return a TestGetEvent that is configured by the ISailsEventConfigurator
 	 *         and has the given eventPath
 	 */
-	public TestGetEvent createVirtualEvent(String eventPath, String templateContent) {
+	public TestGetEvent createVirtualEvent(String eventPath, CharSequence templateContent) {
 		TestGetEvent event = createGetEvent(eventPath);
 		getContainer().instance(IEventConfigurator.class).configure(event, event.getContainer());
 		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
@@ -214,13 +214,13 @@ public class Browser {
 	 * @param templateContent
 	 * @return the rendered page
 	 */
-	public Page getTemplated(String templateContent) {
+	public Page getTemplated(CharSequence templateContent) {
 		return get(createVirtualEvent("dynamicallyGeneratedInSailsTester/getTemplated", templateContent));
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> void inject(Class<? super T> keyAndImplementation) {
-		inject(keyAndImplementation, (Class<T>)keyAndImplementation, ApplicationScope.REQUEST);
+		inject(keyAndImplementation, (Class<T>) keyAndImplementation, ApplicationScope.REQUEST);
 	}
 
 	public <T> void inject(Class<? super T> key, Class<T> implementation) {

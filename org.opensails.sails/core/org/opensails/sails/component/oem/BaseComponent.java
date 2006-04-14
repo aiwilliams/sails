@@ -10,7 +10,7 @@ import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.component.Remembered;
 import org.opensails.sails.event.oem.AbstractEventProcessingContext;
-import org.opensails.sails.form.IElementIdGenerator;
+import org.opensails.sails.html.IElementIdGenerator;
 import org.opensails.sails.mixins.BuiltinScript;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.Require;

@@ -6,19 +6,10 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.form.html.FormElement;
 
 public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> implements IHtmlElement<T> {
-	public static String idForName(String name) {
-		return name.replace('.', '_');
-	}
-
-	public static String idForNameAndValue(String name, String value) {
-		return idForName(name) + (StringUtils.isBlank(name) || StringUtils.isBlank(value) ? "" : "-") + (value == null ? "" : value.replaceAll("[\\s\\.,]+", "_"));
-	}
-
 	protected Map<String, String> attributes;
 	protected String elementName;
 	protected String id;

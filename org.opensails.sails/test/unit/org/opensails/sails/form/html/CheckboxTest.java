@@ -17,26 +17,20 @@ public class CheckboxTest extends WidgetTestCase {
 	}
 
 	public void testLabel() throws Exception {
-		// setting the label implies that an id is required and desired
-		String id = FormElement.idForName("name.besure");
-		assertRender("<input id=\"" + id + "\" name=\"name.besure\" type=\"checkbox\" value=\"1\" /><label for=\"" + id
-				+ "\">hello</label><input name=\"form.meta.cb.name.besure\" type=\"hidden\" value=\"0\" />", "$checkbox('name.besure').label(hello)");
-
-		id = FormElement.idForName("name.besure");
-		assertRender("<input id=\"" + id + "\" name=\"name.besure\" type=\"checkbox\" value=\"checkedValue\" /><label for=\"" + id
-				+ "\">hello</label><input name=\"form.meta.cb.name.besure\" type=\"hidden\" value=\"uncheckedValue\" />", "$checkbox('name.besure', checkedValue, uncheckedValue).label(hello)");
+		assertRender("<input id=\"theid\" name=\"name.besure\" type=\"checkbox\" value=\"1\" /><label for=\"theid\">hello</label><input name=\"form.meta.cb.name.besure\" type=\"hidden\" value=\"0\" />", "$checkbox('name.besure').id('theid').label(hello)");
+		assertRender("<input id=\"theid\" name=\"name.besure\" type=\"checkbox\" value=\"checkedValue\" /><label for=\"theid\">hello</label><input name=\"form.meta.cb.name.besure\" type=\"hidden\" value=\"uncheckedValue\" />", "$checkbox('name.besure', checkedValue, uncheckedValue).id('theid').label(hello)");
 	}
 
 	public void testRender() throws Exception {
-		assertRender("<input id=\"name\" name=\"name\" type=\"checkbox\" value=\"1\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"0\" />", "$checkbox(name)");
-		assertRender("<input id=\"name\" name=\"name\" type=\"checkbox\" value=\"myvalue\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"yourvalue\" />", "$checkbox(name, myvalue, yourvalue)");
+		assertRender("<input name=\"name\" type=\"checkbox\" value=\"1\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"0\" />", "$checkbox(name)");
+		assertRender("<input name=\"name\" type=\"checkbox\" value=\"myvalue\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"yourvalue\" />", "$checkbox(name, myvalue, yourvalue)");
 	}
 
 	public void testRender_Checked() throws Exception {
-		String expected = "<input id=\"name\" name=\"name\" type=\"checkbox\" value=\"1\" checked=\"checked\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"0\" />";
+		String expected = "<input name=\"name\" type=\"checkbox\" value=\"1\" checked=\"checked\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"0\" />";
 		assertRender(expected, "$checkbox(name).checked");
 
-		expected = "<input id=\"name\" name=\"name\" type=\"checkbox\" value=\"1\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"0\" />";
+		expected = "<input name=\"name\" type=\"checkbox\" value=\"1\" /><input name=\"form.meta.cb.name\" type=\"hidden\" value=\"0\" />";
 		assertRender(expected, "$checkbox(name).checked(false)");
 	}
 }

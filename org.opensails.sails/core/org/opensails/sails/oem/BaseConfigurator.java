@@ -30,9 +30,9 @@ import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.IActionEventProcessorResolver;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.HtmlForm;
-import org.opensails.sails.form.IElementIdGenerator;
-import org.opensails.sails.form.UnderscoreIdGenerator;
 import org.opensails.sails.form.ValidationContext;
+import org.opensails.sails.html.IElementIdGenerator;
+import org.opensails.sails.html.UnderscoreIdGenerator;
 import org.opensails.sails.model.IPropertyFactory;
 import org.opensails.sails.model.ModelContext;
 import org.opensails.sails.model.oem.DefaultPropertyFactory;
@@ -162,6 +162,7 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 
 		// TODO: Move form stuff to more configurable location, as framework is
 		// fleshed out
+		eventContainer.register(IElementIdGenerator.class, UnderscoreIdGenerator.class);
 		eventContainer.register(ModelContext.class);
 		eventContainer.register(ValidationContext.class);
 		eventContainer.register(HtmlForm.class);
@@ -310,7 +311,6 @@ public class BaseConfigurator implements ISailsApplicationConfigurator, IEventCo
 		provideApplicationScopedContainerAccess(applicationContainer);
 		applicationContainer.register(IEventConfigurator.class, this);
 		applicationContainer.register(IValidationEngine.class, SailsValidationEngine.class);
-		applicationContainer.register(IElementIdGenerator.class, UnderscoreIdGenerator.class);
 		applicationContainer.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
 		applicationContainer.register(ISailsApplication.class, application);
 		application.setContainer(applicationContainer);

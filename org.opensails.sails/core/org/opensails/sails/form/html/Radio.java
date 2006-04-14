@@ -49,16 +49,6 @@ public class Radio extends LabelableInputElement<Radio> {
 		return this;
 	}
 
-	/**
-	 * Generates the id using the name and value, as there may be multiple
-	 * radios on the page with the same name. This gives them a unique
-	 * identifier within the document.
-	 */
-	@Override
-	protected String guessId() {
-		return FormElement.idForNameAndValue(getName(), getValue());
-	}
-
 	@Override
 	protected void writeAttributes(HtmlGenerator generator) throws IOException {
 		super.writeAttributes(generator);

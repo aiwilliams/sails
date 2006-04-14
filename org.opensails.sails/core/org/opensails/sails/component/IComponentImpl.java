@@ -2,7 +2,7 @@ package org.opensails.sails.component;
 
 import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.form.IElementIdGenerator;
+import org.opensails.sails.html.IElementIdGenerator;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.viento.IBinding;
 import org.opensails.viento.IRenderable;

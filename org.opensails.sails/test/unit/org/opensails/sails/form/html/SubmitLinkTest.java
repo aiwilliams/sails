@@ -10,6 +10,11 @@ public class SubmitLinkTest extends WidgetTestCase {
 		} catch (IllegalArgumentException expected) {}
 	}
 
+	public void testRender() {
+		assertRender("<a name=\"name\" href=\"javascript:document.forms['formName'].submit()\"></a>", "$submitLink(name, formName)");
+		assertRender("<a name=\"name\" href=\"javascript:document.forms['formName'].submit()\">hello</a>", "$submitLink(name, formName).text(hello)");
+	}
+
 	/**
 	 * TODO: Allow a link submit to alter the action
 	 */
@@ -25,10 +30,5 @@ public class SubmitLinkTest extends WidgetTestCase {
 	// document.forms.myForm; ";
 	// assertEquals("<a href=\"javascript:document.forms.myForm.submit\">Link
 	// text</a>", form.linkSubmit("Link text", "customAction"));
-	}
-
-	public void testRender() {
-		assertRender("<a id=\"name\" name=\"name\" href=\"javascript:document.forms['formName'].submit()\"></a>", "$submitLink(name, formName)");
-		assertRender("<a id=\"name\" name=\"name\" href=\"javascript:document.forms['formName'].submit()\">hello</a>", "$submitLink(name, formName).text(hello)");
 	}
 }

@@ -1,4 +1,4 @@
-package org.opensails.sails.form;
+package org.opensails.sails.html;
 
 /**
  * Creates valid HTML element ids.
