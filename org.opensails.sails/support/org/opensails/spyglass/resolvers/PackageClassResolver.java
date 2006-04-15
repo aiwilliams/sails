@@ -1,6 +1,8 @@
 package org.opensails.spyglass.resolvers;
 
-import org.opensails.spyglass.ClassResolverAdapter;
+import org.opensails.spyglass.ClassKeyMappings;
+import org.opensails.spyglass.IClassResolver;
+import org.opensails.spyglass.Mapping;
 import org.opensails.spyglass.SpyGlass;
 
 /**
@@ -12,47 +14,78 @@ import org.opensails.spyglass.SpyGlass;
  * <li>The key, upper-camel-cased and prepended to suffix, if defined.</li>
  * </ol>
  */
-public class PackageClassResolver<T> extends ClassResolverAdapter<T> {
+public class PackageClassResolver<T> implements IClassResolver<T> {
 	protected String suffix;
-	protected String packageRoot;
+	protected Package javaPackage;
+	protected String packageName;
 
 	/**
-	 * @param packageRoot A Class to use to declare the Java package in which
+	 * @param packageClass A Class to use to declare the Java package in which
 	 *        classes might be found.
 	 */
-	public PackageClassResolver(Class packageRoot) {
-		this(packageRoot.getPackage().getName());
+	public PackageClassResolver(Class packageClass) {
+		this(packageClass, null);
 	}
 
 	/**
-	 * @param packageRoot A Class to use to declare the Java package in which
+	 * @param packageClass A Class to use to declare the Java package in which
 	 *        classes might be found.
-	 * @param suffix optionally used when searching
+	 * @param suffix optional, used when searching
 	 */
-	public PackageClassResolver(Class packageRoot, String suffix) {
-		this(packageRoot.getPackage().getName(), suffix);
+	public PackageClassResolver(Class packageClass, String suffix) {
+		checkClass(packageClass);
+		initialize(packageClass.getPackage(), suffix);
 	}
 
 	/**
-	 * @param packageRoot The Java package in which classes might be found.
+	 * @param javaPackage the Java package in which classes might be found.
 	 */
-	public PackageClassResolver(String packageRoot) {
-		this(packageRoot, "");
+	public PackageClassResolver(Package javaPackage) {
+		this(javaPackage, null);
 	}
 
 	/**
-	 * @param packageRoot The Java package in which classes might be found.
-	 * @param suffix optionally used when searching
+	 * @param javaPackage the Java package in which classes might be found.
+	 * @param suffix optional, used when searching
 	 */
-	public PackageClassResolver(String packageRoot, String suffix) {
-		this.suffix = suffix;
-		this.packageRoot = packageRoot + ".";
+	public PackageClassResolver(Package javaPackage, String suffix) {
+		checkPackage(javaPackage);
+		initialize(javaPackage, suffix);
 	}
 
-	@Override
+	/**
+	 * @param packageName the Java package name in which classes might be found.
+	 */
+	public PackageClassResolver(String packageName) {
+		this(packageName, null);
+	}
+
+	/**
+	 * @param packageName the Java package name in which classes might be found
+	 * @param suffix optional, used when searching
+	 */
+	public PackageClassResolver(String packageName, String suffix) {
+		initialize(Package.getPackage(packageName), packageName, suffix);
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Class<T> resolve(Class key) {
+		if (javaPackage != null) {
+			ClassKeyMappings mappings = javaPackage.getAnnotation(ClassKeyMappings.class);
+			if (mappings != null) for (Mapping mapping : mappings.value())
+				for (Class classKey : mapping.classKeys())
+					if (classKey == key) return mapping.value();
+		}
+		return resolve(SpyGlass.getName(key));
+	}
+
 	@SuppressWarnings("unchecked")
 	public Class<T> resolve(String key) {
-		String canonicalName = packageRoot + SpyGlass.upperCamelName(key);
+		String canonicalName = getPackageName() + "." + SpyGlass.upperCamelName(key);
 		Class<T> classFound = null;
 		try {
 			classFound = (Class<T>) Class.forName(canonicalName);
@@ -73,9 +106,27 @@ public class PackageClassResolver<T> extends ClassResolverAdapter<T> {
 	@Override
 	public String toString() {
 		StringBuilder string = new StringBuilder();
-		string.append(packageRoot);
-		string.append("<className>");
+		string.append(getPackageName());
+		string.append(".<className>");
 		if (suffix != null) string.append(suffix);
 		return string.toString();
+	}
+
+	protected void checkClass(Class packageClass) {
+		if (packageClass == null) throw new IllegalArgumentException("Null class is useless for finding package");
+	}
+
+	protected void checkPackage(Package javaPackage) {
+		if (javaPackage == null) throw new IllegalArgumentException("Null package is useless for finding classes");
+	}
+
+	protected void initialize(Package javaPackage, String suffix) {
+		initialize(javaPackage, javaPackage == null ? null : javaPackage.getName(), suffix);
+	}
+
+	protected void initialize(Package javaPackage, String packageName, String suffix) {
+		this.suffix = suffix != null ? suffix : "";
+		this.javaPackage = javaPackage;
+		this.packageName = packageName;
 	}
 }

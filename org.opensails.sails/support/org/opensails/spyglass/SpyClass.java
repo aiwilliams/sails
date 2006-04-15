@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.SailsException;
 import org.opensails.spyglass.policy.SpyPolicy;
 
@@ -103,8 +102,12 @@ public class SpyClass<T> {
 		return methods;
 	}
 
+	public Package getPackage() {
+		return type.getPackage();
+	}
+
 	public String getPackageName() {
-		return ClassUtils.getPackageName(type);
+		return getPackage().getName();
 	}
 
 	public SpyPolicy getPolicy() {

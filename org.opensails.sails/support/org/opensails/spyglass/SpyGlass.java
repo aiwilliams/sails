@@ -58,16 +58,16 @@ public class SpyGlass {
 		return name;
 	}
 
-	public static <T> String getPackage(Class<T> clazz) {
+	public static String getPackageDirectory(Class<?> clazz) {
+		return getPackageName(clazz).replaceAll("\\.", "/");
+	}
+
+	public static <T> String getPackageName(Class<T> clazz) {
 		return new SpyClass<T>(clazz).getPackageName();
 	}
 
-	public static String getPackage(Object instance) {
-		return getPackage(instance.getClass());
-	}
-
-	public static String getPackageDirectory(Class<?> clazz) {
-		return getPackage(clazz).replaceAll("\\.", "/");
+	public static String getPackageName(Object instance) {
+		return getPackageName(instance.getClass());
 	}
 
 	/**
