@@ -141,6 +141,16 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return request.getSession(create);
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T> T instance(Class<T> key) {
+		return (T) getContainer().instance(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T instance(Class<T> key, Class defaultImplementation) {
+		return (T) getContainer().instance(key, defaultImplementation);
+	}
+
 	public IUrl resolve(UrlType urlType, String urlFragment) {
 		IUrlResolver resolver = getContainer().instance(IUrlResolver.class);
 		return resolver.resolve(urlType, this, urlFragment);

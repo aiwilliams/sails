@@ -7,9 +7,9 @@ import java.util.List;
 import org.opensails.sails.ApplicationScope;
 import org.opensails.sails.Sails;
 import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.configurator.SailsConfigurator;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.IEventProcessingContext;
-import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.SailsApplication;
 import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.persist.IObjectPersister;
@@ -38,7 +38,7 @@ public class SailsTestApplication extends SailsApplication {
 	 * @see org.opensails.sails.ISailsApplicationConfigurator
 	 * @param configurator the configurator to used
 	 */
-	public SailsTestApplication(Class<? extends BaseConfigurator> configurator) {
+	public SailsTestApplication(Class<? extends SailsConfigurator> configurator) {
 		initialize(configurator);
 	}
 
@@ -47,7 +47,7 @@ public class SailsTestApplication extends SailsApplication {
 	 * @param configurator the configurator to used
 	 * @param contextRootDirectory
 	 */
-	public SailsTestApplication(Class<? extends BaseConfigurator> configurator, File contextRootDirectory) {
+	public SailsTestApplication(Class<? extends SailsConfigurator> configurator, File contextRootDirectory) {
 		initialize(configurator, contextRootDirectory);
 	}
 
@@ -235,20 +235,20 @@ public class SailsTestApplication extends SailsApplication {
 		return (TestingDispatcher) dispatcher;
 	}
 
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass) {
+	protected void initialize(Class<? extends SailsConfigurator> configuratorClass) {
 		initialize(configuratorClass, new File(Sails.DEFAULT_CONTEXT_ROOT_DIRECTORY));
 	}
 
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, File contextRootDirectory) {
+	protected void initialize(Class<? extends SailsConfigurator> configuratorClass, File contextRootDirectory) {
 		initialize(configuratorClass, new ShamServletConfig(new ShamServletContext(contextRootDirectory)));
 	}
 
-	protected void initialize(Class<? extends BaseConfigurator> configuratorClass, ShamServletConfig config) {
+	protected void initialize(Class<? extends SailsConfigurator> configuratorClass, ShamServletConfig config) {
 		SpyObject.create(this).write("config", config);
 		configureAndStart(instrumentedConfigurator(configuratorClass));
 	}
 
-	protected TestApplicationConfigurator instrumentedConfigurator(Class<? extends BaseConfigurator> configuratorClass) {
+	protected TestApplicationConfigurator instrumentedConfigurator(Class<? extends SailsConfigurator> configuratorClass) {
 		return new TestApplicationConfigurator(configuratorClass);
 	}
 

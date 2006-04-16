@@ -2,7 +2,7 @@ package org.opensails.sails;
 
 import javax.servlet.ServletConfig;
 
-import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.configurator.SailsConfigurator;
 import org.opensails.sails.tester.TestApplicationConfigurator;
 import org.opensails.sails.tester.servletapi.ShamServletConfig;
 import org.opensails.spyglass.SpyObject;
@@ -15,7 +15,7 @@ public class SailsApplicationConfiguratorFixture {
 	 * @param application
 	 */
 	public static void configure(IConfigurableSailsApplication application) {
-		configure(application, new TestApplicationConfigurator(BaseConfigurator.class));
+		configure(application, new TestApplicationConfigurator(SailsConfigurator.class));
 	}
 
 	/**

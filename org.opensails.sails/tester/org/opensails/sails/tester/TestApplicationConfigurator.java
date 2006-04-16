@@ -1,13 +1,8 @@
 package org.opensails.sails.tester;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.configuration.CompositeConfiguration;
-import org.opensails.rigging.ComponentImplementation;
 import org.opensails.sails.ApplicationContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
-import org.opensails.sails.IEventContextContainer;
+import org.opensails.sails.ISailsApplicationConfigurator;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.IActionResultProcessorResolver;
@@ -16,73 +11,54 @@ import org.opensails.sails.action.oem.RedirectActionResult;
 import org.opensails.sails.adapter.IAdapter;
 import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.opensails.sails.configurator.DelegatingConfigurator;
 import org.opensails.sails.configurator.IEventConfigurator;
+import org.opensails.sails.configurator.IFormProcessingConfigurator;
+import org.opensails.sails.configurator.IPackageDescriptor;
+import org.opensails.sails.configurator.SailsConfigurator;
+import org.opensails.sails.configurator.oem.RequiredEventConfigurator;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
-import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.ExceptionEvent;
-import org.opensails.sails.oem.BaseConfigurator;
-import org.opensails.sails.oem.DelegatingConfigurator;
 import org.opensails.sails.oem.Dispatcher;
 import org.opensails.sails.oem.ResourceResolver;
-import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.oem.ErrorController;
 import org.opensails.sails.tester.oem.LazyActionResultProcessor;
-import org.opensails.sails.tester.oem.TestingBinding;
+import org.opensails.sails.tester.oem.TestEventConfigurator;
 import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
 import org.opensails.sails.tester.oem.VirtualControllerResolver;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
-import org.opensails.sails.tester.persist.ITestObjectPersister;
-import org.opensails.sails.tester.persist.MemoryObjectPersister;
 import org.opensails.spyglass.IClassResolver;
-import org.opensails.viento.IBinding;
 
 public class TestApplicationConfigurator extends DelegatingConfigurator {
-	protected List<ISailsEvent> configured = new ArrayList<ISailsEvent>();
-
-	public TestApplicationConfigurator(Class<? extends BaseConfigurator> delegateClass) {
+	public TestApplicationConfigurator(Class<? extends SailsConfigurator> delegateClass) {
 		super(delegateClass);
 	}
 
 	@Override
-	public void configure(ISailsEvent event, IEventContextContainer eventContainer) {
-		if (configured.contains(event)) return;
-
-		super.configure(event, eventContainer);
-
-		/*
-		 * Expose the same instance as two types.
-		 * 
-		 * As far as instantiation listeners go, no application code should be
-		 * listening for the TestingBinding, but those that do care about the
-		 * IBinding should hear.
-		 */
-		ComponentImplementation bindingComponent = new ComponentImplementation(IBinding.class, TestingBinding.class, eventContainer);
-		eventContainer.registerResolver(IBinding.class, bindingComponent);
-		eventContainer.registerResolver(TestingBinding.class, bindingComponent);
-
-		configured.add(event);
+	public IEventConfigurator getEventConfigurator() {
+		return new TestEventConfigurator(super.getEventConfigurator());
 	}
 
 	@Override
-	protected void configureName(IConfigurableSailsApplication application, CompositeConfiguration configuration) {
-		super.configureName(application, configuration);
+	protected void configureName() {
+		super.configureName();
 		application.setName("[TESTING]" + application.getName());
 	}
 
 	@Override
-	protected ApplicationContainer createApplicationContainer(IConfigurableSailsApplication application) {
+	protected ApplicationContainer createApplicationContainer() {
 		TestApplicationContainer testApplicationContainer = new TestApplicationContainer();
 		testApplicationContainer.register(testApplicationContainer);
 		return testApplicationContainer;
 	}
 
 	@Override
-	protected ActionResultProcessorResolver installActionResultProcessorResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
-		final ActionResultProcessorResolver delegatesResolver = super.installActionResultProcessorResolver(application, container);
+	protected ActionResultProcessorResolver installActionResultProcessorResolver() {
+		final ActionResultProcessorResolver delegatesResolver = super.installActionResultProcessorResolver();
 		ActionResultProcessorResolver interceptingResolver = new ActionResultProcessorResolver(container) {
 			@Override
 			public void push(IClassResolver<? extends IActionResultProcessor> resolver) {
@@ -101,8 +77,8 @@ public class TestApplicationConfigurator extends DelegatingConfigurator {
 	}
 
 	@Override
-	protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
-		AdapterResolver adapterResolver = super.installAdapterResolver(application, container);
+	protected AdapterResolver installAdapterResolver() {
+		AdapterResolver adapterResolver = super.installAdapterResolver();
 		VirtualAdapterResolver<IAdapter> virtualAdapterResolver = new VirtualAdapterResolver<IAdapter>();
 		adapterResolver.push(virtualAdapterResolver);
 		container.register(virtualAdapterResolver);
@@ -110,21 +86,9 @@ public class TestApplicationConfigurator extends DelegatingConfigurator {
 	}
 
 	@Override
-	protected void installConfigurator(IConfigurableSailsApplication application) {
-		application.setConfigurator(this);
-	}
-
-	@Override
-	protected ApplicationContainer installContainer(IConfigurableSailsApplication application) {
-		ApplicationContainer container = super.installContainer(application);
-		container.register(IEventConfigurator.class, this);
-		return container;
-	}
-
-	@Override
-	protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+	protected ControllerResolver installControllerResolver() {
 		final VirtualControllerResolver virtualControllerResolver = container.instance(VirtualControllerResolver.class, VirtualControllerResolver.class);
-		final ControllerResolver controllerResolver = super.installControllerResolver(application, container);
+		final ControllerResolver controllerResolver = super.installControllerResolver();
 		ControllerResolver testResolver = new ControllerResolver(container.instance(IAdapterResolver.class)) {
 			@Override
 			public void push(IClassResolver<IControllerImpl> controllerClassResolver) {
@@ -144,25 +108,44 @@ public class TestApplicationConfigurator extends DelegatingConfigurator {
 	}
 
 	@Override
-	protected Dispatcher installDispatcher(IConfigurableSailsApplication application, ApplicationContainer container) {
+	protected Dispatcher installDispatcher() {
 		container.register(Dispatcher.class, TestingDispatcher.class);
-		return super.installDispatcher(application, container);
+		return super.installDispatcher();
 	}
 
 	@Override
-	protected void installObjectPersister(IConfigurableSailsApplication application, ApplicationContainer container) {
-		ITestObjectPersister persister = new MemoryObjectPersister();
-		container.register(IObjectPersister.class, persister);
-		container.register(ITestObjectPersister.class, persister);
-		super.installObjectPersister(application, container);
+	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator) {
+		container.register(IEventConfigurator.class, new TestEventConfigurator(new RequiredEventConfigurator(packageDescriptor, super.getEventConfigurator(), formProcessingConfigurator)));
 	}
 
 	@Override
-	protected ResourceResolver installResourceResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
-		ResourceResolver resourceResolver = super.installResourceResolver(application, container);
+	protected ResourceResolver installResourceResolver() {
+		ResourceResolver resourceResolver = super.installResourceResolver();
 		VirtualResourceResolver virtualResourceResolver = new VirtualResourceResolver();
 		resourceResolver.push(virtualResourceResolver);
 		container.register(virtualResourceResolver);
 		return resourceResolver;
+	}
+
+	protected void setApplication(IConfigurableSailsApplication application) {
+		super.setApplication(application);
+		this.application = application;
+	}
+
+	@Override
+	protected void setConfigurator(ISailsApplicationConfigurator configurator) {
+		super.setConfigurator(this);
+	}
+
+	@Override
+	protected void setContainer(ApplicationContainer installContainer) {
+		super.setContainer(installContainer);
+		container = installContainer;
+	}
+
+	@Override
+	protected void setPackageDescriptor(IPackageDescriptor installPackageDescriptor) {
+		super.setPackageDescriptor(installPackageDescriptor);
+		packageDescriptor = installPackageDescriptor;
 	}
 }

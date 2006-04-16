@@ -1,6 +1,6 @@
 package org.opensails.tool.tester;
 
-import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.configurator.SailsConfigurator;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.Browser;
 import org.opensails.sails.tester.browser.SailsTestApplication;
@@ -18,10 +18,10 @@ public class ToolTester {
 	private Browser browser;
 
 	public ToolTester() {
-		this(BaseConfigurator.class);
+		this(SailsConfigurator.class);
 	}
 
-	public ToolTester(Class<? extends BaseConfigurator> configurator) {
+	public ToolTester(Class<? extends SailsConfigurator> configurator) {
 		browser = new SailsTestApplication(configurator).openBrowser();
 	}
 

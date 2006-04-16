@@ -12,12 +12,24 @@ import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.ISailsApplicationConfigurator;
 import org.opensails.sails.Sails;
 import org.opensails.sails.action.IActionResultProcessor;
+import org.opensails.sails.action.IActionResultProcessorResolver;
 import org.opensails.sails.action.oem.ActionResultProcessorResolver;
 import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.adapter.oem.AdapterResolver;
+import org.opensails.sails.component.ComponentPackage;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.component.IComponentResolver;
 import org.opensails.sails.component.oem.ComponentResolver;
+import org.opensails.sails.configurator.oem.DefaultConfigurationConfigurator;
+import org.opensails.sails.configurator.oem.DefaultContainerConfigurator;
+import org.opensails.sails.configurator.oem.DefaultEventConfigurator;
+import org.opensails.sails.configurator.oem.DefaultFormProcessingConfigurator;
+import org.opensails.sails.configurator.oem.DefaultPackageDescriptor;
+import org.opensails.sails.configurator.oem.DefaultResourceResolverConfigurator;
+import org.opensails.sails.configurator.oem.MemoryObjectPersisterConfigurator;
+import org.opensails.sails.configurator.oem.RequiredEventConfigurator;
+import org.opensails.sails.configurator.oem.RequiredFormProcessingConfigurator;
 import org.opensails.sails.controller.ControllerPackage;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
@@ -36,134 +48,133 @@ import org.opensails.spyglass.SpyGlass;
 import org.opensails.spyglass.resolvers.PackageClassResolver;
 
 public class SailsConfigurator implements ISailsApplicationConfigurator {
+	protected IPackageDescriptor packageDescriptor;
+	protected IConfigurableSailsApplication application;
+	protected ApplicationContainer container;
+
 	public void configure(IConfigurableSailsApplication application) {
-		application.setConfigurator(this);
+		setApplication(application);
+		setConfigurator(this);
 
-		configureName(application);
+		configureName();
 
-		getConfigurationConfigurator().configure(installConfiguration(application));
+		getConfigurationConfigurator().configure(application, installConfiguration());
 
-		ApplicationContainer container = installContainer(application);
-		getContainerConfigurator().configure(container);
+		setContainer(installContainer());
+		setPackageDescriptor(installPackageDescriptor());
 
-		getResourceResolverConfigurator().configure(installResourceResolver(application));
-		getPersisterConfigurator().configure(application.getContainer());
+		getContainerConfigurator().configure(application, container);
 
-		getAdapterConfigurator().configure(installAdapterResolver(application));
-		getResultProcessorConfigurator().configure(installActionResultProcessorResolver(application));
-		getControllerResolverConfigurator().configure(installControllerResolver(application));
-		getComponentResolverConfigurator().configure(installComponentResolver(application));
+		getResourceResolverConfigurator().configure(application, installResourceResolver());
+		getPersisterConfigurator().configure(application, application.getContainer());
 
-		installEventProcessorResolver(application, container);
-		installUrlResolverResolver(application, container);
-		installDispatcher(application, container);
+		IFormProcessingConfigurator formProcessingConfigurator = installFormProcessingConfigurator();
+		formProcessingConfigurator.configure(application, application.getContainer());
+
+		installEventConfigurator(formProcessingConfigurator);
+
+		AdapterResolver adapterResolver = installAdapterResolver();
+		for (ApplicationPackage adapterPackage : packageDescriptor.getAdapterPackages())
+			adapterResolver.push(new PackageClassResolver<IAdapter>(adapterPackage.getPackageName(), "Adapter"));
+
+		ActionResultProcessorResolver processorResolver = installActionResultProcessorResolver();
+		for (ApplicationPackage processorPackage : packageDescriptor.getResultProcessorPackages())
+			processorResolver.push(new PackageClassResolver<IActionResultProcessor>(processorPackage.getPackageName(), "Processor"));
+
+		ControllerResolver controllerResolver = installControllerResolver();
+		for (ApplicationPackage controllerPackage : packageDescriptor.getControllerPackages())
+			controllerResolver.push(new ControllerPackage(controllerPackage.getPackageName()));
+
+		ComponentResolver componentResolver = installComponentResolver();
+		for (ApplicationPackage componentPackage : packageDescriptor.getComponentPackages())
+			componentResolver.push(new ComponentPackage(componentPackage.getPackageName()));
+
+		installEventProcessorResolver();
+		installUrlResolverResolver();
+		installDispatcher();
 	}
 
-	public IAdapterResolverConfigurator getAdapterConfigurator() {
-		return null;
-	}
-
-	public IComponentResolverConfigurator getComponentResolverConfigurator() {
-		return null;
+	/**
+	 * Called after the name has been configured and the Configuration is
+	 * configured. Override this to change the packages used when searching for
+	 * various application stuff.
+	 * 
+	 * @return the package descriptor
+	 */
+	public IPackageDescriptor createPackageDescriptor() {
+		return new DefaultPackageDescriptor(getApplicationPackage());
 	}
 
 	public IConfigurationConfigurator getConfigurationConfigurator() {
-		return null;
+		return new DefaultConfigurationConfigurator();
 	}
 
 	public IContainerConfigurator getContainerConfigurator() {
-		return null;
-	}
-
-	public IControllerResolverConfigurator getControllerResolverConfigurator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DefaultContainerConfigurator();
 	}
 
 	public IEventConfigurator getEventConfigurator() {
-		return null;
+		return new DefaultEventConfigurator();
+	}
+
+	public IFormProcessingConfigurator getFormProcessingConfigurator() {
+		return new DefaultFormProcessingConfigurator();
 	}
 
 	public IObjectPersisterConfigurator getPersisterConfigurator() {
-		return null;
+		return new MemoryObjectPersisterConfigurator();
 	}
 
 	public IResourceResolverConfigurator getResourceResolverConfigurator() {
-		return null;
+		return new DefaultResourceResolverConfigurator();
 	}
 
-	public IResultProcessorConfigurator getResultProcessorConfigurator() {
-		return null;
-	}
-
-	protected void configureName(IConfigurableSailsApplication application) {
+	protected void configureName() {
 		String className = SpyGlass.getName(getClass());
 		int configuratorIndex = className.indexOf("Configurator");
 		if (configuratorIndex > 0) className = className.substring(0, configuratorIndex);
 		application.setName(Sails.spaceCamelWords(className));
 	}
 
-	protected ApplicationContainer createApplicationContainer(IConfigurableSailsApplication application) {
+	protected ApplicationContainer createApplicationContainer() {
 		return new ApplicationContainer();
 	}
 
-	protected String getApplicationRootPackage() {
-		return SpyGlass.getPackage(getClass());
+	protected ApplicationPackage getApplicationPackage() {
+		return new ApplicationPackage(application.getName(), getApplicationRootPackage().getName());
+	}
+
+	protected Package getApplicationRootPackage() {
+		return getClass().getPackage();
 	}
 
 	protected String getBuiltinAdaptersPackage() {
-		return SpyGlass.getPackage(Sails.class) + ".adapters";
+		return SpyGlass.getPackageName(Sails.class) + ".adapters";
 	}
 
 	protected String getBuiltinComponentPackage() {
-		return SpyGlass.getPackage(Sails.class) + ".components";
+		return SpyGlass.getPackageName(Sails.class) + ".components";
 	}
 
 	protected String getBuiltinControllerPackage() {
-		return SpyGlass.getPackage(Sails.class) + ".controllers";
-	}
-
-	protected String getBuiltinMixinPackage() {
-		return SpyGlass.getPackage(Sails.class) + ".mixins";
+		return SpyGlass.getPackageName(Sails.class) + ".controllers";
 	}
 
 	protected String getBuitinActionResultProcessorPackage() {
-		return SpyGlass.getPackage(Sails.class) + ".processors";
+		return SpyGlass.getPackageName(Sails.class) + ".processors";
 	}
 
-	protected String getDefaultActionResultProcessorPackage() {
-		return getApplicationRootPackage() + ".processors";
-	}
-
-	protected String getDefaultAdaptersPackage() {
-		return getApplicationRootPackage() + ".adapters";
-	}
-
-	protected String getDefaultComponentPackage() {
-		return getApplicationRootPackage() + ".components";
-	}
-
-	protected String getDefaultControllerPackage() {
-		return getApplicationRootPackage() + ".controllers";
-	}
-
-	protected String getDefaultMixinPackage() {
-		return getApplicationRootPackage() + ".mixins";
-	}
-
-	protected ActionResultProcessorResolver installActionResultProcessorResolver(IConfigurableSailsApplication application) {
+	protected ActionResultProcessorResolver installActionResultProcessorResolver() {
 		ActionResultProcessorResolver resolver = new ActionResultProcessorResolver(application.getContainer());
 		resolver.push(new PackageClassResolver<IActionResultProcessor>(getBuitinActionResultProcessorPackage(), "Processor"));
-		resolver.push(new PackageClassResolver<IActionResultProcessor>(getDefaultActionResultProcessorPackage(), "Processor"));
-		application.getContainer().register(ActionResultProcessorResolver.class, resolver);
+		application.getContainer().register(IActionResultProcessorResolver.class, resolver);
 		return resolver;
 	}
 
-	protected AdapterResolver installAdapterResolver(IConfigurableSailsApplication application) {
+	protected AdapterResolver installAdapterResolver() {
 		AdapterResolver resolver = new AdapterResolver();
 		resolver.push(new PackageClassResolver<IAdapter>(getBuiltinAdaptersPackage(), "Adapter"));
-		resolver.push(new PackageClassResolver<IAdapter>(getDefaultAdaptersPackage(), "Adapter"));
-		application.getContainer().register(AdapterResolver.class, resolver);
+		application.getContainer().register(IAdapterResolver.class, resolver);
 		return resolver;
 	}
 
@@ -175,14 +186,13 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 	 * @param container
 	 * @return the installed resolver
 	 */
-	protected ComponentResolver installComponentResolver(IConfigurableSailsApplication application) {
-		ComponentResolver<IComponentImpl> resolver = (ComponentResolver<IComponentImpl>) application.getContainer().instance(IComponentResolver.class, ComponentResolver.class);
+	protected ComponentResolver installComponentResolver() {
+		ComponentResolver resolver = (ComponentResolver) application.getContainer().instance(IComponentResolver.class, ComponentResolver.class);
 		resolver.push(new PackageClassResolver<IComponentImpl>(getBuiltinComponentPackage(), "Component"));
-		resolver.push(new PackageClassResolver<IComponentImpl>(getDefaultComponentPackage(), "Component"));
 		return resolver;
 	}
 
-	protected CompositeConfiguration installConfiguration(IConfigurableSailsApplication application) {
+	protected CompositeConfiguration installConfiguration() {
 		CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
 		compositeConfiguration.addConfiguration(new SystemConfiguration());
 		compositeConfiguration.addConfiguration(new ServletConfiguration(application));
@@ -192,10 +202,9 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		return compositeConfiguration;
 	}
 
-	protected ApplicationContainer installContainer(IConfigurableSailsApplication application) {
-		ApplicationContainer applicationContainer = createApplicationContainer(application);
+	protected ApplicationContainer installContainer() {
+		ApplicationContainer applicationContainer = createApplicationContainer();
 		provideApplicationScopedContainerAccess(applicationContainer);
-		applicationContainer.register(IEventConfigurator.class, getEventConfigurator());
 		applicationContainer.register(ITemplateRenderer.class, VientoTemplateRenderer.class);
 		applicationContainer.register(ISailsApplication.class, application);
 		application.setContainer(applicationContainer);
@@ -211,17 +220,20 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 	 * @param container
 	 * @return the installed resolver
 	 */
-	protected ControllerResolver installControllerResolver(IConfigurableSailsApplication application) {
+	protected ControllerResolver installControllerResolver() {
 		ControllerResolver resolver = (ControllerResolver) application.getContainer().instance(IControllerResolver.class, ControllerResolver.class);
 		resolver.push(new ControllerPackage(getBuiltinControllerPackage()));
-		resolver.push(new ControllerPackage(getDefaultControllerPackage()));
 		return resolver;
 	}
 
-	protected Dispatcher installDispatcher(IConfigurableSailsApplication application, ApplicationContainer container) {
+	protected Dispatcher installDispatcher() {
 		Dispatcher dispatcher = container.instance(Dispatcher.class, Dispatcher.class);
 		application.setDispatcher(dispatcher);
 		return dispatcher;
+	}
+
+	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator) {
+		container.register(IEventConfigurator.class, new RequiredEventConfigurator(packageDescriptor, getEventConfigurator(), formProcessingConfigurator));
 	}
 
 	/**
@@ -230,7 +242,7 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 	 * @param application
 	 * @param container
 	 */
-	protected EventProcessorResolver installEventProcessorResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+	protected EventProcessorResolver installEventProcessorResolver() {
 		EventProcessorResolver resolver = new EventProcessorResolver();
 		resolver.push(container.instance(IComponentResolver.class));
 		resolver.push(container.instance(IControllerResolver.class));
@@ -238,7 +250,19 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		return resolver;
 	}
 
-	protected ResourceResolver installResourceResolver(IConfigurableSailsApplication application) {
+	protected IFormProcessingConfigurator installFormProcessingConfigurator() {
+		IFormProcessingConfigurator processingConfigurator = new RequiredFormProcessingConfigurator(getFormProcessingConfigurator());
+		application.getContainer().register(IFormProcessingConfigurator.class, processingConfigurator);
+		return processingConfigurator;
+	}
+
+	protected IPackageDescriptor installPackageDescriptor() {
+		IPackageDescriptor descriptor = createPackageDescriptor();
+		container.register(IPackageDescriptor.class, descriptor);
+		return descriptor;
+	}
+
+	protected ResourceResolver installResourceResolver() {
 		ResourceResolver resolver = new ResourceResolver();
 		resolver.push(new ClasspathResourceResolver());
 		resolver.push(new ServletContextResourceResolver(application.getServletConfig().getServletContext(), "/views"));
@@ -247,7 +271,7 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		return resolver;
 	}
 
-	protected UrlResolver installUrlResolverResolver(IConfigurableSailsApplication application, ApplicationContainer container) {
+	protected UrlResolver installUrlResolverResolver() {
 		UrlResolver resolver = container.instance(UrlResolver.class, UrlResolver.class);
 		container.register(IUrlResolver.class, resolver);
 		return resolver;
@@ -270,5 +294,21 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 	protected void provideApplicationScopedContainerAccess(ApplicationContainer applicationContainer) {
 		applicationContainer.register(ApplicationContainer.class, applicationContainer);
 		applicationContainer.register(IScopedContainer.class, applicationContainer);
+	}
+
+	protected void setApplication(IConfigurableSailsApplication application) {
+		this.application = application;
+	}
+
+	protected void setConfigurator(ISailsApplicationConfigurator configurator) {
+		application.setConfigurator(configurator);
+	}
+
+	protected void setContainer(ApplicationContainer installContainer) {
+		container = installContainer;
+	}
+
+	protected void setPackageDescriptor(IPackageDescriptor installPackageDescriptor) {
+		packageDescriptor = installPackageDescriptor;
 	}
 }

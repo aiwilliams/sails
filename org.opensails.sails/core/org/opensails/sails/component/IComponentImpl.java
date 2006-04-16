@@ -1,6 +1,7 @@
 package org.opensails.sails.component;
 
 import org.opensails.sails.IEventContextContainer;
+import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.html.IElementIdGenerator;
 import org.opensails.sails.template.ITemplateRenderer;
@@ -38,7 +39,8 @@ public interface IComponentImpl extends IEventProcessingContext<IComponent>, IRe
 	 * Configure the ComponentContainer after creation.
 	 * <p>
 	 * This is only called when the component is not acting as an
-	 * {@link IEventProcessingContext}. Called after the container is set.
+	 * {@link IEventProcessingContext}. Called after the container is set and
+	 * after the {@link IEventConfigurator} has had it's way.
 	 * 
 	 * @param container
 	 */

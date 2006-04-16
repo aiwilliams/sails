@@ -1,16 +1,26 @@
 package org.opensails.sails.configurator;
 
 import org.opensails.sails.ApplicationContainer;
-import org.opensails.sails.RequestContainer;
+import org.opensails.sails.IConfigurableSailsApplication;
 
-
+/**
+ * Provides a hook to allow applications to configure dependency injection
+ * containers.
+ * 
+ * @author aiwilliams
+ * 
+ */
 public interface IContainerConfigurator {
 
-	void configure(ApplicationContainer applicationContainer);
-	
-//	applicationContainer.register(IValidationEngine.class, SailsValidationEngine.class);
-//	applicationContainer.register(IElementIdGenerator.class, UnderscoreIdGenerator.class);
-
-	void configure(RequestContainer requestContainer);
+	/**
+	 * Called after the container has been installed and before any other
+	 * configuration methods (except {@link IConfigurationConfigurator}). This
+	 * DOES NOT disallow, nor discourage, other configurators from modifying the
+	 * container.
+	 * 
+	 * @param application
+	 * @param container
+	 */
+	void configure(IConfigurableSailsApplication application, ApplicationContainer container);
 
 }

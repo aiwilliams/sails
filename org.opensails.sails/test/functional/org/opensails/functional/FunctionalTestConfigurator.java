@@ -1,47 +1,71 @@
 package org.opensails.functional;
 
-import org.opensails.functional.components.BasicComponent;
+import java.util.List;
+
 import org.opensails.functional.controllers.EventTestController;
 import org.opensails.sails.ApplicationContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
-import org.opensails.sails.component.IComponentImpl;
-import org.opensails.sails.component.oem.ComponentResolver;
-import org.opensails.sails.controller.ControllerPackage;
-import org.opensails.sails.controller.oem.ControllerResolver;
+import org.opensails.sails.configurator.ApplicationPackage;
+import org.opensails.sails.configurator.IContainerConfigurator;
+import org.opensails.sails.configurator.IEventConfigurator;
+import org.opensails.sails.configurator.IPackageDescriptor;
+import org.opensails.sails.configurator.IResourceResolverConfigurator;
+import org.opensails.sails.configurator.SailsConfigurator;
+import org.opensails.sails.configurator.oem.DefaultContainerConfigurator;
+import org.opensails.sails.configurator.oem.DefaultEventConfigurator;
+import org.opensails.sails.configurator.oem.DefaultPackageDescriptor;
+import org.opensails.sails.configurator.oem.DefaultResourceResolverConfigurator;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.html.Text;
-import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.oem.FileSystemResourceResolver;
 import org.opensails.sails.oem.ResourceResolver;
-import org.opensails.spyglass.SpyGlass;
-import org.opensails.spyglass.resolvers.PackageClassResolver;
 import org.opensails.viento.IBinding;
 
-public class FunctionalTestConfigurator extends BaseConfigurator {
+public class FunctionalTestConfigurator extends SailsConfigurator {
 	@Override
-	public void configure(ComponentResolver<IComponentImpl> componentResolver) {
-		componentResolver.push(new PackageClassResolver<IComponentImpl>(SpyGlass.getPackage(BasicComponent.class), "Component"));
+	public IPackageDescriptor createPackageDescriptor() {
+		return new DefaultPackageDescriptor(getApplicationPackage()) {
+			@Override
+			protected void addComponentPackages(List<ApplicationPackage> componentPackages) {
+				componentPackages.add(new ApplicationPackage(getApplicationPackage(), "components"));
+			}
+
+			@Override
+			protected void addControllerPackages(List<ApplicationPackage> controllerPackages) {
+				controllerPackages.add(new ApplicationPackage(getApplicationPackage(), EventTestController.class));
+			}
+		};
 	}
 
 	@Override
-	public void configure(ControllerResolver controllerResolver) {
-		controllerResolver.push(new ControllerPackage(EventTestController.class));
-	};
-
-	@Override
-	public void configure(ISailsEvent event, IBinding binding) {
-		binding.mixin(Text.class, new TextDecorator());
+	public IContainerConfigurator getContainerConfigurator() {
+		return new DefaultContainerConfigurator() {
+			@Override
+			public void configure(IConfigurableSailsApplication application, ApplicationContainer container) {
+				container.register(ShamApplicationStartable.class);
+			}
+		};
 	}
 
 	@Override
-	public void configure(ResourceResolver resourceResolver) {
-		resourceResolver.push(new FileSystemResourceResolver("test/views"));
-		resourceResolver.push(new FileSystemResourceResolver("test"));
+	public IEventConfigurator getEventConfigurator() {
+		return new DefaultEventConfigurator() {
+			@Override
+			public void configure(ISailsEvent event, IBinding binding) {
+				super.configure(event, binding);
+				binding.mixin(Text.class, new TextDecorator());
+			}
+		};
 	}
 
 	@Override
-	protected void configure(IConfigurableSailsApplication application, ApplicationContainer container) {
-		container.register(ShamApplicationStartable.class);
+	public IResourceResolverConfigurator getResourceResolverConfigurator() {
+		return new DefaultResourceResolverConfigurator() {
+			public void configure(IConfigurableSailsApplication application, ResourceResolver resolver) {
+				resolver.push(new FileSystemResourceResolver("test/views"));
+				resolver.push(new FileSystemResourceResolver("test"));
+			};
+		};
 	}
 
 	public static class TextDecorator {

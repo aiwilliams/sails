@@ -4,6 +4,7 @@ import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.component.ComponentContainer;
 import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
+import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.AbstractActionEventProcessor;
 import org.opensails.sails.template.ITemplateRenderer;
@@ -12,10 +13,12 @@ import org.opensails.viento.IBinding;
 public class Component<I extends IComponentImpl> extends AbstractActionEventProcessor<I> implements IComponent {
 	protected final String name;
 	protected final ITemplateRenderer<IBinding> renderer;
+	protected final IEventConfigurator eventConfigurator;
 
-	public Component(String name, Class<I> component, IAdapterResolver adapterResolver, ITemplateRenderer<IBinding> renderer) {
+	public Component(String name, Class<I> component, IEventConfigurator eventConfigurator, IAdapterResolver adapterResolver, ITemplateRenderer<IBinding> renderer) {
 		super(component, adapterResolver);
 		this.name = name;
+		this.eventConfigurator = eventConfigurator;
 		this.renderer = renderer;
 	}
 
@@ -54,6 +57,7 @@ public class Component<I extends IComponentImpl> extends AbstractActionEventProc
 			ComponentContainer componentContainer = new ComponentContainer(event.getContainer());
 			instance = componentContainer.createEventContext(contextImpl, event);
 			instance.setContainer(componentContainer);
+			eventConfigurator.configure(event, componentContainer);
 			instance.configureContainer(componentContainer);
 		}
 		return instance;

@@ -44,6 +44,7 @@ public class TestComponent<C extends IComponentImpl> {
 	}
 
 	protected void exposeForUseInDynamicTemplate(IComponentImpl componentImpl) {
-		event.getContainer().instance(IBinding.class).put("instance", componentImpl);
+		IBinding binding = event.getContainer().instance(IBinding.class);
+		binding.put("instance", componentImpl);
 	}
 }

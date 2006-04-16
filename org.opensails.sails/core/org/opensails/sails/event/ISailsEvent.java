@@ -104,6 +104,23 @@ public interface ISailsEvent {
 	HttpSession getSession(boolean create);
 
 	/**
+	 * @param <T>
+	 * @param key
+	 * @return the object registered in the RequestContainer for key, null if
+	 *         nothing
+	 */
+	<T> T instance(Class<T> key);
+
+	/**
+	 * @param <T>
+	 * @param key
+	 * @param defaultImplementation
+	 * @return the object registered in the RequestContainer for key, an
+	 *         instance of defaultImplementation if none
+	 */
+	<T> T instance(Class<T> key, Class defaultImplementation);
+
+	/**
 	 * To provide for url path extension in such a way as to not limit the
 	 * possibilities, this provides a hook into the {@link IUrlResolver}s.
 	 * 

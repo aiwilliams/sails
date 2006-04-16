@@ -14,6 +14,7 @@ import org.opensails.sails.ApplicationContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.ISailsApplicationConfigurator;
 import org.opensails.sails.SailsException;
+import org.opensails.sails.configurator.IPackageDescriptor;
 import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.event.oem.PostEvent;
 
@@ -44,9 +45,23 @@ public class SailsApplication extends HttpServlet implements IConfigurableSailsA
 		return name;
 	}
 
+	public String getPackageName() {
+		return instance(IPackageDescriptor.class).getApplicationPackage().getPackageName();
+	}
+
 	@Override
 	public void init() throws ServletException {
 		configureAndStart(getServletConfig());
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T instance(Class<T> key) {
+		return (T) getContainer().instance(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T instance(Class<T> key, Class defaultImplementation) {
+		return (T) getContainer().instance(key, defaultImplementation);
 	}
 
 	public void setConfiguration(Configuration configuration) {

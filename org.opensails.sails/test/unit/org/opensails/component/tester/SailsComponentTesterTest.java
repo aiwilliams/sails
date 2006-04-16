@@ -1,14 +1,15 @@
 package org.opensails.component.tester;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.opensails.sails.IEventContextContainer;
-import org.opensails.sails.component.IComponentImpl;
-import org.opensails.sails.component.oem.ComponentResolver;
-import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.configurator.ApplicationPackage;
+import org.opensails.sails.configurator.IPackageDescriptor;
+import org.opensails.sails.configurator.SailsConfigurator;
+import org.opensails.sails.configurator.oem.DefaultPackageDescriptor;
 import org.opensails.sails.template.Require;
-import org.opensails.spyglass.SpyGlass;
-import org.opensails.spyglass.resolvers.PackageClassResolver;
 
 public class SailsComponentTesterTest extends TestCase {
 	public void testIt() throws Exception {
@@ -25,10 +26,15 @@ public class SailsComponentTesterTest extends TestCase {
 		assertSame(registeredBefore, c.getRequestContainer().instance(Require.class));
 	}
 
-	public static class Configurator extends BaseConfigurator {
+	public static class Configurator extends SailsConfigurator {
 		@Override
-		public void configure(ComponentResolver<IComponentImpl> componentResolver) {
-			componentResolver.push(new PackageClassResolver<IComponentImpl>(SpyGlass.getPackage(Component.class)));
+		public IPackageDescriptor createPackageDescriptor() {
+			return new DefaultPackageDescriptor(getApplicationPackage()) {
+				@Override
+				protected void addComponentPackages(List<ApplicationPackage> componentPackages) {
+					componentPackages.add(new ApplicationPackage(getApplicationPackage(), Component.class));
+				}
+			};
 		}
 	}
 }

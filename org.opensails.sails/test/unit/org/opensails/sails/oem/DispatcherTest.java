@@ -10,6 +10,7 @@ import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.IActionResultProcessorResolver;
 import org.opensails.sails.configurator.IEventConfigurator;
+import org.opensails.sails.configurator.oem.DefaultEventConfigurator;
 import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
@@ -40,7 +41,7 @@ public class DispatcherTest extends TestCase {
 	public void testDispatch_CallsOnConfigurator() throws Exception {
 		final GetEvent dispatchedEvent = SailsEventFixture.actionGet("controller", "action");
 		ISailsApplication application = SailsApplicationFixture.basic();
-		application.getContainer().register(IEventConfigurator.class, new IEventConfigurator() {
+		application.getContainer().register(IEventConfigurator.class, new DefaultEventConfigurator() {
 			public void configure(ISailsEvent event, IEventContextContainer eventContainer) {
 				configureEventAndContainerCalled = true;
 				assertSame(dispatchedEvent, event);

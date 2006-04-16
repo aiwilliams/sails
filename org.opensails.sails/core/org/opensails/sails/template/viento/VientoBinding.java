@@ -8,7 +8,7 @@ public class VientoBinding extends Binding {
 	public VientoBinding() {
 		super();
 	}
-	
+
 	public VientoBinding(Binding parent) {
 		super(parent);
 	}
@@ -18,14 +18,15 @@ public class VientoBinding extends Binding {
 	}
 
 	@Override
-	protected void populateDefaults() {
-		super.populateDefaults();
-		mixin(Throwable.class, new ThrowableMixin());
-		mixin(String.class, new HtmlMixin());
-	}
-	
-	@Override
 	public VientoBinding createChild() {
 		return new VientoBinding(this);
+	}
+
+	@Override
+	protected void populateDefaults() {
+		super.populateDefaults();
+		// TODO Discover automagically
+		mixin(Throwable.class, new ThrowableMixin());
+		mixin(String.class, new HtmlMixin());
 	}
 }

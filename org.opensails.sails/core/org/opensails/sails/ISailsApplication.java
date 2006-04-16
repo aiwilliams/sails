@@ -11,9 +11,32 @@ import org.apache.commons.configuration.Configuration;
  * 
  */
 public interface ISailsApplication {
-    Configuration getConfiguration();
+	Configuration getConfiguration();
 
-    ApplicationContainer getContainer();
+	ApplicationContainer getContainer();
 
-    String getName();
+	String getName();
+
+	/**
+	 * @return the package this application lives in
+	 */
+	String getPackageName();
+
+	/**
+	 * @param <T>
+	 * @param key
+	 * @return the object registered in the ApplicationContainer for key, null
+	 *         if nothing
+	 */
+	<T> T instance(Class<T> key);
+
+	/**
+	 * @param <T>
+	 * @param key
+	 * @param defaultImplementation
+	 * @return the object registered in the ApplicationContainer for key, an
+	 *         instance of defaultImplementation if none
+	 */
+	<T> T instance(Class<T> key, Class defaultImplementation);
+
 }

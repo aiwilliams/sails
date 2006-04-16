@@ -16,7 +16,6 @@ import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.controller.oem.BaseController;
 import org.opensails.sails.form.FormMeta;
 import org.opensails.sails.http.ContentType;
-import org.opensails.sails.oem.BaseConfigurator;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.Browser;
 import org.opensails.sails.tester.browser.SailsTestApplication;

@@ -1,10 +1,15 @@
 package org.opensails.sails.oem;
 
-import org.opensails.sails.*;
-import org.opensails.sails.action.*;
+import org.opensails.sails.ISailsApplication;
+import org.opensails.sails.action.IActionResult;
+import org.opensails.sails.action.IActionResultProcessorResolver;
 import org.opensails.sails.configurator.IEventConfigurator;
-import org.opensails.sails.event.*;
-import org.opensails.sails.event.oem.*;
+import org.opensails.sails.event.IActionEventProcessorResolver;
+import org.opensails.sails.event.oem.ExceptionEvent;
+import org.opensails.sails.event.oem.GetEvent;
+import org.opensails.sails.event.oem.IActionEventProcessor;
+import org.opensails.sails.event.oem.ILifecycleEvent;
+import org.opensails.sails.event.oem.PostEvent;
 
 public class Dispatcher {
 	protected final ISailsApplication application;

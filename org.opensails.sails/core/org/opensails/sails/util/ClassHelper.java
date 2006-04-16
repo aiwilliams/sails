@@ -87,7 +87,7 @@ public class ClassHelper {
 	}
 
 	public static String getPackageDirectory(Class<?> clazz) {
-		return SpyGlass.getPackage(clazz).replaceAll("\\.", "/");
+		return SpyGlass.getPackageName(clazz).replaceAll("\\.", "/");
 	}
 
 	/**

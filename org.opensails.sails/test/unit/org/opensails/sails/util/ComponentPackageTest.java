@@ -13,7 +13,7 @@ import org.opensails.spyglass.SpyGlass;
 import org.opensails.spyglass.resolvers.PackageClassResolver;
 
 public class ComponentPackageTest extends TestCase {
-    protected PackageClassResolver<IControllerImpl> resolver = new PackageClassResolver<IControllerImpl>(SpyGlass.getPackage(ShamController.class), "Controller");
+    protected PackageClassResolver<IControllerImpl> resolver = new PackageClassResolver<IControllerImpl>(SpyGlass.getPackageName(ShamController.class), "Controller");
 
     public void testResolveComponentImplementation_DiscoverInPackage() throws Exception {
         Class<? extends IControllerImpl> type = resolver.resolve("shamController");
