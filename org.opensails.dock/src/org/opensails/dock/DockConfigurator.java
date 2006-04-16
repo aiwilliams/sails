@@ -1,5 +1,5 @@
 package org.opensails.dock;
 
-import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.configurator.SailsConfigurator;
 
-public class DockConfigurator extends BaseConfigurator {}
+public class DockConfigurator extends SailsConfigurator {}
