@@ -4,47 +4,34 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TypeMixins extends ObjectMethods {
 	protected List<TypeMixin> mixins = new ArrayList<TypeMixin>();
-	protected TypeMixins parent;
-	
-	public TypeMixins() {
-	}
-	
-	public TypeMixins(TypeMixins parent) {
-		this.parent = parent;
-	}
+
+	public TypeMixins() {}
 
 	public CallableMethod find(TargetedMethodKey key) {
 		Class[] mixinArgs = new Class[key.argClasses.length + 1];
 		mixinArgs[0] = key.targetClass;
 		System.arraycopy(key.argClasses, 0, mixinArgs, 1, key.argClasses.length);
-		
+
 		for (TypeMixin mixin : getMixins()) {
 			if (mixin.getType().isAssignableFrom(key.targetClass)) {
 				Method method = super.findAppropriateMethod(mixin.getMixin().getClass(), key.methodName, mixinArgs);
-				if (method != null)
-					return new MixinMethod(method, mixin.getMixin());
+				if (method != null) return new MixinMethod(method, mixin.getMixin());
 			}
 		}
 
 		return null;
 	}
-	
+
 	public void add(Class type, Object mixin) {
 		mixins.add(new TypeMixin(type, mixin));
 	}
-	
+
 	protected List<TypeMixin> getMixins() {
-		if (parent == null)
-			return mixins;
-		List<TypeMixin> allMixins = new ArrayList<TypeMixin>();
-		allMixins.addAll(mixins);
-		allMixins.addAll(parent.getMixins());
 		return mixins;
 	}
-	
+
 	public class MixinMethod extends ObjectMethod {
 		private final Object mixin;
 
@@ -52,7 +39,7 @@ public class TypeMixins extends ObjectMethods {
 			super(method);
 			this.mixin = mixin;
 		}
-		
+
 		@Override
 		public Object call(Object target, Object[] args) {
 			Object[] mixinArgs = new Object[args.length + 1];
@@ -61,7 +48,7 @@ public class TypeMixins extends ObjectMethods {
 
 			return super.call(mixin, mixinArgs);
 		}
-		
+
 	}
 
 	class TypeMixin {
@@ -80,7 +67,7 @@ public class TypeMixins extends ObjectMethods {
 		public Class<?> getType() {
 			return type;
 		}
-		
+
 		@Override
 		public String toString() {
 			return String.format("Extending [%s]s with behavior of [%s]", type, mixin.getClass());

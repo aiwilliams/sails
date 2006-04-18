@@ -4,7 +4,7 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopLevelMixins extends ObjectMethods {
+public class TopLevelMixins extends ObjectMethods implements IObjectResolver {
 	protected List<Object> mixins = new ArrayList<Object>();
 	
 	public CallableMethod find(TopLevelMethodKey key) {

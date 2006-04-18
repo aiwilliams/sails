@@ -60,6 +60,22 @@ public class BindingTest extends TestCase {
 		assertEquals("three", binding.call("three", new Object[] { new Integer(
 				3) }));
 	}
+	
+	public void testAddMethodResolver() {
+		binding.addMethodResolver(new IMethodResolver() {
+			public CallableMethod find(TargetedMethodKey key) {
+				return new CallableMethod() {
+					public Object call(Object target, Object[] args) {
+						return "goodbye";
+					}
+				};
+			}
+		});
+		binding.put("first", "hello");
+		assertEquals("hello", binding.call("first"));
+		assertEquals("hello".length(), binding.call("first", "length"));
+		assertEquals("goodbye", binding.call("first", "notThere"));
+	}
 
 	public void testTypeMixin() throws Exception {
 		binding.mixin(String.class, target);

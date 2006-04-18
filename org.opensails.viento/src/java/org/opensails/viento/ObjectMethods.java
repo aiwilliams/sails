@@ -3,7 +3,7 @@ package org.opensails.viento;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class ObjectMethods {
+public class ObjectMethods implements IMethodResolver {
 
 	public CallableMethod find(TargetedMethodKey key) {
 		Method method = findAppropriateMethod(key.targetClass, key.methodName,

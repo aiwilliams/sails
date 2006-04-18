@@ -1,6 +1,5 @@
 package org.opensails.viento;
 
-
 public class TargetedMethodKey extends TopLevelMethodKey {
 	public Class targetClass;
 	
