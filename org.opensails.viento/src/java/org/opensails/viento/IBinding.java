@@ -12,6 +12,8 @@ public interface IBinding extends IMethodResolver, IObjectResolver {
 
 	void addMethodResolver(IMethodResolver resolver);
 
+	void addObjectResolver(IObjectResolver resolver);
+
 	void setExceptionHandler(ExceptionHandler exceptionHandler);
 
 	ExceptionHandler getExceptionHandler();

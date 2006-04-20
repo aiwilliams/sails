@@ -49,4 +49,7 @@ public class NullBinding implements IBinding {
 		throw new UnsupportedOperationException();
 	}
 
+	public void addObjectResolver(IObjectResolver resolver) {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -23,6 +23,7 @@ public class Binding implements IBinding, IMethodResolver {
 	protected ObjectMethods methods;
 	// protected MethodMissingResolver methodMissing;
 	protected List<IMethodResolver> dynamicMethodResolvers;
+	protected List<IObjectResolver> dynamicResolvers;
 	protected Statics statics;
 
 	public Binding() {
@@ -36,6 +37,10 @@ public class Binding implements IBinding, IMethodResolver {
 
 	public void addMethodResolver(IMethodResolver resolver) {
 		dynamicMethodResolvers.add(resolver);
+	}
+	
+	public void addObjectResolver(IObjectResolver resolver) {
+		dynamicResolvers.add(resolver);
 	}
 
 	public Object call(CallableMethod method, MethodKey key, Object target, Object[] args, int line, int offset) {
@@ -155,7 +160,7 @@ public class Binding implements IBinding, IMethodResolver {
 		// ordered.add(cache);
 		ordered.add(statics);
 		ordered.add(topLevelMixins);
-		// ordered.add(dynamicResolvers);
+		ordered.addAll(dynamicResolvers);
 		ordered.add(parent);
 		return ordered;
 	}
@@ -163,6 +168,7 @@ public class Binding implements IBinding, IMethodResolver {
 	protected void populateDefaults() {
 		// cache = new Cache();
 		dynamicMethodResolvers = new ArrayList<IMethodResolver>();
+		dynamicResolvers = new ArrayList<IObjectResolver>();
 		topLevelMixins = new TopLevelMixins();
 		methods = new ObjectMethods();
 		// methodMissing = new MethodMissingResolver();

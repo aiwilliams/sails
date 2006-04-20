@@ -30,19 +30,6 @@ public class TopLevelMixins extends ObjectMethods implements IObjectResolver {
 		mixins.add(mixin);
 	}
 
-	public class TopLevelMixin extends ObjectMethod {
-		private final Object mixin;
-
-		public TopLevelMixin(Method method, Object mixin) {
-			super(method);
-			this.mixin = mixin;
-		}
-
-		public Object call(Object target, Object[] args) {
-			return super.call(mixin, args);
-		}
-	}
-	
 	public class TopLevelField extends ObjectField {
 		private final Object mixin;
 		
