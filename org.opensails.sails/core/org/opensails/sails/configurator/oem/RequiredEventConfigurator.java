@@ -10,6 +10,7 @@ import org.opensails.sails.component.ComponentContainer;
 import org.opensails.sails.configurator.ApplicationPackage;
 import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.configurator.IFormProcessingConfigurator;
+import org.opensails.sails.configurator.IObjectPersisterConfigurator;
 import org.opensails.sails.configurator.IPackageDescriptor;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.Flash;
@@ -34,11 +35,13 @@ public class RequiredEventConfigurator implements IEventConfigurator {
 	protected IEventConfigurator delegate;
 	protected IPackageDescriptor packageDescriptor;
 	protected IFormProcessingConfigurator formProcessingConfigurator;
+	protected IObjectPersisterConfigurator persisterConfigurator;
 
-	public RequiredEventConfigurator(IPackageDescriptor packageDescriptor, IEventConfigurator delegate, IFormProcessingConfigurator formProcessingConfigurator) {
+	public RequiredEventConfigurator(IPackageDescriptor packageDescriptor, IEventConfigurator delegate, IFormProcessingConfigurator formProcessingConfigurator, IObjectPersisterConfigurator persisterConfigurator) {
 		this.packageDescriptor = packageDescriptor;
 		this.delegate = delegate;
 		this.formProcessingConfigurator = formProcessingConfigurator;
+		this.persisterConfigurator = persisterConfigurator;
 	}
 
 	public void configure(ISailsEvent event, ComponentContainer componentContainer) {
@@ -77,6 +80,7 @@ public class RequiredEventConfigurator implements IEventConfigurator {
 			}
 		});
 
+		persisterConfigurator.configure(event, container);
 		formProcessingConfigurator.configure(event, container);
 
 		delegate.configure(event, container);

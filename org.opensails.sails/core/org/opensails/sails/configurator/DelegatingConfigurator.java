@@ -142,8 +142,8 @@ public class DelegatingConfigurator extends SailsConfigurator {
 	}
 
 	@Override
-	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator) {
-		delegate.installEventConfigurator(formProcessingConfigurator);
+	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator, IObjectPersisterConfigurator persisterConfigurator) {
+		delegate.installEventConfigurator(formProcessingConfigurator, persisterConfigurator);
 	}
 
 	@Override

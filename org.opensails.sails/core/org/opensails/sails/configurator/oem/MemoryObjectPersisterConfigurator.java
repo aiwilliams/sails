@@ -4,6 +4,7 @@ import org.opensails.sails.ApplicationContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.configurator.IObjectPersisterConfigurator;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.tester.persist.ITestObjectPersister;
 import org.opensails.sails.tester.persist.MemoryObjectPersister;
@@ -16,7 +17,7 @@ public class MemoryObjectPersisterConfigurator implements IObjectPersisterConfig
 		container.register(ITestObjectPersister.class, persister);
 	}
 
-	public void configure(IConfigurableSailsApplication application, RequestContainer container) {
+	public void configure(ISailsEvent event, RequestContainer container) {
 	// not necessary for in-memory
 	}
 

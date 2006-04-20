@@ -14,6 +14,7 @@ import org.opensails.sails.adapter.oem.AdapterResolver;
 import org.opensails.sails.configurator.DelegatingConfigurator;
 import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.configurator.IFormProcessingConfigurator;
+import org.opensails.sails.configurator.IObjectPersisterConfigurator;
 import org.opensails.sails.configurator.IPackageDescriptor;
 import org.opensails.sails.configurator.SailsConfigurator;
 import org.opensails.sails.configurator.oem.RequiredEventConfigurator;
@@ -114,8 +115,8 @@ public class TestApplicationConfigurator extends DelegatingConfigurator {
 	}
 
 	@Override
-	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator) {
-		container.register(IEventConfigurator.class, new TestEventConfigurator(new RequiredEventConfigurator(packageDescriptor, super.getEventConfigurator(), formProcessingConfigurator)));
+	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator, IObjectPersisterConfigurator persisterConfigurator) {
+		container.register(IEventConfigurator.class, new TestEventConfigurator(new RequiredEventConfigurator(packageDescriptor, super.getEventConfigurator(), formProcessingConfigurator, persisterConfigurator)));
 	}
 
 	@Override

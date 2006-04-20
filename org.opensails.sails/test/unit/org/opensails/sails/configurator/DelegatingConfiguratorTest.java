@@ -227,8 +227,8 @@ public class DelegatingConfiguratorTest extends TestCase {
 		}
 
 		@Override
-		protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator) {
-			setMethodInvoked(findMethod(IFormProcessingConfigurator.class));
+		protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator, IObjectPersisterConfigurator persisterConfigurator) {
+			setMethodInvoked(findMethod(IFormProcessingConfigurator.class, IObjectPersisterConfigurator.class));
 		}
 
 		@Override

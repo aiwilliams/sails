@@ -14,6 +14,7 @@ import org.opensails.sails.action.IActionListener;
 import org.opensails.sails.adapter.AbstractAdapter;
 import org.opensails.sails.adapter.AdaptationException;
 import org.opensails.sails.controller.oem.BaseController;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormMeta;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.tester.Page;
@@ -41,7 +42,7 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	/**
 	 * This tests the
-	 * {@link BaseConfigurator#configure(org.opensails.sails.event.ISailsEvent, org.opensails.viento.IBinding)}
+	 * {@link BaseConfigurator#configure(ISailsEvent, org.opensails.viento.IBinding)}
 	 * method. It makes sure that the Text type mixin works.
 	 */
 	public void testConfigureBinding_Mixins() throws Exception {

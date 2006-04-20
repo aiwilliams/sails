@@ -5,6 +5,7 @@ import org.opensails.sails.ApplicationContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 import org.opensails.sails.RequestContainer;
 import org.opensails.sails.configurator.IObjectPersisterConfigurator;
+import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.persist.IObjectPersister;
 import org.opensails.sails.validation.IValidationEngine;
 
@@ -29,7 +30,7 @@ public abstract class HibernateObjectPersisterConfigurator implements IObjectPer
 		container.register(HibernateSessionFactory.class);
 	}
 
-	public void configure(IConfigurableSailsApplication application, RequestContainer container) {
+	public void configure(ISailsEvent event, RequestContainer container) {
 		container.register(IObjectPersister.class, HibernateObjectPersister.class);
 		container.registerResolver(Session.class, new SessionResolver(container));
 	}

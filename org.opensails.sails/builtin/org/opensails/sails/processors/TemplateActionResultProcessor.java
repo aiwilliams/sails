@@ -5,7 +5,6 @@ import org.opensails.sails.action.IActionResultProcessor;
 import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.template.ITemplateRenderer;
-import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.TemplateRenderFailedException;
 import org.opensails.sails.template.ToolResolver;
 import org.opensails.viento.IBinding;

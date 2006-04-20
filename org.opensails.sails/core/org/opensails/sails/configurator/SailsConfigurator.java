@@ -66,12 +66,14 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		getContainerConfigurator().configure(application, container);
 
 		getResourceResolverConfigurator().configure(application, installResourceResolver());
-		getPersisterConfigurator().configure(application, application.getContainer());
+		
+		IObjectPersisterConfigurator persisterConfigurator = getPersisterConfigurator();
+		persisterConfigurator.configure(application, application.getContainer());
 
 		IFormProcessingConfigurator formProcessingConfigurator = installFormProcessingConfigurator();
 		formProcessingConfigurator.configure(application, application.getContainer());
 
-		installEventConfigurator(formProcessingConfigurator);
+		installEventConfigurator(formProcessingConfigurator, persisterConfigurator);
 
 		AdapterResolver adapterResolver = installAdapterResolver();
 		for (ApplicationPackage adapterPackage : packageDescriptor.getAdapterPackages())
@@ -232,8 +234,8 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		return dispatcher;
 	}
 
-	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator) {
-		container.register(IEventConfigurator.class, new RequiredEventConfigurator(packageDescriptor, getEventConfigurator(), formProcessingConfigurator));
+	protected void installEventConfigurator(IFormProcessingConfigurator formProcessingConfigurator, IObjectPersisterConfigurator persisterConfigurator) {
+		container.register(IEventConfigurator.class, new RequiredEventConfigurator(packageDescriptor, getEventConfigurator(), formProcessingConfigurator, persisterConfigurator));
 	}
 
 	/**
