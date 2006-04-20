@@ -11,10 +11,10 @@ import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.component.Remembered;
 import org.opensails.sails.event.oem.AbstractEventProcessingContext;
 import org.opensails.sails.html.IElementIdGenerator;
-import org.opensails.sails.mixins.BuiltinScript;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.Require;
 import org.opensails.sails.template.TemplateRenderFailedException;
+import org.opensails.sails.tools.BuiltinScript;
 import org.opensails.viento.IBinding;
 import org.opensails.viento.IRenderable;
 

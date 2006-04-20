@@ -25,7 +25,7 @@ public class SpyMethod<T> {
 		throw new Crack(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
 	}
 
-	private Method getMethodTaking(Class[] argTypes) {
+	public Method getMethodTaking(Class[] argTypes) {
 		Class nextClass = spyClass.getType();
 		while (nextClass != null) {
 			for (Method method : nextClass.getDeclaredMethods())

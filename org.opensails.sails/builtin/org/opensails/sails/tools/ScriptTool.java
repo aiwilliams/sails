@@ -1,4 +1,4 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.html.Script;
@@ -6,10 +6,10 @@ import org.opensails.sails.template.IMixinMethod;
 import org.opensails.sails.url.UrlType;
 import org.opensails.viento.Block;
 
-public class ScriptMixin implements IMixinMethod<Script> {
+public class ScriptTool implements IMixinMethod<Script> {
 	protected final ISailsEvent event;
 
-	public ScriptMixin(ISailsEvent event) {
+	public ScriptTool(ISailsEvent event) {
 		this.event = event;
 	}
 

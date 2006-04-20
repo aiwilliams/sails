@@ -3,7 +3,7 @@
  *
  * (c) 2005 Adam Williams
  */
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import java.awt.event.*;
 import java.util.*;
@@ -15,12 +15,12 @@ import org.opensails.sails.util.*;
 /**
  * Builds application-relative urls.
  */
-public class UrlforMixin {
+public class UrlforTool {
 	protected final ISailsEvent event;
 
 	protected UrlForBuiltin urlForBuiltin;
 
-	public UrlforMixin(ISailsEvent event) {
+	public UrlforTool(ISailsEvent event) {
 		this.event = event;
 	}
 

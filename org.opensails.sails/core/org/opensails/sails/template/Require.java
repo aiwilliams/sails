@@ -14,7 +14,7 @@ import org.opensails.sails.html.Script;
 import org.opensails.sails.html.Style;
 
 /**
- * Used by the RequireMixin and the ComponentRequire. Not necessarily the
+ * Used by the RequireTool and the ComponentRequire. Not necessarily the
  * 'public' way to require stuff.
  * 
  * @author aiwilliams

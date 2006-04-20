@@ -18,9 +18,9 @@ import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.form.IValidationError;
 import org.opensails.sails.form.ValidationContext;
 import org.opensails.sails.form.ValidationErrors;
-import org.opensails.sails.mixins.UrlforMixin;
 import org.opensails.sails.model.ModelContext;
 import org.opensails.sails.oem.Flash;
+import org.opensails.sails.tools.UrlforTool;
 import org.opensails.sails.validation.IValidationEngine;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.viento.IBinding;
@@ -332,7 +332,7 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		return formInstance.updateModels(getEvent().getFormFields());
 	}
 
-	protected UrlforMixin urlfor() {
-		return getContainer().instance(UrlforMixin.class, UrlforMixin.class);
+	protected UrlforTool urlfor() {
+		return getContainer().instance(UrlforTool.class, UrlforTool.class);
 	}
 }

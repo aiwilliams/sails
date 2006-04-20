@@ -17,7 +17,7 @@ import org.opensails.sails.component.LiteralJs;
 import org.opensails.sails.component.Remembered;
 import org.opensails.sails.html.HtmlGenerator;
 import org.opensails.sails.html.Script;
-import org.opensails.sails.mixins.UrlforMixin;
+import org.opensails.sails.tools.UrlforTool;
 import org.opensails.sails.util.ClassHelper;
 import org.opensails.spyglass.SpyGlass;
 
@@ -51,7 +51,7 @@ public class ComponentScript extends Script {
 		}
 		String stringRemeberedFields = StringUtils.join(rememberedFields.iterator(), "&");
 
-		UrlforMixin urlfor = component.getContainer().instance(UrlforMixin.class, UrlforMixin.class);
+		UrlforTool urlfor = component.getContainer().instance(UrlforTool.class, UrlforTool.class);
 		Method[] callbacks = ClassHelper.methodsAnnotated(component.getClass(), Callback.class);
 		for (Method callback : callbacks) {
 			String name = callback.getName();

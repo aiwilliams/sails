@@ -1,13 +1,13 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.template.IMixinMethod;
 import org.opensails.sails.url.UrlType;
 
-public class StyleMixin implements IMixinMethod {
+public class StyleTool implements IMixinMethod {
 	protected final ISailsEvent event;
 
-	public StyleMixin(ISailsEvent event) {
+	public StyleTool(ISailsEvent event) {
 		this.event = event;
 	}
 

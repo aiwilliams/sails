@@ -13,10 +13,10 @@ import org.opensails.sails.adapter.IAdapter;
  * w/r/t actions and parameters.
  * 
  * One of the thoughts that I had after looking at the way ASP.NET works was
- * having the FormMixin output a hidden field at the bottom of the form that
+ * having the FormTool output a hidden field at the bottom of the form that
  * included information that could be used on the server side to determine which
  * action to execute. After some consideration, I decided that, for now, it is
- * preferable to not have a dependency on the FormMixin. Therefore, the name is
+ * preferable to not have a dependency on the FormTool. Therefore, the name is
  * utilized.
  * 
  * If the form author does not declare the action on the Submit (using

@@ -60,6 +60,7 @@ public class Browser {
 	protected ShamHttpSession session;
 	protected Class<? extends IEventProcessingContext> workingContext;
 	protected SailsTestApplication application;
+	protected boolean cookiesEnabled = true;
 
 	protected Browser() {}
 
@@ -68,22 +69,36 @@ public class Browser {
 	}
 
 	/**
-	 * If you would like to have an event, but not have a controller or
-	 * controller directory with templates, you can use this to establish the
-	 * environment necessary to make this application think that the controller
-	 * and action exist.
+	 * If you would like to have an action view, but not have a controller
+	 * directory with templates, you can use this to establish the environment
+	 * necessary to make this application think that the action view exists.
 	 * 
-	 * @param eventPath
-	 * @param templateContent
+	 * @param controllerAction this must be in the form of 'controller/action'
+	 * @param templateContent the content of the action view
+	 */
+	public void addTemplate(String controllerAction, CharSequence templateContent) {
+		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
+		resourceResolver.register(controllerAction + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, templateContent);
+	}
+
+	/**
+	 * Creates an event and establishes the action view for it.
+	 * 
+	 * @see #addTemplate(String, CharSequence)
+	 * @param eventPath this must be in the form of 'controller/action'
+	 * @param templateContent the content of the action view
 	 * @return a TestGetEvent that is configured by the ISailsEventConfigurator
 	 *         and has the given eventPath
 	 */
 	public TestGetEvent createVirtualEvent(String eventPath, CharSequence templateContent) {
 		TestGetEvent event = createGetEvent(eventPath);
 		getContainer().instance(IEventConfigurator.class).configure(event, event.getContainer());
-		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
-		resourceResolver.register(eventPath + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, templateContent);
+		addTemplate(eventPath, templateContent);
 		return event;
+	}
+
+	public void disableCookies() {
+		cookiesEnabled = false;
 	}
 
 	/**
@@ -365,7 +380,7 @@ public class Browser {
 	protected TestGetEvent createGetEvent(String pathInfo) {
 		ShamHttpServletRequest request = createRequest();
 		request.setPathInfo(pathInfo);
-		TestingHttpServletResponse response = new TestingHttpServletResponse();
+		TestingHttpServletResponse response = createResponse();
 		TestGetEvent event = new TestGetEvent(application, requestContainer, request, response);
 		requestContainer.bind(event);
 		response.set(event);
@@ -384,7 +399,7 @@ public class Browser {
 		ShamHttpServletRequest request = createRequest();
 		request.setPathInfo(pathInfo);
 		request.setParameters(formFields.toMap());
-		TestingHttpServletResponse response = new TestingHttpServletResponse();
+		TestingHttpServletResponse response = createResponse();
 		TestPostEvent event = new TestPostEvent(application, requestContainer, request, response);
 		requestContainer.bind(event);
 		response.set(event);
@@ -414,6 +429,12 @@ public class Browser {
 		request.multipart = nextRequestIsMultipart;
 		nextRequestIsMultipart = false;
 		return request;
+	}
+
+	protected TestingHttpServletResponse createResponse() {
+		TestingHttpServletResponse response = new TestingHttpServletResponse();
+		response.cookiesSupported = cookiesEnabled;
+		return response;
 	}
 
 	protected Page get(TestGetEvent event) {

@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * to indicate to the framework certain attributes of an action.
  * <p>
  * The best way to gain an understand of this is to look at what is happening in
- * the {@link org.opensails.sails.mixins.UrlforMixin}. When an action is
+ * the {@link org.opensails.sails.tools.UrlforTool}. When an action is
  * indicated as being Secure, this mixin will resolve the url in such a way as
  * to have the link include 'https', thereby making it a 'secure' action.
  * 

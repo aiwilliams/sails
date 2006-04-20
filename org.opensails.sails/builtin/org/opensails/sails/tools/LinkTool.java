@@ -1,4 +1,4 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import java.util.List;
 
@@ -6,10 +6,10 @@ import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.html.ActionLink;
 import org.opensails.sails.html.ILink;
 
-public class LinkMixin {
+public class LinkTool {
 	protected final ISailsEvent event;
 
-	public LinkMixin(ISailsEvent event) {
+	public LinkTool(ISailsEvent event) {
 		this.event = event;
 	}
 

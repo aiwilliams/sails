@@ -1,4 +1,4 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import java.util.List;
 
@@ -17,14 +17,14 @@ import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
 import org.opensails.viento.IBinding;
 
-public class RequireMixin {
+public class RequireTool {
 	private final IBinding binding;
 	private final IComponentResolver componentResolver;
 	private final ISailsEvent event;
 	private final Require require;
 	private final IResourceResolver resourceResolver;
 
-	public RequireMixin(ISailsEvent event, Require require, IResourceResolver resourceResolver, IBinding binding, IComponentResolver componentResolver) {
+	public RequireTool(ISailsEvent event, Require require, IResourceResolver resourceResolver, IBinding binding, IComponentResolver componentResolver) {
 		this.event = event;
 		this.require = require;
 		this.resourceResolver = resourceResolver;

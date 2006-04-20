@@ -7,6 +7,7 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.TemplateRenderFailedException;
+import org.opensails.sails.template.ToolResolver;
 import org.opensails.viento.IBinding;
 
 public class TemplateActionResultProcessor implements IActionResultProcessor<TemplateActionResult> {
@@ -24,8 +25,8 @@ public class TemplateActionResultProcessor implements IActionResultProcessor<Tem
 		if (processingContext != null) binding.mixin(processingContext);
 
 		IEventContextContainer container = result.getContainer();
-		MixinResolver resolver = container.instance(MixinResolver.class);
-		binding.mixin(resolver);
+		ToolResolver resolver = container.instance(ToolResolver.class);
+		binding.addObjectResolver(resolver);
 
 		StringBuilder content = new StringBuilder();
 		try {

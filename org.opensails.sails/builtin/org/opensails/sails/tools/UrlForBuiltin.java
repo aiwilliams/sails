@@ -1,4 +1,4 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.IUrl;

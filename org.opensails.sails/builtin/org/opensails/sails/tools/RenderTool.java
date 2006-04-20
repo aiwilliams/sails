@@ -1,4 +1,4 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import java.util.Map;
 
@@ -7,12 +7,12 @@ import org.opensails.sails.template.IMixinMethod;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.viento.IBinding;
 
-public class RenderMixin implements IMixinMethod {
+public class RenderTool implements IMixinMethod {
 	protected final IBinding binding;
 	protected final ISailsEvent event;
 	protected final ITemplateRenderer renderer;
 
-	public RenderMixin(ISailsEvent event, IBinding binding, ITemplateRenderer renderer) {
+	public RenderTool(ISailsEvent event, IBinding binding, ITemplateRenderer renderer) {
 		this.event = event;
 		this.binding = binding;
 		this.renderer = renderer;

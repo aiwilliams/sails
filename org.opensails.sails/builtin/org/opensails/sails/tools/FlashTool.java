@@ -1,4 +1,4 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import org.opensails.sails.oem.Flash;
 import org.opensails.sails.template.IMixinMethod;
@@ -6,10 +6,10 @@ import org.opensails.sails.template.IMixinMethod;
 /**
  * Exposes the Flash
  */
-public class FlashMixin implements IMixinMethod {
+public class FlashTool implements IMixinMethod {
 	protected final Flash flash;
 
-	public FlashMixin(Flash flash) {
+	public FlashTool(Flash flash) {
 		this.flash = flash;
 	}
 

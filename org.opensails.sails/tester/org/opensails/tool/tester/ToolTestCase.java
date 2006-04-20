@@ -16,4 +16,8 @@ public abstract class ToolTestCase extends TestCase {
 	public void assertRenderMatches(String pattern, String actualUsage) {
 		t.assertRenderMatches(pattern, actualUsage);
 	}
+
+	public void assertRenderMatches(String controllerAction, String pattern, String actualUsage) {
+		t.assertRenderMatches(pattern, t.event(controllerAction, actualUsage));
+	}
 }

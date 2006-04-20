@@ -1,15 +1,16 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import junit.framework.TestCase;
 
 import org.opensails.sails.oem.Flash;
+import org.opensails.sails.tools.FlashTool;
 
-public class FlashMixinTest extends TestCase {
+public class FlashToolTests extends TestCase {
 	public void testIt() throws Exception {
 		Flash flash = new Flash();
 		flash.put("a", "aa");
 
-		FlashMixin mixin = new FlashMixin(flash);
+		FlashTool mixin = new FlashTool(flash);
 		assertEquals("", mixin.invoke());
 		assertEquals("", mixin.invoke(new Object[] {}));
 		assertEquals("aa", mixin.invoke(new Object[] { "a" }));

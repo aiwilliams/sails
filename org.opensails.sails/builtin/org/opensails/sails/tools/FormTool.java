@@ -1,4 +1,4 @@
-package org.opensails.sails.mixins;
+package org.opensails.sails.tools;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.opensails.sails.util.Quick;
 import org.opensails.spyglass.SpyObject;
 import org.opensails.viento.MethodMissing;
 
-public class FormMixin implements MethodMissing /* , IMixinMethod<Form> */{
+public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 	protected IElementIdGenerator idGenerator;
 	protected HtmlForm form;
 	protected ContainerAdapterResolver adapterResolver;
@@ -45,7 +45,7 @@ public class FormMixin implements MethodMissing /* , IMixinMethod<Form> */{
 	 *        and adapt parameters
 	 * @param form
 	 */
-	public FormMixin(ISailsEvent event, IElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
+	public FormTool(ISailsEvent event, IElementIdGenerator idGenerator, ContainerAdapterResolver adapterResolver, HtmlForm form) {
 		this.event = event;
 		this.idGenerator = idGenerator;
 		this.adapterResolver = adapterResolver;

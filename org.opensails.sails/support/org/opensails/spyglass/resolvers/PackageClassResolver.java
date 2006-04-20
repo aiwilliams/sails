@@ -13,6 +13,8 @@ import org.opensails.spyglass.SpyGlass;
  * <li>The key, upper-camel-cased.</li>
  * <li>The key, upper-camel-cased and prepended to suffix, if defined.</li>
  * </ol>
+ * 
+ * @param <T> the type of class this resolves
  */
 public class PackageClassResolver<T> implements IClassResolver<T> {
 	protected String suffix;

@@ -79,8 +79,8 @@ public class SpyClass<T> {
 
 	/**
 	 * @param name
-	 * @return the declared method in class hierarchy having name, null if not
-	 *         present
+	 * @return the first declared method in class hierarchy having name, null if
+	 *         not present
 	 */
 	public Method getMethod(String name) {
 		for (Method method : getMethods())
@@ -99,6 +99,18 @@ public class SpyClass<T> {
 				methods.add(method);
 			nextClass = nextClass.getSuperclass();
 		}
+		return methods;
+	}
+
+	/**
+	 * @param name
+	 * @return the first declared method in class hierarchy having name, null if
+	 *         not present
+	 */
+	public Collection<Method> getMethods(String name) {
+		List<Method> methods = new ArrayList<Method>();
+		for (Method method : getMethods())
+			if (method.getName().equals(name)) methods.add(method);
 		return methods;
 	}
 
@@ -121,6 +133,10 @@ public class SpyClass<T> {
 
 	public Class<?> getPropertyType(String property) {
 		return findProperty(property).getType();
+	}
+
+	public SpyMethod getSpyMethod(String name) {
+		return new SpyMethod<T>(this, name);
 	}
 
 	@SuppressWarnings("unchecked")

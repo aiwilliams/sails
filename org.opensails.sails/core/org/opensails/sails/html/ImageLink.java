@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.IUrl;
+import org.opensails.sails.url.UrlType;
 
 public class ImageLink extends AbstractLink<ImageLink> implements ILink<ImageLink>, IImage<ImageLink> {
 	protected Image image;
 
 	public ImageLink(ISailsEvent event, IUrl url, IUrl src) {
 		super(event, url);
-		this.image = new Image(event, src);
+		this.image = new Image(src);
 	}
 
 	public ImageLink alt(String alt) {
@@ -35,8 +36,13 @@ public class ImageLink extends AbstractLink<ImageLink> implements ILink<ImageLin
 		return this;
 	}
 
-	public ImageLink src(String src) {
+	public ImageLink src(IUrl src) {
 		image.src(src);
+		return this;
+	}
+
+	public ImageLink src(String src) {
+		image.src(event.resolve(UrlType.IMAGE, src));
 		return this;
 	}
 
