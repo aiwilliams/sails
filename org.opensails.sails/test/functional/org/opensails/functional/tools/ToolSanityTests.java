@@ -13,7 +13,7 @@ import org.opensails.functional.SailsFunctionalTester;
 public class ToolSanityTests extends TestCase {
 	public void testEach() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		t.addTemplate("shared/template", "in here");
+		t.registerTemplate("shared/template", "in here");
 		t.getTemplated(createTemplate()).assertRenders();
 	}
 

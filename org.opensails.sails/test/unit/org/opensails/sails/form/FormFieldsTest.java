@@ -15,6 +15,17 @@ public class FormFieldsTest extends TestCase {
 		CollectionAssert.containsOnly(Quick.list("one", "two"), fields.values("key"));
 	}
 
+	public void testGetNames_GetAllNames() throws Exception {
+		ShamHttpServletRequest request = new ShamHttpServletRequest();
+		request.setParameter(FormMeta.META_PREFIX + "anything", "the value");
+		request.setParameter(FormMeta.CHECKBOX_PREFIX + "anything", "the value");
+
+		FormFields fields = new FormFields(request);
+		// checkboxes come back so that we can get their hidden falses
+		CollectionAssert.containsOnly("anything", fields.getNames());
+		CollectionAssert.containsOnly(new String[] { FormMeta.META_PREFIX + "anything", FormMeta.CHECKBOX_PREFIX + "anything" }, fields.getAllNames());
+	}
+
 	/**
 	 * The value setters will not modify the request, as it is immutable in a
 	 * real container.

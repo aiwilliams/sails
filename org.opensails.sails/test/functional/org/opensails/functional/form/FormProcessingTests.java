@@ -71,6 +71,12 @@ public class FormProcessingTests extends TestCase {
 		assertEquals("third", model.selectProperty);
 		assertEquals("newPasswordValue", model.passwordProperty);
 		assertEquals("newHiddenValue", model.hiddenProperty);
+
+		formFields.setValue("model.checkboxProperty", "0");
+		page = t.post("postThenRender", formFields, model);
+		form = page.form();
+		form.checkbox("model.checkboxProperty").assertUnchecked();
+		assertFalse(model.checkboxProperty);
 	}
 
 	public void testRender_Model() {

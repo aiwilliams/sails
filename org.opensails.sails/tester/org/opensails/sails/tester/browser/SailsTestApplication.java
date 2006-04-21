@@ -217,14 +217,26 @@ public class SailsTestApplication extends SailsApplication {
 	}
 
 	/**
-	 * Allows for the registration of customer IControllerImpls. Very useful
-	 * when you want to test Sails itself ;)
+	 * Allows for the registration of custom IControllerImpls. Very useful when
+	 * you want to test Sails itself ;)
 	 * 
 	 * @param <C>
 	 * @param controller
 	 */
 	public <C extends IControllerImpl> void registerController(C controller) {
 		getContainer().instance(VirtualControllerResolver.class).register(controller);
+	}
+
+	/**
+	 * Allows for the registration of custom IControllerImpls. Very useful when
+	 * you want to test Sails itself ;)
+	 * 
+	 * @param <C>
+	 * @param controllerName
+	 * @param controller
+	 */
+	public <C extends IControllerImpl> void registerController(String controllerName, C controller) {
+		getContainer().instance(VirtualControllerResolver.class).register(controllerName, controller);
 	}
 
 	protected Browser createBrowser() {

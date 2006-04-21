@@ -23,9 +23,9 @@ import org.opensails.sails.annotate.IBehaviorHandler;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormFields;
-import org.opensails.sails.util.ClassHelper;
 import org.opensails.spyglass.SpyClass;
 import org.opensails.spyglass.SpyField;
+import org.opensails.spyglass.SpyGlass;
 
 /**
  * An Action as seen by the Sails framework.
@@ -47,7 +47,7 @@ public class Action implements IAction {
 		this.name = name;
 		this.contextClass = contextClass;
 		this.adapterResolver = adapterResolver;
-		this.actionMethods = ClassHelper.methodsNamedInHeirarchy(contextClass, name);
+		this.actionMethods = SpyGlass.methodsNamedInHeirarchy(contextClass, name);
 	}
 
 	public IActionResult execute(ActionInvocation invocation) {

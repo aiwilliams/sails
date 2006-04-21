@@ -95,12 +95,25 @@ public class FormFields {
 	}
 
 	/**
+	 * The names of non-meta fields.
+	 * <p>
+	 * This actually does one special thing with metas: it understands that a
+	 * checkbox is rendered out with a hidden field that has a meta name. Names
+	 * returned from this will include any checkbox hiddens, but the name will
+	 * not include the meta prefix. Therefore, you can expect that the unchecked
+	 * checkbox will have a value in here.
+	 * 
 	 * @return field names that are not FormMetas
 	 * @see #getMetaNames()
 	 * @see #getNamesPrefixed(String)
 	 */
 	public Set<String> getNames() {
-		return backingMap.keySet();
+		Set<String> unfiltered = backingMap.keySet();
+		Set<String> filtered = new HashSet<String>();
+		for (String string : unfiltered)
+			if (!string.startsWith(FormMeta.META_PREFIX)) filtered.add(string);
+			else if (string.startsWith(FormMeta.CHECKBOX_PREFIX)) filtered.add(string.replaceFirst(FormMeta.CHECKBOX_PREFIX, ""));
+		return filtered;
 	}
 
 	/**

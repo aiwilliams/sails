@@ -76,7 +76,7 @@ public class Browser {
 	 * @param controllerAction this must be in the form of 'controller/action'
 	 * @param templateContent the content of the action view
 	 */
-	public void addTemplate(String controllerAction, CharSequence templateContent) {
+	public void registerTemplate(String controllerAction, CharSequence templateContent) {
 		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
 		resourceResolver.register(controllerAction + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, templateContent);
 	}
@@ -84,7 +84,7 @@ public class Browser {
 	/**
 	 * Creates an event and establishes the action view for it.
 	 * 
-	 * @see #addTemplate(String, CharSequence)
+	 * @see #registerTemplate(String, CharSequence)
 	 * @param eventPath this must be in the form of 'controller/action'
 	 * @param templateContent the content of the action view
 	 * @return a TestGetEvent that is configured by the ISailsEventConfigurator
@@ -93,7 +93,7 @@ public class Browser {
 	public TestGetEvent createVirtualEvent(String eventPath, CharSequence templateContent) {
 		TestGetEvent event = createGetEvent(eventPath);
 		getContainer().instance(IEventConfigurator.class).configure(event, event.getContainer());
-		addTemplate(eventPath, templateContent);
+		registerTemplate(eventPath, templateContent);
 		return event;
 	}
 
@@ -231,6 +231,17 @@ public class Browser {
 	 */
 	public Page getTemplated(CharSequence templateContent) {
 		return get(createVirtualEvent("dynamicallyGeneratedInSailsTester/getTemplated", templateContent));
+	}
+
+	/**
+	 * Performs a get on the specified controllerAction and renders the provided
+	 * templateContent.
+	 * 
+	 * @param templateContent
+	 * @return the rendered page
+	 */
+	public Page getTemplated(String controllerAction, CharSequence templateContent) {
+		return get(createVirtualEvent(controllerAction, templateContent));
 	}
 
 	@SuppressWarnings("unchecked")

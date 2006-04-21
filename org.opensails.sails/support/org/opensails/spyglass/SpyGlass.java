@@ -2,11 +2,17 @@ package org.opensails.spyglass;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.lang.ClassUtils;
 import org.opensails.sails.model.oem.DotPropertyPath;
 
 public class SpyGlass {
+
+	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
 	/**
 	 * @param args
@@ -104,6 +110,22 @@ public class SpyGlass {
 	public static String lowerCamelName(String name) {
 		char lower = Character.toLowerCase(name.charAt(0));
 		return lower + name.substring(1);
+	}
+
+	public static Method[] methodsNamedInHeirarchy(Class clazz, String name) {
+		if (clazz == null) return EMPTY_METHOD_ARRAY;
+
+		List<Method> matches = new ArrayList<Method>();
+		Method[] methods = clazz.getMethods();
+		for (int i = 0; i < methods.length; i++) {
+			if (methods[i].getName().equals(name)) matches.add(methods[i]);
+		}
+		Collections.sort(matches, new Comparator<Method>() {
+			public int compare(Method o1, Method o2) {
+				return o2.getParameterTypes().length - o1.getParameterTypes().length;
+			}
+		});
+		return matches.toArray(new Method[matches.size()]);
 	}
 
 	@SuppressWarnings("unchecked")

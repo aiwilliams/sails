@@ -3,6 +3,10 @@ package org.opensails.functional.tools;
 import junit.framework.TestCase;
 
 import org.opensails.functional.SailsFunctionalTester;
+import org.opensails.sails.controller.oem.BaseController;
+import org.opensails.sails.form.html.ISelectModel;
+import org.opensails.sails.form.html.ListSelectModel;
+import org.opensails.sails.persist.AbstractIdentifiable;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.TestGetEvent;
 
@@ -13,6 +17,46 @@ public class FormToolTests extends TestCase {
 		Page page = t.get(event);
 		page.assertContains("method=\"post\"");
 		page.assertMatches("action=\"http://.*?/mc/ma\"");
+	}
+
+	public static class MyModel extends AbstractIdentifiable {
+
+		private final String name;
+
+		public MyModel(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
+
+	@SuppressWarnings("unused")
+	public void testForm_SelectModel() {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		final MyModel myModel = new MyModel("modelOne");
+		t.getApplication().provides(myModel);
+
+		t.getApplication().registerController("testing", new BaseController() {
+			public MyModel mySelected = myModel;
+
+			public ISelectModel model() {
+				return new ListSelectModel<MyModel>(myModel);
+			}
+		});
+
+		Page page = t.getTemplated("testing/index", "$form.select('some.property', $model)");
+		page.assertContains("<option value=\"modelOne\">modelOne</option>");
+
+		// Place to show selected bug
+		// can't make a request twice - The RequestContainer has a null parent
+		// on second request
+		// Page page = t.getTemplated("testing/index",
+		// "$form.select('some.property', $model).selected($mySelected)");
+		// page.assertContains("<option value=\"modelOne\"
+		// selected=\"true\">modelOne</option>");
 	}
 
 	public void testForm_IdGeneration() throws Exception {

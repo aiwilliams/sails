@@ -115,29 +115,6 @@ public class ClassHelper {
 		return annotatedMethods.toArray(new Method[annotatedMethods.size()]);
 	}
 
-	/**
-	 * @param clazz
-	 * @param name
-	 * @return an array of public Methods with name, in order of least arguments
-	 *         to most, or empty array if clazz is null or there are no methods
-	 *         having name
-	 */
-	public static Method[] methodsNamedInHeirarchy(Class<?> clazz, String name) {
-		if (clazz == null) return EMPTY_METHOD_ARRAY;
-
-		List<Method> matches = new ArrayList<Method>();
-		Method[] methods = clazz.getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			if (methods[i].getName().equals(name)) matches.add(methods[i]);
-		}
-		Collections.sort(matches, new Comparator<Method>() {
-			public int compare(Method o1, Method o2) {
-				return o2.getParameterTypes().length - o1.getParameterTypes().length;
-			}
-		});
-		return matches.toArray(new Method[matches.size()]);
-	}
-
 	public static Object readField(Object target, String name) {
 		return readField(target, name, true);
 	}

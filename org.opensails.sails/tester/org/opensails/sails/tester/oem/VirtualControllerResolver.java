@@ -9,8 +9,10 @@ import org.opensails.sails.controller.IController;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.NoImplementationException;
+import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.event.oem.AbstractActionEventProcessor;
+import org.opensails.sails.util.ClassHelper;
 
 public class VirtualControllerResolver implements IControllerResolver {
 	protected Map<String, IControllerImpl> instances = new HashMap<String, IControllerImpl>();
@@ -22,7 +24,11 @@ public class VirtualControllerResolver implements IControllerResolver {
 	}
 
 	public <C extends IControllerImpl> void register(C controller) {
-		instances.put(Sails.controllerName(controller), controller);
+		register(Sails.controllerName(controller), controller);
+	}
+
+	public <C extends IControllerImpl> void register(String controllerName, C controller) {
+		instances.put(controllerName, controller);
 	}
 
 	public IController resolve(String controllerIdentifier) {
@@ -50,6 +56,10 @@ public class VirtualControllerResolver implements IControllerResolver {
 
 		@Override
 		protected I createInstance(ISailsEvent event, Class<I> contextImpl) {
+			// FOREIGN - DUPLICATION - RequestContainer#createEventContext
+			event.getContainer().register(IEventProcessingContext.class, controllerInstance);
+			event.getContainer().register(ClassHelper.interfaceExtending(controllerInstance.getClass(), IEventProcessingContext.class), controllerInstance);
+			// END FOREIGN
 			return (I) controllerInstance;
 		}
 
