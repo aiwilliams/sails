@@ -216,27 +216,41 @@ public class SailsTestApplication extends SailsApplication {
 		browsers.add(browser);
 	}
 
-	/**
-	 * Allows for the registration of custom IControllerImpls. Very useful when
-	 * you want to test Sails itself ;)
-	 * 
-	 * @param <C>
-	 * @param controller
-	 */
-	public <C extends IControllerImpl> void registerController(C controller) {
-		getContainer().instance(VirtualControllerResolver.class).register(controller);
+	public void registerController(Class<? extends IControllerImpl> controller) {
+		getVirtualControllerResolver().register(controller);
 	}
 
 	/**
-	 * Allows for the registration of custom IControllerImpls. Very useful when
-	 * you want to test Sails itself ;)
+	 * Allows for the registration of custom IControllerImpl instances.
+	 * 
+	 * @param <C>
+	 * @param controller
+	 * @see #registerController(String, IControllerImpl)
+	 */
+	public <C extends IControllerImpl> void registerController(C controller) {
+		getVirtualControllerResolver().register(controller);
+	}
+
+	private VirtualControllerResolver getVirtualControllerResolver() {
+		return getContainer().instance(VirtualControllerResolver.class);
+	}
+
+	/**
+	 * Allows for the registration of custom IControllerImpl instances. Very
+	 * useful when you want to test Sails itself ;)
+	 * <p>
+	 * The instance version of this allows you to have state setup for the
+	 * controller in your tests. If you do this, you MUST either create a new
+	 * instance for each event and re-register it, or just re-register it if you
+	 * know it can be used twice. It is likely that you would need to clear the
+	 * result of the controller instance so that proper behavior occurs.
 	 * 
 	 * @param <C>
 	 * @param controllerName
 	 * @param controller
 	 */
 	public <C extends IControllerImpl> void registerController(String controllerName, C controller) {
-		getContainer().instance(VirtualControllerResolver.class).register(controllerName, controller);
+		getVirtualControllerResolver().register(controllerName, controller);
 	}
 
 	protected Browser createBrowser() {

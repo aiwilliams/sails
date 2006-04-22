@@ -76,7 +76,14 @@ public class HtmlForm {
 		if (!adaptationTarget.isReadable()) return null;
 
 		IAdapter<M, W> adapter = adapter(path, model, adaptationTarget);
-		return adapter.forWeb(adaptationTarget, (M) accessor.get(model));
+		return adapter.forWeb(adaptationTarget, accessor.<Object, M> get(model));
+	}
+
+	public <M, W> M valueModel(String propertyPath) {
+		IPropertyPath path = propertyFactory.createPath(propertyPath);
+		Object model = modelContext.getModel(path);
+		if (model == null) return null;
+		return propertyFactory.createAccessor(path).<Object, M> get(model);
 	}
 
 	protected IAdapter adapter(IPropertyPath path, Object model, AdaptationTarget adaptationTarget) {

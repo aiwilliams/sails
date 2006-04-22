@@ -19,46 +19,6 @@ public class FormToolTests extends TestCase {
 		page.assertMatches("action=\"http://.*?/mc/ma\"");
 	}
 
-	public static class MyModel extends AbstractIdentifiable {
-
-		private final String name;
-
-		public MyModel(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
-
-	@SuppressWarnings("unused")
-	public void testForm_SelectModel() {
-		SailsFunctionalTester t = new SailsFunctionalTester();
-		final MyModel myModel = new MyModel("modelOne");
-		t.getApplication().provides(myModel);
-
-		t.getApplication().registerController("testing", new BaseController() {
-			public MyModel mySelected = myModel;
-
-			public ISelectModel model() {
-				return new ListSelectModel<MyModel>(myModel);
-			}
-		});
-
-		Page page = t.getTemplated("testing/index", "$form.select('some.property', $model)");
-		page.assertContains("<option value=\"modelOne\">modelOne</option>");
-
-		// Place to show selected bug
-		// can't make a request twice - The RequestContainer has a null parent
-		// on second request
-		// Page page = t.getTemplated("testing/index",
-		// "$form.select('some.property', $model).selected($mySelected)");
-		// page.assertContains("<option value=\"modelOne\"
-		// selected=\"true\">modelOne</option>");
-	}
-
 	public void testForm_IdGeneration() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester();
 
@@ -73,5 +33,43 @@ public class FormToolTests extends TestCase {
 
 		Page page = t.getTemplated(template);
 		page.assertContainsInOrder(expected);
+	}
+
+	@SuppressWarnings("unused")
+	public void testForm_SelectModel() {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		final MyModel myModel = new MyModel("modelOne");
+		t.getApplication().provides(myModel);
+
+		BaseController controller = new BaseController() {
+			public MyModel getMySelected() { return myModel; }
+			public ISelectModel model() {
+				return new ListSelectModel<MyModel>(myModel);
+			}
+		};
+
+		t.getApplication().registerController("testing", controller);
+		Page page = t.getTemplated("testing/index", "$form.select('some.property', $model)");
+		page.assertContains("<option value=\"modelOne\">modelOne</option>");
+
+		// Place to show selected bug
+		controller.setResult(null);
+		t.getApplication().registerController("testing", controller);
+		page = t.getTemplated("testing/index", "$form.select('some.property', $model).selected($mySelected)");
+		page.assertContains("<option value=\"modelOne\" selected=\"true\">modelOne</option>");
+	}
+
+	public static class MyModel extends AbstractIdentifiable {
+
+		private final String name;
+
+		public MyModel(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 }

@@ -188,7 +188,7 @@ public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 
 	@SuppressWarnings("unchecked")
 	public <M, W> Select<M> select(String name, ISelectModel<M> model) {
-		return new Select<M>(name).id(idGenerator.idForName(name)).model(model).selected(form.<M, W> value(name));
+		return new Select<M>(name).id(idGenerator.idForName(name)).model(model).selected(form.<M, W> valueModel(name));
 	}
 
 	/**

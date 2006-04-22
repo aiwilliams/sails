@@ -56,7 +56,7 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		SailsTestApplication application = browserOne.getApplication();
 		Browser browserTwo = application.openBrowser(Flasher.class);
 
-		application.registerController(new Flasher());
+		application.registerController(Flasher.class);
 
 		browserOne.get("flashInRequest");
 		browserOne.getSession().assertNull();

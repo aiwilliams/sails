@@ -11,12 +11,12 @@ import org.opensails.sails.adapter.AdaptationTarget;
  * them.
  */
 public interface IPropertyAccessor {
-	Object get(Object model) throws PropertyAccessException;
+	<M, V> V get(M model) throws PropertyAccessException;
 
 	/**
 	 * @return the AdaptationTarget of this property on the model
 	 */
 	AdaptationTarget getAdaptationTarget(Object model);
 
-	void set(Object model, Object value) throws PropertyAccessException;
+	<M, V> void set(M model, V value) throws PropertyAccessException;
 }
