@@ -1,31 +1,39 @@
 package org.opensails.mixin.tester;
 
-import org.opensails.sails.configurator.ApplicationPackage;
-import org.opensails.sails.configurator.IPackageDescriptor;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.opensails.rigging.InstantiationListener;
 import org.opensails.sails.configurator.SailsConfigurator;
-import org.opensails.sails.util.BleedingEdgeException;
-import org.opensails.spyglass.SpyGlass;
+import org.opensails.sails.tester.browser.Browser;
+import org.opensails.sails.tester.browser.SailsTestApplication;
+import org.opensails.viento.IBinding;
 
 public class MixinTester {
+	protected Browser browser;
+	protected InstantiationListener<IBinding> exposer;
+	protected Map<String, Object> exposures;
 
 	public MixinTester(Class<? extends SailsConfigurator> configuratorClass) {
-		SailsConfigurator configurator = SpyGlass.instantiate(configuratorClass);
-		IPackageDescriptor descriptor = configurator.createPackageDescriptor();
-		for (ApplicationPackage applicationPackage : descriptor.getMixinPackages()) {
-			throw new BleedingEdgeException("Need a MixinResolver that is an IMethodResolver");
-			// new
-			// PackageClassResolver<Object>(applicationPackage.getPackageName(),
-			// "Mixin");
+		this.exposures = new HashMap<String, Object>();
+		this.exposer = new Exposer();
 
-		}
-	}
-
-	public void expose(String key, Object object) {
-		throw new BleedingEdgeException("implement");
+		SailsTestApplication sailsTestApplication = new SailsTestApplication(configuratorClass);
+		browser = sailsTestApplication.openBrowser();
 	}
 
 	public void assertEquals(String expected, String vientoTemplate) {
-		throw new BleedingEdgeException("implement");
+		browser.getContainer().registerInstantiationListener(IBinding.class, exposer);
+		browser.getTemplated(vientoTemplate).assertEquals(expected);
 	}
 
+	public void expose(String key, Object object) {
+		exposures.put(key, object);
+	}
+
+	class Exposer implements InstantiationListener<IBinding> {
+		public void instantiated(IBinding newInstance) {
+			newInstance.putAll(exposures);
+		}
+	}
 }

@@ -100,6 +100,11 @@ public class DelegatingConfigurator extends SailsConfigurator {
 	}
 
 	@Override
+	protected Package getBuiltinMixinPackage() {
+		return delegate.getBuiltinMixinPackage();
+	}
+
+	@Override
 	protected String getBuitinActionResultProcessorPackage() {
 		return delegate.getBuitinActionResultProcessorPackage();
 	}

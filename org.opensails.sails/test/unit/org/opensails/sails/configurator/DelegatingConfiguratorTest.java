@@ -175,6 +175,12 @@ public class DelegatingConfiguratorTest extends TestCase {
 		}
 
 		@Override
+		protected Package getBuiltinMixinPackage() {
+			setMethodInvoked(findMethod());
+			return null;
+		}
+
+		@Override
 		protected String getBuitinActionResultProcessorPackage() {
 			setMethodInvoked(findMethod());
 			return null;

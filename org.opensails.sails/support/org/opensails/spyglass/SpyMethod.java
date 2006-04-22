@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.opensails.viento.Name;
 
 public class SpyMethod<T> {
 	private final SpyClass<T> spyClass;
@@ -19,20 +20,22 @@ public class SpyMethod<T> {
 		return getMethodTaking(argTypes) != null;
 	}
 
-	private Method findMethod(Class[] argTypes) {
-		Method method = getMethodTaking(argTypes);
-		if (method != null) return method;
-		throw new Crack(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
+	public Type getGenericType(Class... argTypes) {
+		return getMethodTaking(argTypes).getGenericReturnType();
 	}
 
 	public Method getMethodTaking(Class[] argTypes) {
 		Class nextClass = spyClass.getType();
 		while (nextClass != null) {
 			for (Method method : nextClass.getDeclaredMethods())
-				if (method.getName().equals(name) && SpyGlass.argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
+				if (nameMatch(name, method) && SpyGlass.argTypesExtendThese(argTypes, method.getParameterTypes())) return method;
 			nextClass = nextClass.getSuperclass();
 		}
 		return null;
+	}
+
+	public Class<?> getType(Class... argTypes) {
+		return getMethodTaking(argTypes).getReturnType();
 	}
 
 	public Object invoke(T object, Object... args) {
@@ -51,12 +54,18 @@ public class SpyMethod<T> {
 		}
 	}
 
-	public Type getGenericType(Class... argTypes) {
-		return getMethodTaking(argTypes).getGenericReturnType();
+	// TODO Move Name annotation out of Viento into SpyGlass
+	protected boolean nameMatch(String methodName, Method method) {
+		if (method.getName().equals(name)) return true;
+		else if (method.isAnnotationPresent(Name.class)) for (String name : method.getAnnotation(Name.class).value())
+			if (name.equals(methodName)) return true;
+		return false;
 	}
 
-	public Class<?> getType(Class... argTypes) {
-		return getMethodTaking(argTypes).getReturnType();
+	private Method findMethod(Class[] argTypes) {
+		Method method = getMethodTaking(argTypes);
+		if (method != null) return method;
+		throw new Crack(String.format("Could not find a method named %s accepting %s", name, ArrayUtils.toString(argTypes)));
 	}
 
 }

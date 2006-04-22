@@ -15,11 +15,12 @@ import org.opensails.sails.configurator.IPackageDescriptor;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.Flash;
 import org.opensails.sails.oem.FlashComponentResolver;
+import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.Require;
 import org.opensails.sails.template.ToolResolver;
-import org.opensails.sails.template.viento.VientoBinding;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.spyglass.resolvers.PackageClassResolver;
+import org.opensails.viento.Binding;
 import org.opensails.viento.IBinding;
 
 /**
@@ -58,7 +59,7 @@ public class RequiredEventConfigurator implements IEventConfigurator {
 		if (eventContainer instanceof ComponentContainer) configure(event, (ComponentContainer) eventContainer);
 	}
 
-	public void configure(final ISailsEvent event, RequestContainer container) {
+	public void configure(final ISailsEvent event, final RequestContainer container) {
 		provideEventScopedContainerAccess(container);
 
 		ToolResolver resolver = new ToolResolver(event);
@@ -73,9 +74,10 @@ public class RequiredEventConfigurator implements IEventConfigurator {
 
 		container.register(ContainerAdapterResolver.class, ContainerAdapterResolver.class);
 
-		container.register(IBinding.class, VientoBinding.class);
+		container.register(IBinding.class, Binding.class);
 		container.registerInstantiationListener(IBinding.class, new InstantiationListener<IBinding>() {
 			public void instantiated(IBinding newInstance) {
+				newInstance.addMethodResolver(container.instance(MixinResolver.class));
 				configure(event, newInstance);
 			}
 		});
@@ -84,10 +86,6 @@ public class RequiredEventConfigurator implements IEventConfigurator {
 		formProcessingConfigurator.configure(event, container);
 
 		delegate.configure(event, container);
-	}
-
-	protected String getBuiltinMixinPackage() {
-		return SpyGlass.getPackageName(Sails.class) + ".mixins";
 	}
 
 	protected String getBuiltinToolPackage() {

@@ -12,9 +12,9 @@ import org.opensails.sails.html.Style;
 import org.opensails.sails.template.ITemplateRenderer;
 import org.opensails.sails.template.Require;
 import org.opensails.sails.template.Require.RequireOutput;
-import org.opensails.sails.template.viento.VientoBinding;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
+import org.opensails.viento.Binding;
 import org.opensails.viento.IBinding;
 
 public class RequireTool {
@@ -40,7 +40,7 @@ public class RequireTool {
 		IUrl config = event.resolve(UrlType.COMPONENT, identifier + "/config");
 		ComponentRequire componentRequire = new ComponentRequire(event, component, require, resourceResolver);
 		if (resourceResolver.exists(config)) {
-			IBinding configBinding = new VientoBinding();
+			IBinding configBinding = new Binding();
 			configBinding.put("require", componentRequire);
 			ITemplateRenderer renderer = event.getContainer().instance(ITemplateRenderer.class);
 			renderer.render(config, configBinding);

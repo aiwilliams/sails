@@ -30,6 +30,12 @@ public class ApplicationPackage {
 		return namespace;
 	}
 
+	public Package getPackage() {
+		Package p = Package.getPackage(getPackageName());
+		if (p == null) throw new IllegalArgumentException(String.format("The client desires the real Java Package named %s. Please provide the name of the package by referencing a class in that package and asking it for the name. This will cause the VM to load that class and therefore that package.", getPackageName()));
+		return p;
+	}
+
 	public String getPackageName() {
 		return packageName;
 	}

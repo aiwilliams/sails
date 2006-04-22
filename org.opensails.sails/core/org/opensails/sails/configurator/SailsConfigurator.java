@@ -34,6 +34,7 @@ import org.opensails.sails.controller.ControllerPackage;
 import org.opensails.sails.controller.IControllerResolver;
 import org.opensails.sails.controller.oem.ControllerResolver;
 import org.opensails.sails.event.IActionEventProcessorResolver;
+import org.opensails.sails.mixins.ThrowableMixin;
 import org.opensails.sails.oem.ClasspathResourceResolver;
 import org.opensails.sails.oem.Dispatcher;
 import org.opensails.sails.oem.EventProcessorResolver;
@@ -41,6 +42,7 @@ import org.opensails.sails.oem.ResourceResolver;
 import org.opensails.sails.oem.SailsDefaultsConfiguration;
 import org.opensails.sails.oem.ServletContextResourceResolver;
 import org.opensails.sails.template.ITemplateRenderer;
+import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.url.IUrlResolver;
 import org.opensails.sails.url.UrlResolver;
@@ -66,7 +68,7 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		getContainerConfigurator().configure(application, container);
 
 		getResourceResolverConfigurator().configure(application, installResourceResolver());
-		
+
 		IObjectPersisterConfigurator persisterConfigurator = getPersisterConfigurator();
 		persisterConfigurator.configure(application, application.getContainer());
 
@@ -90,6 +92,12 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		ComponentResolver componentResolver = installComponentResolver();
 		for (ApplicationPackage componentPackage : packageDescriptor.getComponentPackages())
 			componentResolver.push(new ComponentPackage(componentPackage.getPackageName()));
+
+		MixinResolver resolver = new MixinResolver(container);
+		resolver.push(getBuiltinMixinPackage());
+		for (ApplicationPackage mixinPackage : packageDescriptor.getMixinPackages())
+			resolver.push(mixinPackage.getPackageName());
+		container.register(resolver);
 
 		installEventProcessorResolver();
 		installUrlResolverResolver();
@@ -160,6 +168,10 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 
 	protected String getBuiltinControllerPackage() {
 		return SpyGlass.getPackageName(Sails.class) + ".controllers";
+	}
+
+	protected Package getBuiltinMixinPackage() {
+		return ThrowableMixin.class.getPackage();
 	}
 
 	protected String getBuitinActionResultProcessorPackage() {
