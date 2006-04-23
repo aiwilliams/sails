@@ -70,6 +70,12 @@ public class SimpleContainerTest extends TestCase {
         ShamComponent instance = container.instance(ShamComponent.class);
         assertNotNull(instance);
     }
+    
+    public void testInstance_CircularDependency() throws Exception {
+    	container.register(SelfDependentComponent.class);
+    	SelfDependentComponent instance = container.instance(SelfDependentComponent.class);
+    	assertNotNull(instance);
+    }
 
     public void testInstance_Caching() throws Exception {
         container.register(ShamComponent.class);

@@ -48,10 +48,16 @@ public class ComponentImplementation implements ComponentResolver {
 		boolean canSatisfy = true;
 		Class[] parameterTypes = constructor.getParameterTypes();
 		for (int i = 0; i < parameterTypes.length; i++) {
+			Class parameterType = parameterTypes[i];
+			if (isCircularReference(parameterType)) return false;
 			WhenNotInstantiated whenNotInstantiated = annotation(WhenNotInstantiated.class, constructor, i);
-			if (!container.contains(parameterTypes[i]) && (whenNotInstantiated == null || findConstructor(whenNotInstantiated.value()) == null)) canSatisfy = false;
+			if (!container.contains(parameterType) && (whenNotInstantiated == null || findConstructor(whenNotInstantiated.value()) == null)) canSatisfy = false;
 		}
 		return canSatisfy;
+	}
+
+	protected boolean isCircularReference(Class parameterType) {
+		return parameterType == theKey;
 	}
 
 	protected Constructor findConstructor() {
