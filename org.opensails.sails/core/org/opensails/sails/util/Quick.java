@@ -30,6 +30,16 @@ public class Quick {
 			map.put((K) objects[i], (V) objects[i + 1]);
 		return map;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static <K, V> LinkedHashMap<K, V> linkedMap(Object... objects) {
+		LinkedHashMap<K, V> map = new LinkedHashMap<K, V>();
+		if (objects == null) return map;
+		if (objects.length % 2 != 0) throw new IllegalArgumentException("Must provide key value pairs. You have given an odd number of arguments.");
+		for (int i = 0; i < objects.length; i += 2)
+			map.put((K) objects[i], (V) objects[i + 1]);
+		return map;
+	}
 
 	public static String string(Object... objects) {
 		StringBuilder buffer = new StringBuilder();
