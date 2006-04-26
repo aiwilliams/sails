@@ -60,7 +60,7 @@ public class BasicComponentTests extends TestCase {
 		component.classProperty = SailsComponentTester.class;
 		assertEquals("someid_something", component.idfor("something"));
 		Page page = c.render();
-		assertEquals("window.someid = new ScriptInit({property: 'asdf', classProperty: 'org.opensails.component.tester.SailsComponentTester', id: 'someid', callback: Component.callback('callback', 'http://localhost/shamcontext/shamservlet/component_scriptInit/callback', {method: 'get', parameters: 'classProperty=org.opensails.component.tester.SailsComponentTester&id=someid'}), something: $('someid_something')});", page.source());
+		assertEquals("window.someid=new ScriptInit({property:'asdf',classProperty:'org.opensails.component.tester.SailsComponentTester',id:'someid',callback:Component.callback('callback','http://localhost/shamcontext/shamservlet/component_scriptInit/callback',{method:'get',parameters:'classProperty=org.opensails.component.tester.SailsComponentTester&id=someid'}),something:$('someid_something')});", page.source());
 		assertTrue(c.getRequestContainer().instance(Require.class).output().componentApplicationScripts().contains("common/scripts/component.js"));
 		assertTrue(c.getRequestContainer().instance(Require.class).output().componentApplicationScripts().contains("common/scripts/prototype.js"));
 	}

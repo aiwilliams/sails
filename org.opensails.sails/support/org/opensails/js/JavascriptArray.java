@@ -1,15 +1,10 @@
 package org.opensails.js;
 
-import java.util.*;
-
-import org.opensails.sails.util.Quick;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavascriptArray extends JavascriptGenerator {
 	protected List<Object> list;
-	
-	public static JavascriptArray quick(Object...objects) {
-		return new JavascriptArray(Quick.list(objects));
-	}
 	
 	public JavascriptArray() {
 		this(new ArrayList<Object>());
