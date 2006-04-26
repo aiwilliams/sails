@@ -2,7 +2,6 @@ package org.opensails.sails.controller.oem;
 
 import java.util.List;
 
-import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.RedirectActionResult;
 import org.opensails.sails.action.oem.TemplateActionResult;
 import org.opensails.sails.controller.IController;
@@ -30,7 +29,7 @@ public class BaseController extends AbstractEventProcessingContext<IController> 
 		return setResult(new RedirectActionResult(event, getClass(), action, parameters));
 	}
 
-	protected IActionResult redirectController(Class<? extends IControllerImpl> controller) {
+	protected RedirectActionResult redirectController(Class<? extends IControllerImpl> controller) {
 		return setResult(new RedirectActionResult(event, controller));
 	}
 

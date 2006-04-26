@@ -2,6 +2,7 @@ package org.opensails.sails.url;
 
 import org.opensails.sails.Sails;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.util.BleedingEdgeException;
 
 public abstract class AbstractUrl<T extends AbstractUrl> implements IUrl {
 	protected ISailsEvent event;
@@ -18,6 +19,14 @@ public abstract class AbstractUrl<T extends AbstractUrl> implements IUrl {
 	@Override
 	public boolean equals(Object obj) {
 		return absolute().equals(((IUrl) obj).absolute());
+	}
+
+	public String getQueryParam(String name) {
+		return new UrlQuery(this.renderAbsoluteUrl()).getParameter(name);
+	}
+
+	public void setQueryParam(String name, String value) {
+		throw new BleedingEdgeException("implement");
 	}
 
 	@Override

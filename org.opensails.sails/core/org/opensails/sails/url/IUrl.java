@@ -6,6 +6,12 @@ public interface IUrl {
 	 */
 	AbsoluteUrl absolute();
 
+	/**
+	 * @param name
+	 * @return the unencoded value of the url query param for unencoded name
+	 */
+	String getQueryParam(String name);
+
 	String render();
 
 	/**
@@ -16,4 +22,10 @@ public interface IUrl {
 	 * @return a secure version of this
 	 */
 	IUrl secure();
+
+	/**
+	 * @param name the name of the param, will be encoded
+	 * @param value the value of the param, will be encoded
+	 */
+	void setQueryParam(String name, String value);
 }

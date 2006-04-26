@@ -8,6 +8,7 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
+import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.util.RegexHelper;
 
 public class TestRedirectUrl {
@@ -36,6 +37,11 @@ public class TestRedirectUrl {
 
 	public void assertMatches(String regex) {
 		Assert.assertTrue(String.format("%s should have matched %s", destination(), regex), RegexHelper.containsMatch(destination(), regex));
+	}
+
+	public void assertQueryParamMatches(String name, String regex) {
+		ExternalUrl externalUrl = new ExternalUrl(destination());
+		Assert.assertTrue(String.format("%s should have matched %s", externalUrl.getQueryParam(name), regex), RegexHelper.containsMatch(destination(), regex));
 	}
 
 	public String destination() {

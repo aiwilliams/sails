@@ -31,4 +31,11 @@ public class RedirectActionResult extends AbstractActionResult {
 	public IUrl getRedirectUrl() {
 		return redirectUrl;
 	}
+
+	/**
+	 * Sets a URL query param, {@link Sails.QueryParam#ORIGINATION}, to contain
+	 * the URL of the originating event. Useful for tracking what redirected the
+	 * browser.
+	 */
+	public void rememberOrigin() {}
 }

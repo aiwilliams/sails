@@ -72,4 +72,8 @@ public class Sails {
 			String STYLES = "sails.url.styles.pathextension";
 		}
 	}
+
+	public interface QueryParam {
+		String ORIGINATION = "origin";
+	}
 }

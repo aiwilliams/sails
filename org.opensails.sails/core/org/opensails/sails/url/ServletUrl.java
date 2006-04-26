@@ -2,6 +2,7 @@ package org.opensails.sails.url;
 
 import org.opensails.sails.SailsException;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.util.BleedingEdgeException;
 
 public class ServletUrl implements IUrl {
 	protected final ISailsEvent event;
@@ -21,6 +22,10 @@ public class ServletUrl implements IUrl {
 		builder.append(event.getEventUrl().getAbsolutServletUrl());
 		appendUrl(builder);
 		return new AbsoluteUrl(event, builder.toString());
+	}
+
+	public String getQueryParam(String name) {
+		return absolute().getQueryParam(name);
 	}
 
 	public String render() {
@@ -44,5 +49,9 @@ public class ServletUrl implements IUrl {
 			builder.append("/");
 			builder.append(url);
 		}
+	}
+
+	public void setQueryParam(String name, String value) {
+		throw new BleedingEdgeException("implement");
 	}
 }
