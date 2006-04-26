@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.opensails.sails.SailsException;
+import org.opensails.spyglass.policy.FieldAccessPolicy;
 import org.opensails.spyglass.policy.SpyPolicy;
 
 /**
@@ -86,7 +87,7 @@ public class SpyClass<T> {
 	public Collection<Field> getFieldsNotAnnotated(Class<? extends Annotation> annotationClass) {
 		return filterByAnnotation(getFields(), annotationClass, true);
 	}
-
+	
 	/**
 	 * @param name
 	 * @return the first declared method in class hierarchy having name, null if
@@ -97,7 +98,7 @@ public class SpyClass<T> {
 			if (method.getName().equals(name)) return method;
 		return null;
 	}
-
+	
 	/**
 	 * @return all declared methods in class heirarchy, including Object
 	 */
@@ -153,6 +154,10 @@ public class SpyClass<T> {
 		return findProperty(property).getType();
 	}
 
+	public Collection<Field> getPublicFieldsNotAnnotated(Class<? extends Annotation> annotationClass) {
+		return filterByAnnotation(filterByAccess(getFields(), FieldAccessPolicy.PUBLIC), annotationClass, true);
+	}
+
 	public SpyMethod getSpyMethod(String name) {
 		return new SpyMethod<T>(this, name);
 	}
@@ -188,6 +193,14 @@ public class SpyClass<T> {
 
 	public SpyObject<T> spyInstance(Object[] args) {
 		return new SpyObject<T>(newInstance(args), policy);
+	}
+
+	protected Collection<Field> filterByAccess(Collection<Field> fields, FieldAccessPolicy accessPolicy) {
+		Collection<Field> filtered = new ArrayList<Field>(fields.size());
+		for (Field field : fields)
+			if (accessPolicy.canAccess(field))
+				filtered.add(field);
+		return filtered;
 	}
 
 	protected <E extends AnnotatedElement> Collection<E> filterByAnnotation(Collection<E> all, Class<? extends Annotation> annotationClass, boolean inverse) {
