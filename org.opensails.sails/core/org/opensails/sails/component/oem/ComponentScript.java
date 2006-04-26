@@ -27,6 +27,7 @@ import org.opensails.sails.url.ActionUrl;
 import org.opensails.spyglass.SpyClass;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.spyglass.policy.SpyPolicy;
+import org.opensails.viento.IRenderable;
 
 public class ComponentScript extends Script {
 	private final BaseComponent component;
@@ -43,14 +44,18 @@ public class ComponentScript extends Script {
 		JavascriptMethodCall constructor = Js.methodCall(StringUtils.capitalize(name()), extensions);
 		List<String> rememberedFields = new ArrayList<String>();
 		for (Field field : fieldsForJs()) {
+			Object value = SpyGlass.read(component, field);
 			try {
 				IAdapter adapter = adapterResolver.resolve(field.getType());
-				Object value = adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) field.getType()), SpyGlass.read(component, field));
-				extensions.set(field.getName(), value);
-				if (field.isAnnotationPresent(Remembered.class)) rememberedFields.add(field.getName() + "=" + value);
+				value = adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) field.getType()), SpyGlass.read(component, field));
 			} catch (SailsException e) {
-				// Couldn't adapt. This is ugly.
+				if (!(value instanceof IRenderable))
+					continue;
+				// Couldn't adapt. Pass through the object and hope for the best.
+				// Why can't I ask the adapterResolver whether it can resolve?
 			}
+			extensions.set(field.getName(), value);
+			if (field.isAnnotationPresent(Remembered.class)) rememberedFields.add(field.getName() + "=" + value);
 		}
 		String stringRemeberedFields = StringUtils.join(rememberedFields.iterator(), "&");
 
@@ -79,6 +84,10 @@ public class ComponentScript extends Script {
 		return spyClass().getMethodsAnnotated(Callback.class);
 	}
 
+	/*
+	 * Currently, if the field value isn't either adaptable, or an IRenderable,
+	 * it will be ignored.
+	 */
 	protected Collection<Field> fieldsForJs() {
 		return spyClass().getFieldsNotAnnotated(NotForJs.class);
 	}
