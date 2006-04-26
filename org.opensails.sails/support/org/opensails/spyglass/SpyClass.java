@@ -4,6 +4,8 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -77,6 +79,14 @@ public class SpyClass<T> {
 		return fields;
 	}
 
+	public Collection<Field> getFieldsAnnotated(Class<? extends Annotation> annotationClass) {
+		return filterByAnnotation(getFields(), annotationClass, false);
+	}
+
+	public Collection<Field> getFieldsNotAnnotated(Class<? extends Annotation> annotationClass) {
+		return filterByAnnotation(getFields(), annotationClass, true);
+	}
+
 	/**
 	 * @param name
 	 * @return the first declared method in class hierarchy having name, null if
@@ -112,6 +122,14 @@ public class SpyClass<T> {
 		for (Method method : getMethods())
 			if (method.getName().equals(name)) methods.add(method);
 		return methods;
+	}
+
+	public Collection<Method> getMethodsAnnotated(Class<? extends Annotation> annotationClass) {
+		return filterByAnnotation(getMethods(), annotationClass, false);
+	}
+
+	public Collection<Method> getMethodsNotAnnotated(Class<? extends Annotation> annotationClass) {
+		return filterByAnnotation(getMethods(), annotationClass, true);
 	}
 
 	public Package getPackage() {
@@ -172,6 +190,14 @@ public class SpyClass<T> {
 		return new SpyObject<T>(newInstance(args), policy);
 	}
 
+	protected <E extends AnnotatedElement> Collection<E> filterByAnnotation(Collection<E> all, Class<? extends Annotation> annotationClass, boolean inverse) {
+		Collection<E> filtered = new ArrayList<E>(all.size());
+		for (E each : all)
+			if (inverse ^ each.isAnnotationPresent(annotationClass))
+				filtered.add(each);
+		return filtered;
+	}
+
 	protected Collection<Class> getInterfaces(Class testClass) {
 		List<Class> list = new ArrayList<Class>();
 		Class[] testClassInterfaces = testClass.getInterfaces();
@@ -180,11 +206,11 @@ public class SpyClass<T> {
 		list.add(testClass);
 		return list;
 	}
-
+	
 	protected Collection<PropertyDescriptor> getPropertyDescriptorsForConcreteClasses() {
 		return rawGetPropertyDescriptors(type);
 	}
-
+	
 	protected Collection<PropertyDescriptor> getPropertyDescriptorsForInterfaces() {
 		Collection<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>();
 		Collection<Class> interfaceList = getInterfaces(type);
@@ -192,7 +218,7 @@ public class SpyClass<T> {
 			list.addAll(rawGetPropertyDescriptors(interfaze));
 		return list;
 	}
-
+	
 	protected Collection<PropertyDescriptor> rawGetPropertyDescriptors(Class testClass) {
 		Collection<PropertyDescriptor> list = new ArrayList<PropertyDescriptor>();
 		try {
@@ -202,7 +228,7 @@ public class SpyClass<T> {
 		} catch (IntrospectionException e) {}
 		return list;
 	}
-
+	
 	private Constructor<T> findConstructor(Class<T> clazz, Class[] argTypes) {
 		Constructor[] constructors = clazz.getConstructors();
 		for (Constructor<T> constructor : constructors) {

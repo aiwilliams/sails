@@ -8,6 +8,11 @@ public class SpyPolicy {
 	 * A SpyPolicy that provides practically no access security.
 	 */
 	public static final SpyPolicy WIDEOPEN = new ImmutableWideOpenSpyPolicy();
+	
+	/**
+	 * A SpyPolicy that provides practically no access security.
+	 */
+	public static final SpyPolicy PUBLICONLY = new ImmutablePublicOnlySpyPolicy();
 
 	/**
 	 * A SpyPolicy that provides a medium level of access security.
