@@ -5,6 +5,8 @@ import java.util.List;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.html.ActionLink;
 import org.opensails.sails.html.ILink;
+import org.opensails.sails.html.SimpleLink;
+import org.opensails.sails.url.ExternalUrl;
 
 public class LinkTool {
 	protected final ISailsEvent event;
@@ -21,7 +23,7 @@ public class LinkTool {
 		return new ActionLink(event).action(action);
 	}
 
-	public ActionLink action(String action, List<? extends Object> parameters) {
+	public <T> ActionLink action(String action, List<T> parameters) {
 		return action(action).parameters(parameters);
 	}
 
@@ -55,7 +57,7 @@ public class LinkTool {
 	}
 
 	public ILink href(String url) {
-		return new ActionLink(event).href(url);
+		return new SimpleLink<SimpleLink>(event, new ExternalUrl(event, url));
 	}
 
 	/**

@@ -50,8 +50,6 @@ public interface IPackageDescriptor {
 	List<ApplicationPackage> getResultProcessorPackages();
 
 	/**
-	 * TODO Use this - It isn't being used yet.
-	 * 
 	 * @return a List of locations where a Sails application should look for
 	 *         template tools
 	 */

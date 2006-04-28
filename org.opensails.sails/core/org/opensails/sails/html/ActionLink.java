@@ -1,7 +1,6 @@
 package org.opensails.sails.html;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 
@@ -9,8 +8,6 @@ import org.apache.commons.lang.StringUtils;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.ActionUrl;
-import org.opensails.sails.url.IUrl;
-import org.opensails.sails.url.UrlType;
 
 /**
  * Generates links to actions on Controllers.
@@ -19,7 +16,7 @@ import org.opensails.sails.url.UrlType;
  * those are not specified, the value 'home' is used. What links are useful
  * without text?
  */
-public class ActionLink extends AbstractLink<ActionLink> {
+public class ActionLink extends SimpleLink<ActionLink> {
 	protected String action;
 	protected String controller;
 
@@ -46,31 +43,7 @@ public class ActionLink extends AbstractLink<ActionLink> {
 		return (ActionUrl) url;
 	}
 
-	public ImageLink image(IUrl src) {
-		ImageLink imageLink = new ImageLink(event, url, src);
-		StringWriter writer = new StringWriter();
-		try {
-			renderLinkBody(new HtmlGenerator(writer));
-		} catch (IOException e) {
-			throw new SailsException("Failure converting ActionLink to ImageLink", e);
-		}
-		imageLink.alt(writer.toString());
-		imageLink.linkAttributes(attributes);
-		return imageLink;
-	}
-
-	/**
-	 * Provides for the expected behaviour of
-	 * $link.action('something').image('some.jpg').
-	 * 
-	 * @param src
-	 * @return an ImageLink bound to the href of this
-	 */
-	public ImageLink image(String src) {
-		return image(event.resolve(UrlType.IMAGE, src));
-	}
-
-	public ActionLink parameters(List<? extends Object> parameters) {
+	public <T> ActionLink parameters(List<T> parameters) {
 		return parameters(parameters.toArray(new Object[parameters.size()]));
 	}
 

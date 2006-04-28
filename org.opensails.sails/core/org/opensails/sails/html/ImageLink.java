@@ -7,7 +7,7 @@ import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.IUrl;
 import org.opensails.sails.url.UrlType;
 
-public class ImageLink extends AbstractLink<ImageLink> implements ILink<ImageLink>, IImage<ImageLink> {
+public class ImageLink extends SimpleLink<ImageLink> implements ILink<ImageLink>, IImage<ImageLink> {
 	protected Image image;
 
 	public ImageLink(ISailsEvent event, IUrl url, IUrl src) {

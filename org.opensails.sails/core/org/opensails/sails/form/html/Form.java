@@ -10,7 +10,7 @@ public class Form extends FormElement<Form> {
 	}
 
 	public Form action(IUrl actionUrl) {
-		return action(actionUrl.render());
+		return action(actionUrl.renderThyself());
 	}
 
 	public Form action(String actionUrl) {

@@ -59,7 +59,7 @@ public class Script extends AbstractHtmlElement<Script> {
 
 	public Script src(IUrl url) {
 		this.src = url;
-		return attribute("src", src.render());
+		return attribute("src", src.renderThyself());
 	}
 
 	public Script type(String type) {

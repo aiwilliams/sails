@@ -15,7 +15,7 @@ public class Link extends AbstractHtmlElement<Link> {
 	}
 
 	public void href(IUrl url) {
-		attribute("href", url.render());
+		attribute("href", url.renderThyself());
 	}
 
 	public void rel(String relationship) {

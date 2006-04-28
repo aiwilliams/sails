@@ -13,6 +13,10 @@ public class BaseController extends AbstractEventProcessingContext<IController> 
 		getTemplateResult().setLayout(templateIdentifier);
 	}
 
+	protected RedirectActionResult redirect(String absoluteUrl) {
+		return setResult(new RedirectActionResult(event, absoluteUrl));
+	}
+
 	protected RedirectActionResult redirectAction(Class<? extends IControllerImpl> controller, String action) {
 		return setResult(new RedirectActionResult(event, controller, action));
 	}

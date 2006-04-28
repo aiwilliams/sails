@@ -19,8 +19,8 @@ public class FileSystemResourceResolver implements IResourceResolver {
 	}
 
 	public boolean exists(IUrl applicationUrl) {
-		if (applicationUrl.render().startsWith("file://")) try {
-			return new File(new URI(applicationUrl.render())).exists();
+		if (applicationUrl.renderThyself().startsWith("file://")) try {
+			return new File(new URI(applicationUrl.renderThyself())).exists();
 		} catch (URISyntaxException e) {
 			return false;
 		}
@@ -32,8 +32,8 @@ public class FileSystemResourceResolver implements IResourceResolver {
 	}
 
 	public InputStream resolve(IUrl applicationUrl) {
-		if (applicationUrl.render().startsWith("file://")) try {
-			return new FileInputStream(new File(new URI(applicationUrl.render())));
+		if (applicationUrl.renderThyself().startsWith("file://")) try {
+			return new FileInputStream(new File(new URI(applicationUrl.renderThyself())));
 		} catch (URISyntaxException e) {} catch (FileNotFoundException e) {}
 		return null;
 	}

@@ -100,6 +100,18 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 		return event.getActionParameters().strings();
 	}
 
+	/**
+	 * This most certainly only reports values found in the event url (query
+	 * string) of the url. It <strong>will not</strong> answer any values from
+	 * a form post.
+	 * 
+	 * @param name
+	 * @return the value of a url query parameter
+	 */
+	public String queryParam(String name) {
+		return event.getEventUrl().getQueryParameter(name);
+	}
+
 	public void setEventContext(ISailsEvent event, P processor) {
 		this.event = event;
 		this.processor = processor;

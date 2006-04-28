@@ -5,12 +5,13 @@ import java.util.List;
 import org.opensails.sails.Sails;
 import org.opensails.sails.controller.IControllerImpl;
 import org.opensails.sails.event.ISailsEvent;
+import org.opensails.sails.url.AbsoluteUrl;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.IUrl;
 
 public class RedirectActionResult extends AbstractActionResult {
 
-	protected ActionUrl redirectUrl;
+	protected IUrl redirectUrl;
 
 	public RedirectActionResult(ISailsEvent event, Class<? extends IControllerImpl> redirectToController) {
 		this(event, redirectToController, null, null);
@@ -22,10 +23,16 @@ public class RedirectActionResult extends AbstractActionResult {
 
 	public RedirectActionResult(ISailsEvent event, Class<? extends IControllerImpl> redirectToController, String redirectToAction, List<?> parameters) {
 		super(event);
-		redirectUrl = new ActionUrl(event);
-		redirectUrl.setController(Sails.controllerName(redirectToController));
-		redirectUrl.setAction(redirectToAction);
-		redirectUrl.setParameters(parameters);
+		ActionUrl actionUrl = new ActionUrl(event);
+		actionUrl.setController(Sails.controllerName(redirectToController));
+		actionUrl.setAction(redirectToAction);
+		actionUrl.setParameters(parameters);
+		this.redirectUrl = actionUrl;
+	}
+
+	public RedirectActionResult(ISailsEvent event, String url) {
+		super(event);
+		this.redirectUrl = new AbsoluteUrl(event, url);
 	}
 
 	public IUrl getRedirectUrl() {
@@ -37,5 +44,7 @@ public class RedirectActionResult extends AbstractActionResult {
 	 * the URL of the originating event. Useful for tracking what redirected the
 	 * browser.
 	 */
-	public void rememberOrigin() {}
+	public void rememberOrigin() {
+		redirectUrl.setQueryParameter(Sails.QueryParam.ORIGINATION, event.getEventUrl().getAbsoluteUrl());
+	}
 }

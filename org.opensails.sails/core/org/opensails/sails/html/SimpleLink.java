@@ -1,19 +1,22 @@
 package org.opensails.sails.html;
 
 import java.io.IOException;
+import java.io.StringWriter;
 
+import org.opensails.sails.SailsException;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.url.ExternalUrl;
 import org.opensails.sails.url.IUrl;
+import org.opensails.sails.url.UrlType;
 
-public abstract class AbstractLink<T extends AbstractLink> extends EventDependentHtmlElement<T> implements ILink<T> {
+public class SimpleLink<T extends SimpleLink> extends EventDependentHtmlElement<T> implements ILink<T> {
 	public static final String ANCHOR = "a";
 	public static final String HREF = "href";
 
 	protected String text;
 	protected IUrl url;
 
-	public AbstractLink(ISailsEvent event, IUrl url) {
+	public SimpleLink(ISailsEvent event, IUrl url) {
 		super(ANCHOR, event);
 		this.url = url;
 	}
@@ -30,6 +33,30 @@ public abstract class AbstractLink<T extends AbstractLink> extends EventDependen
 	public T href(String href) {
 		this.url = new ExternalUrl(event, href);
 		return (T) this;
+	}
+
+	public ImageLink image(IUrl src) {
+		ImageLink imageLink = new ImageLink(event, url, src);
+		StringWriter writer = new StringWriter();
+		try {
+			renderLinkBody(new HtmlGenerator(writer));
+		} catch (IOException e) {
+			throw new SailsException("Failure converting ActionLink to ImageLink", e);
+		}
+		imageLink.alt(writer.toString());
+		imageLink.linkAttributes(attributes);
+		return imageLink;
+	}
+
+	/**
+	 * Provides for the expected behaviour of
+	 * $link.action('something').image('some.jpg').
+	 * 
+	 * @param src
+	 * @return an ImageLink bound to the href of this
+	 */
+	public ImageLink image(String src) {
+		return image(event.resolve(UrlType.IMAGE, src));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -59,7 +86,7 @@ public abstract class AbstractLink<T extends AbstractLink> extends EventDependen
 	 * Default uses href.
 	 */
 	protected String hrefValue() {
-		return url.render();
+		return url.renderThyself();
 	}
 
 	/**
@@ -74,7 +101,8 @@ public abstract class AbstractLink<T extends AbstractLink> extends EventDependen
 	 * @throws IOException
 	 */
 	protected void renderLinkBody(HtmlGenerator generator) throws IOException {
-		generator.write(text);
+		if (text == null) generator.write(url.renderThyself());
+		else generator.write(text);
 	}
 
 	@Override

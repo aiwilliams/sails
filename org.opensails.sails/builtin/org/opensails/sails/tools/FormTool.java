@@ -26,7 +26,6 @@ import org.opensails.sails.form.html.Textarea;
 import org.opensails.sails.html.IElementIdGenerator;
 import org.opensails.sails.url.ActionUrl;
 import org.opensails.sails.url.IUrl;
-import org.opensails.sails.url.UrlType;
 import org.opensails.sails.util.Quick;
 import org.opensails.spyglass.SpyObject;
 import org.opensails.viento.MethodMissing;
@@ -197,7 +196,7 @@ public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 	 *         action="/context/servlet/currentController/currentAction"&gt;
 	 */
 	public Form start() {
-		return action(event.resolve(UrlType.CONTROLLER, String.format("%s/%s", event.getProcessorName(), event.getActionName())));
+		return action(new ActionUrl(event, event.getActionName()));
 	}
 
 	public Submit submit() {

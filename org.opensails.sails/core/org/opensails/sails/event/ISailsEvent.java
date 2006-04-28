@@ -11,6 +11,7 @@ import org.apache.commons.configuration.Configuration;
 import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.ISailsApplication;
 import org.opensails.sails.action.IActionParameterList;
+import org.opensails.sails.adapter.IWebObjectAdapter;
 import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.form.FormFields;
 import org.opensails.sails.url.IEventUrl;
@@ -23,7 +24,7 @@ import org.opensails.sails.url.UrlType;
  * 
  * This is the interface as seen once an event has been dispatched.
  */
-public interface ISailsEvent {
+public interface ISailsEvent extends IWebObjectAdapter {
 	/**
 	 * @return the name of the action this event is bound for
 	 */

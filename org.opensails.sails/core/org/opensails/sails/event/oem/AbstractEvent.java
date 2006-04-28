@@ -16,7 +16,10 @@ import org.opensails.sails.RequestContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.ActionParameterList;
+import org.opensails.sails.adapter.AdaptationTarget;
 import org.opensails.sails.adapter.ContainerAdapterResolver;
+import org.opensails.sails.adapter.IAdapter;
+import org.opensails.sails.adapter.IAdapterResolver;
 import org.opensails.sails.event.ISailsEventListener;
 import org.opensails.sails.form.FileUpload;
 import org.opensails.sails.form.FormFields;
@@ -60,6 +63,13 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		getBroadcaster().endDispatch(this);
 		container.stop();
 		container.dispose();
+	}
+
+	@SuppressWarnings("unchecked")
+	public String forWebAsString(Object value) {
+		IAdapterResolver resolver = getContainer().instance(IAdapterResolver.class);
+		IAdapter adapter = resolver.resolve(value.getClass(), getContainer());
+		return String.valueOf(adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) value.getClass()), value));
 	}
 
 	public String getActionName() {
