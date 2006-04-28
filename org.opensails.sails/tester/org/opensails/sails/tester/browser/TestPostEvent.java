@@ -22,6 +22,10 @@ public class TestPostEvent extends PostEvent {
 		url.setParameters(parameters);
 	}
 
+	public void setQueryParameter(String name, String value) {
+		url.setQueryParameter(name, forWebAsString(value));
+	}
+
 	@Override
 	protected void containerSet() {
 		super.containerSet();

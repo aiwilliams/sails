@@ -1,8 +1,3 @@
-/*
- * Created on Jan 30, 2005
- *
- * (c) 2005 Adam Williams
- */
 package org.opensails.sails.tester.servletapi;
 
 import java.io.ByteArrayOutputStream;
@@ -19,13 +14,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opensails.sails.http.ContentType;
+import org.opensails.sails.util.BleedingEdgeException;
 
 public class ShamHttpServletResponse implements HttpServletResponse {
 	public boolean cookiesSupported = true;
-	private boolean committed;
-	private boolean getOutputStreamCalled, getWriterCalled;
-	private int status;
-	private boolean wasReset;
 	protected List<String> encodedRedirectUrls = new ArrayList<String>();
 	// The encoded urls are stored in different lists so that there is no
 	// question whether the correct encode method was used.
@@ -34,19 +26,31 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 	protected ByteArrayOutputStream outputStream;
 	protected String redirectDestination;
 	protected boolean sendRedirectWasCalled;
+	private boolean committed;
+	private boolean getOutputStreamCalled, getWriterCalled;
+	private int status;
+	private boolean wasReset;
 
 	public ShamHttpServletResponse() {
 		super();
 		outputStream = new ByteArrayOutputStream();
 	}
 
-	public void addCookie(Cookie cookie) {}
+	public void addCookie(Cookie cookie) {
+		throw new BleedingEdgeException("Not supported");
+	}
 
-	public void addDateHeader(String name, long date) {}
+	public void addDateHeader(String name, long date) {
+		throw new BleedingEdgeException("Not supported");
+	}
 
-	public void addHeader(String name, String value) {}
+	public void addHeader(String name, String value) {
+		throw new BleedingEdgeException("Not supported");
+	}
 
-	public void addIntHeader(String name, int value) {}
+	public void addIntHeader(String name, int value) {
+		throw new BleedingEdgeException("Not supported");
+	}
 
 	public boolean containsHeader(String name) {
 		return false;
@@ -60,7 +64,7 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 		encodedRedirectUrls.add(url);
 		// According to API, encoding of session only occurs if cookies are not
 		// supported by browser.
-		if (cookiesSupported) return url;
+		if (isCookiesSupported()) return url;
 		return url + ";sessionencoded=ShamSession";
 	}
 
@@ -75,7 +79,7 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 		encodedUrls.add(url);
 		// According to API, encoding of session only occurs if cookies are not
 		// supported by browser.
-		if (cookiesSupported) return url;
+		if (isCookiesSupported()) return url;
 		return url + ";sessionencoded=ShamSession";
 	}
 
@@ -172,7 +176,9 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 		status = sc;
 	}
 
-	public void sendError(int sc, String msg) throws IOException {}
+	public void sendError(int sc, String msg) throws IOException {
+		throw new BleedingEdgeException("Not supported");
+	}
 
 	public void sendRedirect(String location) throws IOException {
 		setHeader("Location", location);
@@ -186,35 +192,44 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 		return sendRedirectWasCalled;
 	}
 
-	public void setBufferSize(int size) {}
-
-	public void setCharacterEncoding(String arg0) {
-	// TODO Auto-generated method stub
-
+	public void setBufferSize(int size) {
+		throw new BleedingEdgeException("Not supported");
 	}
 
-	public void setContentLength(int len) {}
+	public void setCharacterEncoding(String arg0) {
+		throw new BleedingEdgeException("Not supported");
+	}
+
+	public void setContentLength(int len) {
+	// do nothing
+	}
 
 	public void setContentType(String type) {
 		setHeader(ContentType.HEADER_NAME, type);
 	}
 
-	public void setDateHeader(String name, long date) {}
+	public void setDateHeader(String name, long date) {
+		throw new BleedingEdgeException("Not supported");
+	}
 
 	public void setHeader(String name, String value) {
 		headers.put(name, value);
 	}
 
-	public void setIntHeader(String name, int value) {}
+	public void setIntHeader(String name, int value) {
+		throw new BleedingEdgeException("Not supported");
+	}
 
-	public void setLocale(Locale loc) {}
+	public void setLocale(Locale loc) {
+		throw new BleedingEdgeException("Not supported");
+	}
 
 	public void setStatus(int sc) {
 		status = sc;
 	}
 
 	public void setStatus(int sc, String sm) {
-		throw new RuntimeException("This is a depricated method");
+		throw new RuntimeException("This is a deprecated method");
 	}
 
 	public boolean wasRedirected() {
@@ -231,6 +246,10 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 
 	public boolean wasUrlRedirectEncoded(String url) {
 		return encodedRedirectUrls.contains(url);
+	}
+
+	protected boolean isCookiesSupported() {
+		return cookiesSupported;
 	}
 
 	protected String stripNullCharacters(String string) {

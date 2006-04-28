@@ -135,12 +135,12 @@ public class MemoryObjectPersister implements ITestObjectPersister {
 	 * Saves the object, but does not mark it as saved with respect to the
 	 * question {@link #wasSaved(KnowledgeAsset)}. Great for setting up!
 	 * 
-	 * @param assetType TODO
+	 * @param type
 	 * @param object
 	 */
-	public void provides(Class<? extends IIdentifiable> assetType, IIdentifiable object) {
+	public void provides(Class<? extends IIdentifiable> type, IIdentifiable object) {
 		ensureId(object);
-		source.put(assetType, object.getId(), object);
+		source.put(type, object.getId(), object);
 	}
 
 	@SuppressWarnings("unchecked")

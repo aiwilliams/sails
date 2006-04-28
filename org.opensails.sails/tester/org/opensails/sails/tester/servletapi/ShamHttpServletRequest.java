@@ -120,7 +120,6 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getLocalAddr() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -133,12 +132,10 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getLocalName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public int getLocalPort() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -221,7 +218,6 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	public int getRemotePort() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -393,10 +389,14 @@ public class ShamHttpServletRequest implements HttpServletRequest {
 	}
 
 	/**
-	 * The path info without a leading or trailing slash.
+	 * The path info with or without a leading or trailing slash.
 	 */
 	public void setPathInfo(String pathInfo) {
 		this.pathInfo = pathInfo;
+		if (this.pathInfo != null) {
+			if (!this.pathInfo.startsWith("/")) this.pathInfo = "/" + this.pathInfo;
+			if (this.pathInfo.length() > 1 && this.pathInfo.endsWith("/")) this.pathInfo = this.pathInfo.substring(0, this.pathInfo.length() - 1);
+		}
 	}
 
 	public void setScheme(String schemeLikeHttp) {

@@ -21,6 +21,7 @@ import org.opensails.sails.tester.oem.TestingHttpServletResponse;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
 import org.opensails.sails.tester.servletapi.ShamHttpSession;
+import org.opensails.sails.url.ActionUrl;
 
 /**
  * Simulates a browser connected to a Sails application. These are obtained from
@@ -69,16 +70,21 @@ public class Browser {
 	}
 
 	/**
-	 * If you would like to have an action view, but not have a controller
-	 * directory with templates, you can use this to establish the environment
-	 * necessary to make this application think that the action view exists.
-	 * 
-	 * @param controllerAction this must be in the form of 'controller/action'
-	 * @param templateContent the content of the action view
+	 * @param action
+	 * @return an ActionUrl pointing the specified action of the
+	 *         {@link #workingContext()}
 	 */
-	public void registerTemplate(String controllerAction, CharSequence templateContent) {
-		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
-		resourceResolver.register(controllerAction + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, templateContent);
+	public ActionUrl actionUrl(String action) {
+		TestGetEvent event = createGetEvent(workingContext(), action);
+		return new ActionUrl(event, action);
+	}
+
+	public TestPostEvent createPost(String action, FormFields formFields, Object... parameters) {
+		return createPost(workingContext(), action, formFields, parameters);
+	}
+
+	public TestPostEvent createPost(String context, String action, FormFields formFields, Object... parameters) {
+		return createPostEvent(context, action, formFields, adaptParameters(parameters));
 	}
 
 	/**
@@ -318,8 +324,38 @@ public class Browser {
 	 * @return the page for the given context/action
 	 */
 	public Page post(String context, String action, FormFields formFields, Object... parameters) {
-		TestPostEvent postEvent = createPostEvent(context, action, formFields, adaptParameters(parameters));
+		TestPostEvent postEvent = createPost(context, action, formFields, parameters);
 		return post(postEvent);
+	}
+
+	/**
+	 * Post the event.
+	 * 
+	 * @param event
+	 * @return the Page representing the result of posting the event
+	 * @throws NullPointerException if the event is null
+	 * @throws IllegalArgumentException if the event did not originate from the
+	 *         application of this
+	 */
+	public Page post(TestPostEvent event) {
+		if (event == null) throw new NullPointerException("You cannot post a null event");
+		if (event.getApplication() != this.application) throw new IllegalArgumentException("Cannot post events that aren't bound for the application of this browser");
+		eventDispatcher.dispatch(event);
+		prepareForNextRequest();
+		return createPage(event);
+	}
+
+	/**
+	 * If you would like to have an action view, but not have a controller
+	 * directory with templates, you can use this to establish the environment
+	 * necessary to make this application think that the action view exists.
+	 * 
+	 * @param controllerAction this must be in the form of 'controller/action'
+	 * @param templateContent the content of the action view
+	 */
+	public void registerTemplate(String controllerAction, CharSequence templateContent) {
+		VirtualResourceResolver resourceResolver = getContainer().instance(VirtualResourceResolver.class);
+		resourceResolver.register(controllerAction + VientoTemplateRenderer.TEMPLATE_IDENTIFIER_EXTENSION, templateContent);
 	}
 
 	/**
@@ -362,6 +398,18 @@ public class Browser {
 		this.workingContext = context;
 	}
 
+	/**
+	 * This is used by the Browser to specify the controller/component name that
+	 * should be used when one is not supplied in methods like
+	 * {@link #get(GetEvent)} and {@link #post(PostEvent)}.
+	 * 
+	 * @return the working context name (controller/component)
+	 * @see #setWorkingContext(Class)
+	 */
+	/*
+	 * TODO Rename to getWorkingContext and make support for Strings on
+	 * setWorkingContext
+	 */
 	public String workingContext() {
 		return workingContext != null ? Sails.eventContextName(workingContext) : "home";
 	}
@@ -388,6 +436,10 @@ public class Browser {
 		return ArrayUtils.EMPTY_STRING_ARRAY;
 	}
 
+	/**
+	 * @param pathInfo a 'raw' HttpServletRequest pathInfo
+	 * @return a GET request event, all wired up to the application
+	 */
 	protected TestGetEvent createGetEvent(String pathInfo) {
 		ShamHttpServletRequest request = createRequest();
 		request.setPathInfo(pathInfo);
@@ -443,8 +495,12 @@ public class Browser {
 	}
 
 	protected TestingHttpServletResponse createResponse() {
-		TestingHttpServletResponse response = new TestingHttpServletResponse();
-		response.cookiesSupported = cookiesEnabled;
+		TestingHttpServletResponse response = new TestingHttpServletResponse() {
+			@Override
+			protected boolean isCookiesSupported() {
+				return cookiesEnabled & cookiesSupported;
+			}
+		};
 		return response;
 	}
 
@@ -462,12 +518,6 @@ public class Browser {
 		this.application = application;
 		this.eventDispatcher = application.getDispatcher();
 		prepareForNextRequest();
-	}
-
-	protected Page post(PostEvent event) {
-		eventDispatcher.dispatch(event);
-		prepareForNextRequest();
-		return createPage(event);
 	}
 
 	// TODO: Bind to lazy created session container

@@ -9,8 +9,8 @@ public abstract class ToolTestCase extends TestCase {
 		t = new ToolTester();
 	}
 
-	public void assertRender(String pattern, String actualUsage) {
-		t.assertRender(pattern, actualUsage);
+	public void assertRender(String expected, String actualUsage) {
+		t.assertRender(expected, actualUsage);
 	}
 
 	public void assertRenderMatches(String pattern, String actualUsage) {

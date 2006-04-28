@@ -4,23 +4,23 @@ import org.opensails.tool.tester.ToolTestCase;
 
 public class UrlforToolTests extends ToolTestCase {
 	public void testAction() {
-		assertRenderMatches("mycontroller/someaction", "http://.*?/mycontroller/myaction;sessionencoded", "$urlfor.action(myaction)");
+		assertRenderMatches("mycontroller/someaction", "/.*?/mycontroller/myaction;sessionencoded", "$urlfor.action(myaction)");
 	}
 
 	public void testAction_WithController() {
-		assertRenderMatches("mycontroller/myaction", "http://.*?/anothercontroller/anotheraction;sessionencoded", "$urlfor.action(anothercontroller, anotheraction)");
+		assertRenderMatches("mycontroller/myaction", "/.*?/anothercontroller/anotheraction;sessionencoded", "$urlfor.action(anothercontroller, anotheraction)");
 	}
 
 	public void testAction_WithParameters() {
-		assertRenderMatches("mycontroller/someaction", "http://.*?/mycontroller/myaction/paramOne/paramTwo;sessionencoded", "$urlfor.action(myaction, [paramOne, paramTwo])");
+		assertRenderMatches("mycontroller/someaction", "/.*?/mycontroller/myaction/paramOne/paramTwo;sessionencoded", "$urlfor.action(myaction, [paramOne, paramTwo])");
 	}
 
 	public void testController() throws Exception {
-		assertRenderMatches("mycontroller/someaction", "http://.*?/mycontroller;sessionencoded", "$urlfor.controller");
+		assertRenderMatches("mycontroller/someaction", "/.*?/mycontroller;sessionencoded", "$urlfor.controller");
 	}
 
 	public void testController_Specified() {
-		assertRenderMatches("mycontroller/someaction", "http://.*?/yourcontroller;sessionencoded", "$urlfor.controller(yourcontroller)");
+		assertRenderMatches("mycontroller/someaction", "/.*?/yourcontroller;sessionencoded", "$urlfor.controller(yourcontroller)");
 	}
 
 	public void testImage() {
