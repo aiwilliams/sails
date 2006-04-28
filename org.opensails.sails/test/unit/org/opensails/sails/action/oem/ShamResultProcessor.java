@@ -5,9 +5,6 @@ import org.opensails.sails.action.IActionResultProcessor;
 
 public class ShamResultProcessor implements IActionResultProcessor {
 
-    public void process(IActionResult result) {
-    // TODO Auto-generated method stub
-
-    }
+	public void process(IActionResult result) {}
 
 }

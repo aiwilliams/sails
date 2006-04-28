@@ -39,7 +39,7 @@ public class AbstractEventTest extends TestCase {
 		ISailsApplication application = SailsApplicationFixture.basic();
 		AbstractEvent event = SailsEventFixture.abstractEvent(application);
 		IUrl url = event.resolve(UrlType.IMAGE, "myImage.jpg");
-		assertEquals(event.getRequest().getContextPath() + "/" + application.getConfiguration().getString(Sails.ConfigurationKey.Url.IMAGES) + "/myImage.jpg", url.render());
+		assertEquals(event.getRequest().getContextPath() + "/" + application.getConfiguration().getString(Sails.ConfigurationKey.Url.IMAGES) + "/myImage.jpg", url.renderThyself());
 	}
 
 	public void testSessionCreated() throws Exception {

@@ -10,6 +10,8 @@ public class EventUrl implements IEventUrl {
 	protected String action;
 	protected String controller;
 	protected String[] parameters;
+	protected QueryParameters queryParams;
+
 	protected final HttpServletRequest request;
 
 	public EventUrl(HttpServletRequest req) {
@@ -26,19 +28,19 @@ public class EventUrl implements IEventUrl {
 			buffer.append(":");
 			buffer.append(serverPort);
 		}
-		buffer.append(request.getContextPath());
+		buffer.append(getContext());
 		return buffer.toString();
+	}
+
+	public String getAbsoluteServletUrl() {
+		return getAbsoluteContextUrl() + getServlet();
 	}
 
 	public String getAbsoluteUrl() {
 		StringBuilder url = new StringBuilder();
-		url.append(getAbsolutServletUrl());
+		url.append(getAbsoluteServletUrl());
 		if (request.getPathInfo() != null) url.append(request.getPathInfo());
 		return url.toString();
-	}
-
-	public String getAbsolutServletUrl() {
-		return getAbsoluteContextUrl() + request.getServletPath();
 	}
 
 	public String getAction() {
@@ -62,8 +64,24 @@ public class EventUrl implements IEventUrl {
 		return url.toString();
 	}
 
+	public String getContext() {
+		return request.getContextPath();
+	}
+
+	public String getContextServlet() {
+		return getContext() + getServlet();
+	}
+
 	public String getController() {
 		return controller;
+	}
+
+	public String getQueryParameter(String name) {
+		return queryParams.get(name);
+	}
+
+	public String getServlet() {
+		return request.getServletPath();
 	}
 
 	public void setAction(String action) {
@@ -76,6 +94,10 @@ public class EventUrl implements IEventUrl {
 
 	public void setParameters(String[] parameters) {
 		this.parameters = parameters;
+	}
+
+	public void setQueryParameter(String name, String value) {
+		queryParams.set(name, value);
 	}
 
 	protected String[] getCleanPathInfo(String pathInfo) {
@@ -97,6 +119,7 @@ public class EventUrl implements IEventUrl {
 		this.controller = loadControllerName(request, pathInfo);
 		this.action = loadActionName(request, pathInfo);
 		this.parameters = loadActionParameters(request, pathInfo);
+		this.queryParams = loadQueryParameters(request);
 	}
 
 	protected String loadActionName(HttpServletRequest request, String[] pathInfo) {
@@ -114,6 +137,10 @@ public class EventUrl implements IEventUrl {
 	protected String loadControllerName(HttpServletRequest request, String[] pathInfo) {
 		if (pathInfo.length < 1) return getDefaultControllerName();
 		else return pathInfo[0];
+	}
+
+	protected QueryParameters loadQueryParameters(HttpServletRequest request) {
+		return new QueryParameters(request.getQueryString());
 	}
 
 	/**

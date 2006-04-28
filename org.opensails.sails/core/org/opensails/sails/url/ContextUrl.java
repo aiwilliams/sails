@@ -1,26 +1,62 @@
 package org.opensails.sails.url;
 
-import org.opensails.sails.SailsException;
 import org.opensails.sails.event.ISailsEvent;
 
-public class ContextUrl extends AbstractUrl<ContextUrl> {
+/**
+ * An IUrl that is relative to the web application context.
+ * 
+ * @author aiwilliams
+ */
+public class ContextUrl<T extends ContextUrl> extends AbstractUrl<T> {
 	protected String url;
+	protected AdaptingQueryParameters queryParams;
 
 	/**
 	 * @param event
 	 * @param url context relative
 	 */
-	public ContextUrl(ISailsEvent event, String url) {
+	public ContextUrl(ISailsEvent event) {
 		super(event);
-		this.url = url;
+		this.queryParams = new AdaptingQueryParameters(event);
 	};
 
+	/**
+	 * @param event
+	 * @param url context relative, no query parameters
+	 */
+	public ContextUrl(ISailsEvent event, String url) {
+		this(event);
+		this.url = url;
+	}
+
+	/**
+	 * @return the path relative to the context, not including query parameters
+	 */
 	public String getContextRelativePath() {
 		return url;
 	}
 
-	public ContextUrl secure() {
-		throw new SailsException("Are you sure you want to make a context relative url secure? File a bug report if you think so. We didn't at the time we wrote this. Thank you for using Sails. :)");
+	public String getQueryParameter(String name) {
+		return queryParams.get(name);
+	};
+
+	public ContextUrl<T> secure() {
+		this.secure = true;
+		return this;
+	}
+
+	/**
+	 * Adds support for setting query parameters from Java Objects.
+	 * 
+	 * @param name
+	 * @param value
+	 */
+	public void setQueryParameter(String name, Object value) {
+		queryParams.set(name, value);
+	}
+
+	public void setQueryParameter(String name, String value) {
+		queryParams.set(name, value);
 	}
 
 	@Override
@@ -30,6 +66,15 @@ public class ContextUrl extends AbstractUrl<ContextUrl> {
 
 	@Override
 	protected String renderAbsoluteUrl() {
-		return String.format("%s/%s", event.getEventUrl().getAbsoluteContextUrl(), url);
+		return doRenderUrl(event.getEventUrl().getAbsoluteContextUrl());
+	}
+
+	private String doRenderUrl(String contextPath) {
+		StringBuilder u = new StringBuilder();
+		u.append(contextPath);
+		u.append("/");
+		u.append(url);
+		u.append(queryParams);
+		return u.toString();
 	}
 }

@@ -16,7 +16,7 @@ public class FormToolTests extends TestCase {
 		TestGetEvent event = t.createVirtualEvent("mc/ma", "$form.start");
 		Page page = t.get(event);
 		page.assertContains("method=\"post\"");
-		page.assertMatches("action=\"http://.*?/mc/ma\"");
+		page.assertMatches("action=\"/.*?/mc/ma\"");
 	}
 
 	public void testForm_IdGeneration() throws Exception {

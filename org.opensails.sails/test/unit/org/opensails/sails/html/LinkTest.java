@@ -10,10 +10,10 @@ public class LinkTest extends TestCase {
 		Link linkTwo = new Link();
 		assertEquals(linkOne, linkTwo);
 
-		linkOne.href(new ExternalUrl("a"));
+		linkOne.href(new ExternalUrl("http://a"));
 		assertFalse(linkOne.equals(linkTwo));
 
-		linkTwo.href(new ExternalUrl("a"));
+		linkTwo.href(new ExternalUrl("http://a"));
 		assertEquals(linkOne, linkTwo);
 	}
 }

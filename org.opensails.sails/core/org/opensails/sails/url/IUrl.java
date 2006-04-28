@@ -1,6 +1,8 @@
 package org.opensails.sails.url;
 
-public interface IUrl {
+import org.opensails.viento.IRenderable;
+
+public interface IUrl extends IRenderable {
 	/**
 	 * @return the absolute version of this url
 	 */
@@ -8,11 +10,15 @@ public interface IUrl {
 
 	/**
 	 * @param name
-	 * @return the unencoded value of the url query param for unencoded name
+	 * @return the adapted, unencoded value of the url query param for unencoded
+	 *         name
 	 */
-	String getQueryParam(String name);
+	String getQueryParameter(String name);
 
-	String render();
+	/**
+	 * @return the final, URLEncoder#encode() applied String representation
+	 */
+	String renderThyself();
 
 	/**
 	 * Secures this url, regardless of where it points to. Be aware that this
@@ -27,5 +33,5 @@ public interface IUrl {
 	 * @param name the name of the param, will be encoded
 	 * @param value the value of the param, will be encoded
 	 */
-	void setQueryParam(String name, String value);
+	void setQueryParameter(String name, String value);
 }

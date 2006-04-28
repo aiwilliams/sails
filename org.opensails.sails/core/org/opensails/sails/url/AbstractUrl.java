@@ -1,8 +1,12 @@
 package org.opensails.sails.url;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import org.opensails.sails.Sails;
+import org.opensails.sails.SailsException;
 import org.opensails.sails.event.ISailsEvent;
-import org.opensails.sails.util.BleedingEdgeException;
 
 public abstract class AbstractUrl<T extends AbstractUrl> implements IUrl {
 	protected ISailsEvent event;
@@ -16,17 +20,25 @@ public abstract class AbstractUrl<T extends AbstractUrl> implements IUrl {
 		return new AbsoluteUrl(event, renderAbsoluteUrl());
 	}
 
+	public String decode(String value) {
+		try {
+			return URLDecoder.decode(value, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new SailsException("Could not decode value", e);
+		}
+	}
+
+	public String encode(String value) {
+		try {
+			return URLEncoder.encode(value, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new SailsException("Could not encode value", e);
+		}
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		return absolute().equals(((IUrl) obj).absolute());
-	}
-
-	public String getQueryParam(String name) {
-		return new UrlQuery(this.renderAbsoluteUrl()).getParameter(name);
-	}
-
-	public void setQueryParam(String name, String value) {
-		throw new BleedingEdgeException("implement");
 	}
 
 	@Override
@@ -34,7 +46,7 @@ public abstract class AbstractUrl<T extends AbstractUrl> implements IUrl {
 		return absolute().hashCode();
 	}
 
-	public String render() {
+	public String renderThyself() {
 		if (secure) {
 			String url = renderAbsoluteUrl();
 			String secureScheme = event.getConfiguration().getString(Sails.ConfigurationKey.Url.SECURE_SCHEME);
@@ -43,15 +55,14 @@ public abstract class AbstractUrl<T extends AbstractUrl> implements IUrl {
 		return doRender();
 	}
 
-	@SuppressWarnings("unchecked")
-	public T secure() {
+	public AbstractUrl<T> secure() {
 		this.secure = true;
-		return (T) this;
+		return this;
 	}
 
 	@Override
 	public String toString() {
-		return render();
+		return renderThyself();
 	}
 
 	/**
