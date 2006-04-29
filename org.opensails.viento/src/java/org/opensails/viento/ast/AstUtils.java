@@ -4,7 +4,7 @@ import org.opensails.viento.UnresolvableObject;
 
 public class AstUtils {
 	public static boolean unresolvedOrFalse(Object object) {
-		return !(object instanceof UnresolvableObject) && !object.equals(false);
+		return !(object instanceof UnresolvableObject) && !Boolean.FALSE.equals(object);
 	}
 	
 	public static String unescapeString(String value) {
