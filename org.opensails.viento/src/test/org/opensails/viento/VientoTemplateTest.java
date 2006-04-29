@@ -92,6 +92,11 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("$if($i >= 3)[[here]]", "here");
 		verifyRender("$if($i >= 2)[[here]]", "here");
 	}
+	
+	public void testEnum() throws Exception {
+		binding.put("tool", new Tool());
+		verifyRender("$tool.takesEnum(TWO)", "1");
+	}
 
 	public void testEquals() {
 		binding.put("one", "value");
@@ -314,6 +319,10 @@ public class VientoTemplateTest extends TestCase {
 			}
 			return buffer.toString();
 		}
+		
+		public int takesEnum(Numbers n) {
+			return n.ordinal();
+		}
 
 		public String takesMap(Map<Object, Object> map) {
 			StringBuilder buffer = new StringBuilder();
@@ -344,5 +353,9 @@ public class VientoTemplateTest extends TestCase {
 				return "yes";
 			return "no";
 		}
+	}
+	
+	public enum Numbers {
+		ONE, TWO, THREe
 	}
 }

@@ -87,7 +87,11 @@ public class ObjectMethods implements IMethodResolver {
 		if (arg == null)
 			return !parameterType.isPrimitive();
 		return parameterType.isAssignableFrom(arg)
-				|| primitiveMatch(parameterType, arg);
+				|| primitiveMatch(parameterType, arg) || enumMatch(parameterType, arg);
+	}
+
+	protected boolean enumMatch(Class<?> parameterType, Class<?> arg) {
+		return parameterType.isEnum() && arg.isAssignableFrom(String.class);
 	}
 
 	protected boolean typesMatch(Class<?>[] parameterTypes, Class[] args,
