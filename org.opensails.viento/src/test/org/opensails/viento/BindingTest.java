@@ -101,6 +101,7 @@ public class BindingTest extends TestCase {
 	public void testCustomName() throws Exception {
 		binding.mixin(target);
 		assertEquals("$", binding.call("$"));
+		assertEquals("field", binding.call("?"));
 	}
 
 	public void testBeans() throws Exception {
@@ -189,6 +190,7 @@ public class BindingTest extends TestCase {
 	}
 
 	class ShamObject {
+		@Name("?")
 		public String field = "field";
 
 		public int varargs(Object... args) {

@@ -1,5 +1,6 @@
 package org.opensails.viento;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -38,14 +39,17 @@ public class ObjectMethods implements IMethodResolver {
 		return theMethod;
 	}
 
-	protected Field findField(Class targetClass, String methodName) {
-		try {
-			return targetClass.getField(methodName);
-		} catch (Exception e) {
-			return null;
-		}
+	protected Field findField(Class<?> type, String methodName) {
+		Field theField = null;
+		Field[] fields = type.getFields();
+		for (Field field : fields)
+			if (!field.isAnnotationPresent(Invisible.class) && nameMatch(methodName, field))
+				theField = field;
+		if (type.getSuperclass() != null && theField == null)
+			return findField(type.getSuperclass(), methodName);
+		return theField;
 	}
-
+	
 	protected Method findMethodMissing(Class<?> type) {
 		Method found = null;
 		while (found == null && type != Object.class)
@@ -62,13 +66,22 @@ public class ObjectMethods implements IMethodResolver {
 		return "get" + Character.toUpperCase(methodName.charAt(0))
 				+ methodName.substring(1);
 	}
-
-	protected boolean nameMatch(String methodName, Method method) {
-		if (method.isAnnotationPresent(Name.class))
-			for (String name : method.getAnnotation(Name.class).value())
+	
+	protected boolean annotation(AnnotatedElement element, String methodName) {
+		if (element.isAnnotationPresent(Name.class))
+			for (String name : element.getAnnotation(Name.class).value())
 				if (name.equals(methodName))
 					return true;
-		return method.getName().equals(methodName)
+		return false;
+	}
+
+
+	protected boolean nameMatch(String methodName, Field field) {
+		return annotation(field, methodName) || field.getName().equals(methodName);
+	}
+	
+	protected boolean nameMatch(String methodName, Method method) {
+		return annotation(method, methodName) || method.getName().equals(methodName)
 				|| method.getName().equals(getter(methodName))
 				|| izzer(method, methodName);
 	}
