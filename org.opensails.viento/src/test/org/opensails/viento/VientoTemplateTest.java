@@ -222,6 +222,8 @@ public class VientoTemplateTest extends TestCase {
 	public void testQuickBlock() throws Exception {
 		binding.put("tool", new Tool());
 		verifyRender("stuff$tool.twice[>[block]\nstuff", "stuff[block][block]\nstuff");
+		verifyRender("$tool.twice[>eof?", "eof?eof?");
+		verifyRender("$tool.twice\r\n\t\t[>cool eh?", "cool eh?cool eh?");
 	}
 
 	public void testRender_CachesAST() throws Exception {

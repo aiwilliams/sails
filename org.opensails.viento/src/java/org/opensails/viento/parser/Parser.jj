@@ -35,7 +35,9 @@ TOKEN_MGR_DECLS : {
 }
 
 
-<EXPRESSION, ARGS_OR_BLOCK, BLOCK, END> SKIP : { " " | "\r" | "\t" }
+<EXPRESSION> SKIP : { <(" ")+> }
+
+<ARGS_OR_BLOCK, BLOCK> SKIP : { " " | <(("\r\n" | "\n") (["\t", " "])*)> }
 
 <DEFAULT, IN_BLOCK, IN_QUICK_BLOCK> SKIP : {
 	<("\r")? ("\n")? ([" ", "\t"])* "##"> {pushState(SINGLELINE_COMMENT);}
@@ -88,8 +90,8 @@ TOKEN : {
 }
 
 <ARGS_OR_BLOCK> MORE : {
-	<([" ", "\t", "\r"])* (~["(", "[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
-|	<([" ", "\t", "\r"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
+	<([" ", "\t", "\r", "\n"])* (~["(", "[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r", "\n"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
 }
 
 <ARGS_OR_BLOCK, BLOCK> TOKEN : {
@@ -98,8 +100,8 @@ TOKEN : {
 }
 
 <BLOCK> MORE : {
-	<([" ", "\t", "\r"])* (~["[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
-|	<([" ", "\t", "\r"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
+	<([" ", "\t", "\r", "\n"])* (~["[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t", "\r", "\n"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
 }
 
 <ARGS_OR_BLOCK, BLOCK, END> TOKEN : {
