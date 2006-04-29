@@ -173,6 +173,7 @@ public class VientoTemplateTest extends TestCase {
 		binding.put("tool", new Tool());
 		binding.put("first", "value");
 		verifyRender("stuff$tool.takesList([$first, 'second'])stuff", "stuffvalue - second - stuff");
+		verifyRender("$tool.takesList([$not, 'asdf', $there.?])", "null - asdf - ");
 	}
 
 	public void testMap() throws Exception {
