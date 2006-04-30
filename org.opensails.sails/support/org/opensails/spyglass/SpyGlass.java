@@ -58,7 +58,7 @@ public class SpyGlass {
 
 		DotPropertyPath namePath = new DotPropertyPath(clazz.getName());
 		String name = namePath.getLastProperty();
-		int innerClassSeparatorIndex = name.indexOf('$');
+		int innerClassSeparatorIndex = name.lastIndexOf('$');
 		if (innerClassSeparatorIndex > 0) name = name.substring(innerClassSeparatorIndex + 1);
 
 		return name;

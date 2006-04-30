@@ -40,4 +40,8 @@ public class CheckboxTest extends TestCase {
 		} catch (AssertionFailedError expected) {}
 		element.assertValue("das other value");
 	}
+
+	public void testSanity() throws Exception {
+		new Checkbox("perty\">textareaValue</textarea><input id=\"model_checkboxProperty\" name=\"model.checkboxProperty\" type=\"checkbox\" value=\"1\" /><label for=\"model_checkboxProperty\">Checkbox</label><input name=\"form.meta.cb.model.checkboxProperty\" type=\"hidden\" value=\"0\" /><input id=\"model_checkboxList", "model.checkboxProperty");
+	}
 }

@@ -8,8 +8,8 @@ public class Checkbox extends CheckedElement<Checkbox> {
 	/**
 	 * A checkbox in containerSource having attribute name=name.
 	 * <p>
-	 * This constructor is useful in cases where there is only one checkbox have
-	 * name=name. If there are more than one with the same name, you must
+	 * This constructor is useful in cases where there is only one checkbox
+	 * having name=name. If there are more than one with the same name, you must
 	 * specify the value as well.
 	 * 
 	 * @param containerSource

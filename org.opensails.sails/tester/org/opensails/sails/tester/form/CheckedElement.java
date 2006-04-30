@@ -41,7 +41,7 @@ public abstract class CheckedElement<T extends CheckedElement> extends TestFormE
 		this.id = HtmlPattern.readId(elementSource);
 	}
 
-	public T assertChecked() {
+	public CheckedElement<T> assertChecked() {
 		return assertChecked(true);
 	}
 
@@ -51,20 +51,18 @@ public abstract class CheckedElement<T extends CheckedElement> extends TestFormE
 	 * @see #assertChecked()
 	 * @see #assertUnchecked()
 	 */
-	@SuppressWarnings("unchecked")
-	public T assertChecked(boolean expected) {
+	public CheckedElement<T> assertChecked(boolean expected) {
 		assertChecked(expected, CHECKED_PATTERN.matcher(elementSource).find());
-		return (T) this;
+		return this;
 	}
 
-	public T assertUnchecked() {
+	public CheckedElement<T> assertUnchecked() {
 		return assertChecked(false);
 	}
 
-	@SuppressWarnings("unchecked")
-	public T assertValue(String expected) {
+	public CheckedElement<T> assertValue(String expected) {
 		if (!HtmlPattern.matchesValue(elementSource, expected)) throw new TestElementError(getClass(), elementSource, String.format("Value of [%s] did not match [%s]", getName(), expected));
-		return (T) this;
+		return this;
 	}
 
 	protected void assertChecked(boolean expected, boolean isChecked) throws AssertionFailedError {
