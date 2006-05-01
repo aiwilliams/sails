@@ -78,9 +78,14 @@ public class QueryParameters {
 		String[] params = queryString.split("&");
 		for (String param : params) {
 			String[] nameValue = param.split("=");
-			map.put(nameValue[0], nameValue[1]);
+			map.put(nameValue[0], parseValue(nameValue));
 		}
 		return map;
+	}
+
+	protected String parseValue(String[] nameValue) {
+		if (nameValue.length <= 1) return null;
+		return nameValue[1];
 	}
 
 	protected Object rawGet(String name) {
