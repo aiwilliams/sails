@@ -230,6 +230,7 @@ public class VientoTemplateTest extends TestCase {
 		verifyRender("stuff$tool.twice[>[block]\nstuff", "stuff[block][block]\nstuff");
 		verifyRender("$tool.twice[>eof?", "eof?eof?");
 		verifyRender("$tool.twice\r\n\t\t[>cool eh?", "cool eh?cool eh?");
+		verifyRender("$tool.twice[>$tool.numbers123\nhere", "herehere\nhere");
 	}
 
 	public void testRender_CachesAST() throws Exception {

@@ -18,8 +18,18 @@ TOKEN_MGR_DECLS : {
 	Stack stateStack = initializeStack();
 
 	public void pushState(int state) {
+		if (inQuickBlock())
+			if (state == ARGS_OR_BLOCK) state = QUICK_BLOCK_ARGS_OR_BLOCK;
+			else if (state == BLOCK) state = QUICK_BLOCK_BLOCK;
 		SwitchTo(state);
 		stateStack.push(state);
+	}
+	
+	protected boolean inQuickBlock() {
+		for (int i=0; i<stateStack.size(); i++)
+			if (((Integer)stateStack.elementAt(i)) == IN_QUICK_BLOCK)
+				return true;
+		return false;
 	}
 	
 	public void popState() {
@@ -38,6 +48,7 @@ TOKEN_MGR_DECLS : {
 <EXPRESSION> SKIP : { <(" ")+> }
 
 <ARGS_OR_BLOCK, BLOCK> SKIP : { " " | <(("\r\n" | "\n") (["\t", " "])*)> }
+<QUICK_BLOCK_ARGS_OR_BLOCK, QUICK_BLOCK_BLOCK> SKIP : { <(["\t", " "])+> }
 
 <DEFAULT, IN_BLOCK, IN_QUICK_BLOCK> SKIP : {
 	<("\r")? ("\n")? ([" ", "\t"])* "##"> {pushState(SINGLELINE_COMMENT);}
@@ -85,7 +96,7 @@ TOKEN : {
 	<([" ", "\t", "\r"])* (~["a"-"z", "A"-"Z", "!", "?", "_", "-", "0"-"9"])> {input_stream.backup(1); popState();}
 }
 
-<ARGS_OR_BLOCK> TOKEN : {
+<ARGS_OR_BLOCK, QUICK_BLOCK_ARGS_OR_BLOCK> TOKEN : {
 	<LPAREN: "("> {pushState(EXPRESSION);}
 }
 
@@ -94,7 +105,12 @@ TOKEN : {
 |	<([" ", "\t", "\r", "\n"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
 }
 
-<ARGS_OR_BLOCK, BLOCK> TOKEN : {
+<QUICK_BLOCK_ARGS_OR_BLOCK> MORE : {
+	<([" ", "\t"])* (~["(", "[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
+}
+
+<ARGS_OR_BLOCK, BLOCK, QUICK_BLOCK_ARGS_OR_BLOCK, QUICK_BLOCK_BLOCK> TOKEN : {
 	<BEGIN_BLOCK: "[["> {pushState(IN_BLOCK);}
 |	<BEGIN_QUICK_BLOCK: "[>"> {pushState(IN_QUICK_BLOCK);}
 }
@@ -104,7 +120,12 @@ TOKEN : {
 |	<([" ", "\t", "\r", "\n"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
 }
 
-<ARGS_OR_BLOCK, BLOCK, END> TOKEN : {
+<QUICK_BLOCK_BLOCK> MORE : {
+	<([" ", "\t"])* (~["[", ".", ";"])> {input_stream.backup(1); popState(); popState();}
+|	<([" ", "\t"])* "[" (~["[", ">"])> {input_stream.backup(1); popState(); popState();}
+}
+
+<ARGS_OR_BLOCK, BLOCK, END, QUICK_BLOCK_ARGS_OR_BLOCK, QUICK_BLOCK_BLOCK> TOKEN : {
 	<DOT: "."> {popState();}
 |	<SEMICOLON: ";"> {popState(); popState();}
 }
