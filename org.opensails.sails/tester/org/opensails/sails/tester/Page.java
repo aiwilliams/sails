@@ -11,6 +11,9 @@ import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
 import org.apache.commons.lang.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.opensails.sails.IEventContextContainer;
 import org.opensails.sails.SailsException;
 import org.opensails.sails.action.oem.TemplateActionResult;
@@ -19,8 +22,8 @@ import org.opensails.sails.form.HtmlForm;
 import org.opensails.sails.http.ContentType;
 import org.opensails.sails.http.HttpHeader;
 import org.opensails.sails.oem.Flash;
-import org.opensails.sails.tester.form.Form;
-import org.opensails.sails.tester.html.FieldSet;
+import org.opensails.sails.tester.form.TesterFieldset;
+import org.opensails.sails.tester.form.TesterForm;
 import org.opensails.sails.tester.oem.LazyActionResultProcessor;
 import org.opensails.sails.tester.oem.TestingBinding;
 import org.opensails.sails.tester.servletapi.ShamHttpServletResponse;
@@ -32,6 +35,8 @@ public class Page {
 
 	protected HttpServletRequest request;
 	protected ShamHttpServletResponse response;
+
+	private Document document;
 
 	public Page(ISailsEvent event) {
 		this.event = event;
@@ -164,16 +169,35 @@ public class Page {
 	 * @param id
 	 * @return a FieldSet anywhere on this page
 	 */
-	public FieldSet fieldSet(String id) {
-		return new FieldSet(source(), id);
+	public TesterFieldset fieldSet(String id) {
+		return new TesterFieldset(rootElement(), id);
 	}
 
 	public TestFlash flash() {
 		return new TestFlash(container().instance(Flash.class));
 	}
 
-	public Form form() {
-		return new Form(source(), container().instance(HtmlForm.class));
+	public TesterForm form() {
+		return new TesterForm(rootElementOrNull(), container().instance(HtmlForm.class));
+	}
+
+	public TesterForm form(String name) {
+		return new TesterForm(rootElementOrNull(), name, container().instance(HtmlForm.class));
+	}
+
+	public Document getDocument() {
+		if (document == null) {
+			try {
+				StringBuilder parsableSource = new StringBuilder();
+				parsableSource.append("<page>");
+				parsableSource.append(source());
+				parsableSource.append("</page>");
+				document = DocumentHelper.parseText(parsableSource.toString());
+			} catch (Exception e) {
+				throw new SailsException("The page is not a valid document", e);
+			}
+		}
+		return document;
 	}
 
 	public boolean matches(String regex) {
@@ -184,8 +208,8 @@ public class Page {
 		return new TestRedirectUrl(event, response);
 	}
 
-	public ScriptList scripts() {
-		return new ScriptList(source());
+	public TesterScriptList scripts() {
+		return new TesterScriptList(getDocument());
 	}
 
 	/**
@@ -250,6 +274,16 @@ public class Page {
 
 	protected LazyActionResultProcessor processor() {
 		return event.getContainer().instance(LazyActionResultProcessor.class);
+	}
+
+	protected Element rootElement() {
+		return getDocument().getRootElement();
+	}
+
+	protected Element rootElementOrNull() {
+		Element root = null;
+		if (!StringUtils.isBlank(source())) root = rootElement();
+		return root;
 	}
 
 	public class ExposedObject {

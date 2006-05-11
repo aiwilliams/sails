@@ -1,11 +1,13 @@
 package org.opensails.sails.tester.html;
 
-import org.opensails.spyglass.SpyGlass;
+import org.dom4j.Element;
+import org.opensails.sails.tester.form.TesterElementError;
 
-public class NoSuchElementError extends SourceContentError {
-	private static final long serialVersionUID = 8067144709396455128L;
+public class NoSuchElementError extends TesterElementError {
+	private static final long serialVersionUID = 1L;
 
-	public NoSuchElementError(Class<? extends TestElement> elementType, String containerSource, String matchCriteria) {
-		super(containerSource, String.format("Could not find element %s of type %s in container source", matchCriteria, SpyGlass.getName(elementType)));
+	public NoSuchElementError(XPathString elementDescription, Element containerElement) {
+		super(String.format("No element '%s' found in\n%s", elementDescription, containerElement.asXML()), containerElement);
 	}
+
 }

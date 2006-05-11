@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="vendor/required/antlr-2.7.6rc1.jar"/>
 	<classpathentry kind="lib" path="vendor/optional/jta.jar"/>
 	<classpathentry kind="lib" path="vendor/required/cglib-nodep-2.1_3.jar"/>
-	<classpathentry kind="lib" path="vendor/required/dom4j-1.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="vendor/required/ejb3-persistence.jar"/>
 	<classpathentry exported="true" sourcepath="vendor/src/hibernate3.zip" kind="lib" path="vendor/required/hibernate3.jar"/>
 	<classpathentry exported="true" sourcepath="vendor/src/hibernate-annotations.zip" kind="lib" path="vendor/required/hibernate-annotations.jar"/>

@@ -6,17 +6,17 @@ import org.opensails.sails.component.IComponent;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.component.IComponentResolver;
 import org.opensails.sails.tester.Page;
-import org.opensails.sails.tester.browser.TestGetEvent;
+import org.opensails.sails.tester.browser.TesterGetEvent;
 import org.opensails.viento.IBinding;
 
 public class TestComponent<C extends IComponentImpl> {
 	private final Class<? extends IComponentImpl> componentClass;
-	private final TestGetEvent event;
+	private final TesterGetEvent event;
 	private boolean hasBeenInitialized;
 	private IComponentImpl instance;
 	private final SailsComponentTester tester;
 
-	public TestComponent(SailsComponentTester tester, TestGetEvent event, Class<? extends IComponentImpl> componentClass) {
+	public TestComponent(SailsComponentTester tester, TesterGetEvent event, Class<? extends IComponentImpl> componentClass) {
 		this.tester = tester;
 		this.event = event;
 		this.componentClass = componentClass;

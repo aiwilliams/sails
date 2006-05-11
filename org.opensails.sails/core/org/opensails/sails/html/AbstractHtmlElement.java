@@ -132,17 +132,28 @@ public abstract class AbstractHtmlElement<T extends AbstractHtmlElement> impleme
 	 * @throws IOException
 	 */
 	protected void render(HtmlGenerator generator) throws IOException {
-		generator.openTag(elementName, getId());
-		writeAttributes(generator);
-		if (hasBody()) {
-			generator.closeTag();
-			body(generator);
-			generator.endTag(elementName);
-		} else generator.closeTag(true);
+		renderStartTag(generator);
+		renderBody(generator);
+		renderEndTag(generator);
 	}
 
 	protected void render(Writer writer) throws IOException {
 		render(new HtmlGenerator(writer));
+	}
+
+	protected void renderBody(HtmlGenerator generator) throws IOException {
+		if (hasBody()) body(generator);
+	}
+
+	protected void renderEndTag(HtmlGenerator generator) throws IOException {
+		if (hasBody()) generator.endTag(elementName);
+	}
+
+	protected void renderStartTag(HtmlGenerator generator) throws IOException {
+		generator.openTag(elementName, getId());
+		writeAttributes(generator);
+		if (hasBody()) generator.closeTag();
+		else generator.closeTag(true);
 	}
 
 	/**

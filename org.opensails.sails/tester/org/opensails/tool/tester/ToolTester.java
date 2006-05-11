@@ -7,7 +7,7 @@ import org.opensails.sails.event.oem.GetEvent;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.Browser;
 import org.opensails.sails.tester.browser.SailsTestApplication;
-import org.opensails.sails.tester.browser.TestGetEvent;
+import org.opensails.sails.tester.browser.TesterGetEvent;
 
 /**
  * Provides an environment to test tools.
@@ -32,7 +32,7 @@ public class ToolTester {
 		assertRender(event(actualUsage), expected);
 	}
 
-	public void assertRender(TestGetEvent event, String expected) throws AssertionFailedError {
+	public void assertRender(TesterGetEvent event, String expected) throws AssertionFailedError {
 		Page page = browser.get(event);
 		page.assertContains(expected);
 	}
@@ -62,11 +62,11 @@ public class ToolTester {
 		browser.disableCookies();
 	}
 
-	public TestGetEvent event(String actualUsage) {
+	public TesterGetEvent event(String actualUsage) {
 		return event("tool/test", actualUsage);
 	}
 
-	public TestGetEvent event(String controllerAction, String actualUsage) {
+	public TesterGetEvent event(String controllerAction, String actualUsage) {
 		return browser.createVirtualEvent(controllerAction, actualUsage);
 	}
 

@@ -3,7 +3,7 @@ package org.opensails.functional.tools;
 import junit.framework.TestCase;
 
 import org.opensails.functional.SailsFunctionalTester;
-import org.opensails.sails.tester.ScriptList;
+import org.opensails.sails.tester.TesterScriptList;
 
 /**
  * These tests are for the ScriptTool being used within one event.
@@ -14,7 +14,7 @@ public class ScriptToolTests extends TestCase {
 
 	public void testScript() throws Exception {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		ScriptList scripts = t.getTemplated(scriptTemplate()).scripts();
+		TesterScriptList scripts = t.getTemplated(scriptTemplate()).scripts();
 		scripts.assertContains("applicationScript", 0);
 		scripts.assertContains("applicationScript.js", 3);
 		scripts.assertContains("builtinScript", 0);

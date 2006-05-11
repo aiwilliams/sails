@@ -1,5 +1,8 @@
 package org.opensails.sails.form.html;
 
+import java.io.IOException;
+
+import org.opensails.sails.html.HtmlGenerator;
 import org.opensails.sails.url.IUrl;
 
 public class Form extends FormElement<Form> {
@@ -21,4 +24,13 @@ public class Form extends FormElement<Form> {
 		return attribute("method", httpMethod);
 	}
 
+	@Override
+	protected boolean hasBody() {
+		return true;
+	}
+
+	@Override
+	protected void renderEndTag(HtmlGenerator generator) throws IOException {
+	// no end tag
+	}
 }

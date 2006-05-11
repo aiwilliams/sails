@@ -14,5 +14,7 @@
 	<classpathentry exported="true" sourcepath="src/ant/ant_src.zip" kind="lib" path="lib/ant/ant.jar"/>
 	<classpathentry exported="true" sourcepath="src/junit_src.zip" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" sourcepath="src/commons-fileupload-1.0-src.zip" kind="lib" path="lib/commons-fileupload-1.0.jar"/>
+	<classpathentry exported="true" sourcepath="src/dom4j_src.zip" kind="lib" path="/Users/aiwilliams/Documents/workspace/org.opensails.sails.vendor/lib/dom4j.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/aiwilliams/Documents/workspace/org.opensails.sails.vendor/lib/jaxen.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

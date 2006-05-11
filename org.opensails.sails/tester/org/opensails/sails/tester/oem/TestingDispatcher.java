@@ -6,7 +6,7 @@ import org.opensails.sails.configurator.IEventConfigurator;
 import org.opensails.sails.event.IActionEventProcessorResolver;
 import org.opensails.sails.event.oem.ILifecycleEvent;
 import org.opensails.sails.oem.Dispatcher;
-import org.opensails.sails.tester.TestApplicationContainer;
+import org.opensails.sails.tester.TesterApplicationContainer;
 
 public class TestingDispatcher extends Dispatcher {
 	public TestingDispatcher(ISailsApplication application, IEventConfigurator configurator, IActionEventProcessorResolver eventProcessorResolver, IActionResultProcessorResolver resultProcessorResolver) {
@@ -29,6 +29,6 @@ public class TestingDispatcher extends Dispatcher {
 	}
 
 	protected void startNewlyInjectedApplicationScopedStartables() {
-		((TestApplicationContainer) application.getContainer()).startInjections();
+		((TesterApplicationContainer) application.getContainer()).startInjections();
 	}
 }

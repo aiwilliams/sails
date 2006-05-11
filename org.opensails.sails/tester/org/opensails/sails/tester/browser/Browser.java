@@ -16,7 +16,7 @@ import org.opensails.sails.form.FormFields;
 import org.opensails.sails.oem.Dispatcher;
 import org.opensails.sails.template.viento.VientoTemplateRenderer;
 import org.opensails.sails.tester.Page;
-import org.opensails.sails.tester.TestApplicationContainer;
+import org.opensails.sails.tester.TesterApplicationContainer;
 import org.opensails.sails.tester.oem.TestingHttpServletResponse;
 import org.opensails.sails.tester.oem.VirtualResourceResolver;
 import org.opensails.sails.tester.servletapi.ShamHttpServletRequest;
@@ -57,7 +57,7 @@ public class Browser {
 	 */
 	public boolean nextRequestIsMultipart;
 	protected Dispatcher eventDispatcher;
-	protected TestRequestContainer requestContainer;
+	protected TesterRequestContainer requestContainer;
 	protected ShamHttpSession session;
 	protected Class<? extends IEventProcessingContext> workingContext;
 	protected SailsTestApplication application;
@@ -75,15 +75,15 @@ public class Browser {
 	 *         {@link #workingContext()}
 	 */
 	public ActionUrl actionUrl(String action) {
-		TestGetEvent event = createGetEvent(workingContext(), action);
+		TesterGetEvent event = createGetEvent(workingContext(), action);
 		return new ActionUrl(event, action);
 	}
 
-	public TestPostEvent createPost(String action, FormFields formFields, Object... parameters) {
+	public TesterPostEvent createPost(String action, FormFields formFields, Object... parameters) {
 		return createPost(workingContext(), action, formFields, parameters);
 	}
 
-	public TestPostEvent createPost(String context, String action, FormFields formFields, Object... parameters) {
+	public TesterPostEvent createPost(String context, String action, FormFields formFields, Object... parameters) {
 		return createPostEvent(context, action, formFields, adaptParameters(parameters));
 	}
 
@@ -93,11 +93,11 @@ public class Browser {
 	 * @see #registerTemplate(String, CharSequence)
 	 * @param eventPath this must be in the form of 'controller/action'
 	 * @param templateContent the content of the action view
-	 * @return a TestGetEvent that is configured by the ISailsEventConfigurator
+	 * @return a TesterGetEvent that is configured by the ISailsEventConfigurator
 	 *         and has the given eventPath
 	 */
-	public TestGetEvent createVirtualEvent(String eventPath, CharSequence templateContent) {
-		TestGetEvent event = createGetEvent(eventPath);
+	public TesterGetEvent createVirtualEvent(String eventPath, CharSequence templateContent) {
+		TesterGetEvent event = createGetEvent(eventPath);
 		getContainer().instance(IEventConfigurator.class).configure(event, event.getContainer());
 		registerTemplate(eventPath, templateContent);
 		return event;
@@ -181,7 +181,7 @@ public class Browser {
 	 * @return the page for the given context/action
 	 */
 	public Page get(String context, String action, Object... parameters) {
-		TestGetEvent event = createGetEvent(context, action, adaptParameters(parameters));
+		TesterGetEvent event = createGetEvent(context, action, adaptParameters(parameters));
 		return get(event);
 	}
 
@@ -195,14 +195,14 @@ public class Browser {
 	/**
 	 * @return the container of the application
 	 */
-	public TestApplicationContainer getApplicationContainer() {
+	public TesterApplicationContainer getApplicationContainer() {
 		return application.getContainer();
 	}
 
 	/**
 	 * @return the RequestContainer that will be used for the next event
 	 */
-	public TestRequestContainer getContainer() {
+	public TesterRequestContainer getContainer() {
 		return requestContainer;
 	}
 
@@ -217,16 +217,16 @@ public class Browser {
 		return new ShamFormFields(this, adapterResolver());
 	}
 
-	public TestSession getSession() {
-		return new TestSession(this);
+	public TesterSession getSession() {
+		return new TesterSession(this);
 	}
 
 	/**
 	 * @return the current session. If create, creates one. If not, returns
 	 *         null.
 	 */
-	public TestSession getSession(boolean create) {
-		return new TestSession(this, true);
+	public TesterSession getSession(boolean create) {
+		return new TesterSession(this, true);
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class Browser {
 	 * @return the page for the given context/action
 	 */
 	public Page post(String context, String action, FormFields formFields, Object... parameters) {
-		TestPostEvent postEvent = createPost(context, action, formFields, parameters);
+		TesterPostEvent postEvent = createPost(context, action, formFields, parameters);
 		return post(postEvent);
 	}
 
@@ -337,7 +337,7 @@ public class Browser {
 	 * @throws IllegalArgumentException if the event did not originate from the
 	 *         application of this
 	 */
-	public Page post(TestPostEvent event) {
+	public Page post(TesterPostEvent event) {
 		if (event == null) throw new NullPointerException("You cannot post a null event");
 		if (event.getApplication() != this.application) throw new IllegalArgumentException("Cannot post events that aren't bound for the application of this browser");
 		eventDispatcher.dispatch(event);
@@ -388,7 +388,7 @@ public class Browser {
 	 * @return the existing value replaced by new value
 	 */
 	public Object setSessionAttribute(String name, Object value) {
-		TestSession s = getSession(true);
+		TesterSession s = getSession(true);
 		Object existing = s.getAttribute(name);
 		s.setAttribute(name, value);
 		return existing;
@@ -440,17 +440,17 @@ public class Browser {
 	 * @param pathInfo a 'raw' HttpServletRequest pathInfo
 	 * @return a GET request event, all wired up to the application
 	 */
-	protected TestGetEvent createGetEvent(String pathInfo) {
+	protected TesterGetEvent createGetEvent(String pathInfo) {
 		ShamHttpServletRequest request = createRequest();
 		request.setPathInfo(pathInfo);
 		TestingHttpServletResponse response = createResponse();
-		TestGetEvent event = new TestGetEvent(application, requestContainer, request, response);
+		TesterGetEvent event = new TesterGetEvent(application, requestContainer, request, response);
 		requestContainer.bind(event);
 		response.set(event);
 		return event;
 	}
 
-	protected TestGetEvent createGetEvent(String context, String action, String... parameters) {
+	protected TesterGetEvent createGetEvent(String context, String action, String... parameters) {
 		return createGetEvent(toPathInfo(context, action, parameters));
 	}
 
@@ -458,18 +458,18 @@ public class Browser {
 		return new Page(event);
 	}
 
-	protected TestPostEvent createPostEvent(String pathInfo, FormFields formFields) {
+	protected TesterPostEvent createPostEvent(String pathInfo, FormFields formFields) {
 		ShamHttpServletRequest request = createRequest();
 		request.setPathInfo(pathInfo);
 		request.setParameters(formFields.toMap());
 		TestingHttpServletResponse response = createResponse();
-		TestPostEvent event = new TestPostEvent(application, requestContainer, request, response);
+		TesterPostEvent event = new TesterPostEvent(application, requestContainer, request, response);
 		requestContainer.bind(event);
 		response.set(event);
 		return event;
 	}
 
-	protected TestPostEvent createPostEvent(String context, String action, FormFields formFields, String... parameters) {
+	protected TesterPostEvent createPostEvent(String context, String action, FormFields formFields, String... parameters) {
 		return createPostEvent(toPathInfo(context, action, parameters), formFields);
 	}
 
@@ -504,7 +504,7 @@ public class Browser {
 		return response;
 	}
 
-	protected Page get(TestGetEvent event) {
+	protected Page get(TesterGetEvent event) {
 		event.getContainer().registerAll(getContainer());
 		return get((GetEvent) event);
 	}
@@ -522,8 +522,8 @@ public class Browser {
 
 	// TODO: Bind to lazy created session container
 	protected void prepareForNextRequest() {
-		if (requestContainer != null) requestContainer = new TestRequestContainer(application.getContainer(), requestContainer.injections);
-		else requestContainer = new TestRequestContainer(application.getContainer());
+		if (requestContainer != null) requestContainer = new TesterRequestContainer(application.getContainer(), requestContainer.injections);
+		else requestContainer = new TesterRequestContainer(application.getContainer());
 	}
 
 	protected String toParametersString(String... parameters) {

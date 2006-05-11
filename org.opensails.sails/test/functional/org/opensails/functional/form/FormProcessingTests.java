@@ -7,7 +7,7 @@ import org.opensails.functional.controllers.FormTestController;
 import org.opensails.sails.tester.Page;
 import org.opensails.sails.tester.browser.ShamFileUpload;
 import org.opensails.sails.tester.browser.ShamFormFields;
-import org.opensails.sails.tester.form.Form;
+import org.opensails.sails.tester.form.TesterForm;
 import org.opensails.sails.tester.util.CollectionAssert;
 import org.opensails.sails.validation.constraints.NotNull;
 
@@ -49,7 +49,7 @@ public class FormProcessingTests extends TestCase {
 		formFields.setValue("model.hiddenProperty", "newHiddenValue");
 
 		Page page = t.post("postThenRender", formFields, model);
-		Form form = page.form();
+		TesterForm form = page.form();
 		form.text("model.textProperty").assertValue("newTextValue");
 		form.text("model.subModel.textProperty").assertValue("newTextValue");
 		form.textarea("model.textareaProperty").assertValue("newTextareaValue");
@@ -82,7 +82,7 @@ public class FormProcessingTests extends TestCase {
 	public void testRender_Model() {
 		SailsFunctionalTester t = new SailsFunctionalTester(FormTestController.class);
 		Page page = t.get("explicitExpose");
-		Form form = page.form();
+		TesterForm form = page.form();
 		assertModelRendered(form);
 
 		page = t.get("implicitExpose");
@@ -97,14 +97,14 @@ public class FormProcessingTests extends TestCase {
 
 	public void testRender_NoModel() {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		Page page = t.render("$form.start;$form.text('model.propertyOne');$form.textarea('model.propertyTwo');$form.end;");
+		Page page = t.render("<html><body>$form.start;$form.text('model.propertyOne');$form.textarea('model.propertyTwo');$form.end;</body></html>");
 		page.form().text("model.propertyOne").assertValue("");
 		page.form().textarea("model.propertyTwo").assertValue("");
 	}
 
 	public void testSubmit() {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		Page page = t.render("$form.start;$form.submit('Submit Value');$form.end");
+		Page page = t.render("<html>$form.start;$form.submit('Submit Value');$form.end</html>");
 		page.form().submit("Submit Value");
 	}
 
@@ -124,7 +124,7 @@ public class FormProcessingTests extends TestCase {
 		page.assertContains(NotNull.DEFAULT_MESSAGE);
 	}
 
-	private void assertModelRendered(Form form) {
+	private void assertModelRendered(TesterForm form) {
 		form.text("model.textProperty").assertValue("textValue").assertLabeled("Text");
 		form.text("model.subModel.textProperty").assertValue("textValue");
 		form.textarea("model.textareaProperty").assertValue("textareaValue").assertLabeled("Textarea");

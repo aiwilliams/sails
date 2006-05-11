@@ -60,12 +60,18 @@ public class HtmlGenerator {
 		return attribute(HtmlConstants.CLASS_ATTRIBUTE, classValue);
 	}
 
+	/**
+	 * Close an open tag, as in '>'.
+	 * 
+	 * @return this
+	 * @throws IOException
+	 */
 	public HtmlGenerator closeTag() throws IOException {
 		return closeTag(false);
 	}
 
 	/**
-	 * Write a closing tag.
+	 * Close an open tag, as in '>'. If closeElementToo, then ' />'.
 	 * 
 	 * @param closeElementToo
 	 * @return this

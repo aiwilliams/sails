@@ -13,8 +13,8 @@ import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.oem.SailsApplication;
 import org.opensails.sails.persist.IIdentifiable;
 import org.opensails.sails.persist.IObjectPersister;
-import org.opensails.sails.tester.TestApplicationConfigurator;
-import org.opensails.sails.tester.TestApplicationContainer;
+import org.opensails.sails.tester.TesterApplicationConfigurator;
+import org.opensails.sails.tester.TesterApplicationContainer;
 import org.opensails.sails.tester.oem.TestingDispatcher;
 import org.opensails.sails.tester.oem.VirtualAdapterResolver;
 import org.opensails.sails.tester.oem.VirtualControllerResolver;
@@ -59,8 +59,8 @@ public class SailsTestApplication extends SailsApplication {
 	/**
 	 * @return the application container as a TestApplicationContainer
 	 */
-	public TestApplicationContainer getContainer() {
-		return (TestApplicationContainer) applicationContainer;
+	public TesterApplicationContainer getContainer() {
+		return (TesterApplicationContainer) applicationContainer;
 	}
 
 	/**
@@ -79,10 +79,10 @@ public class SailsTestApplication extends SailsApplication {
 	/**
 	 * @return active sessions from the current application browsers
 	 */
-	public List<TestSession> getSessions() {
-		List<TestSession> sessions = new ArrayList<TestSession>(browsers.size());
+	public List<TesterSession> getSessions() {
+		List<TesterSession> sessions = new ArrayList<TesterSession>(browsers.size());
 		for (Browser browser : browsers) {
-			TestSession session = browser.getSession();
+			TesterSession session = browser.getSession();
 			if (session != null) sessions.add(session);
 		}
 		return sessions;
@@ -274,8 +274,8 @@ public class SailsTestApplication extends SailsApplication {
 		configureAndStart(instrumentedConfigurator(configuratorClass));
 	}
 
-	protected TestApplicationConfigurator instrumentedConfigurator(Class<? extends SailsConfigurator> configuratorClass) {
-		return new TestApplicationConfigurator(configuratorClass);
+	protected TesterApplicationConfigurator instrumentedConfigurator(Class<? extends SailsConfigurator> configuratorClass) {
+		return new TesterApplicationConfigurator(configuratorClass);
 	}
 
 }

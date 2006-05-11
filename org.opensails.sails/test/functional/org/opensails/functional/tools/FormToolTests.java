@@ -8,15 +8,16 @@ import org.opensails.sails.form.html.ISelectModel;
 import org.opensails.sails.form.html.ListSelectModel;
 import org.opensails.sails.persist.AbstractIdentifiable;
 import org.opensails.sails.tester.Page;
-import org.opensails.sails.tester.browser.TestGetEvent;
+import org.opensails.sails.tester.browser.TesterGetEvent;
 
 public class FormToolTests extends TestCase {
 	public void testForm() {
 		SailsFunctionalTester t = new SailsFunctionalTester();
-		TestGetEvent event = t.createVirtualEvent("mc/ma", "$form.start");
+		TesterGetEvent event = t.createVirtualEvent("mc/ma", "$form.start");
 		Page page = t.get(event);
 		page.assertContains("method=\"post\"");
 		page.assertMatches("action=\"/.*?/mc/ma\"");
+		page.assertMatches("^<form( \\w+=\".*?\")+>$");
 	}
 
 	public void testForm_IdGeneration() throws Exception {
