@@ -1,7 +1,9 @@
 package org.opensails.sails.tester.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.ComparisonFailure;
@@ -11,7 +13,16 @@ public class CollectionAssert {
 	@SuppressWarnings("unchecked")
 	public static void containsOnly(Collection expected, Collection actual) {
 		Assert.assertEquals("Actual should contain expected number of items.", expected.size(), actual.size());
-		if (!actual.containsAll(expected)) throw new ComparisonFailure("Expected to contain all in no particular order", expected.toString(), actual.toString());
+
+		List listActual = new ArrayList(actual);
+		List listPresent = new ArrayList(expected.size());
+		for (Object expect : expected) {
+			int indexInActual = listActual.indexOf(expect);
+			if (indexInActual < 0) throw new ComparisonFailure("Expected to contain all in no particular order. Actual is missing an expected", expected.toString(), actual.toString());
+			Object present = listActual.get(indexInActual);
+			if (listPresent.contains(present)) throw new ComparisonFailure("Expected to contain all in no particular order. There were duplicate entries.", expected.toString(), actual.toString());
+			listPresent.add(present);
+		}
 	}
 
 	public static void containsOnly(Collection expected, Object[] actual) {
