@@ -5,7 +5,7 @@
 	</path>
 	<taskdef name="buildstamp" classpathref="classpath.ant.tasks" classname="org.opensails.ant.BuildStampTask" />
 
-	<property name="sails.version" value="0.2.1c"/>
+	<property name="sails.version" value="0.3.0_RC1"/>
 	<property name="temp.build" location="buildtemp" />
 	<property name="source.builtin" value="builtin" />
 	<property name="source.core" value="core" />

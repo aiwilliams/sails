@@ -13,7 +13,7 @@
 	<!-- Internal properties -->
 	<property name="generator.root.dir" location="generators" />
 	<property name="generator.working.dir" location="${generator.target.dir}/${application.dir}" />
-	<property name="application.context.name" value="war" />
+	<property name="application.context.name" value="app" />
 	<property name="application.war.dir" location="${generator.working.dir}/${application.context.name}" />
 	<property name="web.inf.dir" location="${application.war.dir}/WEB-INF" />
 	<property name="viento.classpath" value="viento.jar" />
@@ -51,9 +51,6 @@
 		<!-- Create class output directory -->
 		<mkdir dir="${generator.working.dir}/${application.output.classdir}" />
 		<antcall target="new.war" />
-
-		<!-- Create eclipse launch config -->
-		<viento tofile="${generator.working.dir}/${application.name}.launch" file="${generator.root.dir}/eclipse.launch" />
 
 		<!-- Create Windoze batch file -->
 		<viento tofile="${generator.working.dir}/${application.name}.bat" file="${generator.root.dir}/windoze.bat" />

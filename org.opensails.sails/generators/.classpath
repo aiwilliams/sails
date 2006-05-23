@@ -8,14 +8,14 @@
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/org.mortbay.jetty.jar"/>
 	<classpathentry kind="lib" path="lib/org.mortbay.jmx.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-codec.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-collections.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-configuration.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.0.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/rigging.jar"/>
-	<classpathentry sourcepath="/org.opensails.sails" kind="lib" path="war/WEB-INF/lib/$product.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/viento.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-configuration.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-lang.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/rigging.jar"/>
+	<classpathentry sourcepath="/org.opensails.sails" kind="lib" path="$application.context.name;/WEB-INF/lib/$product.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/viento.jar"/>
+	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>

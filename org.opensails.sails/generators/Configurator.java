@@ -1,5 +1,5 @@
 package $application.rootpackage;;
 
-import org.opensails.sails.oem.BaseConfigurator;
+import org.opensails.sails.configurator.SailsConfigurator;
 
-public class Configurator extends BaseConfigurator {}
+public class Configurator extends SailsConfigurator {}
