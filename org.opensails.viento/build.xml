@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.opensails.viento" default="build" basedir=".">
+	<property name="dist.dir" location="dist"/>
 	<property name="temp.root" location="buildtemp"/>
 	<property name="temp.classes" location="${temp.root}/classes"/>
 
 	<target name="build" depends="clean">
 		<ant antfile="parser.build.xml"/>
 		<mkdir dir="${temp.classes}"/>
+		<mkdir dir="${dist.dir}"/>
 		<javac srcdir="src/java" destdir="${temp.classes}" debug="on" optimize="on"/>
 		<jar destfile="${dist.dir}/viento.jar" basedir="${temp.classes}"/>
 	</target>
