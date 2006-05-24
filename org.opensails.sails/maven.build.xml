@@ -1,0 +1,34 @@
+<project name="sails" default="package" xmlns:artifact="urn:maven-artifact-ant">
+
+	<target name="initTaskDefs">
+		<path id="maven.classpath">
+			<pathelement location="lib/maven-artifact-ant-2.0.4-dep.jar" />
+		</path>
+
+		<typedef resource="org/apache/maven/artifact/ant/antlib.xml" uri="urn:maven-artifact-ant">
+			<classpath refid="maven.classpath" />
+		</typedef>
+
+		<artifact:pom file="pom.xml" id="maven.project" />
+	</target>
+
+	<target name="package" depends="initTaskDefs">
+		<artifact:dependencies filesetid="runtime.dep.fileset" useScope="compile">
+			<pom refid="maven.project" />
+		</artifact:dependencies>
+
+		<property name="assembly.dir" value="${maven.project.build.directory}/assembly/"/>
+		<delete dir="${assembly.dir}" />
+		<copy todir="${assembly.dir}/lib" flatten="true">
+			<fileset refid="runtime.dep.fileset" />
+		</copy>
+		
+		<!-- Delete jars that should not be deployed -->
+		<delete>
+			<fileset dir="${assembly.dir}/lib">
+				<include name="*junit*" />
+			</fileset>
+		</delete>
+	</target>
+
+</project>
