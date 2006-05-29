@@ -18,6 +18,7 @@ import org.opensails.sails.oem.FlashComponentResolver;
 import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.template.Require;
 import org.opensails.sails.template.ToolResolver;
+import org.opensails.sails.tools.CacheTool;
 import org.opensails.spyglass.SpyGlass;
 import org.opensails.spyglass.resolvers.PackageClassResolver;
 import org.opensails.viento.Binding;
@@ -81,6 +82,8 @@ public class RequiredEventConfigurator implements IEventConfigurator {
 				configure(event, newInstance);
 			}
 		});
+
+		container.register(CacheTool.class);
 
 		persisterConfigurator.configure(event, container);
 		formProcessingConfigurator.configure(event, container);

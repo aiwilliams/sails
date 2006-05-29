@@ -70,6 +70,12 @@ public class DelegatingConfiguratorTest extends TestCase {
 		}
 
 		@Override
+		public ICacheConfigurator getCacheConfigurator() {
+			setMethodInvoked(findMethod());
+			return null;
+		}
+
+		@Override
 		public IConfigurationConfigurator getConfigurationConfigurator() {
 			setMethodInvoked(findMethod());
 			return null;

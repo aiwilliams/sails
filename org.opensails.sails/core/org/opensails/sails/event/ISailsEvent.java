@@ -47,6 +47,11 @@ public interface ISailsEvent extends IWebObjectAdapter {
 	 */
 	IEventContextContainer getContainer();
 
+	/**
+	 * @return a unique identifer for the event, consisting of the value '{@link #getProcessorName()}/{@link #getActionName()}
+	 */
+	String getContextIdentifier();
+
 	IEventUrl getEventUrl();
 
 	/**

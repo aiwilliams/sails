@@ -21,6 +21,7 @@ import org.opensails.sails.component.ComponentPackage;
 import org.opensails.sails.component.IComponentImpl;
 import org.opensails.sails.component.IComponentResolver;
 import org.opensails.sails.component.oem.ComponentResolver;
+import org.opensails.sails.configurator.oem.DefaultCacheConfigurator;
 import org.opensails.sails.configurator.oem.DefaultConfigurationConfigurator;
 import org.opensails.sails.configurator.oem.DefaultContainerConfigurator;
 import org.opensails.sails.configurator.oem.DefaultEventConfigurator;
@@ -38,6 +39,7 @@ import org.opensails.sails.mixins.ThrowableMixin;
 import org.opensails.sails.oem.ClasspathResourceResolver;
 import org.opensails.sails.oem.Dispatcher;
 import org.opensails.sails.oem.EventProcessorResolver;
+import org.opensails.sails.oem.FragmentCache;
 import org.opensails.sails.oem.ResourceResolver;
 import org.opensails.sails.oem.SailsDefaultsConfiguration;
 import org.opensails.sails.oem.ServletContextResourceResolver;
@@ -68,6 +70,9 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 		getContainerConfigurator().configure(application, container);
 
 		getResourceResolverConfigurator().configure(application, installResourceResolver());
+
+		getCacheConfigurator().configure(application, container);
+		container.register(FragmentCache.class);
 
 		IObjectPersisterConfigurator persisterConfigurator = getPersisterConfigurator();
 		persisterConfigurator.configure(application, application.getContainer());
@@ -113,6 +118,10 @@ public class SailsConfigurator implements ISailsApplicationConfigurator {
 	 */
 	public IPackageDescriptor createPackageDescriptor() {
 		return new DefaultPackageDescriptor(getApplicationPackage());
+	}
+
+	public ICacheConfigurator getCacheConfigurator() {
+		return new DefaultCacheConfigurator();
 	}
 
 	public IConfigurationConfigurator getConfigurationConfigurator() {

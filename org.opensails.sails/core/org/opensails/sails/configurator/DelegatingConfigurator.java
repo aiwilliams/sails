@@ -35,6 +35,11 @@ public class DelegatingConfigurator extends SailsConfigurator {
 	}
 
 	@Override
+	public ICacheConfigurator getCacheConfigurator() {
+		return delegate.getCacheConfigurator();
+	}
+
+	@Override
 	public IConfigurationConfigurator getConfigurationConfigurator() {
 		return delegate.getConfigurationConfigurator();
 	}

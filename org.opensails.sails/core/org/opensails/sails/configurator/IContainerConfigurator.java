@@ -4,8 +4,8 @@ import org.opensails.sails.ApplicationContainer;
 import org.opensails.sails.IConfigurableSailsApplication;
 
 /**
- * Provides a hook to allow applications to configure dependency injection
- * containers.
+ * Provides a hook to allow applications to configure the application scoped
+ * dependency injection container.
  * 
  * @author aiwilliams
  * 

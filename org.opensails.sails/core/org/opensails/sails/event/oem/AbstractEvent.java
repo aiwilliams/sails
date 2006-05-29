@@ -46,7 +46,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		this(req, resp);
 		this.application = application;
 		initialize(parentContainer);
-	}
+	};
 
 	// allow some control for subclasses
 	protected AbstractEvent(HttpServletRequest req, HttpServletResponse resp) {
@@ -91,6 +91,10 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 
 	public IEventContextContainer getContainer() {
 		return container;
+	}
+
+	public String getContextIdentifier() {
+		return String.format("%s/%s", getProcessorName(), getActionName());
 	}
 
 	public IEventUrl getEventUrl() {
