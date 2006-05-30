@@ -6,18 +6,17 @@ import java.util.Map;
 import org.opensails.sails.template.IFragmentStore;
 
 public class MemoryFragmentStore implements IFragmentStore {
-	protected final Map<String, String> cache = new HashMap<String, String>();
+	protected final Map<FragmentKey, String> cache = new HashMap<FragmentKey, String>();
 
-	public String read(String contextIdentifier, String name) {
-		return cache.get(contextIdentifier + name);
+	public void delete(FragmentKey identifier) {
+		cache.remove(identifier);
 	}
 
-	public void write(String contextIdentifier, String name, String content) {
-		cache.put(contextIdentifier + name, content);
+	public String read(FragmentKey identifier) {
+		return cache.get(identifier);
 	}
 
-	public void delete(String contextIdentifier, String name) {
-		cache.remove(contextIdentifier + name);
+	public void write(FragmentKey identifier, String content) {
+		cache.put(identifier, content);
 	}
-
 }

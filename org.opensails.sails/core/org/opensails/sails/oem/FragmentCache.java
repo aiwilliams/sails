@@ -24,59 +24,27 @@ public class FragmentCache {
 	}
 
 	/**
-	 * @param contextIdentifier the context within which the named content
-	 *        exists
-	 * @return the content or null if not present
+	 * @param identifer the context within which the named content exists
 	 */
-	public String read(String contextIdentifier) {
-		return read(contextIdentifier, "");
+	public void expire(FragmentKey identifer) {
+		store.delete(identifer);
 	}
 
 	/**
-	 * @param contextIdentifier the context within which the named content
-	 *        exists
-	 * @param name the name of the content for the context
+	 * @param identifer the context within which the named content exists
 	 * @return the content or null if not present
 	 */
-	public String read(String contextIdentifier, String name) {
-		return store.read(contextIdentifier, name);
+	public String read(FragmentKey identifer) {
+		return store.read(identifer);
 	}
 
 	/**
-	 * @param contextIdentifier the context within which the named content will
-	 *        be placed
+	 * @param identifer the context within which the named content will be
+	 *        placed
 	 * @param name the name of the content for the context
 	 * @param content the content
 	 */
-	public void write(String contextIdentifier, String content) {
-		write(contextIdentifier, "", content);
+	public void write(FragmentKey identifer, String content) {
+		store.write(identifer, content);
 	}
-
-	/**
-	 * @param contextIdentifier the context within which the named content will
-	 *        be placed
-	 * @param name the name of the content for the context
-	 * @param content the content
-	 */
-	public void write(String contextIdentifier, String name, String content) {
-		store.write(contextIdentifier, name, content);
-	}
-
-	/**
-	 * @param contextIdentifier the context within which the named content
-	 *        exists
-	 */
-	public void expire(String contextIdentifier) {
-		expire(contextIdentifier, "");
-	}
-
-	/**
-	 * @param contextIdentifier the context within which the named content
-	 *        exists
-	 * @param name the name of the content for the context
-	 */
-	public void expire(String contextIdentifier, String name) {
-		store.delete(contextIdentifier, name);
-	}
-
 }

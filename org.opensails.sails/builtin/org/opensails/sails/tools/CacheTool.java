@@ -2,6 +2,7 @@ package org.opensails.sails.tools;
 
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.FragmentCache;
+import org.opensails.sails.oem.FragmentKey;
 import org.opensails.viento.Block;
 
 /**
@@ -25,10 +26,25 @@ public class CacheTool {
 	 * @return the single fragment for controller/action
 	 */
 	public String fragment(Block block) {
-		String content = fragmentCache.read(event.getContextIdentifier(), "");
+		return content(new FragmentKey(event), block);
+	}
+
+	/**
+	 * Cache of block is bound to controller/action/name.
+	 * 
+	 * @param name
+	 * @param block
+	 * @return the single fragment for controller/action/name
+	 */
+	public String fragment(String name, Block block) {
+		return content(new FragmentKey(event, name), block);
+	}
+
+	protected String content(FragmentKey fragmentKey, Block block) {
+		String content = fragmentCache.read(fragmentKey);
 		if (content == null) {
 			content = block.evaluate();
-			fragmentCache.write(event.getContextIdentifier(), "", content);
+			fragmentCache.write(fragmentKey, content);
 		}
 		return content;
 	}

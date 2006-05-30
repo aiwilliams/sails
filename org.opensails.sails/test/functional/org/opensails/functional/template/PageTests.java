@@ -17,13 +17,13 @@ public class PageTests extends TestCase {
 		SailsFunctionalTester t = new SailsFunctionalTester(TemplateTestController.class);
 
 		TemplateTestController.RENDERED_IN_TEMPLATE = "Value on first call";
-		t.registerTemplate("templateTest/cacheFragment", "$cache.fragment [[$renderedInTemplate]]");
-		t.get("cacheFragment").assertEquals("Value on first call");
+		t.registerTemplate("templateTest/cacheFragment", "$cache.fragment [[$renderedInTemplate]]; $cache.fragment('named') [[$renderedInTemplate]]");
+		t.get("cacheFragment").assertEquals("Value on first call Value on first call");
 
 		TemplateTestController.RENDERED_IN_TEMPLATE = "Value on second call";
-		t.get("cacheFragment").assertEquals("Value on first call");
+		t.get("cacheFragment").assertEquals("Value on first call Value on first call");
 
 		t.get("expireFragment");
-		t.get("cacheFragment").assertEquals("Value on second call");
+		t.get("cacheFragment").assertEquals("Value on second call Value on first call");
 	}
 }

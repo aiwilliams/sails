@@ -1,5 +1,7 @@
 package org.opensails.sails.template;
 
+import org.opensails.sails.oem.FragmentKey;
+
 /**
  * Provides storage of fragment content.
  * 
@@ -7,9 +9,9 @@ package org.opensails.sails.template;
  */
 public interface IFragmentStore {
 
-	void delete(String contextIdentifier, String name);
+	void delete(FragmentKey identifier);
 
-	String read(String contextIdentifier, String name);
+	String read(FragmentKey identifier);
 
-	void write(String contextIdentifier, String name, String content);
+	void write(FragmentKey identifier, String content);
 }

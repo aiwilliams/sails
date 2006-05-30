@@ -6,7 +6,6 @@ import java.io.InputStream;
 import javax.servlet.http.HttpSession;
 
 import org.opensails.sails.IEventContextContainer;
-import org.opensails.sails.Sails;
 import org.opensails.sails.action.IActionResult;
 import org.opensails.sails.action.oem.FileSendActionResult;
 import org.opensails.sails.action.oem.InputStreamActionResult;
@@ -22,6 +21,7 @@ import org.opensails.sails.form.ValidationErrors;
 import org.opensails.sails.model.ModelContext;
 import org.opensails.sails.oem.Flash;
 import org.opensails.sails.oem.FragmentCache;
+import org.opensails.sails.oem.FragmentKey;
 import org.opensails.sails.tools.UrlforTool;
 import org.opensails.sails.validation.IValidationEngine;
 import org.opensails.spyglass.SpyGlass;
@@ -129,7 +129,7 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	}
 
 	protected void expireFragment(Class<? extends IEventProcessingContext> context, String action) {
-		event.instance(FragmentCache.class).expire(String.format("%s/%s", Sails.eventContextName(context), action));
+		event.instance(FragmentCache.class).expire(new FragmentKey(context, action));
 	}
 
 	/**
