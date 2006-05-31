@@ -35,6 +35,12 @@ public class FormToolTests extends TestCase {
 		Page page = t.getTemplated(template);
 		page.assertContainsInOrder(expected);
 	}
+	
+	public void testNoRedundantHiddens() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+		Page page = t.getTemplated("$form.checkbox('same', 'a')$form.checkbox('same', 'b')");
+		page.assertEquals("<input id=\"same-a\" name=\"same\" type=\"checkbox\" value=\"a\" /><input name=\"form.meta.cb.same\" type=\"hidden\" value=\"0\" /><input id=\"same-b\" name=\"same\" type=\"checkbox\" value=\"b\" />");
+	}
 
 	@SuppressWarnings("unused")
 	public void testForm_SelectModel() {

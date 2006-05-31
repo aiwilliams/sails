@@ -1,7 +1,9 @@
 package org.opensails.sails.tools;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.opensails.sails.SailsException;
 import org.opensails.sails.adapter.AdaptationTarget;
@@ -35,7 +37,11 @@ public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 	protected HtmlForm form;
 	protected ContainerAdapterResolver adapterResolver;
 	protected ISailsEvent event;
+	/*
+	 * Not used. Austin wonders why this is here, but is not so bold as to delete it. 5/30/06
+	 */
 	protected List<String> ids;
+	protected Set<String> checkboxNames;
 
 	/**
 	 * @param idGenerator
@@ -49,6 +55,7 @@ public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 		this.idGenerator = idGenerator;
 		this.adapterResolver = adapterResolver;
 		this.form = form;
+		this.checkboxNames = new HashSet<String>();
 	}
 
 	public Form action(IUrl actionUrl) {
@@ -75,7 +82,9 @@ public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 	 */
 	public Checkbox checkbox(String name) {
 		Object modelValue = form.value(name);
-		return new Checkbox(name).checked(Boolean.valueOf((String) modelValue)).id(idGenerator.idForName(name));
+		Checkbox cb = new Checkbox(name, !checkboxNames.contains(name)).checked(Boolean.valueOf((String) modelValue)).id(idGenerator.idForName(name));
+		checkboxNames.add(name);
+		return cb;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -89,7 +98,9 @@ public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 			else if (modelValue instanceof String[]) {
 				checked = Quick.list((String[]) modelValue).contains(checkedValueString);
 			}
-			return new Checkbox(propertyPath).value(checkedValue).id(idGenerator.idForNameValue(propertyPath, checkedValueString)).checked(checked);
+			Checkbox cb = new Checkbox(propertyPath, !checkboxNames.contains(propertyPath)).value(checkedValue).id(idGenerator.idForNameValue(propertyPath, checkedValueString)).checked(checked);
+			checkboxNames.add(propertyPath);
+			return cb;
 		} catch (ClassCastException e) {
 			throw new SailsException("A checkbox value must resolve to a String");
 		}

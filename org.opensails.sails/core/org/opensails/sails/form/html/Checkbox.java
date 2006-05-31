@@ -33,12 +33,23 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	protected boolean checked;
 	protected Hidden hiddenForBoolean;
 
+	private final boolean includeHidden;
+
 	public Checkbox(String name) {
-		this(name, "1", "0");
+		this(name, true);
+	}
+	
+	public Checkbox(String name, boolean includeHidden) {
+		this(name, "1", "0", includeHidden);
 	}
 
 	public Checkbox(String name, String checkedValue, String uncheckedValue) {
+		this(name, checkedValue, uncheckedValue, true);
+	}
+	
+	public Checkbox(String name, String checkedValue, String uncheckedValue, boolean includeHidden) {
 		super(RENDER_LABEL_AFTER, CHECKBOX, name);
+		this.includeHidden = includeHidden;
 		value(checkedValue);
 		hiddenForBoolean = new Hidden(CHECKBOX_PREFIX + name);
 		hiddenForBoolean.value(uncheckedValue);
@@ -72,7 +83,7 @@ public class Checkbox extends LabelableInputElement<Checkbox> {
 	@Override
 	public void renderThyself(Writer writer) throws IOException {
 		super.renderThyself(writer);
-		hiddenForBoolean.renderThyself(writer);
+		if (includeHidden) hiddenForBoolean.renderThyself(writer);
 	}
 
 	@Override
