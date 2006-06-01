@@ -138,6 +138,7 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 
 	public PrintWriter getWriter() throws IOException {
 		if (getWriterCalled || getOutputStreamCalled) throw new IllegalStateException("Implementing contract of interface ServletResponse: getWriter can be called only once");
+		// TODO: I think this is like this for immediate writing. This is probably the wrong approach, as it makes resetting impossible
 		PrintWriter printWriter = new PrintWriter(outputStream) {
 			@Override
 			public void write(String s) {
@@ -146,6 +147,21 @@ public class ShamHttpServletResponse implements HttpServletResponse {
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
+			}
+			
+			@Override
+			public void write(String s, int off, int len) {
+				outputStream.write(s.getBytes(), off, len);
+			}
+			
+			@Override
+			public void write(char[] buf, int off, int len) {
+				throw new BleedingEdgeException("unexpected call. consider the todo above.");
+			}
+			
+			@Override
+			public void write(int c) {
+				throw new BleedingEdgeException("unexpected call. consider the todo above.");
 			}
 		};
 		getWriterCalled = true;

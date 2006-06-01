@@ -15,7 +15,7 @@ import org.opensails.sails.annotate.Behavior;
  * supercedes those defined on the class.
  */
 @Documented
-@Behavior(behavior = LayoutHandler.class)
+@Behavior(LayoutHandler.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NoLayout {}

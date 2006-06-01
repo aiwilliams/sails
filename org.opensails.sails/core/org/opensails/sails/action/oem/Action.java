@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -76,15 +77,25 @@ public class Action implements IAction {
 			handler.afterAction(invocation);
 	}
 
+	/**
+	 * Calls #{@link IBehaviorHandler#beforeAction(ActionInvocation)} for all
+	 * behaviors in no particular order, answering true only if all handlers
+	 * answer true.
+	 * 
+	 * @param invocation
+	 * @return true if invocation should be invoked
+	 */
 	protected boolean beforeBehaviors(ActionInvocation invocation) {
+		boolean invokeAction = true;
 		for (IBehaviorHandler handler : invocation.getHandlers())
-			if (!handler.beforeAction(invocation)) return false;
-		return true;
+			invokeAction &= handler.beforeAction(invocation);
+		return invokeAction;
 	}
 
 	protected void beginExecution(ActionInvocation invocation) {
 		getActionListeners(invocation.event).beginExecution(this);
 		invocation.code = methodHavingArgCount(invocation.parameters.size());
+		if (invocation.code != null && Modifier.isPublic(invocation.code.getModifiers())) invocation.code.setAccessible(true);
 		initializeHandlers(invocation);
 	}
 

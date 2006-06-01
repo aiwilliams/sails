@@ -24,7 +24,7 @@ public class BehaviorInstance<B extends Annotation> {
 	}
 
 	public Class<? extends IBehaviorHandler> getBehaviorHandlerClass() {
-		return behaviorAnnotation.behavior();
+		return behaviorAnnotation.value();
 	}
 
 	public ElementType getElementType() {

@@ -2,7 +2,6 @@ package org.opensails.sails.tools;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.opensails.sails.SailsException;
@@ -37,10 +36,6 @@ public class FormTool implements MethodMissing /* , IMixinMethod<Form> */{
 	protected HtmlForm form;
 	protected ContainerAdapterResolver adapterResolver;
 	protected ISailsEvent event;
-	/*
-	 * Not used. Austin wonders why this is here, but is not so bold as to delete it. 5/30/06
-	 */
-	protected List<String> ids;
 	protected Set<String> checkboxNames;
 
 	/**

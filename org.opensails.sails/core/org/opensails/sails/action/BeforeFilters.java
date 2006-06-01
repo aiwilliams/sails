@@ -29,7 +29,7 @@ import org.opensails.sails.annotate.filter.FilterBuilder;
  * @author aiwilliams
  */
 @Documented
-@Behavior(behavior = ActionFilterHandler.class)
+@Behavior(ActionFilterHandler.class)
 @FilterBuilder(BeforeFiltersBuilder.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

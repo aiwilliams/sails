@@ -17,7 +17,6 @@ import org.opensails.sails.annotate.IBehaviorHandler;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormFields;
-import org.opensails.spyglass.SpyGlass;
 
 /**
  * State related to an Action invocation.
@@ -78,7 +77,8 @@ public class ActionInvocation {
 	public IBehaviorHandler<?> getHandler(BehaviorInstance behavior) {
 		IBehaviorHandler handler = handlers.get(behavior.getBehaviorHandlerClass());
 		if (handler == null) {
-			handler = (IBehaviorHandler) SpyGlass.instantiate(behavior.getBehaviorHandlerClass());
+			Class handlerClass = behavior.getBehaviorHandlerClass();
+			handler = (IBehaviorHandler) getContainer().instance(handlerClass, handlerClass);
 			handlers.put(behavior.getBehaviorHandlerClass(), handler);
 		}
 		return handler;
@@ -115,7 +115,7 @@ public class ActionInvocation {
 		} catch (IllegalArgumentException e) {
 			throw new ParameterMismatchException(event, code, actionArguments);
 		} catch (IllegalAccessException e) {
-			throw new SailsException("Action methods on an ActionMethodController must be public.", e);
+			throw new SailsException("Action methods must be public.", e);
 		} catch (InvocationTargetException e) {
 			throw new SailsException("An exception [" + e.getCause().getClass() + "] occurred in the action " + code, e.getCause());
 		}

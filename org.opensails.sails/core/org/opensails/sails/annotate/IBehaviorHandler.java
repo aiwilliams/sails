@@ -2,6 +2,7 @@ package org.opensails.sails.annotate;
 
 import java.lang.annotation.Annotation;
 
+import org.opensails.sails.RequestContainer;
 import org.opensails.sails.action.oem.ActionInvocation;
 
 /**
@@ -9,7 +10,8 @@ import org.opensails.sails.action.oem.ActionInvocation;
  * called during the lifecycle of an action invocation.
  * <p>
  * There is only one instance per request, across annotations that reference the
- * handler type.
+ * handler type. The handler is instantiated using the {@link RequestContainer}
+ * of the current event. This allows your handler to have dependencies injected.
  * 
  * @author aiwilliams
  */
@@ -40,6 +42,10 @@ public interface IBehaviorHandler<B extends Annotation> {
 
 	/**
 	 * Called immediately before an action gets invoked.
+	 * <p>
+	 * If any handler answers false, the action method will not be invoked. All
+	 * other handlers will still be invoked. The order of handler invocation is
+	 * undefined.
 	 * 
 	 * @param invocation
 	 * @return false if the action code should not be executed

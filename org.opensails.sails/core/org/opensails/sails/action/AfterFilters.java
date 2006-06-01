@@ -24,7 +24,7 @@ import org.opensails.sails.annotate.filter.ActionFilterHandler;
  * @author aiwilliams
  */
 @Documented
-@Behavior(behavior = ActionFilterHandler.class)
+@Behavior(ActionFilterHandler.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AfterFilters {

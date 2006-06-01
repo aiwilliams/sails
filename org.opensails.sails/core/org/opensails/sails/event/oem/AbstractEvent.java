@@ -3,6 +3,8 @@ package org.opensails.sails.event.oem;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,11 +44,13 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	protected PrintWriter responseWriter;
 	protected EventUrl url;
 
+	protected List<OutputStream> outputRecorders;;
+
 	public AbstractEvent(ISailsApplication application, IScopedContainer parentContainer, HttpServletRequest req, HttpServletResponse resp) {
 		this(req, resp);
 		this.application = application;
 		initialize(parentContainer);
-	};
+	}
 
 	// allow some control for subclasses
 	protected AbstractEvent(HttpServletRequest req, HttpServletResponse resp) {
@@ -70,7 +74,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		IAdapterResolver resolver = getContainer().instance(IAdapterResolver.class);
 		IAdapter adapter = resolver.resolve(value.getClass(), getContainer());
 		return String.valueOf(adapter.forWeb(new AdaptationTarget<Object>((Class<Object>) value.getClass()), value));
-	}
+	};
 
 	public String getActionName() {
 		return url.getAction();
@@ -132,7 +136,8 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	public OutputStream getResponseOutputStream() {
 		if (responseOutputStream == null) {
 			try {
-				responseOutputStream = response.getOutputStream();
+				if (outputRecorders == null || outputRecorders.isEmpty()) responseOutputStream = response.getOutputStream();
+				else responseOutputStream = new RecordingOutputStream(outputRecorders, response.getOutputStream());
 			} catch (IOException e) {
 				throw new SailsException("Unable to obtain output stream of response", e);
 			}
@@ -143,7 +148,8 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	public PrintWriter getResponseWriter() {
 		if (responseWriter == null) {
 			try {
-				responseWriter = getResponse().getWriter();
+				if (outputRecorders == null || outputRecorders.isEmpty()) responseWriter = getResponse().getWriter();
+				else responseWriter = new RecordingPrintWriter(getResponse().getWriter());
 			} catch (IOException e) {
 				throw new SailsException("Unable to obtain a writer on the response", e);
 			}
@@ -163,6 +169,12 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 	@SuppressWarnings("unchecked")
 	public <T> T instance(Class<T> key, Class defaultImplementation) {
 		return (T) getContainer().instance(key, defaultImplementation);
+	}
+
+	public void recordOutput(OutputStream recorder) throws IllegalStateException {
+		if (this.responseOutputStream != null || this.responseWriter != null) throw new IllegalStateException("Output recorders must be registered before anything uses the response output stream in any way");
+		if (outputRecorders == null) outputRecorders = new ArrayList<OutputStream>();
+		outputRecorders.add(recorder);
 	}
 
 	public IUrl resolve(UrlType urlType, String urlFragment) {
@@ -245,5 +257,73 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		fields = createFormFields(request);
 		container.register(FormFields.class, fields);
 		containerSet();
+	}
+
+	protected static class RecordingOutputStream extends OutputStream {
+		protected List<OutputStream> recorders;
+		protected OutputStream destination;
+
+		protected RecordingOutputStream(List<OutputStream> recorders, OutputStream destination) {
+			this.recorders = recorders;
+			this.destination = destination;
+		}
+
+		@Override
+		public void write(byte[] b) throws IOException {
+			for (OutputStream recorder : recorders)
+				recorder.write(b);
+			destination.write(b);
+		}
+
+		@Override
+		public void write(byte[] b, int off, int len) throws IOException {
+			for (OutputStream recorder : recorders)
+				recorder.write(b, off, len);
+			destination.write(b, off, len);
+		}
+
+		@Override
+		public void write(int b) throws IOException {
+			for (OutputStream recorder : recorders)
+				recorder.write(b);
+			destination.write(b);
+		}
+	}
+
+	protected class RecordingPrintWriter extends PrintWriter {
+		public RecordingPrintWriter(PrintWriter writer) {
+			super(writer);
+		}
+
+		@Override
+		public void write(char[] buf, int off, int len) {
+			super.write(buf, off, len);
+			for (OutputStream recorder : outputRecorders) {
+				PrintWriter recorderWriter = new PrintWriter(recorder);
+				recorderWriter.write(buf, off, len);
+				recorderWriter.flush();
+			}
+		}
+
+		@Override
+		public void write(int c) {
+			super.write(c);
+			for (OutputStream recorder : outputRecorders)
+				try {
+					recorder.write(c);
+				} catch (IOException e) {
+					throw new SailsException("Failure writing to an output recorder", e);
+				}
+		}
+
+		@Override
+		public void write(String s, int off, int len) {
+			super.write(s, off, len);
+			for (OutputStream recorder : outputRecorders) {
+				PrintWriter recorderWriter = new PrintWriter(recorder);
+				recorderWriter.write(s, off, len);
+				recorderWriter.flush();
+			}
+		}
 	}
 }

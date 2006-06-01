@@ -127,6 +127,19 @@ public interface ISailsEvent extends IWebObjectAdapter {
 	<T> T instance(Class<T> key, Class defaultImplementation);
 
 	/**
+	 * Allows for 'listeners' to the content written to the output stream or
+	 * writer.
+	 * <p>
+	 * This will not work if a client takes the HttpResponse and obtains it's
+	 * output stream or writer directly.
+	 * 
+	 * @param recorder
+	 * @throws IllegalStateException if either the response output stream or
+	 *         writer have already been obtained
+	 */
+	void recordOutput(OutputStream recorder) throws IllegalStateException;
+
+	/**
 	 * To provide for url path extension in such a way as to not limit the
 	 * possibilities, this provides a hook into the {@link IUrlResolver}s.
 	 * 

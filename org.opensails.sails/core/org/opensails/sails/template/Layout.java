@@ -18,7 +18,7 @@ import org.opensails.sails.annotate.Behavior;
  * other behaviors that want to control the ActionResult.
  */
 @Documented
-@Behavior(behavior = LayoutHandler.class)
+@Behavior(LayoutHandler.class)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Layout {

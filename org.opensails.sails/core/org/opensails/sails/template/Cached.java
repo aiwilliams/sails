@@ -6,6 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.opensails.sails.annotate.Behavior;
+import org.opensails.sails.annotate.oem.CacheHandler;
+
 /**
  * TODO: Implement
  * 
@@ -20,6 +23,7 @@ import java.lang.annotation.Target;
  * @author aiwilliams
  */
 @Documented
+@Behavior(CacheHandler.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 public @interface Cached {
