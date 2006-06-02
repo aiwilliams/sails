@@ -11,6 +11,11 @@ public class FragmentKey {
 		value = String.format("%s/%s", Sails.eventContextName(context), action);
 	}
 
+	public FragmentKey(Class<? extends IEventProcessingContext> context, String action, String name) {
+		this(context, action);
+		value = String.format("%s/%s", value, name);
+	}
+
 	public FragmentKey(ISailsEvent event) {
 		value = event.getContextIdentifier();
 	}
