@@ -72,7 +72,7 @@ public class ActionUrl extends ContextUrl<ActionUrl> {
 
 	@Override
 	protected String doRender() {
-		return doRenderUrl(event.getEventUrl().getContextServlet());
+		return doRenderUrl(event.getUrl().getContextServlet());
 	}
 
 	protected String getParametersString() {
@@ -88,7 +88,7 @@ public class ActionUrl extends ContextUrl<ActionUrl> {
 
 	@Override
 	protected String renderAbsoluteUrl() {
-		return doRenderUrl(event.getEventUrl().getAbsoluteServletUrl());
+		return doRenderUrl(event.getUrl().getAbsoluteServletUrl());
 	}
 
 	private String doRenderUrl(String servletPath) {

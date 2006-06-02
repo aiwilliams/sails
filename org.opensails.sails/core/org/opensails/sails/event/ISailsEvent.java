@@ -52,7 +52,7 @@ public interface ISailsEvent extends IWebObjectAdapter {
 	 */
 	String getContextIdentifier();
 
-	IEventUrl getEventUrl();
+	IEventUrl getUrl();
 
 	/**
 	 * The value of a named field in a request (a request parameter). The term

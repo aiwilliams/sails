@@ -2,6 +2,7 @@ package org.opensails.sails.oem;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.opensails.sails.template.IFragmentStore;
 
@@ -18,5 +19,9 @@ public class MemoryFragmentStore implements IFragmentStore {
 
 	public void write(FragmentKey identifier, String content) {
 		cache.put(identifier, content);
+	}
+
+	public Set<FragmentKey> keySet() {
+		return cache.keySet();
 	}
 }

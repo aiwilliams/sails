@@ -22,7 +22,7 @@ public class FragmentKey {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
-		if (obj.getClass() != FragmentKey.class) return false;
+		if (!FragmentKey.class.isAssignableFrom(obj.getClass())) return false;
 		return value.equals(((FragmentKey) obj).value);
 	}
 

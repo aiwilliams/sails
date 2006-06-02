@@ -101,7 +101,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		return String.format("%s/%s", getProcessorName(), getActionName());
 	}
 
-	public IEventUrl getEventUrl() {
+	public IEventUrl getUrl() {
 		return url;
 	}
 
@@ -194,7 +194,7 @@ public abstract class AbstractEvent implements ILifecycleEvent {
 		string.append(application.getName());
 		string.append(" Application");
 		string.append(" [");
-		string.append(getEventUrl().getActionUrl());
+		string.append(getUrl().getActionUrl());
 		string.append("]");
 		return string.toString();
 	}

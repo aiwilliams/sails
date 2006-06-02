@@ -66,7 +66,7 @@ public class ContextUrl<T extends ContextUrl> extends AbstractUrl<T> {
 
 	@Override
 	protected String renderAbsoluteUrl() {
-		return doRenderUrl(event.getEventUrl().getAbsoluteContextUrl());
+		return doRenderUrl(event.getUrl().getAbsoluteContextUrl());
 	}
 
 	private String doRenderUrl(String contextPath) {

@@ -45,6 +45,6 @@ public class RedirectActionResult extends AbstractActionResult {
 	 * browser.
 	 */
 	public void rememberOrigin() {
-		redirectUrl.setQueryParameter(Sails.QueryParam.ORIGINATION, event.getEventUrl().getAbsoluteUrl());
+		redirectUrl.setQueryParameter(Sails.QueryParam.ORIGINATION, event.getUrl().getAbsoluteUrl());
 	}
 }

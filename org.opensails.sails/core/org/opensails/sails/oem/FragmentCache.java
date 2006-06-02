@@ -1,7 +1,11 @@
 package org.opensails.sails.oem;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.opensails.sails.template.IFragmentStore;
 import org.opensails.sails.tools.CacheTool;
+import org.opensails.sails.util.RegexHelper;
 
 /**
  * An application-scoped cache for fragments.
@@ -28,6 +32,18 @@ public class FragmentCache {
 	 */
 	public void expire(FragmentKey identifer) {
 		store.delete(identifer);
+	}
+
+	/**
+	 * @param pattern
+	 * @return all keys matching pattern
+	 */
+	public Set<FragmentKey> keys(String pattern) {
+		Set<FragmentKey> keys = new HashSet<FragmentKey>();
+		for (FragmentKey key : store.keySet()) {
+			if (RegexHelper.containsMatch(key.toString(), pattern)) keys.add(key);
+		}
+		return keys;
 	}
 
 	/**

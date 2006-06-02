@@ -8,7 +8,7 @@ import org.opensails.sails.annotate.BehaviorInstance;
 import org.opensails.sails.event.EventListenerAdapter;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.oem.FragmentCache;
-import org.opensails.sails.oem.FragmentKey;
+import org.opensails.sails.oem.HostFragmentKey;
 import org.opensails.sails.template.CacheType;
 import org.opensails.sails.template.Cached;
 
@@ -30,15 +30,14 @@ public class CacheHandler extends BehaviorHandlerAdapter<Cached> {
 	@Override
 	public boolean beforeAction(ActionInvocation invocation) {
 		this.event = invocation.event;
-		
+
 		switch (cacheType) {
 		case ACTION:
-			String cachedPageContent = fragmentCache.read(new FragmentKey(event));
+			String cachedPageContent = fragmentCache.read(new HostFragmentKey(event));
 			if (cachedPageContent == null) {
 				listenToEndOfEvent(invocation.event);
 				return allowActionAndRecordOutput();
-			}
-			else return blockActionAndRespondFromCache(invocation, cachedPageContent);
+			} else return blockActionAndRespondFromCache(invocation, cachedPageContent);
 		case PAGE:
 			// nothing to do in this case - wait for end of execution to write
 			// to cache
@@ -67,7 +66,7 @@ public class CacheHandler extends BehaviorHandlerAdapter<Cached> {
 		public void endDispatch(ISailsEvent event) {
 			switch (cacheType) {
 			case ACTION:
-				fragmentCache.write(new FragmentKey(event), outputRecorder.toString());
+				fragmentCache.write(new HostFragmentKey(event), outputRecorder.toString());
 			case PAGE:
 			}
 		}

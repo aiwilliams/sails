@@ -228,17 +228,17 @@ public class Page {
 	}
 
 	public TestUrl url() {
-		return new TestUrl(event.getEventUrl());
+		return new TestUrl(event.getUrl());
 	}
 
 	public void viewSource(Writer writer) {
 		try {
 			writer.write("vvvvvvvvvvvvvvvvvv begin response to ");
-			writer.write(event.getEventUrl().getActionUrl());
+			writer.write(event.getUrl().getActionUrl());
 			writer.write(" vvvvvvvvvvvvvvvvvv\n");
 			writer.write(source());
 			writer.write("\n^^^^^^^^^^^^^^^^^^^ end response to ");
-			writer.write(event.getEventUrl().getActionUrl());
+			writer.write(event.getUrl().getActionUrl());
 			writer.write(" ^^^^^^^^^^^^^^^^^^^\n\n");
 			writer.flush();
 		} catch (IOException e) {

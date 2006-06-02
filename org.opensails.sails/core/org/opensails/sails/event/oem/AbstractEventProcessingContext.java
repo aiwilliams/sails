@@ -111,7 +111,7 @@ public abstract class AbstractEventProcessingContext<P extends IActionEventProce
 	 * @return the value of a url query parameter
 	 */
 	public String queryParam(String name) {
-		return event.getEventUrl().getQueryParameter(name);
+		return event.getUrl().getQueryParameter(name);
 	}
 
 	public void setEventContext(ISailsEvent event, P processor) {

@@ -11,6 +11,8 @@ import org.opensails.sails.action.BeforeFilter;
 import org.opensails.sails.action.IAction;
 import org.opensails.sails.action.IActionFilter;
 import org.opensails.sails.controller.oem.BaseController;
+import org.opensails.sails.oem.FragmentCache;
+import org.opensails.sails.oem.FragmentKey;
 import org.opensails.sails.template.CacheType;
 import org.opensails.sails.template.Cached;
 import org.opensails.sails.tester.Page;
@@ -34,6 +36,8 @@ public class PageTests extends TestCase {
 
 		t.getApplication().registerController("cacheTest", actionCacheController);
 		t.get("cacheTest", "actionCached").assertEquals("hello, mate");
+		Set<FragmentKey> cacheKeys = t.instance(FragmentCache.class).keys("cacheTest/actionCached");
+		assertEquals(1, cacheKeys.size());
 		CollectionAssert.containsOnly(new String[] { "beforeAction" }, CachedActionFilter.invoked);
 		CollectionAssert.containsOnly(new String[] { "actionCached" }, invokedActions);
 
@@ -41,6 +45,8 @@ public class PageTests extends TestCase {
 		invokedActions.clear();
 		t.getApplication().registerController("cacheTest", actionCacheController);
 		t.get("cacheTest", "actionCached").assertEquals("hello, mate");
+		cacheKeys = t.instance(FragmentCache.class).keys("cacheTest/actionCached");
+		assertEquals(1, cacheKeys.size());
 		CollectionAssert.containsOnly(new String[] { "beforeAction" }, CachedActionFilter.invoked);
 		assertTrue(invokedActions.isEmpty());
 	}

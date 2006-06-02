@@ -76,6 +76,10 @@ public class EventUrl implements IEventUrl {
 		return controller;
 	}
 
+	public String getHostname() {
+		return request.getServerName();
+	}
+
 	public String getQueryParameter(String name) {
 		return queryParams.get(name);
 	}

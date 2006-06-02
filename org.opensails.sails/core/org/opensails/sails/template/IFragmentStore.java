@@ -1,5 +1,7 @@
 package org.opensails.sails.template;
 
+import java.util.Set;
+
 import org.opensails.sails.oem.FragmentKey;
 
 /**
@@ -8,6 +10,8 @@ import org.opensails.sails.oem.FragmentKey;
  * @author aiwilliams
  */
 public interface IFragmentStore {
+
+	Set<FragmentKey> keySet();
 
 	void delete(FragmentKey identifier);
 

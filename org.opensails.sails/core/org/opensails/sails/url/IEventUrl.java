@@ -50,6 +50,12 @@ public interface IEventUrl {
 	String getController();
 
 	/**
+	 * @return the hostname of the url that triggered this event, without the
+	 *         port
+	 */
+	String getHostname();
+
+	/**
 	 * @param name
 	 * @return the value for the query parameter having name
 	 */
