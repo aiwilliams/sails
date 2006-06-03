@@ -9,6 +9,6 @@ public abstract class BehaviorHandlerAdapter<B extends Annotation> implements IB
 	public void afterAction(ActionInvocation invocation) {}
 
 	public boolean beforeAction(ActionInvocation invocation) {
-		return true;
+		return ALLOW_ACTION_EXECUTION;
 	}
 }

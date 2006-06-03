@@ -16,6 +16,12 @@ import org.opensails.sails.action.oem.ActionInvocation;
  * @author aiwilliams
  */
 public interface IBehaviorHandler<B extends Annotation> {
+	boolean STOP_ADDING_BEHAVIORS = false;
+	boolean CONTINUE_ADDING_BEHAVIORS = true;
+
+	boolean PREVENT_ACTION_EXECUTION = false;
+	boolean ALLOW_ACTION_EXECUTION = true;
+
 	/**
 	 * Invoked for each Behavior declaration on an IEventProcessingContext.
 	 * <p>
@@ -26,6 +32,9 @@ public interface IBehaviorHandler<B extends Annotation> {
 	 * cannot know this in itself. Therefore, if add() answers false, the
 	 * processor will stop processing annotations declared at broader scopes
 	 * (class or superclass).
+	 * <p>
+	 * Consider returning one of {@link #CONTINUE_ADDING_BEHAVIORS} or
+	 * {@link #STOP_ADDING_BEHAVIORS} to clarify your code.
 	 * 
 	 * @param instance
 	 * @return false if the AnnotationContext should stop processing equivelant
@@ -46,6 +55,9 @@ public interface IBehaviorHandler<B extends Annotation> {
 	 * If any handler answers false, the action method will not be invoked. All
 	 * other handlers will still be invoked. The order of handler invocation is
 	 * undefined.
+	 * <p>
+	 * Consider returning one of {@link #PREVENT_ACTION_EXECUTION} or
+	 * {@value #ALLOW_ACTION_EXECUTION} to clarify your code.
 	 * 
 	 * @param invocation
 	 * @return false if the action code should not be executed

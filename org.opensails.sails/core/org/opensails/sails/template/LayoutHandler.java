@@ -14,7 +14,7 @@ public class LayoutHandler extends BehaviorHandlerAdapter {
 	@SuppressWarnings("unchecked")
 	public boolean add(BehaviorInstance instance) {
 		if (layout == null || layout.getElementType().compareTo(instance.getElementType()) > 0) layout = instance;
-		return false;
+		return STOP_ADDING_BEHAVIORS;
 	}
 
 	@Override
@@ -30,6 +30,6 @@ public class LayoutHandler extends BehaviorHandlerAdapter {
 			templateActionResult.setLayout(finalLayout);
 			invocation.setResult(templateActionResult);
 		} // else another behavior has already decided result
-		return true;
+		return ALLOW_ACTION_EXECUTION;
 	}
 }

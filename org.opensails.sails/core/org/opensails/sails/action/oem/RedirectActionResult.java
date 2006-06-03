@@ -40,11 +40,11 @@ public class RedirectActionResult extends AbstractActionResult {
 	}
 
 	/**
-	 * Sets a URL query param, {@link Sails.QueryParam#ORIGINATION}, to contain
+	 * Sets a URL query param, {@link Sails.QueryParam#ORIGIN}, to contain
 	 * the URL of the originating event. Useful for tracking what redirected the
 	 * browser.
 	 */
 	public void rememberOrigin() {
-		redirectUrl.setQueryParameter(Sails.QueryParam.ORIGINATION, event.getUrl().getAbsoluteUrl());
+		redirectUrl.setQueryParameter(Sails.QueryParam.ORIGIN, event.getUrl().getAbsoluteUrl());
 	}
 }

@@ -74,6 +74,6 @@ public class Sails {
 	}
 
 	public interface QueryParam {
-		String ORIGINATION = "origin";
+		String ORIGIN = "origin";
 	}
 }

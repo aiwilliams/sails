@@ -24,7 +24,7 @@ public class CacheHandler extends BehaviorHandlerAdapter<Cached> {
 
 	public boolean add(BehaviorInstance<Cached> instance) {
 		cacheType = instance.getAnnotation().value();
-		return false;
+		return STOP_ADDING_BEHAVIORS;
 	}
 
 	@Override
@@ -37,24 +37,24 @@ public class CacheHandler extends BehaviorHandlerAdapter<Cached> {
 			if (cachedPageContent == null) {
 				listenToEndOfEvent(invocation.event);
 				return allowActionAndRecordOutput();
-			} else return blockActionAndRespondFromCache(invocation, cachedPageContent);
+			} else return preventActionAndRespondFromCache(invocation, cachedPageContent);
 		case PAGE:
 			// nothing to do in this case - wait for end of execution to write
 			// to cache
-			return true;
+			return ALLOW_ACTION_EXECUTION;
 		}
-		return false;
+		return PREVENT_ACTION_EXECUTION;
 	}
 
 	protected boolean allowActionAndRecordOutput() {
 		outputRecorder = new ByteArrayOutputStream();
 		event.recordOutput(outputRecorder);
-		return true;
+		return ALLOW_ACTION_EXECUTION;
 	}
 
-	protected boolean blockActionAndRespondFromCache(ActionInvocation invocation, String cachedPageContent) {
+	protected boolean preventActionAndRespondFromCache(ActionInvocation invocation, String cachedPageContent) {
 		invocation.setResult(new StringActionResult(event, cachedPageContent));
-		return false;
+		return PREVENT_ACTION_EXECUTION;
 	}
 
 	protected void listenToEndOfEvent(ISailsEvent event) {

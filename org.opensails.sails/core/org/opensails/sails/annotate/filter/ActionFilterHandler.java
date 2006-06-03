@@ -21,7 +21,7 @@ public class ActionFilterHandler extends BehaviorHandlerAdapter {
 		if (behavior.annotationType() == BeforeFilters.class) beforeFilters.add(0, behavior);
 		else if (behavior.annotationType() == BeforeFilter.class) beforeFilters.add(0, behavior);
 		else afterFilters.add(0, behavior);
-		return true;
+		return CONTINUE_ADDING_BEHAVIORS;
 	}
 
 	@Override
@@ -37,9 +37,9 @@ public class ActionFilterHandler extends BehaviorHandlerAdapter {
 			Object result = obtainFilter(filterDeclaration, invocation).before();
 			if (result == null || result.equals(true)) continue;
 			if (!result.equals(false)) throw new IllegalStateException("Return value other than null, true, false not supported yet");
-			return false;
+			return PREVENT_ACTION_EXECUTION;
 		}
-		return true;
+		return ALLOW_ACTION_EXECUTION;
 	}
 
 	@SuppressWarnings("unchecked")
