@@ -7,6 +7,11 @@ import org.opensails.viento.Block;
 
 /**
  * A template tool that provides access to parts of the cache.
+ * <p>
+ * <code><pre>
+ *  $cache.fragment(name) [[ ... ]]]
+ * </pre></code> You may expire these, in the simplest way, through a controller using
+ * expire* methods.
  * 
  * @author aiwilliams
  */

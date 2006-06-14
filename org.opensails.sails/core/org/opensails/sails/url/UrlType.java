@@ -14,6 +14,16 @@ import org.opensails.sails.url.oem.StyleUrlResolver;
  * subclass, calling the constructor and passing the class of your type's
  * IUrlResolver. The framework will instantiate one when folks attempt to
  * resolve your types of urls.
+ * <p>
+ * I would recommend you do something like this: <code><pre>
+ * public class MyUrlType extends UrlType {
+ * 	public MyUrlType() {
+ * 		super(MyUrlResolver.class);
+ * 	}
+ * }
+ * 
+ * resolver.resolve(new MyUrlType(), event, &quot;something/relevent/to/u&quot;);
+ * </pre></code>
  */
 public class UrlType {
 	public static final UrlType CONTEXT = new UrlType(ContextUrlResolver.class);

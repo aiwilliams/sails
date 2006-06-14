@@ -12,11 +12,11 @@ import org.opensails.sails.event.ISailsEvent;
  * fine, but we don't want to have an explosion of methods on the event. Look
  * into the {@link org.opensails.sails.event.ISailsEvent#resolve(UrlType, String)}
  * method.
- * 
+ * <p>
  * This does not prevent, nor should it discourage, folks from instantiating
  * concreate {@link org.opensails.sails.url.IUrl}s. Just be sure you understand
  * why you would want to.
- * 
+ * <p>
  * There is one IUrlResolver for each {@link org.opensails.sails.url.UrlType}.
  * They are discovered upon first use and cached.
  * 

@@ -8,15 +8,17 @@ import java.lang.annotation.Target;
 
 import org.opensails.sails.annotate.Behavior;
 import org.opensails.sails.annotate.oem.CacheHandler;
+import org.opensails.sails.tools.CacheTool;
 
 /**
- * TODO: Implement
- * 
  * Marks individual actions or whole controllers as being cached.
  * <p>
  * Generating a response to a client can be expensive. When it is content that
  * is not unique per visitor, caching provides a solution. Annotate an action as
  * Cached, specifying it's CacheType - the default is CacheType.ACTION.
+ * <p>
+ * Note that you may also cache only fragments of documents. Please look at the
+ * {@link CacheTool} for more information.
  * 
  * @see CacheType
  * 

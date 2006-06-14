@@ -45,8 +45,10 @@ package org.opensails.sails;
  * </pre></code>
  * 
  * <h2>Getting Started</h2>
- * TODO: Document Getting Started
- * <p>
+ * You can either download a zip file and import that into Eclipse or checkout a
+ * few projects from the opensails.org Subversion repository. The latest
+ * instructions can be found at
+ * http://trac.opensails.org/sails/wiki/HowToCreateYourFirstSailsApplication
  * <h4>Some gritty details</h4>
  * Sails is essentially a Servlet application. HTTP events are transformed into
  * ISailsEvents of various kinds, then dispatched to the appropriate

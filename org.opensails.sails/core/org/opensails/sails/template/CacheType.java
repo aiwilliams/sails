@@ -12,6 +12,8 @@ public enum CacheType {
 	ACTION,
 
 	/**
+	 * TODO: Implement support
+	 * 
 	 * A type of cache where the entire output of an action will be written to a
 	 * file that can be served by the HTTP server. This prevents the event being
 	 * dispatched to filters, actions, etc. This is only useful in cases where
