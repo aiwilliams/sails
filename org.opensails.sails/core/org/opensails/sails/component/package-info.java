@@ -1,5 +1,3 @@
-package org.opensails.sails.component;
-
 /**
  * The interfaces and classes that make up the Component architecture of Sails.
  * <p>
@@ -7,3 +5,4 @@ package org.opensails.sails.component;
  * quite yet. For an example of how components work in Sails, please see the
  * Dock application, which can be obtained from the Sails SVN repository.
  */
+package org.opensails.sails.component;

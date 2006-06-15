@@ -1,5 +1,3 @@
-package org.opensails.sails.adapter;
-
 /**
  * Classes that are used to convert objects to strings and back again.
  * <p>
@@ -22,3 +20,4 @@ package org.opensails.sails.adapter;
  * have a class that is created by or references the dependency injection
  * container, depend on or obtain the instance of ContainerAdapterResolver.
  */
+package org.opensails.sails.adapter;

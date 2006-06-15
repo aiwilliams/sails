@@ -1,5 +1,3 @@
-package org.opensails.sails.event;
-
 /**
  * Defines the interfaces and classes that comprise the event model of a Sails
  * application.
@@ -8,3 +6,4 @@ package org.opensails.sails.event;
  * generated through HTTP GET and POST events. There are other types of events
  * as well, though many are not yet supported by Sails.
  */
+package org.opensails.sails.event;
