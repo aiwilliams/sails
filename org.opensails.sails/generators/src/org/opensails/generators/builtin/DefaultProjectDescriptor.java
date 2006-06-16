@@ -5,7 +5,11 @@ import org.opensails.sails.oem.SailsDefaultsConfiguration;
 
 public class DefaultProjectDescriptor {
 	protected String rootPackage;
-	protected final String projectName;
+	protected String projectName;
+
+	public DefaultProjectDescriptor() {
+		this("org.opensails.application");
+	}
 
 	public DefaultProjectDescriptor(String projectName) {
 		this.projectName = projectName;
@@ -61,6 +65,10 @@ public class DefaultProjectDescriptor {
 
 	public String getViewsPath() {
 		return EzPath.join(getContextPath(), "views");
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 	public void setRootPackage(String dotSeparated) {
