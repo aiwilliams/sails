@@ -40,7 +40,10 @@
 		<!-- Create source directories -->
 		<dot.to.slash name="application.rootpackage.dir" value="${application.rootpackage}" />
 		<property name="package.dir" location="${generator.working.dir}/${application.java.srcdir}/${application.rootpackage.dir}" />
-		<mkdir dir="${package.dir}" />
+		<mkdir dir="${package.dir}/adapters" />
+		<mkdir dir="${package.dir}/controllers" />
+		<mkdir dir="${package.dir}/tools" />
+		<mkdir dir="${package.dir}/mixins" />
 
 		<!-- Create configuration Java file -->
 		<viento tofile="${package.dir}/${application.configurator.classname}.java" file="${generator.root.dir}/Configurator.java" />
