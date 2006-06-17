@@ -1,6 +1,8 @@
 package org.opensails.spyglass;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -23,6 +25,8 @@ public class PackageClassResolverTests extends TestCase {
 		PackageClassResolver<Object> resolver = new PackageClassResolver<Object>(getClass().getPackage());
 		assertEquals(PackageClassResolverTests.class, resolver.resolve(Map.class));
 		assertEquals(PackageClassResolverTests.class, resolver.resolve(String.class));
+		assertEquals(PackageClassResolverTests.class, resolver.resolve(List.class));
+		assertEquals(SpyGlassTests.class, resolver.resolve(Set.class));
 		assertEquals(PackageClassResolverTests.class, resolver.resolve("packageClassResolverTests"));
 	}
 

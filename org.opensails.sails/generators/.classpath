@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-lang.jar"/>
 	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/rigging.jar"/>
-	<classpathentry sourcepath="/org.opensails.sails" kind="lib" path="$application.context.name;/WEB-INF/lib/$product.jar"/>
+	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/$product.jar"/>
 	<classpathentry kind="lib" path="$application.context.name;/WEB-INF/lib/viento.jar"/>
 	<classpathentry kind="output" path="tools/eclipse/classes"/>
 </classpath>

@@ -33,7 +33,7 @@ import org.opensails.viento.TargetedMethodKey;
  * taking the provided arguments.
  * <p>
  * Please remember that the first argument to all of your mixin's methods must
- * be the type or super-type of the instance being extended.
+ * be the type or a super-type of the instance being extended.
  * 
  * @author aiwilliams
  */

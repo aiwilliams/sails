@@ -78,9 +78,22 @@ public class PackageClassResolver<T> implements IClassResolver<T> {
 	public Class<T> resolve(Class key) {
 		if (javaPackage != null) {
 			ClassKeyMappings mappings = javaPackage.getAnnotation(ClassKeyMappings.class);
+			Class closestMatchingKey = null;
+			Class closestMatchingValue = null;
+			int closestGenerations = Integer.MAX_VALUE;
 			if (mappings != null) for (Mapping mapping : mappings.value())
-				for (Class classKey : mapping.classKeys())
+				for (Class classKey : mapping.classKeys()) {
 					if (classKey == key) return mapping.value();
+					if (classKey.isAssignableFrom(key)) {
+						int generations = SpyGlass.numberOfGenerationsBack(key, classKey);
+						if (generations < closestGenerations) {
+							closestMatchingKey = classKey;
+							closestMatchingValue = mapping.value();
+							closestGenerations = generations;
+						}
+					}
+				}
+			if (closestMatchingKey != null) return closestMatchingValue;
 		}
 		return resolve(SpyGlass.getName(key));
 	}

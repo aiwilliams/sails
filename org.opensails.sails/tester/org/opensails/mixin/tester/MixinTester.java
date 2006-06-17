@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.opensails.rigging.InstantiationListener;
 import org.opensails.sails.configurator.SailsConfigurator;
+import org.opensails.sails.template.MixinResolver;
 import org.opensails.sails.tester.browser.Browser;
 import org.opensails.sails.tester.browser.SailsTestApplication;
 import org.opensails.viento.IBinding;
@@ -20,6 +21,10 @@ public class MixinTester {
 
 		SailsTestApplication sailsTestApplication = new SailsTestApplication(configuratorClass);
 		browser = sailsTestApplication.openBrowser();
+	}
+
+	public void addPackage(String name) {
+		browser.getApplicationContainer().instance(MixinResolver.class).push(name);
 	}
 
 	public void assertEquals(String expected, String vientoTemplate) {

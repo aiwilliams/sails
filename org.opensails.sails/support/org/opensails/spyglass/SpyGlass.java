@@ -128,6 +128,32 @@ public class SpyGlass {
 		return matches.toArray(new Method[matches.size()]);
 	}
 
+	/**
+	 * @param type
+	 * @param ancestor
+	 * @return the index of ancestor in the number of classes/interfaces up the
+	 *         heirarchy of type, 0 if type == ancestor, -1 if not found
+	 */
+	public static int numberOfGenerationsBack(Class type, Class ancestor) {
+		if (type == ancestor) return 0;
+
+		Class target = ancestor;
+		ancestor = type.getSuperclass();
+		int generations = 1;
+		while (ancestor != null) {
+			if (ancestor == target) return generations;
+
+			int inInterfaces = generationsBackInInterfaces(generations, ancestor, target);
+			if (inInterfaces != -1) return inInterfaces;
+
+			generations++;
+			ancestor = ancestor.getSuperclass();
+		}
+
+		// if we get here, we did not find it in the class heirarchy
+		return generationsBackInInterfaces(0, type, target);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static Object read(Object instance, Field field) {
 		return new SpyField<Object>(new SpyClass(field.getDeclaringClass()), field).get(instance);
@@ -149,5 +175,16 @@ public class SpyGlass {
 	@SuppressWarnings("unchecked")
 	public static void write(Object instance, Field field, Object value) {
 		new SpyField<Object>(new SpyClass(field.getDeclaringClass()), field).set(instance, value);
+	}
+
+	private static int generationsBackInInterfaces(int currentGeneration, Class generation, Class target) {
+		Class[] interfaces = generation.getInterfaces();
+		int thisGeneration = currentGeneration + 1;
+		for (Class interfaze : interfaces) {
+			if (interfaze == target) return thisGeneration;
+			int inThisInterfaceHeirarchy = generationsBackInInterfaces(thisGeneration, interfaze, target);
+			if (inThisInterfaceHeirarchy != -1) return inThisInterfaceHeirarchy;
+		}
+		return -1;
 	}
 }

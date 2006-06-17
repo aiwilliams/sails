@@ -3,7 +3,10 @@ package org.opensails.spyglass;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.Test;
 import junit.framework.TestCase;
 
 import org.opensails.sails.component.NotForJs;
@@ -40,6 +43,19 @@ public class SpyGlassTests extends TestCase {
 		};
 		Method[] methods = SpyGlass.methodsNamedInHeirarchy(anonymous.getClass(), "publicMethod");
 		assertEquals(1, methods.length);
+	}
+
+	public void testNumberOfGenerationsBack() throws Exception {
+		assertEquals(0, SpyGlass.numberOfGenerationsBack(SpyGlassTests.class, SpyGlassTests.class));
+		assertEquals(1, SpyGlass.numberOfGenerationsBack(SpyGlassTests.class, TestCase.class));
+		assertEquals(2, SpyGlass.numberOfGenerationsBack(SpyGlassTests.class, Assert.class));
+		assertEquals(3, SpyGlass.numberOfGenerationsBack(SpyGlassTests.class, Object.class));
+		assertEquals(2, SpyGlass.numberOfGenerationsBack(SpyGlassTests.class, Test.class));
+
+		assertEquals(0, SpyGlass.numberOfGenerationsBack(List.class, List.class));
+		assertEquals(1, SpyGlass.numberOfGenerationsBack(List.class, Collection.class));
+		assertEquals(2, SpyGlass.numberOfGenerationsBack(List.class, Iterable.class));
+		assertEquals(-1, SpyGlass.numberOfGenerationsBack(List.class, Object.class));
 	}
 
 	public class InnerClass {

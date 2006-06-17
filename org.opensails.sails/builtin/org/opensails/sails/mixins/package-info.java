@@ -3,7 +3,7 @@
  */
 
 @ClassKeyMappings({
-	@Mapping(classKeys = { String.class }, value = HtmlMixin.class),
+	@Mapping(classKeys = { CharSequence.class }, value = HtmlMixin.class),
 	@Mapping(classKeys = { Throwable.class }, value = ThrowableMixin.class)
 })
 
