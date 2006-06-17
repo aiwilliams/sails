@@ -23,6 +23,8 @@ public class TemplateActionResultProcessor implements IActionResultProcessor<Tem
 		IEventProcessingContext processingContext = result.getProcessingContext();
 		if (processingContext != null) binding.mixin(processingContext);
 
+		binding.put("event", result.getEvent());
+		
 		IEventContextContainer container = result.getContainer();
 		ToolResolver resolver = container.instance(ToolResolver.class);
 		binding.addObjectResolver(resolver);

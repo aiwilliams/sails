@@ -104,6 +104,7 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 
 	public void testGet_NoImplementation() {
 		SailsFunctionalTester tester = new SailsFunctionalTester();
+		tester.registerTemplate("noImplementation/index", "index $event.url");
 		Page page = tester.get("noImplementation", "index", ArrayUtils.EMPTY_OBJECT_ARRAY);
 		page.assertContains("index");
 	}
