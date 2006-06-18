@@ -17,6 +17,8 @@ import org.opensails.sails.annotate.IBehaviorHandler;
 import org.opensails.sails.event.IEventProcessingContext;
 import org.opensails.sails.event.ISailsEvent;
 import org.opensails.sails.form.FormFields;
+import org.opensails.spyglass.SpyMethod;
+import org.opensails.spyglass.SpyObject;
 
 /**
  * State related to an Action invocation.
@@ -117,7 +119,9 @@ public class ActionInvocation {
 		} catch (IllegalAccessException e) {
 			throw new SailsException("Action methods must be public.", e);
 		} catch (InvocationTargetException e) {
-			throw new SailsException("An exception [" + e.getCause().getClass() + "] occurred in the action " + code, e.getCause());
+			SpyMethod<Object> handle = new SpyObject<Object>(context).getMethod("handle");
+			if (handle.exists(e.getCause().getClass())) handle.invoke(context, e.getCause());
+			else throw new SailsException("An exception [" + e.getCause().getClass() + "] occurred in the action " + code, e.getCause());
 		}
 	}
 

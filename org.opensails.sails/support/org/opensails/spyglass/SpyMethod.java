@@ -24,6 +24,10 @@ public class SpyMethod<T> {
 		return getMethodTaking(argTypes).getGenericReturnType();
 	}
 
+	/**
+	 * @param argTypes
+	 * @return the Method taking argTypes exactly or super-types thereof
+	 */
 	public Method getMethodTaking(Class[] argTypes) {
 		Class nextClass = spyClass.getType();
 		while (nextClass != null) {

@@ -58,6 +58,10 @@ public class SpyObject<T> {
 		this.spyClass = new SpyClass<T>((Class<T>) object.getClass(), policy);
 	}
 
+	public SpyMethod<T> getMethod(String method) {
+		return new SpyMethod<T>(getSpyClass(), method);
+	}
+
 	/**
 	 * @return the Object being spied
 	 */
@@ -83,6 +87,10 @@ public class SpyObject<T> {
 		return new SpyMethod<T>(spyClass, methodName).invoke(object, args);
 	}
 
+	public Object read(String property) {
+		return getProperty(property).get();
+	}
+
 	@SuppressWarnings("unchecked")
 	public SpyObject<?> readSpy(Field property) {
 		return new SpyObject<Object>(new SpyField(getSpyClass(), property).get(object), policy);
@@ -96,10 +104,6 @@ public class SpyObject<T> {
 
 	public void write(String property, Object value) {
 		getProperty(property).set(value);
-	}
-
-	public Object read(String property) {
-		return getProperty(property).get();
 	}
 
 }

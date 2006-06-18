@@ -104,6 +104,11 @@ public class EventUrl implements IEventUrl {
 		queryParams.set(name, value);
 	}
 
+	@Override
+	public String toString() {
+		return getAbsoluteUrl();
+	}
+
 	protected String[] getCleanPathInfo(String pathInfo) {
 		if (pathInfo == null) return ArrayUtils.EMPTY_STRING_ARRAY;
 		if (pathInfo.startsWith("/")) pathInfo = pathInfo.substring(1);

@@ -216,10 +216,6 @@ public class SailsTestApplication extends SailsApplication {
 		browsers.add(browser);
 	}
 
-	public void registerController(Class<? extends IControllerImpl> controller) {
-		getVirtualControllerResolver().register(controller);
-	}
-
 	/**
 	 * Allows for the registration of custom IControllerImpl instances.
 	 * 
@@ -231,8 +227,17 @@ public class SailsTestApplication extends SailsApplication {
 		getVirtualControllerResolver().register(controller);
 	}
 
-	private VirtualControllerResolver getVirtualControllerResolver() {
-		return getContainer().instance(VirtualControllerResolver.class);
+	/**
+	 * Allows for the registration of custom IControllerImpls.
+	 * <p>
+	 * You can register the controller class once. Each get/post will cause the
+	 * creation of a new instance, exactly as if the controller impl had been
+	 * discovered as normally.
+	 * 
+	 * @param controller
+	 */
+	public void registerController(Class<? extends IControllerImpl> controller) {
+		getVirtualControllerResolver().register(controller);
 	}
 
 	/**
@@ -276,6 +281,10 @@ public class SailsTestApplication extends SailsApplication {
 
 	protected TesterApplicationConfigurator instrumentedConfigurator(Class<? extends SailsConfigurator> configuratorClass) {
 		return new TesterApplicationConfigurator(configuratorClass);
+	}
+
+	private VirtualControllerResolver getVirtualControllerResolver() {
+		return getContainer().instance(VirtualControllerResolver.class);
 	}
 
 }

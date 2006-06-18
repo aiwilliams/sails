@@ -1,5 +1,8 @@
 package org.opensails.functional.event;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -49,6 +52,51 @@ public class EventProcessingTests extends TestCase implements IActionListener {
 		SailsFunctionalTester t = new SailsFunctionalTester();
 		Page page = t.getTemplated("$form.text('thename').decorated");
 		page.assertContains("<span class=\"decorated\"><input");
+	}
+
+	@SuppressWarnings("unused")
+	public void testExceptions() throws Exception {
+		SailsFunctionalTester t = new SailsFunctionalTester();
+
+		final Map<Class<? extends Throwable>, Throwable> exceptions = new HashMap<Class<? extends Throwable>, Throwable>();
+		BaseController controller = new BaseController() {
+					public void indexBounds() {
+						throw new IndexOutOfBoundsException();
+					}
+		
+					public void nullPointer() {
+						throw new NullPointerException();
+					}
+		
+					public void runtime() {
+						throw new RuntimeException();
+					}
+		
+					protected void handle(IndexOutOfBoundsException e) {
+						exceptions.put(IndexOutOfBoundsException.class, e);
+					}
+		
+					protected void handle(NullPointerException e) {
+						exceptions.put(NullPointerException.class, e);
+					}
+				};
+
+		t.getApplication().registerController("errorTest", controller);
+		t.get("errorTest", "nullPointer");
+		
+		t.getApplication().registerController("errorTest", controller);
+		t.get("errorTest", "indexBounds");
+
+		t.getApplication().registerController("errorTest", controller);
+		try {
+			t.get("errorTest", "runtime");
+		} catch (Exception e) {
+			exceptions.put(Exception.class, e);
+		}
+
+		assertNotNull(exceptions.get(NullPointerException.class));
+		assertNotNull(exceptions.get(IndexOutOfBoundsException.class));
+		assertNotNull(exceptions.get(Exception.class));
 	}
 
 	public void testFlash() throws Exception {
