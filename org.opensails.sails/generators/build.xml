@@ -1,0 +1,80 @@
+<project name="$application.name;" basedir="." default="war">
+
+	<!-- ================================= 
+          The properties used during build that you may want to change.
+         ================================= -->
+	<property name="war.filename" value="${ant.project.name}.war" />
+	<property name="dist.dir" value="dist" />
+
+
+	<!-- ================================= 
+          The properties used during build that probably never need to
+          be changed.
+         ================================= -->
+	<property name="build.temp.dir" location="build" />
+	<property name="build.classes.dir" location="${build.temp.dir}/classes" />
+
+	<property name="app.root.dir" location="app" />
+
+	<property name="source.main.root.dir" location="src/main" />
+	<property name="source.main.java.dir" location="${source.main.root.dir}/java" />
+
+	<property name="webinf.dir" location="${app.root.dir}/WEB-INF" />
+	<property name="webinf.lib.dir" location="${webinf.dir}/lib" />
+	<property name="webinf.classes.dir" location="${webinf.dir}/classes" />
+
+
+	<!-- ================================= 
+          path: compile.classpath
+          
+          The locations of jar files and class files that will be referenced
+          when compiling the project.
+         ================================= -->
+	<path id="compile.classpath">
+		<fileset dir="${webinf.lib.dir}" includes="*.jar" />
+		<fileset dir="${webinf.classes.dir}" includes="*.jar" />
+	</path>
+
+
+	<!-- ================================= 
+          target: war
+          
+          Creates a .war (Web Application Archive) file of the project.
+          This file can be deployed to any web application server that
+          supports the Java Servlet 2.4 specification.
+         ================================= -->
+	<target name="war" depends="clean,compile" description="Create a war file.">
+		<mkdir dir="${dist.dir}"/>
+		<war destfile="${dist.dir}/${war.filename}" webxml="${webinf.dir}/web.xml">
+			<classes dir="${build.classes.dir}" />
+			<classes dir="${webinf.classes.dir}" />
+			<lib dir="${webinf.lib.dir}" />
+			<fileset dir="${app.root.dir}">
+				<exclude name="WEB-INF/**" />
+			</fileset>
+		</war>
+	</target>
+
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: compile
+          
+          Compiles the .java files of this project and places them in
+          the build.classes.dir.
+         - - - - - - - - - - - - - - - - - -->
+	<target name="compile">
+		<mkdir dir="${build.classes.dir}"/>
+		<javac srcdir="${source.main.java.dir}" destdir="${build.classes.dir}" debug="on" optimize="on">
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+
+	<!-- ================================= 
+          target: clean              
+         ================================= -->
+    <target name="clean" description="Deletes everything produced by this build.">
+        <delete dir="${build.temp.dir}" />
+    	<delete dir="${dist.dir}" />
+    </target>
+</project>

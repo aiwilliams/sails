@@ -4,11 +4,13 @@
 	<property name="generator.target.dir" location="applications" description="The directory in which assets will be generated" />
 	<property name="application.name" value="org.sails.example" description="The name of the application being generated" />
 	<property name="application.dir" value="${application.name}" description="The directory name for the application being generated - defaults to value of application.name" />
-	<property name="application.java.srcdir" value="src" description="The directory that contains java files to be compiled" />
+	<property name="application.java.srcdir" value="src/main/java" description="The directory that contains java files to be compiled" />
 	<property name="application.output.classdir" value="bin" description="The directory into which classes should be generated" />
 	<property name="application.rootpackage" value="org.sails.example" description="The application's root package fragment, in the form of 'com/example/package'" />
 	<property name="application.configurator.classname" value="Configurator" description="The name to use for the ISailsApplicationConfigurator implementation" />
 	<property name="application.configurator.classname.qualified" value="${application.rootpackage}.${application.configurator.classname}" description="The name to use for the ISailsApplicationConfigurator implementation" />
+
+	<property name="test.java.srcdir" value="src/test/java" description="The directory that contains java files for testing the application" />
 
 	<!-- Internal properties -->
 	<property name="generator.root.dir" location="generators" />
@@ -44,6 +46,10 @@
 		<mkdir dir="${package.dir}/controllers" />
 		<mkdir dir="${package.dir}/tools" />
 		<mkdir dir="${package.dir}/mixins" />
+		
+		<property name="test.package.dir" location="${generator.working.dir}/${test.java.srcdir}" />
+		<mkdir dir="${test.package.dir}/unit/${application.rootpackage.dir}" />
+		<mkdir dir="${test.package.dir}/functional/${application.rootpackage.dir}" />
 
 		<!-- Create configuration Java file -->
 		<viento tofile="${package.dir}/${application.configurator.classname}.java" file="${generator.root.dir}/Configurator.java" />
@@ -51,7 +57,7 @@
 		<!-- Create jetty boot Java file -->
 		<viento tofile="${package.dir}/JettyBoot.java" file="${generator.root.dir}/JettyBoot.java" />
 
-		<!-- Create class output directory -->
+		<!-- Create class output directory for non-eclipse use -->
 		<mkdir dir="${generator.working.dir}/${application.output.classdir}" />
 		<antcall target="new.war" />
 
@@ -67,6 +73,9 @@
 
 		<!-- Create readme.html file -->
 		<viento tofile="${generator.working.dir}/readme.html" file="${generator.root.dir}/readme.html" />
+
+		<!-- Create build.xml file -->
+		<viento tofile="${generator.working.dir}/build.xml" file="${generator.root.dir}/build.xml" />
 	</target>
 
 
