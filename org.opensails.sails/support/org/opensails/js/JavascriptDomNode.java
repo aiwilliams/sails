@@ -7,7 +7,7 @@ public class JavascriptDomNode extends JavascriptGenerator {
 		this.id = id;
 	}
 
-	public String renderThyself() {
-		return String.format("$(%s)", possiblyQuoted(id));
+	public String renderThyself(boolean strictJson) {
+		return String.format("$(%s)", possiblyQuoted(id, strictJson));
 	}
 }

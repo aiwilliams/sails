@@ -7,7 +7,7 @@ public class JavascriptCode extends JavascriptGenerator {
 		this.code = code;
 	}
 
-	public String renderThyself() {
+	public String renderThyself(boolean strictJson) {
 		return code;
 	}
 }

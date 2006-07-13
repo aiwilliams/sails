@@ -13,14 +13,18 @@ public class JavascriptObject extends JavascriptGenerator {
 	public JavascriptObject(LinkedHashMap<String, Object> map) {
 		this.map = map;
 	}
+	
+	protected String strictlyQuoted(String key, boolean strictJson) {
+		return strictJson ? possiblyQuoted(key, strictJson) : key;
+	}
 
-	public String renderThyself() {
+	public String renderThyself(boolean strictJson) {
 		StringBuilder b = new StringBuilder();
 		b.append("{");
 		boolean f = true;
-		for (Map.Entry entry : map.entrySet()) {
+		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			if (!f || (f = false)) b.append(",");
-			b.append(String.format("%s:%s", entry.getKey(), possiblyQuoted(entry.getValue())));
+			b.append(String.format("%s:%s", strictlyQuoted(entry.getKey(), strictJson), possiblyQuoted(entry.getValue(), strictJson)));
 		}
 		b.append("}");
 		return b.toString();

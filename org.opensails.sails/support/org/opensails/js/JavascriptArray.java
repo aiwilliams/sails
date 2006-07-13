@@ -18,13 +18,13 @@ public class JavascriptArray extends JavascriptGenerator {
 		list.add(object);
 	}
 
-	public String renderThyself() {
+	public String renderThyself(boolean strictJson) {
 		StringBuilder b = new StringBuilder();
 		b.append("[");
 		boolean f = true;
 		for (Object each : list) {
 			if (!f || (f = false)) b.append(",");
-			b.append(possiblyQuoted(each));
+			b.append(possiblyQuoted(each, strictJson));
 		}
 		b.append("]");
 		return b.toString();

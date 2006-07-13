@@ -9,14 +9,14 @@ public class JavascriptMethodCall extends JavascriptGenerator {
 		this.args = args;
 	}
 	
-	public String renderThyself() {
+	public String renderThyself(boolean strictJson) {
 		StringBuilder b = new StringBuilder();
 		b.append(name);
 		b.append("(");
 		boolean f = true;
 		for (Object arg : args) {
 			if (!f || (f = false)) b.append(",");
-			b.append(possiblyQuoted(arg));
+			b.append(possiblyQuoted(arg, strictJson));
 		}
 		b.append(")");
 		return b.toString();
