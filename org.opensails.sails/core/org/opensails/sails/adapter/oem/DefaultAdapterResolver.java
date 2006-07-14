@@ -15,7 +15,7 @@ public class DefaultAdapterResolver<A extends IAdapter> extends ClassResolverAda
 			if (key.getComponentType() == String.class) return (Class<A>) StringArrayAdapter.class;
 			else return (Class<A>) ArrayAdapter.class;
 		} else if (IIdentifiable.class.isAssignableFrom(key)) return (Class<A>) IdentifiableAdapter.class;
-		else if (key.isEnum()) return (Class<A>) EnumAdapter.class;
+		else if (Enum.class.isAssignableFrom(key)) return (Class<A>) EnumAdapter.class;
 		else if (Collection.class.isAssignableFrom(key)) return (Class<A>) CollectionAdapter.class;
 		return null;
 	}
