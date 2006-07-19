@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="org.opensails.hibernate" default="dist" basedir=".">
-	<property name="product.version" value="0.2.0" />
+	<property name="product.version" value="0.3.1" />
 	<property name="temp.build" location="buildtemp" />
 
 	<property name="source.core" value="src" />
@@ -28,7 +28,7 @@
 	    | This can be called by dependent build scripts. It will place product and it's
 	    | dependencies into product.dist. Override the value of that when you call this.
 	    +-->
-	<target name="dist.depends" depends="dist" description="Constructs product jar and copies it and all vendor libraries into product.dist.">
+	<target name="dist.depends" depends="build.jar" description="Constructs product jar and copies it and all vendor libraries into product.dist.">
 		<copy file="${product.jar.path}/${product.jar}" todir="${product.dist}" />
 		<copy todir="${product.dist}" flatten="true">
 			<fileset dir="${temp.lib}" />
@@ -36,7 +36,14 @@
 		</copy>
 	</target>
 
-	<target name="dist" depends="build.jar" description="Compiles a jar file containing Sails' Hibernate Extensions. No vendor libraries are included.">
+	<target name="dist" depends="build.jar" description="Creates a zip file containing Sails' Hibernate Extensions and vendor libraries.">
+		<zip destfile="${product.dist}/${product.name}_${product.version}.zip" update="false">
+			<zipfileset file="${product.jar.path}/${product.jar}"/>
+			<zipfileset refid="vendor.lib.jars" />
+		</zip>
+		<zip destfile="${product.dist}/${product.name}_${product.version}_src.zip" update="false">
+			<fileset dir="${source.core}" includes="**" />
+		</zip>
 	</target>
 
 	<target name="compile" depends="build.depends">

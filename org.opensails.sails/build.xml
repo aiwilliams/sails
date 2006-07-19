@@ -5,7 +5,7 @@
 	</path>
 	<taskdef name="buildstamp" classpathref="classpath.ant.tasks" classname="org.opensails.ant.BuildStampTask" />
 
-	<property name="sails.version" value="0.3.0_RC1"/>
+	<property name="sails.version" value="0.3.1"/>
 	<property name="temp.build" location="buildtemp" />
 	<property name="source.builtin" value="builtin" />
 	<property name="source.core" value="core" />
@@ -30,10 +30,13 @@
 		<buildstamp file="../org.opensails.build.nightly/build.stamp" />
 	</target>
 
-	<target name="dist" depends="clean, build.jar" description="Constructs a zip file that is a running Sails application.">
+	<target name="dist" depends="clean" description="Constructs a zip file that is a running Sails application.">
 		<property name="application.name" value="sailsapp" />
 		<property name="product.dist" location="dist" />
 		<property name="dist.label" value="${sails.version}" />
+		
+		<antcall target="build.jar" />
+		
 		<ant antfile="generators/generate.xml" target="new.project.with.libraries">
 			<property name="viento.classpath" value="../org.opensails.viento/tools/eclipse/classes" />
 			<property name="generator.target.dir" location="${temp.build}" />
