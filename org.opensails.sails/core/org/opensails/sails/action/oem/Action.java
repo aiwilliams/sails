@@ -188,8 +188,12 @@ public class Action implements IAction {
 
 	@SuppressWarnings("unchecked")
 	private void collectControllerBehaviors(List<BehaviorInstance> instances, Class type) {
-		for (Annotation annotation : type.getAnnotations())
-			if (annotation.annotationType().isAnnotationPresent(Behavior.class)) instances.add(new BehaviorInstance(annotation, ElementType.TYPE));
+		while (type != null) {
+			for (Annotation annotation : type.getAnnotations()) {
+				if (annotation.annotationType().isAnnotationPresent(Behavior.class)) instances.add(new BehaviorInstance(annotation, ElementType.TYPE));
+			}
+			type = type.getSuperclass();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

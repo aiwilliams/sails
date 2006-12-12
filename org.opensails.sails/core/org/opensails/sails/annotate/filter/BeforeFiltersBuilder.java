@@ -47,7 +47,7 @@ public class BeforeFiltersBuilder implements IFilterBuilder<BeforeFilters> {
 						for (String method : methodFilter.methods()) {
 							// TODO: Support methods up heirarchy
 							try {
-								Method methodCode = invocation.getContextClass().getDeclaredMethod(method, ArrayUtils.EMPTY_CLASS_ARRAY);
+								Method methodCode = SpyGlass.getMethod(invocation.getContextClass(), method);
 								if (Modifier.isPrivate(methodCode.getModifiers())) throw new SailsException(String.format("Filter methods must be public or protected", method));
 								methodCode.setAccessible(true);
 								methodCode.invoke(invocation.getContext(), ArrayUtils.EMPTY_OBJECT_ARRAY);
